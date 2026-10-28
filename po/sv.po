@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ubuntu Start 0.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-28 16:31+0100\n"
+"POT-Creation-Date: 2026-10-28 16:34+0100\n"
 "PO-Revision-Date: 2026-10-28 15:18+0100\n"
 "Last-Translator: Ubuntu Start contributors\n"
 "Language-Team: Swedish\n"
@@ -718,7 +718,7 @@ msgstr ""
 msgid "Use the Terminal"
 msgstr "Använd terminalen"
 
-#: src/ubuntu_start.py:117 src/ubuntu_start.py:728
+#: src/ubuntu_start.py:117 src/ubuntu_start.py:733
 msgid "Open Terminal"
 msgstr "Öppna terminalen"
 
@@ -1672,7 +1672,9 @@ msgstr ""
 msgid ""
 "These are Ubuntu’s default shortcuts. Open Keyboard Settings to review or "
 "change them; key labels can vary by device."
-msgstr "Det här är Ubuntus standardgenvägar. Öppna tangentbordsinställningarna för att se eller ändra dem. Tangentnamn kan variera mellan olika enheter."
+msgstr ""
+"Det här är Ubuntus standardgenvägar. Öppna tangentbordsinställningarna för "
+"att se eller ändra dem. Tangentnamn kan variera mellan olika enheter."
 
 #: src/ubuntu_start.py:719
 msgid "Find apps and settings"
@@ -1744,10 +1746,71 @@ msgid "Press Ctrl+Shift+N to create a folder in the current location."
 msgstr "Tryck på Ctrl+Skift+N för att skapa en mapp på den aktuella platsen."
 
 #: src/ubuntu_start.py:726
+msgid "Open a location in Files"
+msgstr "Öppna en plats i Filer"
+
+#: src/ubuntu_start.py:726
+msgid ""
+"Press Ctrl+L in Files to type a folder path or enter a network address. "
+"Press Enter to open it."
+msgstr ""
+"Tryck på Ctrl+L i Filer för att skriva en mappsökväg eller nätverksadress. "
+"Tryck på Retur för att öppna den."
+
+#: src/ubuntu_start.py:727
+msgid "Rename a file"
+msgstr "Byt namn på en fil"
+
+#: src/ubuntu_start.py:727
+msgid ""
+"Select a file in Files and press F2 to rename it. Check the new name before "
+"pressing Enter."
+msgstr ""
+"Markera en fil i Filer och tryck på F2 för att byta namn på den. Kontrollera "
+"det nya namnet innan du trycker på Retur."
+
+#: src/ubuntu_start.py:728
+msgid "Undo a file action"
+msgstr "Ångra en filåtgärd"
+
+#: src/ubuntu_start.py:728
+msgid ""
+"Press Ctrl+Z in Files to undo a recent file operation when available. Check "
+"the result before continuing."
+msgstr ""
+"Tryck på Ctrl+Z i Filer för att ångra en nyligen utförd filåtgärd när det "
+"går. Kontrollera resultatet innan du fortsätter."
+
+#: src/ubuntu_start.py:729
+msgid "Keep a backup copy"
+msgstr "Spara en säkerhetskopia"
+
+#: src/ubuntu_start.py:729
+msgid ""
+"Copy important documents and photos to a separate drive or trusted backup "
+"service. Check occasionally that you can open a backed-up file."
+msgstr ""
+"Kopiera viktiga dokument och bilder till en separat enhet eller en betrodd "
+"säkerhetskopieringstjänst. Kontrollera ibland att du kan öppna en "
+"säkerhetskopierad fil."
+
+#: src/ubuntu_start.py:730
+msgid "Choose trusted app sources"
+msgstr "Välj betrodda appkällor"
+
+#: src/ubuntu_start.py:730
+msgid ""
+"Prefer Ubuntu App Center or the software source recommended by your "
+"organization. Check the publisher before installing an app."
+msgstr ""
+"Använd helst Ubuntus Appcenter eller programkällan som rekommenderas av din "
+"organisation. Kontrollera utgivaren innan du installerar en app."
+
+#: src/ubuntu_start.py:731
 msgid "Switch keyboard layouts"
 msgstr "Växla tangentbordslayout"
 
-#: src/ubuntu_start.py:726
+#: src/ubuntu_start.py:731
 msgid ""
 "If you have added more than one layout, press Super+Space to switch between "
 "them."
@@ -1755,15 +1818,15 @@ msgstr ""
 "Om du har lagt till fler än en layout trycker du på Super+Blanksteg för att "
 "växla mellan dem."
 
-#: src/ubuntu_start.py:727
+#: src/ubuntu_start.py:732
 msgid "Lock the screen"
 msgstr "Lås skärmen"
 
-#: src/ubuntu_start.py:727
+#: src/ubuntu_start.py:732
 msgid "Press Super+L before leaving your computer to lock the screen."
 msgstr "Tryck på Super+L för att låsa skärmen när du lämnar datorn."
 
-#: src/ubuntu_start.py:728
+#: src/ubuntu_start.py:733
 msgid ""
 "Ctrl+Alt+T opens Terminal on Ubuntu by default. You can change this shortcut "
 "in Keyboard Settings."
@@ -1771,31 +1834,31 @@ msgstr ""
 "Ctrl+Alt+T öppnar terminalen som standard i Ubuntu. Du kan ändra "
 "kortkommandot i tangentbordsinställningarna."
 
-#: src/ubuntu_start.py:734
+#: src/ubuntu_start.py:739
 msgid "Keyboard shortcuts"
 msgstr "Tangentbordsgenvägar"
 
-#: src/ubuntu_start.py:735
+#: src/ubuntu_start.py:740
 msgid "Review or change the shortcuts used by your desktop."
 msgstr "Se över eller ändra skrivbordets kortkommandon."
 
-#: src/ubuntu_start.py:736
+#: src/ubuntu_start.py:741
 msgid "Open Keyboard Settings"
 msgstr "Öppna tangentbordsinställningarna"
 
-#: src/ubuntu_start.py:744
+#: src/ubuntu_start.py:749
 msgid "Clipboard is unavailable."
 msgstr "Urklipp är inte tillgängligt."
 
-#: src/ubuntu_start.py:748
+#: src/ubuntu_start.py:753
 msgid "System details copied."
 msgstr "Systemuppgifterna har kopierats."
 
-#: src/ubuntu_start.py:763
+#: src/ubuntu_start.py:768
 msgid "Could not open the requested tool"
 msgstr "Det gick inte att öppna verktyget"
 
-#: src/ubuntu_start.py:764
+#: src/ubuntu_start.py:769
 msgid "Close"
 msgstr "Stäng"
 

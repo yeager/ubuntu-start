@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-28 16:31+0100\n"
+"POT-Creation-Date: 2026-10-28 16:34+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -622,7 +622,7 @@ msgstr ""
 msgid "Use the Terminal"
 msgstr ""
 
-#: src/ubuntu_start.py:117 src/ubuntu_start.py:728
+#: src/ubuntu_start.py:117 src/ubuntu_start.py:733
 msgid "Open Terminal"
 msgstr ""
 
@@ -1552,54 +1552,104 @@ msgid "Press Ctrl+Shift+N to create a folder in the current location."
 msgstr ""
 
 #: src/ubuntu_start.py:726
-msgid "Switch keyboard layouts"
+msgid "Open a location in Files"
 msgstr ""
 
 #: src/ubuntu_start.py:726
+msgid ""
+"Press Ctrl+L in Files to type a folder path or enter a network address. "
+"Press Enter to open it."
+msgstr ""
+
+#: src/ubuntu_start.py:727
+msgid "Rename a file"
+msgstr ""
+
+#: src/ubuntu_start.py:727
+msgid ""
+"Select a file in Files and press F2 to rename it. Check the new name before "
+"pressing Enter."
+msgstr ""
+
+#: src/ubuntu_start.py:728
+msgid "Undo a file action"
+msgstr ""
+
+#: src/ubuntu_start.py:728
+msgid ""
+"Press Ctrl+Z in Files to undo a recent file operation when available. Check "
+"the result before continuing."
+msgstr ""
+
+#: src/ubuntu_start.py:729
+msgid "Keep a backup copy"
+msgstr ""
+
+#: src/ubuntu_start.py:729
+msgid ""
+"Copy important documents and photos to a separate drive or trusted backup "
+"service. Check occasionally that you can open a backed-up file."
+msgstr ""
+
+#: src/ubuntu_start.py:730
+msgid "Choose trusted app sources"
+msgstr ""
+
+#: src/ubuntu_start.py:730
+msgid ""
+"Prefer Ubuntu App Center or the software source recommended by your "
+"organization. Check the publisher before installing an app."
+msgstr ""
+
+#: src/ubuntu_start.py:731
+msgid "Switch keyboard layouts"
+msgstr ""
+
+#: src/ubuntu_start.py:731
 msgid ""
 "If you have added more than one layout, press Super+Space to switch between "
 "them."
 msgstr ""
 
-#: src/ubuntu_start.py:727
+#: src/ubuntu_start.py:732
 msgid "Lock the screen"
 msgstr ""
 
-#: src/ubuntu_start.py:727
+#: src/ubuntu_start.py:732
 msgid "Press Super+L before leaving your computer to lock the screen."
 msgstr ""
 
-#: src/ubuntu_start.py:728
+#: src/ubuntu_start.py:733
 msgid ""
 "Ctrl+Alt+T opens Terminal on Ubuntu by default. You can change this shortcut "
 "in Keyboard Settings."
 msgstr ""
 
-#: src/ubuntu_start.py:734
+#: src/ubuntu_start.py:739
 msgid "Keyboard shortcuts"
 msgstr ""
 
-#: src/ubuntu_start.py:735
+#: src/ubuntu_start.py:740
 msgid "Review or change the shortcuts used by your desktop."
 msgstr ""
 
-#: src/ubuntu_start.py:736
+#: src/ubuntu_start.py:741
 msgid "Open Keyboard Settings"
 msgstr ""
 
-#: src/ubuntu_start.py:744
+#: src/ubuntu_start.py:749
 msgid "Clipboard is unavailable."
 msgstr ""
 
-#: src/ubuntu_start.py:748
+#: src/ubuntu_start.py:753
 msgid "System details copied."
 msgstr ""
 
-#: src/ubuntu_start.py:763
+#: src/ubuntu_start.py:768
 msgid "Could not open the requested tool"
 msgstr ""
 
-#: src/ubuntu_start.py:764
+#: src/ubuntu_start.py:769
 msgid "Close"
 msgstr ""
 
