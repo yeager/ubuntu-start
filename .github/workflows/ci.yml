@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install build dependencies
+        run: sudo apt-get update && sudo apt-get install -y appstream gettext libadwaita-1-dev meson ninja-build python3-gi gir1.2-adw-1 gir1.2-gtk-4.0
+      - name: Check Swedish translations
+        run: |
+          test -z "$(msgattrib --untranslated --no-obsolete po/sv.po)"
+          test -z "$(msgattrib --only-fuzzy --no-obsolete po/sv.po)"
+          msgfmt --check --statistics po/sv.po -o /tmp/ubuntu-start-sv.mo
+      - name: Validate AppStream metadata
+        run: appstreamcli validate data/se.nylander.UbuntuStart.metainfo.xml
+      - name: Run unit tests
+        run: PYTHONPATH=src python3 -m unittest discover -s tests -v
+      - name: Build with Meson
+        run: |
+          meson setup build --prefix=/usr
+          meson compile -C build

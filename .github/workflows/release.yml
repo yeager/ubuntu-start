@@ -4,7 +4,6 @@ on:
   push:
     tags:
       - 'v*'
-  workflow_dispatch:
 
 permissions:
   contents: write
@@ -14,10 +13,32 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
+      - name: Verify release tag matches project metadata
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import re
+          import xml.etree.ElementTree as ET
+
+          tag_version = os.environ["RELEASE_TAG"].removeprefix("v")
+          project_text = open("meson.build", encoding="utf-8").read()
+          project_version = re.search(r"version: '([^']+)'", project_text).group(1)
+          appstream_version = ET.parse("data/se.nylander.UbuntuStart.metainfo.xml").getroot().find("releases/release").get("version")
+          assert tag_version == project_version == appstream_version, (tag_version, project_version, appstream_version)
+          PY
       - name: Install build dependencies
-        run: sudo apt-get update && sudo apt-get install -y gettext libadwaita-1-dev meson ninja-build python3-gi gir1.2-adw-1 gir1.2-gtk-4.0
+        run: sudo apt-get update && sudo apt-get install -y appstream gettext libadwaita-1-dev meson ninja-build python3-gi gir1.2-adw-1 gir1.2-gtk-4.0
       - name: Validate translations
-        run: msgfmt --check po/sv.po -o /tmp/ubuntu-start-sv.mo
+        run: |
+          test -z "$(msgattrib --untranslated --no-obsolete po/sv.po)"
+          test -z "$(msgattrib --only-fuzzy --no-obsolete po/sv.po)"
+          msgfmt --check --statistics po/sv.po -o /tmp/ubuntu-start-sv.mo
+      - name: Validate AppStream metadata
+        run: appstreamcli validate data/se.nylander.UbuntuStart.metainfo.xml
+      - name: Run unit tests
+        run: PYTHONPATH=src python3 -m unittest discover -s tests -v
       - name: Build and install into staging directory
         run: |
           meson setup build --prefix=/usr

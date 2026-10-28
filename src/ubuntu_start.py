@@ -4,11 +4,14 @@ import gettext
 import locale
 import os
 import platform
+import shutil
+import threading
 import gi
 
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
+from system_diagnostics import check_internet_connection, read_battery_status, read_hardware_details, read_network_devices, read_storage_status, run_network_diagnostics
 
 APP_ID = "se.nylander.UbuntuStart"
 DOMAIN = "ubuntu-start"
@@ -50,6 +53,60 @@ GUIDES = [
         (_("Check the camera"), _("Open its privacy shutter or switch, reconnect it if external and make sure its indicator light turns on.")),
         (_("Check app permissions"), _("Review camera access in Privacy Settings. A managed work or school computer may restrict access.")),
         (_("Close other camera apps"), _("Quit video calls and other apps that may already be using the camera, then try again.")),
+    ]),
+    (_("Wired network"), "network", [
+        (_("Check the Ethernet cable"), _("Connect the cable firmly to the computer and to a router, switch or wall socket. Look for a link light near the port.")),
+        (_("Wait for a connection"), _("Ubuntu normally configures a wired connection automatically. Give it a few seconds and check the network menu.")),
+        (_("Check Network Settings"), _("Open Network Settings and confirm that the wired connection is enabled.")),
+        (_("Try another port or cable"), _("If there is still no link, try a different cable or router port. Ask your network administrator before entering manual IP settings.")),
+    ]),
+]
+
+SYSTEM_GUIDES = [
+    (_("Connect to Wi-Fi"), ("settings", "wifi"), _("Open Wi-Fi Settings"), [
+        (_("Open Quick Settings"), _("Select the system menu at the top-right of the screen, then open the Wi-Fi section.")),
+        (_("Choose a network"), _("Select the network name you recognize. Ask its owner if you are not sure which network to use.")),
+        (_("Enter the password"), _("Type the network password when Ubuntu asks, then select Connect. Never share the password in a support request.")),
+        (_("Check the connection"), _("Wait for the Wi-Fi icon to settle. If it disconnects, move closer to the router and check the password.")),
+    ]),
+    (_("Connect with an Ethernet cable"), ("settings", "network"), _("Open Network Settings"), [
+        (_("Connect the cable"), _("Plug one end into the computer and the other into a router, switch or active wall socket.")),
+        (_("Wait for Ubuntu"), _("A wired connection is usually configured automatically. The network menu shows when it is ready.")),
+        (_("Check the connection"), _("Open Network Settings and make sure the Wired switch is on. If there is no link light, try another port or cable.")),
+    ]),
+    (_("Add a printer"), ("settings", "printers"), _("Open Printer Settings"), [
+        (_("Connect the printer"), _("Turn it on and connect it to the same network as your computer, or connect it with USB.")),
+        (_("Add the printer"), _("Open Printers in Settings, select Add Printer and choose the printer Ubuntu finds.")),
+        (_("Print a test page"), _("Follow the prompts, then print a test page. Install a model-specific driver only when Ubuntu or the manufacturer recommends it.")),
+    ]),
+    (_("Make text easier to read"), ("settings", "universal-access"), _("Open Accessibility Settings"), [
+        (_("Open Accessibility settings"), _("In Settings, choose Accessibility and open the Seeing section.")),
+        (_("Turn on Large Text"), _("Switch on Large Text. You can also try the accessibility menu in the top bar for a quick toggle.")),
+        (_("Adjust other display options"), _("Try High Contrast or a different cursor size if those make the screen easier for you to use.")),
+    ]),
+    (_("Magnify part of the screen"), ("settings", "universal-access"), _("Open Accessibility Settings"), [
+        (_("Open the Zoom section"), _("In Settings, choose Accessibility, then open Zoom.")),
+        (_("Turn on Desktop Zoom"), _("Switch on Desktop Zoom and move the pointer to the screen edge to explore the magnified area.")),
+        (_("Tune the magnifier"), _("Adjust magnification and pointer tracking until the view feels comfortable. Turn Zoom off in the same section.")),
+    ]),
+    (_("Use the screen reader"), ("settings", "universal-access"), _("Open Accessibility Settings"), [
+        (_("Open the Seeing section"), _("In Settings, choose Accessibility and look for Screen Reader.")),
+        (_("Turn on the screen reader"), _("Enable Orca and follow its welcome prompts. Connect a refreshable Braille display first if you use one.")),
+        (_("Learn the keyboard shortcuts"), _("Use Orca’s help and keyboard shortcuts to navigate and adjust speech preferences.")),
+    ]),
+    (_("Install Ubuntu updates"), ("app", "update-manager"), _("Open Software Updater"), [
+        (_("Open Software Updater"), _("Ubuntu checks for updates when Software Updater opens. Select Check if it does not start checking.")),
+        (_("Review available updates"), _("Read the update summary. Save your work before installing system updates.")),
+        (_("Install and restart if asked"), _("Select Install Now and enter your password if prompted. Restart only when Ubuntu asks you to.")),
+    ]),
+    (_("Use the Terminal"), ("terminal", ""), _("Open Terminal"), [
+        (_("What the prompt means"), _("The prompt is the text before the cursor. It shows that the terminal is ready for a command. Type after it; do not type the prompt itself.")),
+        (_("Run a command"), _("Type a command and press Enter to run it. For example, pwd shows the current folder and ls lists its files. These commands only show information.")),
+        (_("Move between folders"), _("Use cd Documents to enter a folder and cd .. to go up one level. Use pwd to check where you are.")),
+        (_("Ask a command for help"), _("Try a command followed by --help, such as ls --help. For more detail, use man followed by the command name; press q to leave the manual.")),
+        (_("Understand sudo"), _("sudo runs a command with administrator privileges. Use it only when you understand and trust the command. Your password is not shown while you type it.")),
+        (_("Stop a running command"), _("Ctrl+C asks the current command to stop. It does not undo changes the command has already made.")),
+        (_("Keep commands from trusted sources"), _("Do not paste commands you do not understand, especially commands using sudo, rm, disk tools or scripts downloaded from the internet.")),
     ]),
 ]
 
@@ -94,6 +151,8 @@ class UbuntuStart(Adw.Application):
             (_("Welcome"), self.make_welcome()),
             (_("Get started"), self.make_get_started()),
             (_("Fix a device"), self.make_device_page()),
+            (_("System guides"), self.make_system_guides()),
+            (_("Network and hardware"), self.make_network_hardware()),
             (_("Drivers"), self.make_drivers()),
             (_("Help and support"), self.make_help()),
         ]
@@ -140,6 +199,7 @@ class UbuntuStart(Adw.Application):
             (_("Updates"), _("Check for system updates and restart if Ubuntu asks you to."), ("app", "update-manager")),
             (_("Sound and display"), _("Choose speakers, microphone and monitor settings."), ("settings", "sound")),
             (_("Privacy and screen lock"), _("Review app permissions and automatic screen locking."), ("settings", "privacy")),
+            (_("Accessibility"), _("Adjust text size, magnification, screen reader and keyboard access."), ("settings", "universal-access")),
         ]:
             self.row(rows, title, subtitle, _("Open Settings"), lambda t=target: self.open_target(t))
         return box
@@ -148,8 +208,17 @@ class UbuntuStart(Adw.Application):
         kind, value = target
         if kind == "settings":
             self.open_app("gnome-control-center", value)
+        elif kind == "terminal":
+            self.open_terminal()
         else:
             self.open_app(value)
+
+    def open_terminal(self):
+        for executable in ("ptyxis", "kgx", "gnome-terminal", "x-terminal-emulator"):
+            if shutil.which(executable):
+                self.open_app(executable)
+                return
+        self.show_error(_("No supported terminal application was found."))
 
     def make_device_page(self):
         box, _rows = self.page(
@@ -169,6 +238,19 @@ class UbuntuStart(Adw.Application):
             rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
             for step_title, description in steps:
                 rows.append(Adw.ActionRow(title=step_title, subtitle=description))
+            if _panel == "wifi":
+                analyzer = Adw.ActionRow(
+                    title=_("WiFi Analyzer"),
+                    subtitle=_("See nearby Wi-Fi signal levels and channel use to investigate weak signal or crowded channels."),
+                )
+                analyzer_button = Gtk.Button(label=_("View on GitHub"), valign=Gtk.Align.CENTER)
+                analyzer_button.connect("clicked", lambda *_: self.confirm_external_link(
+                    "https://github.com/yeager/wifi-analyzer",
+                    _("Open WiFi Analyzer on GitHub?"),
+                    _("This opens the project page in your browser. GitHub will receive a normal web request and can see your IP address."),
+                ))
+                analyzer.add_suffix(analyzer_button)
+                rows.append(analyzer)
             group.append(rows)
             steps_stack.add_named(group, f"guide-{index}")
         browse.append(steps_stack)
@@ -214,6 +296,260 @@ class UbuntuStart(Adw.Application):
         open_button.connect("clicked", lambda *_: self.open_app("gnome-control-center", GUIDES[chooser.get_selected()][1]))
         return box
 
+    def make_system_guides(self):
+        box, _rows = self.page(
+            _("System guides"),
+            _("Follow clear steps for common Ubuntu tasks. Open the related system tool when you are ready to make a change."),
+            include_rows=False,
+        )
+        chooser = Gtk.DropDown.new_from_strings([title for title, _target, _action, _steps in SYSTEM_GUIDES])
+        box.append(chooser)
+        guide_stack = Gtk.Stack(transition_type=Gtk.StackTransitionType.CROSSFADE)
+        for index, (title, target, action, steps) in enumerate(SYSTEM_GUIDES):
+            guide_box, rows = self.page(title)
+            for step_title, description in steps:
+                self.row(rows, step_title, description)
+            open_button = Gtk.Button(label=action, halign=Gtk.Align.START)
+            open_button.connect("clicked", lambda *_args, t=target: self.open_target(t))
+            guide_box.append(open_button)
+            guide_stack.add_named(guide_box, f"system-guide-{index}")
+        box.append(guide_stack)
+
+        def select_guide(*_args):
+            selected = chooser.get_selected()
+            if selected < len(SYSTEM_GUIDES):
+                guide_stack.set_visible_child_name(f"system-guide-{selected}")
+
+        chooser.connect("notify::selected", select_guide)
+        select_guide()
+        return box
+
+    def make_network_hardware(self):
+        box, _rows = self.page(
+            _("Network and hardware"),
+            _("Most information comes from this computer. Network and internet checks ask before contacting the configured DNS resolver or an internet site."),
+            include_rows=False,
+        )
+
+        network_box, _unused = self.page(
+            _("Network status"),
+            _("NetworkManager device states help show whether Ubuntu sees a wired or wireless adapter."),
+            include_rows=False,
+        )
+        network_status = Gtk.Label(label=_("Network status has not been refreshed yet."), xalign=0, wrap=True)
+        network_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        refresh_button = Gtk.Button(label=_("Refresh network status"), halign=Gtk.Align.START)
+        refresh_button.connect("clicked", lambda *_: self.refresh_network_status(network_status, network_rows))
+        network_box.append(refresh_button)
+        network_box.append(network_status)
+        network_box.append(network_rows)
+        box.append(network_box)
+        self.refresh_network_status(network_status, network_rows)
+
+        diagnostic_box, _diagnostic_rows = self.page(
+            _("Connection quality"),
+            _("The test looks up ubuntu.com using your configured DNS, pings your local gateway once, and reads its MAC address from the local neighbor table. DNS queries may be visible to your configured DNS provider; no diagnostic report is uploaded."),
+            include_rows=False,
+        )
+        diagnostic_status = Gtk.Label(label="", xalign=0, wrap=True)
+        diagnostic_button = Gtk.Button(label=_("Test DNS and gateway"), halign=Gtk.Align.START)
+        diagnostic_button.connect("clicked", lambda *_: self.confirm_network_diagnostics(diagnostic_button, diagnostic_status))
+        diagnostic_box.append(diagnostic_button)
+        diagnostic_box.append(diagnostic_status)
+        box.append(diagnostic_box)
+
+        internet_box, _internet_rows = self.page(
+            _("Internet connection test"),
+            _("This optional test sends a small HTTPS request to ubuntu.com. It shares your IP address with that site, as any web request does; no diagnostic details are sent."),
+            include_rows=False,
+        )
+        internet_status = Gtk.Label(label="", xalign=0, wrap=True)
+        internet_button = Gtk.Button(label=_("Test internet connection"), halign=Gtk.Align.START)
+        internet_button.connect("clicked", lambda *_: self.confirm_internet_test(internet_button, internet_status))
+        internet_box.append(internet_button)
+        internet_box.append(internet_status)
+        box.append(internet_box)
+
+        storage = read_storage_status()
+        storage_percent = round(storage["used"] / storage["total"] * 100) if storage["total"] else 0
+        storage_box, storage_rows = self.page(
+            _("Storage"),
+            _("Local filesystem capacity. Ubuntu may need free space to install updates and save files."),
+        )
+        self.row(storage_rows, _("Available space"), _("{free} free of {total} ({percent}% used)").format(
+            free=GLib.format_size(storage["free"]), total=GLib.format_size(storage["total"]), percent=storage_percent,
+        ))
+        if storage_percent >= 95:
+            self.row(storage_rows, _("Storage is almost full"), _("Remove files you no longer need or review large downloads. Avoid deleting system files."))
+        box.append(storage_box)
+
+        batteries = read_battery_status()
+        battery_box, battery_rows = self.page(
+            _("Battery"),
+            _("Battery health and charge are read from local system information when the hardware provides them."),
+        )
+        if batteries:
+            for index, battery in enumerate(batteries, start=1):
+                self.row(battery_rows, _("Battery {number}").format(number=index), _("{capacity}% · {status}").format(
+                    capacity=battery["capacity"], status=_(battery["status"]),
+                ))
+        else:
+            self.row(battery_rows, _("No battery information"), _("This computer may not have a battery, or the system does not expose battery data."))
+        box.append(battery_box)
+
+        hardware_box, hardware_rows = self.page(
+            _("Hardware overview"),
+            _("This summary reads local system files. Serial numbers are never collected."),
+        )
+        hardware = read_hardware_details()
+        values = [
+            (_("System model"), hardware["system_model"]),
+            (_("Processor"), hardware["processor"]),
+            (_("Memory"), hardware["memory"]),
+            (_("Graphics adapters"), "; ".join(hardware["graphics"]) if hardware["graphics"] else None),
+            (_("Architecture"), hardware["architecture"]),
+        ]
+        for label, value in values:
+            self.row(hardware_rows, label, value or _("Not available"))
+        box.append(hardware_box)
+        return box
+
+    def confirm_internet_test(self, button, status_label):
+        dialog = Adw.AlertDialog(
+            heading=_("Allow an internet connection test?"),
+            body=_("Ubuntu Start will send one small HTTPS request to ubuntu.com. The site can see your IP address. No system details, Wi-Fi name or passwords are sent."),
+        )
+        dialog.add_response("cancel", _("Cancel"))
+        dialog.add_response("test", _("Test connection"))
+        dialog.set_default_response("cancel")
+        dialog.set_close_response("cancel")
+
+        def on_response(_dialog, response):
+            if response == "test":
+                button.set_sensitive(False)
+                status_label.set_text(_("Checking connection to ubuntu.com…"))
+
+                def check():
+                    result = check_internet_connection()
+                    GLib.idle_add(self.show_internet_result, button, status_label, result)
+
+                threading.Thread(target=check, daemon=True).start()
+
+        dialog.connect("response", on_response)
+        dialog.present(self.get_active_window())
+
+    def confirm_network_diagnostics(self, button, status_label):
+        dialog = Adw.AlertDialog(
+            heading=_("Run DNS and gateway tests?"),
+            body=_("This sends one DNS lookup for ubuntu.com to your configured resolver and one ping to your local gateway. The gateway MAC address is checked against a local vendor database. No information is sent to an external vendor lookup service."),
+        )
+        dialog.add_response("cancel", _("Cancel"))
+        dialog.add_response("run", _("Run tests"))
+        dialog.set_default_response("cancel")
+        dialog.set_close_response("cancel")
+
+        def on_response(_dialog, response):
+            if response == "run":
+                button.set_sensitive(False)
+                status_label.set_text(_("Testing DNS and gateway…"))
+
+                def check():
+                    result = run_network_diagnostics()
+                    GLib.idle_add(self.show_network_diagnostic_result, button, status_label, result)
+
+                threading.Thread(target=check, daemon=True).start()
+
+        dialog.connect("response", on_response)
+        dialog.present(self.get_active_window())
+
+    def show_network_diagnostic_result(self, button, status_label, result):
+        button.set_sensitive(True)
+        lines = []
+        if result.get("dns_latency_ms") is not None:
+            lines.append(_("DNS lookup: {ms} ms").format(ms=result["dns_latency_ms"]))
+        else:
+            lines.append(_("DNS lookup failed. Check DNS settings or the network connection."))
+        gateway = result.get("gateway")
+        if gateway:
+            lines.append(_("Gateway: {address}").format(address=gateway))
+            if result.get("gateway_latency_ms") is not None:
+                lines.append(_("Gateway response: {ms} ms").format(ms=result["gateway_latency_ms"]))
+            else:
+                lines.append(_("Gateway did not answer the ping. Some routers block ping requests."))
+            mac = result.get("gateway_mac")
+            if mac:
+                lines.append(_("Gateway MAC address: {mac}").format(mac=mac))
+                vendor = result.get("gateway_vendor")
+                lines.append(_("Manufacturer: {vendor}").format(vendor=vendor) if vendor else _("Manufacturer not found in the local vendor database."))
+            else:
+                lines.append(_("Gateway MAC address is not available in the local neighbor table."))
+        else:
+            lines.append(_("No default gateway was found."))
+        status_label.set_text("\n".join(lines))
+        return GLib.SOURCE_REMOVE
+
+    def confirm_external_link(self, uri, heading, body):
+        dialog = Adw.AlertDialog(heading=heading, body=body)
+        dialog.add_response("cancel", _("Cancel"))
+        dialog.add_response("open", _("Open link"))
+        dialog.set_default_response("cancel")
+        dialog.set_close_response("cancel")
+        dialog.connect("response", lambda _dialog, response: self.open_uri(uri) if response == "open" else None)
+        dialog.present(self.get_active_window())
+
+    def show_internet_result(self, button, status_label, result):
+        button.set_sensitive(True)
+        if result.startswith("reachable:"):
+            status_label.set_text(_("ubuntu.com responded. Internet access is available."))
+        else:
+            status_label.set_text(_("Could not reach ubuntu.com. Check the router, network sign-in page, DNS settings or firewall."))
+        return GLib.SOURCE_REMOVE
+
+    def refresh_network_status(self, status_label, device_rows):
+        status_label.set_text(_("Checking NetworkManager…"))
+        while (child := device_rows.get_first_child()) is not None:
+            device_rows.remove(child)
+
+        def read_status():
+            devices, error = read_network_devices()
+            GLib.idle_add(self.show_network_status, status_label, device_rows, devices, error)
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_network_status(self, status_label, device_rows, devices, error):
+        errors = {
+            "not-installed": _("NetworkManager command-line tools are not installed."),
+            "timeout": _("NetworkManager did not respond in time. Try refreshing again."),
+            "unavailable": _("Could not read device status from NetworkManager."),
+        }
+        if error:
+            status_label.set_text(errors.get(error, errors["unavailable"]))
+            return GLib.SOURCE_REMOVE
+        if not devices:
+            status_label.set_text(_("NetworkManager reported no network devices."))
+            return GLib.SOURCE_REMOVE
+
+        status_label.set_text(_("This is local device status; internet access has not been tested."))
+        device_types = {
+            "wifi": _("Wi-Fi"),
+            "ethernet": _("Wired"),
+            "wwan": _("Mobile broadband"),
+            "bridge": _("Bridge"),
+            "vpn": _("VPN"),
+        }
+        states = {
+            "connected": _("Connected"),
+            "disconnected": _("Disconnected"),
+            "connecting": _("Connecting"),
+            "unavailable": _("Unavailable"),
+            "unmanaged": _("Not managed by NetworkManager"),
+            "unavailable (firmware missing)": _("Unavailable (missing firmware)"),
+        }
+        for name, device_type, state in devices:
+            title = f"{device_types.get(device_type, device_type)} · {name}"
+            self.row(device_rows, title, states.get(state, state))
+        return GLib.SOURCE_REMOVE
+
     def make_drivers(self):
         box, rows = self.page(_("Graphics drivers"), _("Ubuntu can offer compatible drivers for some graphics hardware. Review the available choices in Ubuntu’s Additional Drivers tool before installing anything."))
         self.row(rows, _("Review available drivers"), _("This opens Ubuntu’s driver tool. Read the recommendation and confirm any changes there."), _("Open Drivers"), lambda: self.open_app("software-properties-gtk", "--open-tab=4"))
@@ -228,10 +564,16 @@ class UbuntuStart(Adw.Application):
         except (AttributeError, OSError):
             os_name = _("Unknown Ubuntu version")
         desktop = os.environ.get("XDG_CURRENT_DESKTOP", "GNOME").replace(":", ", ")
+        hardware = read_hardware_details()
+        graphics = "; ".join(hardware["graphics"]) if hardware["graphics"] else _("Not available")
         details = [
             (_("Ubuntu version"), os_name),
             (_("Desktop"), desktop),
             (_("Kernel"), platform.release()),
+            (_("System model"), hardware["system_model"] or _("Not available")),
+            (_("Processor"), hardware["processor"] or _("Not available")),
+            (_("Memory"), hardware["memory"] or _("Not available")),
+            (_("Graphics adapters"), graphics),
             (_("Architecture"), platform.machine()),
         ]
         return details
@@ -247,7 +589,7 @@ class UbuntuStart(Adw.Application):
 
         details_box, details_rows = self.page(
             _("System details"),
-            _("These read-only details can help explain a problem. They omit your username, computer name, network address and installed applications."),
+            _("These read-only details help explain a problem. They omit your username, computer name, serial numbers, network addresses, Wi-Fi names and installed applications."),
         )
         for label, value in self.system_details():
             self.row(details_rows, label, value)

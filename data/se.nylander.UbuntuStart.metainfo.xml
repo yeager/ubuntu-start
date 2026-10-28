@@ -5,11 +5,14 @@
   <summary>A friendly guide to Ubuntu setup and device troubleshooting</summary>
   <summary xml:lang="sv">En hjälpsam guide för att komma igång med Ubuntu och felsöka enheter</summary>
   <metadata_license>CC0-1.0</metadata_license>
-  <project_license>GPL-3.0-or-later</project_license>
+  <project_license>GPL-3.0</project_license>
   <launchable type="desktop-id">se.nylander.UbuntuStart.desktop</launchable>
   <developer id="se.nylander"><name>Ubuntu Start contributors</name></developer>
-  <description><p>Get started with Ubuntu and follow practical troubleshooting steps for common devices. Search all guides, find trusted support and copy a privacy-conscious system summary when asking for help.</p></description>
-  <description xml:lang="sv"><p>Kom igång med Ubuntu och följ praktiska felsökningssteg för vanliga enheter.</p></description>
-  <releases><release version="0.2.0" date="2026-10-28"><description><p>Add searchable troubleshooting guides, Ubuntu support links and a copyable system summary.</p></description></release></releases>
+  <url type="homepage">https://github.com/yeager/ubuntu-start</url>
+  <description>
+    <p>Get started with Ubuntu through step-by-step system guides, practical device troubleshooting, accessibility help and local network and hardware details. Search guides and copy a privacy-conscious system summary when asking for help.</p>
+    <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
+  </description>
+  <releases><release version="0.3.0" date="2026-10-28"><description><p>Add step-by-step system guides, accessibility help, local network diagnostics and a hardware overview.</p></description></release><release version="0.2.0" date="2026-10-28"><description><p>Add searchable troubleshooting guides, Ubuntu support links and a copyable system summary.</p></description></release></releases>
   <content_rating type="oars-1.1"/>
 </component>

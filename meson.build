@@ -1,7 +1,7 @@
-project('ubuntu-start', version: '0.2.0', meson_version: '>= 1.0.0')
+project('ubuntu-start', version: '0.3.0', meson_version: '>= 1.0.0')
 
 
-install_data('src/ubuntu_start.py', install_dir: get_option('prefix') / 'libexec' / 'ubuntu-start', rename: 'ubuntu_start.py')
+install_data('src/ubuntu_start.py', 'src/system_diagnostics.py', install_dir: get_option('prefix') / 'libexec' / 'ubuntu-start')
 i18n = import('i18n')
 i18n.merge_file(
   input: 'data/se.nylander.UbuntuStart.desktop',

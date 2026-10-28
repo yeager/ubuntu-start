@@ -8,19 +8,46 @@ An Ubuntu Desktop guide for first-run setup and device troubleshooting.
 
 ![Search results for printer troubleshooting](screenshots/search-en.png)
 
+![Step-by-step Wi-Fi system guide](screenshots/system-guides-en.png)
+
+![Accessibility instructions for larger text](screenshots/accessibility-en.png)
+
+![Read-only network and hardware overview](screenshots/network-hardware-en.png)
+
+![Optional DNS and gateway diagnostics](screenshots/network-diagnostics-en.png)
+
+![Beginner terminal guide](screenshots/terminal-guide-en.png)
+
+![WiFi Analyzer recommendation in the Wi-Fi troubleshooting guide](screenshots/wifi-analyzer-en.png)
+
+[Swedish system guides](screenshots/system-guides-sv.png) · [Swedish network and hardware overview](screenshots/network-hardware-sv.png) · [Swedish diagnostics](screenshots/network-diagnostics-sv.png) · [Swedish terminal guide](screenshots/terminal-guide-sv.png) · [Swedish Wi-Fi analyzer recommendation](screenshots/wifi-analyzer-sv.png)
+
 ![Ubuntu help links and privacy-conscious system summary](screenshots/help-en.png)
 
+![System details including hardware information](screenshots/help-hardware-en.png)
+
 ![The help page in Swedish](screenshots/help-sv.png)
+
+[Swedish hardware summary](screenshots/help-hardware-sv.png) · [Accessibility settings opened from the guide](screenshots/accessibility-panel-en.png)
 
 
 Ubuntu Start combines a first-run guide with practical device troubleshooting for Ubuntu Desktop. It is a GTK 4/libadwaita application intended for Ubuntu GNOME.
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contributor guidance and the maintainer pull request review process.
+
 ## Current scope
 
 - First steps for language, networking, updates, sound, display and privacy.
-- Search across guided checks for sound, Bluetooth, printers, displays/graphics, Wi-Fi and cameras.
+- Search across guided checks for sound, Bluetooth, printers, displays/graphics, Wi-Fi, Ethernet and cameras.
+- Step-by-step guides for Wi-Fi, Ethernet, printers, updates, larger text, screen magnification and the Orca screen reader.
+- Accessibility help opens GNOME settings for larger text, zoom and screen reading, with plain-language instructions before each change.
+- A beginner-friendly Terminal guide covers the prompt, `pwd`, `ls`, `cd`, `--help`, `man`, `sudo` and safe ways to stop a command.
+- Optional connection diagnostics report DNS lookup and gateway ping latency in milliseconds, plus the gateway MAC address and a local OUI vendor match. The test asks before running; it sends one DNS lookup to the configured resolver and one ping to the local gateway.
+- Wi-Fi troubleshooting recommends [WiFi Analyzer](https://github.com/yeager/wifi-analyzer) for nearby signal levels and channel use. Opening GitHub requires confirmation.
 - Built-in links to official Ubuntu documentation, Ask Ubuntu and the Ubuntu support forum.
-- A privacy-conscious system summary you can copy when asking for help; it excludes your username, computer name, network address and installed applications.
+- Read-only NetworkManager, hardware, storage and battery summaries, plus a copyable support report that omits usernames, host names, serial numbers, network addresses, Wi-Fi names and installed applications.
 - Links into GNOME Control Center and Ubuntu's Additional Drivers tool. System changes remain in Ubuntu's own tools and require the user's confirmation.
 - gettext-based localization with English source strings and a complete Swedish (`sv`) catalog.
 
@@ -43,11 +70,13 @@ msgfmt po/sv.po -o build/locale/sv/LC_MESSAGES/ubuntu-start.mo
 LANGUAGE=sv UBUNTU_START_LOCALEDIR="$PWD/build/locale" python3 src/ubuntu_start.py
 ```
 
-The app expects GTK 4, libadwaita and PyGObject. It has been installed and launched on the Ubuntu target described below.
+Run the unit tests with `PYTHONPATH=src python3 -m unittest discover -s tests -v`. The CI workflow runs these tests and builds the app for pull requests.
+
+NetworkManager, storage, battery and hardware summaries use local system information. DNS/gateway checks and external links require confirmation; DNS uses the configured resolver, ping targets the local gateway, and vendor matching uses a local OUI file when available. The separate internet test sends one HTTPS HEAD request to `ubuntu.com` after confirmation. No diagnostic report is uploaded, and serial numbers are not read. The app expects GTK 4, libadwaita and PyGObject. It has been installed and launched on the Ubuntu target described below.
 
 ## Validation
 
-On the Ubuntu 26.10 machine `trv2`, Meson configured, compiled and installed the app in the standard `/usr` application paths. The installed Python module matches the transferred source. The real desktop launcher was validated, and the installed GTK 4/libadwaita app was inspected under Xvfb with `sv_SE.utf8`; runtime inspection confirmed the Swedish welcome heading, all five navigation pages and all six device guides. English and Swedish launches showed their respective catalogs; searching for “printer” returned the four matching checks. The Help page displayed the system summary and support links in both languages. The locale catalog compiled cleanly with 113 translated messages, and the desktop entry and AppStream metadata include Swedish text.
+On the Ubuntu 26.10 machine `trv2`, the previous application build was configured, compiled, installed and inspected under Xvfb in English and Swedish. The current additions have local unit coverage; network behavior against the machine's real gateway and DNS resolver has not been exercised here. The locale catalog is checked with `msgfmt --check` and the CI workflow requires complete, non-fuzzy translations.
 
 The GNOME Control Center panel list on the target confirms the app's Bluetooth, Wi-Fi, printer, display, privacy and sound panel identifiers; the language/keyboard entry uses the current `keyboard` panel ID. Both Ubuntu driver/update utilities were downloaded as `.deb` packages and installed with `dpkg -i`, together with their dependencies. `Software & Updates --open-tab=4` opened the Swedish Additional Drivers tab under Xvfb; the target currently reports that no proprietary drivers are in use. Update Manager displayed its Swedish updates screen. `dpkg --audit` is clean and `apt-get check` reports no dependency errors. A final check found no pending upgrades and no reboot-required marker. GUI inspection ran under Xvfb, which cannot verify hardware acceleration or physical-device behavior.
 
@@ -57,7 +86,7 @@ English is the source and default language. The app uses the desktop locale to s
 
 ## Current limitations
 
-This is an initial, reviewable app foundation. Hardware checks are instructional and do not probe device state. Settings panel names and the Additional Drivers launcher can differ across Ubuntu releases, so validate integrations on each supported release. The app does not install packages or run privileged operations; system changes remain in Ubuntu's own tools.
+Device troubleshooting guides are instructional. Optional network diagnostics run only after confirmation, use DNS for `ubuntu.com` and ping the local gateway, and do not upload a report. The app does not install packages or run privileged operations; system changes remain in Ubuntu's own tools. Settings panel names and the Additional Drivers launcher can differ across Ubuntu releases, so validate integrations on each supported release.
 
 
 ## Releases
@@ -66,4 +95,9 @@ Tagged versions (`v*`) are built and published by GitHub Actions. Each release i
 
 ## Screenshots
 
-The screenshots include the English default welcome page, the Swedish translation and Ubuntu Software & Updates. The driver-tool capture was taken while Ubuntu was still scanning for available drivers.
+The screenshots show the welcome page, searchable troubleshooting, system how-to guides, accessibility settings, local network and hardware information, the support summary and Ubuntu Software & Updates. The driver-tool capture was taken while Ubuntu was still scanning for available drivers.
+
+
+## License
+
+Ubuntu Start is licensed under the GNU General Public License version 3. See [LICENSE](LICENSE).
