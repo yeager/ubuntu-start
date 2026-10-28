@@ -13,6 +13,18 @@
     <p>Get started with Ubuntu through step-by-step system guides, practical device troubleshooting, accessibility help and local network and hardware details. Search guides and copy a privacy-conscious system summary when asking for help.</p>
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
-  <releases><release version="0.3.0" date="2026-10-28"><description><p>Add step-by-step system guides, accessibility help, local network diagnostics and a hardware overview.</p></description></release><release version="0.2.0" date="2026-10-28"><description><p>Add searchable troubleshooting guides, Ubuntu support links and a copyable system summary.</p></description></release></releases>
+  <releases>
+    <release version="0.3.0" date="2026-10-28">
+      <description>
+        <p>Add guides for keyboards, touchpads, battery charging and terminal basics. Show Bluetooth and audio status without changing settings.</p>
+        <p xml:lang="sv">Lägg till guider för tangentbord, styrplattor, batteriladdning och terminalens grunder. Visa Bluetooth- och ljudstatus utan att ändra inställningar.</p>
+      </description>
+    </release>
+    <release version="0.2.0" date="2026-10-28">
+      <description>
+        <p>Add searchable troubleshooting guides, Ubuntu support links and a copyable system summary.</p>
+      </description>
+    </release>
+  </releases>
   <content_rating type="oars-1.1"/>
 </component>
