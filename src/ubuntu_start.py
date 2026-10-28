@@ -109,6 +109,16 @@ SYSTEM_GUIDES = [
         (_("Turn on the screen reader"), _("Enable Orca and follow its welcome prompts. Connect a refreshable Braille display first if you use one.")),
         (_("Learn the keyboard shortcuts"), _("Use Orca’s help and keyboard shortcuts to navigate and adjust speech preferences.")),
     ]),
+    (_("Use the on-screen keyboard"), ("settings", "universal-access"), _("Open Accessibility Settings"), [
+        (_("Open the Typing section"), _("In Settings, choose Accessibility and open Typing.")),
+        (_("Turn on Screen Keyboard"), _("Enable Screen Keyboard to enter text by selecting keys on the screen.")),
+        (_("Try it and turn it off when finished"), _("Select a text field to try the keyboard. Return to the same setting to turn it off.")),
+    ]),
+    (_("Make keyboard input easier"), ("settings", "universal-access"), _("Open Accessibility Settings"), [
+        (_("Open the Typing section"), _("In Settings, choose Accessibility and open Typing or Typing Assist.")),
+        (_("Try a typing assistance option"), _("Sticky Keys lets you press shortcut keys one at a time. Slow Keys can ignore brief presses, and Bounce Keys can ignore rapid repeated presses.")),
+        (_("Adjust one option at a time"), _("Try one option, then type in a text field. Turn it off in the same section if it does not help.")),
+    ]),
     (_("Install Ubuntu updates"), ("app", "update-manager"), _("Open Software Updater"), [
         (_("Open Software Updater"), _("Ubuntu checks for updates when Software Updater opens. Select Check if it does not start checking.")),
         (_("Review available updates"), _("Read the update summary. Save your work before installing system updates.")),
