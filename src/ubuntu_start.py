@@ -183,6 +183,9 @@ class UbuntuStart(Adw.Application):
         win = Adw.ApplicationWindow(application=app, title=_("Ubuntu Start"), default_width=900, default_height=620)
         toolbar = Adw.ToolbarView()
         header = Adw.HeaderBar()
+        about_button = Gtk.Button(label=_("About"))
+        about_button.connect("clicked", lambda *_: self.show_about())
+        header.pack_end(about_button)
         toolbar.add_top_bar(header)
         split = Adw.NavigationSplitView()
         sidebar = Adw.NavigationPage(title=_("Guide"))
@@ -324,6 +327,9 @@ class UbuntuStart(Adw.Application):
         browse = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         chooser = Gtk.DropDown.new_from_strings([title for title, _panel, _steps in GUIDES])
         self.device_chooser = chooser
+        chooser_label = Gtk.Label(label=_("Choose a device"), xalign=0)
+        chooser_label.set_mnemonic_widget(chooser)
+        browse.append(chooser_label)
         browse.append(chooser)
         steps_stack = Gtk.Stack(transition_type=Gtk.StackTransitionType.CROSSFADE)
         for index, (_title, _panel, steps) in enumerate(GUIDES):
@@ -460,7 +466,7 @@ class UbuntuStart(Adw.Application):
         network_status = Gtk.Label(label=_("Network status has not been refreshed yet."), xalign=0, wrap=True)
         network_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
         refresh_button = Gtk.Button(label=_("Refresh network status"), halign=Gtk.Align.START)
-        refresh_button.connect("clicked", lambda *_: self.refresh_network_status(network_status, network_rows))
+        refresh_button.connect("clicked", lambda *_: self.refresh_network_status(network_status, network_rows, announce=True))
         network_box.append(refresh_button)
         network_box.append(network_status)
         network_box.append(network_rows)
@@ -474,7 +480,7 @@ class UbuntuStart(Adw.Application):
         bluetooth_status = Adw.ActionRow(title=_("Bluetooth controller"), subtitle=_("Checking status…"))
         bluetooth_rows.append(bluetooth_status)
         bluetooth_refresh = Gtk.Button(label=_("Refresh Bluetooth status"), halign=Gtk.Align.START)
-        bluetooth_refresh.connect("clicked", lambda *_: self.refresh_bluetooth_status(bluetooth_status))
+        bluetooth_refresh.connect("clicked", lambda *_: self.refresh_bluetooth_status(bluetooth_status, announce=True))
         bluetooth_box.append(bluetooth_refresh)
         box.append(bluetooth_box)
         self.refresh_bluetooth_status(bluetooth_status)
@@ -488,7 +494,7 @@ class UbuntuStart(Adw.Application):
         audio_rows.append(output_status)
         audio_rows.append(input_status)
         audio_refresh = Gtk.Button(label=_("Refresh audio status"), halign=Gtk.Align.START)
-        audio_refresh.connect("clicked", lambda *_: self.refresh_audio_status(output_status, input_status))
+        audio_refresh.connect("clicked", lambda *_: self.refresh_audio_status(output_status, input_status, announce=True))
         audio_box.append(audio_refresh)
         box.append(audio_box)
         self.refresh_audio_status(output_status, input_status)
@@ -673,27 +679,27 @@ class UbuntuStart(Adw.Application):
         self.announce_to_screen_reader(status_label, message)
         return GLib.SOURCE_REMOVE
 
-    def refresh_network_status(self, status_label, device_rows):
+    def refresh_network_status(self, status_label, device_rows, announce=False):
         status_label.set_text(_("Checking NetworkManager…"))
         while (child := device_rows.get_first_child()) is not None:
             device_rows.remove(child)
 
         def read_status():
             devices, error = read_network_devices()
-            GLib.idle_add(self.show_network_status, status_label, device_rows, devices, error)
+            GLib.idle_add(self.show_network_status, status_label, device_rows, devices, error, announce)
 
         threading.Thread(target=read_status, daemon=True).start()
 
-    def refresh_bluetooth_status(self, status_row):
+    def refresh_bluetooth_status(self, status_row, announce=False):
         status_row.set_subtitle(_("Checking status…"))
 
         def read_status():
             status = read_bluetooth_status()
-            GLib.idle_add(self.show_bluetooth_status, status_row, status)
+            GLib.idle_add(self.show_bluetooth_status, status_row, status, announce)
 
         threading.Thread(target=read_status, daemon=True).start()
 
-    def show_bluetooth_status(self, status_row, status):
+    def show_bluetooth_status(self, status_row, status, announce=False):
         states = {
             "powered": _("On"),
             "off": _("Off"),
@@ -703,36 +709,46 @@ class UbuntuStart(Adw.Application):
             "timeout-or-unavailable": _("Bluetooth controller did not respond in time"),
             "unavailable": _("Could not read Bluetooth controller status"),
         }
-        status_row.set_subtitle(states.get(status, states["unavailable"]))
+        message = states.get(status, states["unavailable"])
+        status_row.set_subtitle(message)
+        if announce:
+            self.announce_to_screen_reader(status_row, f"{status_row.get_title()}: {message}")
         return GLib.SOURCE_REMOVE
 
-    def refresh_audio_status(self, output_row, input_row):
+    def refresh_audio_status(self, output_row, input_row, announce=False):
         output_row.set_subtitle(_("Checking status…"))
         input_row.set_subtitle(_("Checking status…"))
 
         def read_status():
             status = read_audio_status()
-            GLib.idle_add(self.show_audio_status, output_row, input_row, status)
+            GLib.idle_add(self.show_audio_status, output_row, input_row, status, announce)
 
         threading.Thread(target=read_status, daemon=True).start()
 
-    def show_audio_status(self, output_row, input_row, status):
+    def show_audio_status(self, output_row, input_row, status, announce=False):
         error = status.get("error")
         if error == "not-installed":
             unavailable = _("PipeWire and PulseAudio tools are not installed")
         else:
             unavailable = _("No default audio device or volume status is available")
+        announcements = []
         for row, key in ((output_row, "output"), (input_row, "input")):
             reading = status.get(key)
             if not isinstance(reading, tuple):
-                row.set_subtitle(unavailable if error else _("No default device is available"))
+                message = unavailable if error else _("No default device is available")
+                row.set_subtitle(message)
+                announcements.append(f"{row.get_title()}: {message}")
                 continue
             percent, muted = reading
             state = _("Muted") if muted else _("Not muted")
-            row.set_subtitle(_("{percent}% · {state}").format(percent=percent, state=state))
+            message = _("{percent}% · {state}").format(percent=percent, state=state)
+            row.set_subtitle(message)
+            announcements.append(f"{row.get_title()}: {message}")
+        if announce:
+            self.announce_to_screen_reader(output_row, " ".join(announcements))
         return GLib.SOURCE_REMOVE
 
-    def show_network_status(self, status_label, device_rows, devices, error):
+    def show_network_status(self, status_label, device_rows, devices, error, announce=False):
         errors = {
             "not-installed": _("NetworkManager command-line tools are not installed."),
             "timeout": _("NetworkManager did not respond in time. Try refreshing again."),
@@ -741,17 +757,20 @@ class UbuntuStart(Adw.Application):
         if error:
             message = errors.get(error, errors["unavailable"])
             status_label.set_text(message)
-            self.announce_to_screen_reader(status_label, message)
+            if announce:
+                self.announce_to_screen_reader(status_label, message)
             return GLib.SOURCE_REMOVE
         if not devices:
             message = _("NetworkManager reported no network devices.")
             status_label.set_text(message)
-            self.announce_to_screen_reader(status_label, message)
+            if announce:
+                self.announce_to_screen_reader(status_label, message)
             return GLib.SOURCE_REMOVE
 
         message = _("This is local device status; internet access has not been tested.")
         status_label.set_text(message)
-        self.announce_to_screen_reader(status_label, message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
         device_types = {
             "wifi": _("Wi-Fi"),
             "ethernet": _("Wired"),
@@ -880,6 +899,20 @@ class UbuntuStart(Adw.Application):
             Gtk.Accessible.announce(
                 widget, message, Gtk.AccessibleAnnouncementPriority.MEDIUM,
             )
+
+    def show_about(self):
+        about = Adw.AboutDialog(
+            application_name=_("Ubuntu Start"),
+            application_icon=APP_ID,
+            developer_name="Daniel Nylander",
+            developers=["Daniel Nylander"],
+            website="https://www.danielnylander.se",
+            issue_url="https://github.com/yeager/ubuntu-start/issues",
+            license_type=Gtk.License.GPL_3_0_ONLY,
+            comments=_("An Ubuntu Desktop guide for first-run setup and device troubleshooting."),
+        )
+        about.add_link(_("GitHub repository"), "https://github.com/yeager/ubuntu-start")
+        about.present(self.get_active_window())
 
     def review_support_report(self, status_label):
         report = build_support_report(self.system_details(), getattr(self, "last_network_diagnostics", None))
