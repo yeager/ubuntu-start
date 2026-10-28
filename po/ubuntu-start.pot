@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-28 15:59+0100\n"
+"POT-Creation-Date: 2026-10-28 16:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -155,7 +155,7 @@ msgid ""
 "by Ubuntu before changing anything."
 msgstr ""
 
-#: src/ubuntu_start.py:46 src/ubuntu_start.py:546
+#: src/ubuntu_start.py:46 src/ubuntu_start.py:580
 msgid "Wi-Fi"
 msgstr ""
 
@@ -630,7 +630,7 @@ msgstr ""
 msgid "Drivers"
 msgstr ""
 
-#: src/ubuntu_start.py:157 src/ubuntu_start.py:595
+#: src/ubuntu_start.py:157 src/ubuntu_start.py:629
 msgid "Help and support"
 msgstr ""
 
@@ -799,10 +799,32 @@ msgid "Refresh network status"
 msgstr ""
 
 #: src/ubuntu_start.py:350
-msgid "Connection quality"
+msgid "Bluetooth status"
 msgstr ""
 
 #: src/ubuntu_start.py:351
+msgid ""
+"Read the local controller power state only. Ubuntu Start does not scan for "
+"nearby devices."
+msgstr ""
+
+#: src/ubuntu_start.py:353
+msgid "Bluetooth controller"
+msgstr ""
+
+#: src/ubuntu_start.py:353 src/ubuntu_start.py:544
+msgid "Checking status…"
+msgstr ""
+
+#: src/ubuntu_start.py:355
+msgid "Refresh Bluetooth status"
+msgstr ""
+
+#: src/ubuntu_start.py:362
+msgid "Connection quality"
+msgstr ""
+
+#: src/ubuntu_start.py:363
 msgid ""
 "The test looks up ubuntu.com using your configured DNS, pings your local "
 "gateway once, and reads its MAC address from the local neighbor table. DNS "
@@ -810,175 +832,175 @@ msgid ""
 "is uploaded."
 msgstr ""
 
-#: src/ubuntu_start.py:355
+#: src/ubuntu_start.py:367
 msgid "Test DNS and gateway"
 msgstr ""
 
-#: src/ubuntu_start.py:362
+#: src/ubuntu_start.py:374
 msgid "Internet connection test"
 msgstr ""
 
-#: src/ubuntu_start.py:363
+#: src/ubuntu_start.py:375
 msgid ""
 "This optional test sends a small HTTPS request to ubuntu.com. It shares your "
 "IP address with that site, as any web request does; no diagnostic details "
 "are sent."
 msgstr ""
 
-#: src/ubuntu_start.py:367
+#: src/ubuntu_start.py:379
 msgid "Test internet connection"
 msgstr ""
 
-#: src/ubuntu_start.py:376
+#: src/ubuntu_start.py:388
 msgid "Storage"
 msgstr ""
 
-#: src/ubuntu_start.py:377
+#: src/ubuntu_start.py:389
 msgid ""
 "Local filesystem capacity. Ubuntu may need free space to install updates and "
 "save files."
 msgstr ""
 
-#: src/ubuntu_start.py:379
+#: src/ubuntu_start.py:391
 msgid "Available space"
 msgstr ""
 
-#: src/ubuntu_start.py:379
+#: src/ubuntu_start.py:391
 #, python-brace-format
 msgid "{free} free of {total} ({percent}% used)"
 msgstr ""
 
-#: src/ubuntu_start.py:383
+#: src/ubuntu_start.py:395
 msgid "Storage is almost full"
 msgstr ""
 
-#: src/ubuntu_start.py:383
+#: src/ubuntu_start.py:395
 msgid ""
 "Remove files you no longer need or review large downloads. Avoid deleting "
 "system files."
 msgstr ""
 
-#: src/ubuntu_start.py:388
+#: src/ubuntu_start.py:400
 msgid "Battery"
 msgstr ""
 
-#: src/ubuntu_start.py:389
+#: src/ubuntu_start.py:401
 msgid ""
 "Charge level and charging state come from local system information. An "
 "estimated capacity compared with the original design is shown only if the "
 "battery exposes both values."
 msgstr ""
 
-#: src/ubuntu_start.py:392
+#: src/ubuntu_start.py:404
 msgid "Charging"
 msgstr ""
 
-#: src/ubuntu_start.py:393
+#: src/ubuntu_start.py:405
 msgid "Discharging"
 msgstr ""
 
-#: src/ubuntu_start.py:394
+#: src/ubuntu_start.py:406
 msgid "Full"
 msgstr ""
 
-#: src/ubuntu_start.py:395
+#: src/ubuntu_start.py:407
 msgid "Not charging"
 msgstr ""
 
-#: src/ubuntu_start.py:396
+#: src/ubuntu_start.py:408
 msgid "Unknown"
 msgstr ""
 
-#: src/ubuntu_start.py:400
+#: src/ubuntu_start.py:412
 #, python-brace-format
 msgid "Battery {number}"
 msgstr ""
 
-#: src/ubuntu_start.py:401
+#: src/ubuntu_start.py:413
 #, python-brace-format
 msgid "Charge: {capacity}% · {status}"
 msgstr ""
 
-#: src/ubuntu_start.py:405
+#: src/ubuntu_start.py:417
 msgid "Estimated capacity vs. design"
 msgstr ""
 
-#: src/ubuntu_start.py:405
+#: src/ubuntu_start.py:417
 #, python-brace-format
 msgid "{percent}% of original design capacity"
 msgstr ""
 
-#: src/ubuntu_start.py:409
+#: src/ubuntu_start.py:421
 msgid "No battery information"
 msgstr ""
 
-#: src/ubuntu_start.py:409
+#: src/ubuntu_start.py:421
 msgid ""
 "This computer may not have a battery, or the system does not expose battery "
 "data."
 msgstr ""
 
-#: src/ubuntu_start.py:413
+#: src/ubuntu_start.py:425
 msgid "Hardware overview"
 msgstr ""
 
-#: src/ubuntu_start.py:414
+#: src/ubuntu_start.py:426
 msgid ""
 "This summary reads local system files. Serial numbers are never collected."
 msgstr ""
 
-#: src/ubuntu_start.py:418 src/ubuntu_start.py:585
+#: src/ubuntu_start.py:430 src/ubuntu_start.py:619
 msgid "System model"
 msgstr ""
 
-#: src/ubuntu_start.py:419 src/ubuntu_start.py:586
+#: src/ubuntu_start.py:431 src/ubuntu_start.py:620
 msgid "Processor"
 msgstr ""
 
-#: src/ubuntu_start.py:420 src/ubuntu_start.py:587
+#: src/ubuntu_start.py:432 src/ubuntu_start.py:621
 msgid "Memory"
 msgstr ""
 
-#: src/ubuntu_start.py:421 src/ubuntu_start.py:588
+#: src/ubuntu_start.py:433 src/ubuntu_start.py:622
 msgid "Graphics adapters"
 msgstr ""
 
-#: src/ubuntu_start.py:422 src/ubuntu_start.py:589
+#: src/ubuntu_start.py:434 src/ubuntu_start.py:623
 msgid "Architecture"
 msgstr ""
 
-#: src/ubuntu_start.py:425 src/ubuntu_start.py:580 src/ubuntu_start.py:585
-#: src/ubuntu_start.py:586 src/ubuntu_start.py:587
+#: src/ubuntu_start.py:437 src/ubuntu_start.py:614 src/ubuntu_start.py:619
+#: src/ubuntu_start.py:620 src/ubuntu_start.py:621
 msgid "Not available"
 msgstr ""
 
-#: src/ubuntu_start.py:431
+#: src/ubuntu_start.py:443
 msgid "Allow an internet connection test?"
 msgstr ""
 
-#: src/ubuntu_start.py:432
+#: src/ubuntu_start.py:444
 msgid ""
 "Ubuntu Start will send one small HTTPS request to ubuntu.com. The site can "
 "see your IP address. No system details, Wi-Fi name or passwords are sent."
 msgstr ""
 
-#: src/ubuntu_start.py:434 src/ubuntu_start.py:458 src/ubuntu_start.py:505
+#: src/ubuntu_start.py:446 src/ubuntu_start.py:470 src/ubuntu_start.py:517
 msgid "Cancel"
 msgstr ""
 
-#: src/ubuntu_start.py:435
+#: src/ubuntu_start.py:447
 msgid "Test connection"
 msgstr ""
 
-#: src/ubuntu_start.py:442
+#: src/ubuntu_start.py:454
 msgid "Checking connection to ubuntu.com…"
 msgstr ""
 
-#: src/ubuntu_start.py:455
+#: src/ubuntu_start.py:467
 msgid "Run DNS and gateway tests?"
 msgstr ""
 
-#: src/ubuntu_start.py:456
+#: src/ubuntu_start.py:468
 msgid ""
 "This sends one DNS lookup for ubuntu.com to your configured resolver and one "
 "ping to your local gateway. The gateway MAC address is checked against a "
@@ -986,283 +1008,311 @@ msgid ""
 "service."
 msgstr ""
 
-#: src/ubuntu_start.py:459
+#: src/ubuntu_start.py:471
 msgid "Run tests"
 msgstr ""
 
-#: src/ubuntu_start.py:466
+#: src/ubuntu_start.py:478
 msgid "Testing DNS and gateway…"
-msgstr ""
-
-#: src/ubuntu_start.py:481
-#, python-brace-format
-msgid "DNS lookup: {ms} ms"
-msgstr ""
-
-#: src/ubuntu_start.py:483
-msgid "DNS lookup failed. Check DNS settings or the network connection."
-msgstr ""
-
-#: src/ubuntu_start.py:486
-#, python-brace-format
-msgid "Gateway: {address}"
-msgstr ""
-
-#: src/ubuntu_start.py:488
-#, python-brace-format
-msgid "Gateway response: {ms} ms"
-msgstr ""
-
-#: src/ubuntu_start.py:490
-msgid "Gateway did not answer the ping. Some routers block ping requests."
 msgstr ""
 
 #: src/ubuntu_start.py:493
 #, python-brace-format
-msgid "Gateway MAC address: {mac}"
+msgid "DNS lookup: {ms} ms"
 msgstr ""
 
 #: src/ubuntu_start.py:495
+msgid "DNS lookup failed. Check DNS settings or the network connection."
+msgstr ""
+
+#: src/ubuntu_start.py:498
+#, python-brace-format
+msgid "Gateway: {address}"
+msgstr ""
+
+#: src/ubuntu_start.py:500
+#, python-brace-format
+msgid "Gateway response: {ms} ms"
+msgstr ""
+
+#: src/ubuntu_start.py:502
+msgid "Gateway did not answer the ping. Some routers block ping requests."
+msgstr ""
+
+#: src/ubuntu_start.py:505
+#, python-brace-format
+msgid "Gateway MAC address: {mac}"
+msgstr ""
+
+#: src/ubuntu_start.py:507
 #, python-brace-format
 msgid "Manufacturer: {vendor}"
 msgstr ""
 
-#: src/ubuntu_start.py:495
+#: src/ubuntu_start.py:507
 msgid "Manufacturer not found in the local vendor database."
 msgstr ""
 
-#: src/ubuntu_start.py:497
+#: src/ubuntu_start.py:509
 msgid "Gateway MAC address is not available in the local neighbor table."
 msgstr ""
 
-#: src/ubuntu_start.py:499
+#: src/ubuntu_start.py:511
 msgid "No default gateway was found."
 msgstr ""
 
-#: src/ubuntu_start.py:506
+#: src/ubuntu_start.py:518
 msgid "Open link"
 msgstr ""
 
-#: src/ubuntu_start.py:515
+#: src/ubuntu_start.py:527
 msgid "ubuntu.com responded. Internet access is available."
 msgstr ""
 
-#: src/ubuntu_start.py:517
+#: src/ubuntu_start.py:529
 msgid ""
 "Could not reach ubuntu.com. Check the router, network sign-in page, DNS "
 "settings or firewall."
 msgstr ""
 
-#: src/ubuntu_start.py:521
+#: src/ubuntu_start.py:533
 msgid "Checking NetworkManager…"
 msgstr ""
 
-#: src/ubuntu_start.py:533
-msgid "NetworkManager command-line tools are not installed."
-msgstr ""
-
-#: src/ubuntu_start.py:534
-msgid "NetworkManager did not respond in time. Try refreshing again."
-msgstr ""
-
-#: src/ubuntu_start.py:535
-msgid "Could not read device status from NetworkManager."
-msgstr ""
-
-#: src/ubuntu_start.py:541
-msgid "NetworkManager reported no network devices."
-msgstr ""
-
-#: src/ubuntu_start.py:544
-msgid "This is local device status; internet access has not been tested."
-msgstr ""
-
-#: src/ubuntu_start.py:547
-msgid "Wired"
-msgstr ""
-
-#: src/ubuntu_start.py:548
-msgid "Mobile broadband"
-msgstr ""
-
-#: src/ubuntu_start.py:549
-msgid "Bridge"
-msgstr ""
-
-#: src/ubuntu_start.py:550
-msgid "VPN"
-msgstr ""
-
-#: src/ubuntu_start.py:553
-msgid "Connected"
-msgstr ""
-
 #: src/ubuntu_start.py:554
-msgid "Disconnected"
+msgid "On"
 msgstr ""
 
 #: src/ubuntu_start.py:555
-msgid "Connecting"
+msgid "Off"
 msgstr ""
 
 #: src/ubuntu_start.py:556
-msgid "Unavailable"
+msgid "No Bluetooth controller found"
 msgstr ""
 
 #: src/ubuntu_start.py:557
-msgid "Not managed by NetworkManager"
+msgid "Power state is unknown"
 msgstr ""
 
 #: src/ubuntu_start.py:558
+msgid "Bluetooth command-line tool is not installed"
+msgstr ""
+
+#: src/ubuntu_start.py:559
+msgid "Bluetooth controller did not respond in time"
+msgstr ""
+
+#: src/ubuntu_start.py:560
+msgid "Could not read Bluetooth controller status"
+msgstr ""
+
+#: src/ubuntu_start.py:567
+msgid "NetworkManager command-line tools are not installed."
+msgstr ""
+
+#: src/ubuntu_start.py:568
+msgid "NetworkManager did not respond in time. Try refreshing again."
+msgstr ""
+
+#: src/ubuntu_start.py:569
+msgid "Could not read device status from NetworkManager."
+msgstr ""
+
+#: src/ubuntu_start.py:575
+msgid "NetworkManager reported no network devices."
+msgstr ""
+
+#: src/ubuntu_start.py:578
+msgid "This is local device status; internet access has not been tested."
+msgstr ""
+
+#: src/ubuntu_start.py:581
+msgid "Wired"
+msgstr ""
+
+#: src/ubuntu_start.py:582
+msgid "Mobile broadband"
+msgstr ""
+
+#: src/ubuntu_start.py:583
+msgid "Bridge"
+msgstr ""
+
+#: src/ubuntu_start.py:584
+msgid "VPN"
+msgstr ""
+
+#: src/ubuntu_start.py:587
+msgid "Connected"
+msgstr ""
+
+#: src/ubuntu_start.py:588
+msgid "Disconnected"
+msgstr ""
+
+#: src/ubuntu_start.py:589
+msgid "Connecting"
+msgstr ""
+
+#: src/ubuntu_start.py:590
+msgid "Unavailable"
+msgstr ""
+
+#: src/ubuntu_start.py:591
+msgid "Not managed by NetworkManager"
+msgstr ""
+
+#: src/ubuntu_start.py:592
 msgid "Unavailable (missing firmware)"
 msgstr ""
 
-#: src/ubuntu_start.py:566
+#: src/ubuntu_start.py:600
 msgid "Graphics drivers"
 msgstr ""
 
-#: src/ubuntu_start.py:566
+#: src/ubuntu_start.py:600
 msgid ""
 "Ubuntu can offer compatible drivers for some graphics hardware. Review the "
 "available choices in Ubuntu’s Additional Drivers tool before installing "
 "anything."
 msgstr ""
 
-#: src/ubuntu_start.py:567
+#: src/ubuntu_start.py:601
 msgid "Review available drivers"
 msgstr ""
 
-#: src/ubuntu_start.py:567
+#: src/ubuntu_start.py:601
 msgid ""
 "This opens Ubuntu’s driver tool. Read the recommendation and confirm any "
 "changes there."
 msgstr ""
 
-#: src/ubuntu_start.py:567
+#: src/ubuntu_start.py:601
 msgid "Open Drivers"
 msgstr ""
 
-#: src/ubuntu_start.py:568
+#: src/ubuntu_start.py:602
 msgid "Secure Boot"
 msgstr ""
 
-#: src/ubuntu_start.py:568
+#: src/ubuntu_start.py:602
 msgid ""
 "Some drivers need a one-time confirmation during restart when Secure Boot is "
 "enabled. Follow Ubuntu’s on-screen instructions."
 msgstr ""
 
-#: src/ubuntu_start.py:569
+#: src/ubuntu_start.py:603
 msgid "Need more detail?"
 msgstr ""
 
-#: src/ubuntu_start.py:569
+#: src/ubuntu_start.py:603
 msgid "Ubuntu’s driver guidance explains the supported installation route."
 msgstr ""
 
-#: src/ubuntu_start.py:569
+#: src/ubuntu_start.py:603
 msgid "Open Ubuntu help"
 msgstr ""
 
-#: src/ubuntu_start.py:575 src/ubuntu_start.py:577
+#: src/ubuntu_start.py:609 src/ubuntu_start.py:611
 msgid "Unknown Ubuntu version"
 msgstr ""
 
-#: src/ubuntu_start.py:582
+#: src/ubuntu_start.py:616
 msgid "Ubuntu version"
 msgstr ""
 
-#: src/ubuntu_start.py:583
+#: src/ubuntu_start.py:617
 msgid "Desktop"
 msgstr ""
 
-#: src/ubuntu_start.py:584
+#: src/ubuntu_start.py:618
 msgid "Kernel"
 msgstr ""
 
-#: src/ubuntu_start.py:596
+#: src/ubuntu_start.py:630
 msgid ""
 "Find trusted instructions and prepare useful details when you ask others for "
 "help."
 msgstr ""
 
-#: src/ubuntu_start.py:598
+#: src/ubuntu_start.py:632
 msgid "Ubuntu Desktop guide"
 msgstr ""
 
-#: src/ubuntu_start.py:598
+#: src/ubuntu_start.py:632
 msgid "Official help for settings, accessibility, networks and common tasks."
 msgstr ""
 
-#: src/ubuntu_start.py:598
+#: src/ubuntu_start.py:632
 msgid "Open guide"
 msgstr ""
 
-#: src/ubuntu_start.py:599
+#: src/ubuntu_start.py:633
 msgid "Ask Ubuntu"
 msgstr ""
 
-#: src/ubuntu_start.py:599
+#: src/ubuntu_start.py:633
 msgid "Search community answers or ask a focused question about Ubuntu."
 msgstr ""
 
-#: src/ubuntu_start.py:599
+#: src/ubuntu_start.py:633
 msgid "Open Ask Ubuntu"
 msgstr ""
 
-#: src/ubuntu_start.py:600
+#: src/ubuntu_start.py:634
 msgid "Ubuntu community forum"
 msgstr ""
 
-#: src/ubuntu_start.py:600
+#: src/ubuntu_start.py:634
 msgid "Get help from Ubuntu users and community members."
 msgstr ""
 
-#: src/ubuntu_start.py:600
+#: src/ubuntu_start.py:634
 msgid "Open forum"
 msgstr ""
 
-#: src/ubuntu_start.py:603
+#: src/ubuntu_start.py:637
 msgid "System details"
 msgstr ""
 
-#: src/ubuntu_start.py:604
+#: src/ubuntu_start.py:638
 msgid ""
 "These read-only details help explain a problem. They omit your username, "
 "computer name, serial numbers, network addresses, Wi-Fi names and installed "
 "applications."
 msgstr ""
 
-#: src/ubuntu_start.py:609
+#: src/ubuntu_start.py:643
 msgid "Copy system details"
 msgstr ""
 
-#: src/ubuntu_start.py:615
+#: src/ubuntu_start.py:649
 msgid "When asking for help"
 msgstr ""
 
-#: src/ubuntu_start.py:616
+#: src/ubuntu_start.py:650
 msgid "Describe what happened"
 msgstr ""
 
-#: src/ubuntu_start.py:616
+#: src/ubuntu_start.py:650
 msgid ""
 "Include your Ubuntu version, the device model, the exact error and what you "
 "already tried. Remove passwords and other personal details."
 msgstr ""
 
-#: src/ubuntu_start.py:623
+#: src/ubuntu_start.py:657
 msgid "Clipboard is unavailable."
 msgstr ""
 
-#: src/ubuntu_start.py:627
+#: src/ubuntu_start.py:661
 msgid "System details copied."
 msgstr ""
 
-#: src/ubuntu_start.py:642
+#: src/ubuntu_start.py:676
 msgid "Could not open the requested tool"
 msgstr ""
 
-#: src/ubuntu_start.py:643
+#: src/ubuntu_start.py:677
 msgid "Close"
 msgstr ""

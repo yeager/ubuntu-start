@@ -11,7 +11,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import check_internet_connection, read_battery_status, read_hardware_details, read_network_devices, read_storage_status, run_network_diagnostics
+from system_diagnostics import check_internet_connection, read_battery_status, read_bluetooth_status, read_hardware_details, read_network_devices, read_storage_status, run_network_diagnostics
 
 APP_ID = "se.nylander.UbuntuStart"
 DOMAIN = "ubuntu-start"
@@ -346,6 +346,18 @@ class UbuntuStart(Adw.Application):
         box.append(network_box)
         self.refresh_network_status(network_status, network_rows)
 
+        bluetooth_box, bluetooth_rows = self.page(
+            _("Bluetooth status"),
+            _("Read the local controller power state only. Ubuntu Start does not scan for nearby devices."),
+        )
+        bluetooth_status = Adw.ActionRow(title=_("Bluetooth controller"), subtitle=_("Checking status…"))
+        bluetooth_rows.append(bluetooth_status)
+        bluetooth_refresh = Gtk.Button(label=_("Refresh Bluetooth status"), halign=Gtk.Align.START)
+        bluetooth_refresh.connect("clicked", lambda *_: self.refresh_bluetooth_status(bluetooth_status))
+        bluetooth_box.append(bluetooth_refresh)
+        box.append(bluetooth_box)
+        self.refresh_bluetooth_status(bluetooth_status)
+
         diagnostic_box, _diagnostic_rows = self.page(
             _("Connection quality"),
             _("The test looks up ubuntu.com using your configured DNS, pings your local gateway once, and reads its MAC address from the local neighbor table. DNS queries may be visible to your configured DNS provider; no diagnostic report is uploaded."),
@@ -527,6 +539,28 @@ class UbuntuStart(Adw.Application):
             GLib.idle_add(self.show_network_status, status_label, device_rows, devices, error)
 
         threading.Thread(target=read_status, daemon=True).start()
+
+    def refresh_bluetooth_status(self, status_row):
+        status_row.set_subtitle(_("Checking status…"))
+
+        def read_status():
+            status = read_bluetooth_status()
+            GLib.idle_add(self.show_bluetooth_status, status_row, status)
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_bluetooth_status(self, status_row, status):
+        states = {
+            "powered": _("On"),
+            "off": _("Off"),
+            "no-controller": _("No Bluetooth controller found"),
+            "unknown": _("Power state is unknown"),
+            "not-installed": _("Bluetooth command-line tool is not installed"),
+            "timeout-or-unavailable": _("Bluetooth controller did not respond in time"),
+            "unavailable": _("Could not read Bluetooth controller status"),
+        }
+        status_row.set_subtitle(states.get(status, states["unavailable"]))
+        return GLib.SOURCE_REMOVE
 
     def show_network_status(self, status_label, device_rows, devices, error):
         errors = {

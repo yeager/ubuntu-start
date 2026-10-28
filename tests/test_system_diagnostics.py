@@ -8,12 +8,14 @@ from unittest.mock import patch
 
 from system_diagnostics import (
     parse_cpu_model,
+    parse_bluetooth_controller_status,
     parse_default_route,
     parse_memory_kib,
     parse_neighbor_mac,
     parse_nmcli_device_status,
     lookup_oui_vendor,
     read_battery_status,
+    read_bluetooth_status,
     read_hardware_details,
     read_network_devices,
     read_storage_status,
@@ -59,6 +61,39 @@ lo:loopback:unmanaged
     @patch("system_diagnostics.shutil.which", return_value="/usr/bin/nmcli")
     def test_reports_network_manager_timeout(self, _which, _run):
         self.assertEqual(read_network_devices(), ([], "timeout"))
+
+
+class BluetoothStatusTests(unittest.TestCase):
+    def test_parses_controller_power_without_exposing_mac_address(self):
+        output = "Controller AA:BB:CC:DD:EE:FF (public)\n\tPowered: yes\n"
+        self.assertEqual(parse_bluetooth_controller_status(output), "powered")
+        self.assertNotIn("AA:BB:CC:DD:EE:FF", parse_bluetooth_controller_status(output))
+        self.assertEqual(parse_bluetooth_controller_status(output.replace("yes", "no")), "off")
+        self.assertEqual(parse_bluetooth_controller_status(""), "no-controller")
+        self.assertEqual(parse_bluetooth_controller_status("Controller AA:BB:CC:DD:EE:FF\n"), "unknown")
+
+    @patch("system_diagnostics.shutil.which", return_value=None)
+    def test_handles_missing_bluetooth_command(self, _which):
+        self.assertEqual(read_bluetooth_status(), "not-installed")
+
+    @patch("system_diagnostics._run_local")
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/bluetoothctl")
+    def test_reports_absent_controller_without_waiting_on_bluetooth_service(self, _which, run):
+        with tempfile.TemporaryDirectory() as temporary:
+            self.assertEqual(read_bluetooth_status(controller_path=temporary), "no-controller")
+        run.assert_not_called()
+
+    @patch("system_diagnostics._run_local")
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/bluetoothctl")
+    def test_reads_controller_state_without_scanning(self, _which, run):
+        run.return_value = subprocess.CompletedProcess(
+            ["bluetoothctl", "show"], 0,
+            "Controller AA:BB:CC:DD:EE:FF (public)\n\tPowered: yes\n", "",
+        )
+        with tempfile.TemporaryDirectory() as temporary:
+            (Path(temporary) / "hci0").mkdir()
+            self.assertEqual(read_bluetooth_status(controller_path=temporary), "powered")
+        self.assertEqual(run.call_args.args[0], ["bluetoothctl", "show"])
 
 
 class ParseHardwareTests(unittest.TestCase):

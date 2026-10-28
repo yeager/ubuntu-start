@@ -58,6 +58,43 @@ def read_network_devices(timeout: float = 3.0) -> tuple[list[tuple[str, str, str
     return parse_nmcli_device_status(result.stdout), None
 
 
+def parse_bluetooth_controller_status(output: str) -> str:
+    """Parse only controller presence and power state from bluetoothctl output."""
+    has_controller = False
+    powered = None
+    for line in output.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("Controller "):
+            has_controller = True
+        key, separator, value = stripped.partition(":")
+        if separator and key.casefold() == "powered":
+            state = value.strip().casefold()
+            if state in {"yes", "no"}:
+                powered = state == "yes"
+    if not has_controller:
+        return "no-controller"
+    if powered is None:
+        return "unknown"
+    return "powered" if powered else "off"
+
+
+def read_bluetooth_status(
+    timeout: float = 3.0,
+    controller_path: str | Path = "/sys/class/bluetooth",
+) -> str:
+    """Read local Bluetooth controller power state without scanning for devices."""
+    if shutil.which("bluetoothctl") is None:
+        return "not-installed"
+    if not any(Path(controller_path).glob("hci*")):
+        return "no-controller"
+    result = _run_local(["bluetoothctl", "show"], timeout)
+    if result is None:
+        return "timeout-or-unavailable"
+    if result.returncode != 0:
+        return "unavailable"
+    return parse_bluetooth_controller_status(result.stdout)
+
+
 def parse_cpu_model(cpuinfo: str) -> str | None:
     """Return a useful CPU model from Linux procfs content."""
     for line in cpuinfo.splitlines():
