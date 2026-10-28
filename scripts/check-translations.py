@@ -2,6 +2,7 @@
 """Ensure every translatable source string exists in the Swedish catalog."""
 
 from pathlib import Path
+import re
 import subprocess
 import tempfile
 
@@ -11,6 +12,21 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def run(command: list[str]) -> None:
     subprocess.run(command, cwd=ROOT, check=True)
+
+
+def normalized_template(path: Path) -> str:
+    result = subprocess.run(
+        ["msgcat", "--no-wrap", "--no-location", "--sort-output", str(path)],
+        cwd=ROOT,
+        capture_output=True,
+        check=True,
+        text=True,
+    )
+    return re.sub(
+        r'(?m)^"POT-Creation-Date: .*\\n"$',
+        r'"POT-Creation-Date: NORMALIZED\\n"',
+        result.stdout,
+    )
 
 
 def main() -> None:
@@ -26,6 +42,8 @@ def main() -> None:
             f"--output={template}", "data/se.nylander.UbuntuStart.desktop",
         ])
         run(["msgcmp", "po/sv.po", str(template)])
+        if normalized_template(ROOT / "po/ubuntu-start.pot") != normalized_template(template):
+            raise SystemExit("po/ubuntu-start.pot is out of date; regenerate the gettext template")
 
 
 if __name__ == "__main__":
