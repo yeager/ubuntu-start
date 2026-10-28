@@ -579,7 +579,7 @@ msgid ""
 "Tab to complete the name."
 msgstr ""
 
-#: src/ubuntu_start.py:105
+#: src/ubuntu_start.py:106
 msgid "Move between folders"
 msgstr ""
 
@@ -589,42 +589,42 @@ msgid ""
 "check where you are."
 msgstr ""
 
-#: src/ubuntu_start.py:106
+#: src/ubuntu_start.py:109
 msgid "Ask a command for help"
 msgstr ""
 
-#: src/ubuntu_start.py:106
+#: src/ubuntu_start.py:109
 msgid ""
 "Try a command followed by --help, such as ls --help. For more detail, use "
 "man followed by the command name; press q to leave the manual."
 msgstr ""
 
-#: src/ubuntu_start.py:107
+#: src/ubuntu_start.py:110
 msgid "Understand sudo"
 msgstr ""
 
-#: src/ubuntu_start.py:107
+#: src/ubuntu_start.py:110
 msgid ""
 "sudo runs a command with administrator privileges. Use it only when you "
 "understand and trust the command. Your password is not shown while you type "
 "it."
 msgstr ""
 
-#: src/ubuntu_start.py:108
+#: src/ubuntu_start.py:111
 msgid "Stop a running command"
 msgstr ""
 
-#: src/ubuntu_start.py:108
+#: src/ubuntu_start.py:111
 msgid ""
 "Ctrl+C asks the current command to stop. It does not undo changes the "
 "command has already made."
 msgstr ""
 
-#: src/ubuntu_start.py:109
+#: src/ubuntu_start.py:112
 msgid "Keep commands from trusted sources"
 msgstr ""
 
-#: src/ubuntu_start.py:109
+#: src/ubuntu_start.py:112
 msgid ""
 "Do not paste commands you do not understand, especially commands using sudo, "
 "rm, disk tools or scripts downloaded from the internet."

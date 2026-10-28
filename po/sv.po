@@ -668,7 +668,7 @@ msgstr ""
 "till exempel cd \"Mina dokument\". Du kan också skriva de första "
 "bokstäverna och trycka på Tab för att komplettera namnet."
 
-#: src/ubuntu_start.py:105
+#: src/ubuntu_start.py:106
 msgid "Move between folders"
 msgstr "Byt mellan mappar"
 
@@ -680,11 +680,11 @@ msgstr ""
 "Skriv cd Documents för att öppna en mapp och cd .. för att gå upp en nivå. "
 "Skriv pwd för att kontrollera var du är."
 
-#: src/ubuntu_start.py:106
+#: src/ubuntu_start.py:109
 msgid "Ask a command for help"
 msgstr "Visa hjälp för ett kommando"
 
-#: src/ubuntu_start.py:106
+#: src/ubuntu_start.py:109
 msgid ""
 "Try a command followed by --help, such as ls --help. For more detail, use "
 "man followed by the command name; press q to leave the manual."
@@ -693,11 +693,11 @@ msgstr ""
 "Skriv man följt av kommandonamnet för mer information. Tryck på q för att "
 "stänga manualsidan."
 
-#: src/ubuntu_start.py:107
+#: src/ubuntu_start.py:110
 msgid "Understand sudo"
 msgstr "Förstå sudo"
 
-#: src/ubuntu_start.py:107
+#: src/ubuntu_start.py:110
 msgid ""
 "sudo runs a command with administrator privileges. Use it only when you "
 "understand and trust the command. Your password is not shown while you type "
@@ -706,11 +706,11 @@ msgstr ""
 "sudo kör ett kommando med administratörsbehörighet. Använd det bara när du "
 "förstår och litar på kommandot. Lösenordet visas inte när du skriver det."
 
-#: src/ubuntu_start.py:108
+#: src/ubuntu_start.py:111
 msgid "Stop a running command"
 msgstr "Avbryt ett kommando"
 
-#: src/ubuntu_start.py:108
+#: src/ubuntu_start.py:111
 msgid ""
 "Ctrl+C asks the current command to stop. It does not undo changes the "
 "command has already made."
@@ -718,11 +718,11 @@ msgstr ""
 "Ctrl+C ber det pågående kommandot att avslutas. Det ångrar inte ändringar "
 "som kommandot redan har gjort."
 
-#: src/ubuntu_start.py:109
+#: src/ubuntu_start.py:112
 msgid "Keep commands from trusted sources"
 msgstr "Använd kommandon från källor du litar på"
 
-#: src/ubuntu_start.py:109
+#: src/ubuntu_start.py:112
 msgid ""
 "Do not paste commands you do not understand, especially commands using sudo, "
 "rm, disk tools or scripts downloaded from the internet."
