@@ -651,6 +651,7 @@ class UbuntuStart(Adw.Application):
         if result.get("gateway") and result.get("gateway_latency_ms") is None:
             lines.append(_("Next step: check the local connection. Some gateways block ping, so this alone does not prove that the network is down."))
         status_label.set_text("\n".join(lines))
+        self.announce_to_screen_reader(status_label, "\n".join(lines))
         return GLib.SOURCE_REMOVE
 
     def confirm_external_link(self, uri, heading, body):
@@ -665,9 +666,11 @@ class UbuntuStart(Adw.Application):
     def show_internet_result(self, button, status_label, result):
         button.set_sensitive(True)
         if result.startswith("reachable:"):
-            status_label.set_text(_("ubuntu.com responded. Internet access is available."))
+            message = _("ubuntu.com responded. Internet access is available.")
         else:
-            status_label.set_text(_("Could not reach ubuntu.com. Check the router, network sign-in page, DNS settings or firewall."))
+            message = _("Could not reach ubuntu.com. Check the router, network sign-in page, DNS settings or firewall.")
+        status_label.set_text(message)
+        self.announce_to_screen_reader(status_label, message)
         return GLib.SOURCE_REMOVE
 
     def refresh_network_status(self, status_label, device_rows):
@@ -736,13 +739,19 @@ class UbuntuStart(Adw.Application):
             "unavailable": _("Could not read device status from NetworkManager."),
         }
         if error:
-            status_label.set_text(errors.get(error, errors["unavailable"]))
+            message = errors.get(error, errors["unavailable"])
+            status_label.set_text(message)
+            self.announce_to_screen_reader(status_label, message)
             return GLib.SOURCE_REMOVE
         if not devices:
-            status_label.set_text(_("NetworkManager reported no network devices."))
+            message = _("NetworkManager reported no network devices.")
+            status_label.set_text(message)
+            self.announce_to_screen_reader(status_label, message)
             return GLib.SOURCE_REMOVE
 
-        status_label.set_text(_("This is local device status; internet access has not been tested."))
+        message = _("This is local device status; internet access has not been tested.")
+        status_label.set_text(message)
+        self.announce_to_screen_reader(status_label, message)
         device_types = {
             "wifi": _("Wi-Fi"),
             "ethernet": _("Wired"),
@@ -864,6 +873,13 @@ class UbuntuStart(Adw.Application):
         report = "\n".join(f"{label}: {value}" for label, value in self.system_details())
         display.get_clipboard().set(report)
         status_label.set_text(_("System details copied."))
+        self.announce_to_screen_reader(status_label, status_label.get_text())
+
+    def announce_to_screen_reader(self, widget, message):
+        if hasattr(Gtk.Accessible, "announce"):
+            Gtk.Accessible.announce(
+                widget, message, Gtk.AccessibleAnnouncementPriority.MEDIUM,
+            )
 
     def review_support_report(self, status_label):
         report = build_support_report(self.system_details(), getattr(self, "last_network_diagnostics", None))
@@ -915,6 +931,7 @@ class UbuntuStart(Adw.Application):
                         Gio.FileCreateFlags.REPLACE_DESTINATION, None,
                     )
                     status_label.set_text(_("Support report saved locally."))
+                    self.announce_to_screen_reader(status_label, status_label.get_text())
                     parent.close()
                 except GLib.Error as error:
                     self.show_error(str(error))
