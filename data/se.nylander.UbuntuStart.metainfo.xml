@@ -10,6 +10,10 @@
   <launchable type="desktop-id">se.nylander.UbuntuStart.desktop</launchable>
   <developer id="se.nylander"><name>Ubuntu Start contributors</name></developer>
   <url type="homepage">https://github.com/yeager/ubuntu-start</url>
+  <categories>
+    <category>Utility</category>
+    <category>System</category>
+  </categories>
   <description>
     <p>Get started with Ubuntu through step-by-step system guides, practical device troubleshooting, accessibility help and local network and hardware details. Search guides and copy a privacy-conscious system summary when asking for help.</p>
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
