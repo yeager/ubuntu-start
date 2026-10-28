@@ -1,10 +1,8 @@
 # Ubuntu Start
 
-An Ubuntu Desktop guide with localization for first-run setup and device troubleshooting.
+An Ubuntu Desktop guide for first-run setup and device troubleshooting.
 
 ![Ubuntu Start welcome screen in English](screenshots/welcome-en.png)
-
-The interface uses English by default and switches to Swedish when the desktop language is Swedish.
 
 [Swedish welcome screen](screenshots/welcome-sv.png) · [More screenshots](screenshots/)
 
