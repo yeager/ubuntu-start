@@ -230,7 +230,18 @@ class UbuntuStart(Adw.Application):
             scroller.set_child(page)
             stack.add_titled(scroller, name, name)
         stack.set_visible_child_name(pages[0][0])
+        key_controller = Gtk.EventControllerKey()
+        key_controller.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
+        key_controller.connect("key-pressed", self.on_key_pressed)
+        win.add_controller(key_controller)
         win.present()
+
+    def on_key_pressed(self, _controller, keyval, _keycode, state):
+        if keyval == Gdk.KEY_f and state & Gdk.ModifierType.CONTROL_MASK:
+            self.main_stack.set_visible_child_name(_("Fix a device"))
+            self.device_search.grab_focus()
+            return True
+        return False
 
     def page(self, title, subtitle=None, include_rows=True):
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
@@ -320,6 +331,8 @@ class UbuntuStart(Adw.Application):
             include_rows=False,
         )
         search = Gtk.SearchEntry(placeholder_text=_("Search all guides and steps"))
+        search.set_tooltip_text(_("Press Ctrl+F to search guides and troubleshooting steps."))
+        self.device_search = search
         search_label = Gtk.Label(label=_("Search all guides and steps"), xalign=0)
         search_label.set_mnemonic_widget(search)
         box.append(search_label)

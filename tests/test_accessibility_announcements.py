@@ -1,12 +1,34 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from ubuntu_start import Adw, Gtk, UbuntuStart
+from ubuntu_start import Adw, Gdk, Gtk, UbuntuStart
 
 
 class AccessibilityAnnouncementTests(unittest.TestCase):
     def setUp(self):
         self.app = Mock()
+
+    def test_control_f_opens_device_guides_and_focuses_search(self):
+        self.app.main_stack = Mock()
+        self.app.device_search = Mock()
+
+        handled = UbuntuStart.on_key_pressed(
+            self.app, Mock(), Gdk.KEY_f, 0, Gdk.ModifierType.CONTROL_MASK,
+        )
+
+        self.assertTrue(handled)
+        self.app.main_stack.set_visible_child_name.assert_called_once_with("Fix a device")
+        self.app.device_search.grab_focus.assert_called_once_with()
+
+    def test_unrelated_key_is_not_consumed(self):
+        self.app.main_stack = Mock()
+        self.app.device_search = Mock()
+
+        handled = UbuntuStart.on_key_pressed(self.app, Mock(), Gdk.KEY_a, 0, Gdk.ModifierType.CONTROL_MASK)
+
+        self.assertFalse(handled)
+        self.app.main_stack.set_visible_child_name.assert_not_called()
+        self.app.device_search.grab_focus.assert_not_called()
 
     def test_background_bluetooth_refresh_does_not_interrupt_other_page(self):
         row = Mock()
