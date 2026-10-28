@@ -39,11 +39,12 @@ jobs:
         run: appstreamcli validate data/se.nylander.UbuntuStart.metainfo.xml
       - name: Run unit tests
         run: PYTHONPATH=src python3 -m unittest discover -s tests -v
-      - name: Build and install into staging directory
+      - name: Build and verify staged installation
         run: |
           meson setup build --prefix=/usr
           meson compile -C build
           DESTDIR="$PWD/stage" meson install -C build
+          sh scripts/check-staged-install.sh "$PWD/stage"
       - name: Create source archive
         run: |
           git archive --format=tar.gz --prefix=ubuntu-start-${GITHUB_REF_NAME#v}/ HEAD > "ubuntu-start-${GITHUB_REF_NAME#v}.tar.gz"
