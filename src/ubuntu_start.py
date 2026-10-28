@@ -12,6 +12,7 @@ gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
 from system_diagnostics import check_internet_connection, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_network_devices, read_storage_status, run_network_diagnostics
+from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
 DOMAIN = "ubuntu-start"
@@ -158,6 +159,7 @@ class UbuntuStart(Adw.Application):
         sidebar = Adw.NavigationPage(title=_("Guide"))
         content = Adw.NavigationPage(title=_("Ubuntu Start"))
         stack = Gtk.Stack(transition_type=Gtk.StackTransitionType.CROSSFADE)
+        self.main_stack = stack
         nav = Gtk.StackSidebar(stack=stack)
         nav.set_margin_top(12)
         nav.set_margin_bottom(12)
@@ -261,10 +263,11 @@ class UbuntuStart(Adw.Application):
             _("Choose a device or search all guides for a symptom. These checks do not install software or change system files."),
             include_rows=False,
         )
-        search = Gtk.SearchEntry(placeholder_text=_("Search all troubleshooting steps"))
+        search = Gtk.SearchEntry(placeholder_text=_("Search all guides and steps"))
         box.append(search)
         browse = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         chooser = Gtk.DropDown.new_from_strings([title for title, _panel, _steps in GUIDES])
+        self.device_chooser = chooser
         browse.append(chooser)
         steps_stack = Gtk.Stack(transition_type=Gtk.StackTransitionType.CROSSFADE)
         for index, (_title, _panel, steps) in enumerate(GUIDES):
@@ -299,6 +302,18 @@ class UbuntuStart(Adw.Application):
         results.set_visible(False)
         box.append(results)
 
+        search_entries = []
+        for guide_index, (guide_title, _panel, steps) in enumerate(GUIDES):
+            search_entries.extend(
+                ("device", guide_index, guide_title, step_title, description)
+                for step_title, description in steps
+            )
+        for guide_index, (guide_title, _target, _action, steps) in enumerate(SYSTEM_GUIDES):
+            search_entries.extend(
+                ("system", guide_index, guide_title, step_title, description)
+                for step_title, description in steps
+            )
+
         open_button = Gtk.Button(label=_("Open related Settings"), halign=Gtk.Align.START)
         browse.append(open_button)
 
@@ -315,15 +330,17 @@ class UbuntuStart(Adw.Application):
                 result_rows.remove(child)
             if not query:
                 return
-            terms = query.split()
-            count = 0
-            for guide_title, _panel, steps in GUIDES:
-                for step_title, description in steps:
-                    searchable = f"{guide_title} {step_title} {description}".casefold()
-                    if all(term in searchable for term in terms):
-                        result_rows.append(Adw.ActionRow(title=f"{guide_title}: {step_title}", subtitle=description))
-                        count += 1
-            no_results.set_visible(count == 0)
+            matches = find_guide_matches(query, search_entries)
+            for kind, guide_index, guide_title, step_title, description in matches:
+                row = Adw.ActionRow(title=f"{guide_title}: {step_title}", subtitle=description)
+                button = Gtk.Button(label=_("Show this guide"), valign=Gtk.Align.CENTER)
+                button.connect(
+                    "clicked",
+                    lambda *_args, k=kind, i=guide_index: self.open_search_result(search, k, i),
+                )
+                row.add_suffix(button)
+                result_rows.append(row)
+            no_results.set_visible(not matches)
 
         chooser.connect("notify::selected", update_guide)
         search.connect("search-changed", update_search)
@@ -338,6 +355,7 @@ class UbuntuStart(Adw.Application):
             include_rows=False,
         )
         chooser = Gtk.DropDown.new_from_strings([title for title, _target, _action, _steps in SYSTEM_GUIDES])
+        self.system_guide_chooser = chooser
         box.append(chooser)
         guide_stack = Gtk.Stack(transition_type=Gtk.StackTransitionType.CROSSFADE)
         for index, (title, target, action, steps) in enumerate(SYSTEM_GUIDES):
@@ -358,6 +376,15 @@ class UbuntuStart(Adw.Application):
         chooser.connect("notify::selected", select_guide)
         select_guide()
         return box
+
+    def open_search_result(self, search, kind, guide_index):
+        if kind == "device":
+            self.main_stack.set_visible_child_name(_("Fix a device"))
+            self.device_chooser.set_selected(guide_index)
+        else:
+            self.main_stack.set_visible_child_name(_("System guides"))
+            self.system_guide_chooser.set_selected(guide_index)
+        search.set_text("")
 
     def make_network_hardware(self):
         box, _rows = self.page(

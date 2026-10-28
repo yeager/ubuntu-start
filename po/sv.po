@@ -1085,9 +1085,9 @@ msgstr ""
 "Välj en enhet eller sök i alla guider efter ett problem. Kontrollerna "
 "installerar inga program och ändrar inga systemfiler."
 
-#: src/ubuntu_start.py:258
-msgid "Search all troubleshooting steps"
-msgstr "Sök i alla felsökningssteg"
+#: src/ubuntu_start.py:265
+msgid "Search all guides and steps"
+msgstr "Sök i alla guider och steg"
 
 #: src/ubuntu_start.py:266
 msgid "Suggested checks"
@@ -1121,11 +1121,15 @@ msgstr ""
 "Det här öppnar projektsidan i webbläsaren. GitHub tar emot en vanlig "
 "webbförfrågan och kan se din IP-adress."
 
-#: src/ubuntu_start.py:291
+#: src/ubuntu_start.py:300
 msgid "No matching steps. Try another word."
 msgstr "Inga steg matchar. Prova ett annat sökord."
 
-#: src/ubuntu_start.py:296
+#: src/ubuntu_start.py:336
+msgid "Show this guide"
+msgstr "Visa guiden"
+
+#: src/ubuntu_start.py:317
 msgid "Open related Settings"
 msgstr "Öppna relevanta inställningar"
 

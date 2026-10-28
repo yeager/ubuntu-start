@@ -959,8 +959,8 @@ msgid ""
 "install software or change system files."
 msgstr ""
 
-#: src/ubuntu_start.py:258
-msgid "Search all troubleshooting steps"
+#: src/ubuntu_start.py:266
+msgid "Search all guides and steps"
 msgstr ""
 
 #: src/ubuntu_start.py:266
@@ -991,11 +991,15 @@ msgid ""
 "web request and can see your IP address."
 msgstr ""
 
-#: src/ubuntu_start.py:291
+#: src/ubuntu_start.py:300
 msgid "No matching steps. Try another word."
 msgstr ""
 
-#: src/ubuntu_start.py:296
+#: src/ubuntu_start.py:336
+msgid "Show this guide"
+msgstr ""
+
+#: src/ubuntu_start.py:317
 msgid "Open related Settings"
 msgstr ""
 
