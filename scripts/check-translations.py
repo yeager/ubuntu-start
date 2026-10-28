@@ -2,6 +2,7 @@
 """Ensure every translatable source string exists in the Swedish catalog."""
 
 from pathlib import Path
+import ast
 import re
 import subprocess
 import tempfile
@@ -14,19 +15,39 @@ def run(command: list[str]) -> None:
     subprocess.run(command, cwd=ROOT, check=True)
 
 
-def normalized_template(path: Path) -> str:
-    result = subprocess.run(
-        ["msgcat", "--no-wrap", "--no-location", "--sort-output", str(path)],
-        cwd=ROOT,
-        capture_output=True,
-        check=True,
-        text=True,
-    )
-    return re.sub(
-        r'(?m)^"POT-Creation-Date: .*\\n"$',
-        r'"POT-Creation-Date: NORMALIZED\\n"',
-        result.stdout,
-    )
+def message_keys(path: Path) -> set[tuple[str, str, str]]:
+    """Read gettext message identities without depending on xgettext formatting."""
+    entries: list[dict[str, str]] = []
+    entry: dict[str, str] = {}
+    active_field: str | None = None
+
+    def finish_entry() -> None:
+        nonlocal entry, active_field
+        if "msgid" in entry:
+            entries.append(entry)
+        entry = {}
+        active_field = None
+
+    for line in path.read_text(encoding="utf-8").splitlines():
+        match = re.match(r'^(msgctxt|msgid_plural|msgid)\s+("(?:\\.|[^"\\])*")$', line)
+        if match:
+            field, value = match.groups()
+            if field == "msgid" and "msgid" in entry:
+                finish_entry()
+            entry[field] = ast.literal_eval(value)
+            active_field = field
+        elif re.match(r"^msgstr(?:\[\d+\])?\s", line):
+            active_field = None
+        elif line.startswith('"') and active_field:
+            entry[active_field] += ast.literal_eval(line)
+        elif not line and entry:
+            finish_entry()
+    finish_entry()
+    return {
+        (entry.get("msgctxt", ""), entry["msgid"], entry.get("msgid_plural", ""))
+        for entry in entries
+        if entry["msgid"]
+    }
 
 
 def main() -> None:
@@ -42,7 +63,7 @@ def main() -> None:
             f"--output={template}", "data/se.nylander.UbuntuStart.desktop",
         ])
         run(["msgcmp", "po/sv.po", str(template)])
-        if normalized_template(ROOT / "po/ubuntu-start.pot") != normalized_template(template):
+        if message_keys(ROOT / "po/ubuntu-start.pot") != message_keys(template):
             raise SystemExit("po/ubuntu-start.pot is out of date; regenerate the gettext template")
 
 
