@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, call, patch
 
 from ubuntu_start import Adw, Gdk, Gtk, UbuntuStart
 
@@ -159,9 +159,10 @@ class AboutDialogTests(unittest.TestCase):
         self.assertEqual(properties["developer_name"], "Daniel Nylander")
         self.assertEqual(properties["developers"], ["Daniel Nylander"])
         self.assertEqual(properties["website"], "https://www.danielnylander.se")
-        dialog.add_link.assert_called_once_with(
-            "GitHub repository", "https://github.com/yeager/ubuntu-start",
-        )
+        self.assertEqual(dialog.add_link.call_args_list, [
+            call("GitHub repository", "https://github.com/yeager/ubuntu-start"),
+            call("Daniel Nylander's website", "https://www.danielnylander.se"),
+        ])
         dialog.present.assert_called_once_with(app.get_active_window.return_value)
 
 

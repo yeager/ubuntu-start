@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ubuntu Start 0.3.1\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 00:37+0100\n"
+"POT-Creation-Date: 2026-10-29 00:50+0100\n"
 "PO-Revision-Date: 2026-10-28 15:18+0100\n"
 "Last-Translator: Ubuntu Start contributors\n"
 "Language-Team: Swedish\n"
@@ -1326,7 +1326,7 @@ msgstr ""
 "uppgifterna i App Center och väljer själv om du vill installera appen."
 
 #: src/ubuntu_start.py:303 src/ubuntu_start.py:595 src/ubuntu_start.py:619
-#: src/ubuntu_start.py:673 src/ubuntu_start.py:1014
+#: src/ubuntu_start.py:673 src/ubuntu_start.py:1015
 msgid "Cancel"
 msgstr "Avbryt"
 
@@ -1714,7 +1714,10 @@ msgstr "Hittade ingen standardgateway."
 msgid ""
 "Next step: check Wi-Fi or wired connection in Settings. On a managed "
 "network, ask the administrator before changing route settings."
-msgstr "Nästa steg: kontrollera wifi- eller kabelanslutningen i Inställningar. Om nätverket hanteras av någon annan bör du fråga administratören innan du ändrar ruttinställningar."
+msgstr ""
+"Nästa steg: kontrollera wifi- eller kabelanslutningen i Inställningar. Om "
+"nätverket hanteras av någon annan bör du fråga administratören innan du "
+"ändrar ruttinställningar."
 
 #: src/ubuntu_start.py:664
 msgid ""
@@ -2278,11 +2281,15 @@ msgstr "En guide för att komma igång med Ubuntu Desktop och felsöka enheter."
 msgid "GitHub repository"
 msgstr "Projektet på GitHub"
 
-#: src/ubuntu_start.py:984
+#: src/ubuntu_start.py:978
+msgid "Daniel Nylander's website"
+msgstr "Daniel Nylanders webbplats"
+
+#: src/ubuntu_start.py:985
 msgid "Review support report"
 msgstr "Granska supportrapport"
 
-#: src/ubuntu_start.py:992
+#: src/ubuntu_start.py:993
 msgid ""
 "Review or edit this report before saving. It stays on this computer unless "
 "you choose to share it. Network addresses, MAC addresses, host names and "
@@ -2292,27 +2299,27 @@ msgstr ""
 "om du inte själv väljer att dela den. Nätverksadresser, MAC-adresser, "
 "datornamn och serienummer utelämnas."
 
-#: src/ubuntu_start.py:1001 src/ubuntu_start.py:1053
+#: src/ubuntu_start.py:1002 src/ubuntu_start.py:1054
 msgid "Close"
 msgstr "Stäng"
 
-#: src/ubuntu_start.py:1002
+#: src/ubuntu_start.py:1003
 msgid "Save report"
 msgstr "Spara rapport"
 
-#: src/ubuntu_start.py:1013
+#: src/ubuntu_start.py:1014
 msgid "Save support report"
 msgstr "Spara supportrapport"
 
-#: src/ubuntu_start.py:1014
+#: src/ubuntu_start.py:1015
 msgid "Save"
 msgstr "Spara"
 
-#: src/ubuntu_start.py:1029
+#: src/ubuntu_start.py:1030
 msgid "Support report saved locally."
 msgstr "Supportrapporten har sparats lokalt."
 
-#: src/ubuntu_start.py:1052
+#: src/ubuntu_start.py:1053
 msgid "Could not open the requested tool"
 msgstr "Det gick inte att öppna verktyget"
 
