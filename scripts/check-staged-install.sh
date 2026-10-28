@@ -24,3 +24,9 @@ if ! grep -Fqx 'Exec=python3 /usr/libexec/ubuntu-start/ubuntu_start.py' \
     printf 'Desktop launcher does not point to the installed application.\n' >&2
     exit 1
 fi
+
+if ! grep -Fqx 'Comment[sv]=Kom igång med Ubuntu och felsök anslutna enheter' \
+    "$stage_dir/usr/share/applications/se.nylander.UbuntuStart.desktop"; then
+    printf 'Desktop launcher is missing its Swedish description.\n' >&2
+    exit 1
+fi
