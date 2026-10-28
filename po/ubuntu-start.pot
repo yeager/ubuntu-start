@@ -644,6 +644,42 @@ msgid ""
 "if it does not help."
 msgstr ""
 
+#: src/ubuntu_start.py:123
+msgid "Use visual alerts for sound"
+msgstr ""
+
+#: src/ubuntu_start.py:124
+msgid "Open the Hearing section"
+msgstr ""
+
+#: src/ubuntu_start.py:124
+msgid "In Settings, choose Accessibility and open Hearing."
+msgstr ""
+
+#: src/ubuntu_start.py:125
+msgid "Turn on Visual Alerts"
+msgstr ""
+
+#: src/ubuntu_start.py:125
+msgid "Enable Visual Alerts so the screen flashes when a sound alert occurs."
+msgstr ""
+
+#: src/ubuntu_start.py:126
+msgid "Choose and test a flash style"
+msgstr ""
+
+#: src/ubuntu_start.py:126
+msgid "Select the whole screen or focused window if those choices are available. Try a sound alert to check that the flash is noticeable."
+msgstr ""
+
+#: src/ubuntu_start.py:127
+msgid "Turn off alerts if they distract you"
+msgstr ""
+
+#: src/ubuntu_start.py:127
+msgid "Return to the same section to change the flash style or turn Visual Alerts off."
+msgstr ""
+
 #: src/ubuntu_start.py:122
 msgid "Install Ubuntu updates"
 msgstr ""

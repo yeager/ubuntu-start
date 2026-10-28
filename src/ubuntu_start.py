@@ -119,6 +119,12 @@ SYSTEM_GUIDES = [
         (_("Try a typing assistance option"), _("Sticky Keys lets you press shortcut keys one at a time. Slow Keys can ignore brief presses, and Bounce Keys can ignore rapid repeated presses.")),
         (_("Adjust one option at a time"), _("Try one option, then type in a text field. Turn it off in the same section if it does not help.")),
     ]),
+    (_("Use visual alerts for sound"), ("settings", "universal-access"), _("Open Accessibility Settings"), [
+        (_("Open the Hearing section"), _("In Settings, choose Accessibility and open Hearing.")),
+        (_("Turn on Visual Alerts"), _("Enable Visual Alerts so the screen flashes when a sound alert occurs.")),
+        (_("Choose and test a flash style"), _("Select the whole screen or focused window if those choices are available. Try a sound alert to check that the flash is noticeable.")),
+        (_("Turn off alerts if they distract you"), _("Return to the same section to change the flash style or turn Visual Alerts off.")),
+    ]),
     (_("Install Ubuntu updates"), ("app", "update-manager"), _("Open Software Updater"), [
         (_("Open Software Updater"), _("Ubuntu checks for updates when Software Updater opens. Select Check if it does not start checking.")),
         (_("Review available updates"), _("Read the update summary. Save your work before installing system updates.")),

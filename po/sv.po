@@ -735,6 +735,42 @@ msgid ""
 msgstr "Prova ett alternativ och skriv sedan i ett textfält. Stäng av det i samma avsnitt om det inte hjälper."
 
 #: src/ubuntu_start.py:122
+msgid "Use visual alerts for sound"
+msgstr "Visa ljudaviseringar visuellt"
+
+#: src/ubuntu_start.py:123
+msgid "Open the Hearing section"
+msgstr "Öppna avsnittet Hörsel"
+
+#: src/ubuntu_start.py:123
+msgid "In Settings, choose Accessibility and open Hearing."
+msgstr "Välj Hjälpmedel i Inställningar och öppna Hörsel."
+
+#: src/ubuntu_start.py:124
+msgid "Turn on Visual Alerts"
+msgstr "Aktivera visuella aviseringar"
+
+#: src/ubuntu_start.py:124
+msgid "Enable Visual Alerts so the screen flashes when a sound alert occurs."
+msgstr "Aktivera visuella aviseringar så att skärmen blinkar vid ljudaviseringar."
+
+#: src/ubuntu_start.py:125
+msgid "Choose and test a flash style"
+msgstr "Välj och prova blinkningssätt"
+
+#: src/ubuntu_start.py:125
+msgid "Select the whole screen or focused window if those choices are available. Try a sound alert to check that the flash is noticeable."
+msgstr "Välj hela skärmen eller det aktiva fönstret om alternativen finns. Prova en ljudavisering för att se om blinkningen märks."
+
+#: src/ubuntu_start.py:126
+msgid "Turn off alerts if they distract you"
+msgstr "Stäng av aviseringarna om de stör"
+
+#: src/ubuntu_start.py:126
+msgid "Return to the same section to change the flash style or turn Visual Alerts off."
+msgstr "Gå tillbaka till samma avsnitt för att ändra blinkningssättet eller stänga av visuella aviseringar."
+
+#: src/ubuntu_start.py:122
 msgid "Install Ubuntu updates"
 msgstr "Installera Ubuntu-uppdateringar"
 
