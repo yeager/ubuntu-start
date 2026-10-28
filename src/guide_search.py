@@ -2,8 +2,14 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
+import unicodedata
 
 GuideSearchEntry = tuple[str, int, str, str, str]
+
+
+def _normalize_token(token: str) -> str:
+    decomposed = unicodedata.normalize("NFKD", token.casefold())
+    return "".join(character for character in decomposed if character.isalnum())
 
 
 def find_guide_matches(
@@ -13,11 +19,10 @@ def find_guide_matches(
     """Return entries containing every query term in their visible text.
 
     Entries contain a guide kind, its index, the guide title, a step title,
-    and the step description. Matching is case-insensitive and accepts terms
-    in any order.
+    and the step description. Matching is case-insensitive, ignores accents
+    and punctuation, and accepts terms in any order.
     """
-    terms = query.casefold().split()
-    terms = ["".join(character for character in term if character.isalnum()) for term in terms]
+    terms = [_normalize_token(term) for term in query.split()]
     terms = [term for term in terms if term]
     if not terms:
         return []
@@ -25,7 +30,7 @@ def find_guide_matches(
     matches = []
     for entry in entries:
         searchable = " ".join(
-            "".join(character for character in word if character.isalnum())
+            _normalize_token(word)
             for value in entry[2:]
             for word in value.casefold().split()
         )
