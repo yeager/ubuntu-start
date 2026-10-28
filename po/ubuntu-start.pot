@@ -51,6 +51,40 @@ msgid ""
 msgstr ""
 
 #: src/ubuntu_start.py:30
+msgid "Battery and charging"
+msgstr ""
+
+#: src/ubuntu_start.py:31
+msgid "Check the power adapter"
+msgstr ""
+
+#: src/ubuntu_start.py:31
+msgid ""
+"Connect the adapter securely at both ends and try a working outlet. Stop "
+"using a cable or adapter that is damaged or unusually hot."
+msgstr ""
+
+#: src/ubuntu_start.py:32
+msgid "Check the charging status"
+msgstr ""
+
+#: src/ubuntu_start.py:32
+msgid ""
+"Review the charge level and charging state on the Network and hardware page. "
+"If it is not charging, check the power connection and Power Settings."
+msgstr ""
+
+#: src/ubuntu_start.py:33
+msgid "Check for battery wear"
+msgstr ""
+
+#: src/ubuntu_start.py:33
+msgid ""
+"If the estimated capacity is much lower than the design capacity, consult the "
+"laptop manufacturer’s support information about battery service."
+msgstr ""
+
+#: src/ubuntu_start.py:30
 msgid "Bluetooth"
 msgstr ""
 

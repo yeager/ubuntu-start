@@ -52,6 +52,46 @@ msgstr ""
 "finns i en app kontrollerar du appens mikrofonbehörighet."
 
 #: src/ubuntu_start.py:30
+msgid "Battery and charging"
+msgstr "Batteri och laddning"
+
+#: src/ubuntu_start.py:31
+msgid "Check the power adapter"
+msgstr "Kontrollera nätadaptern"
+
+#: src/ubuntu_start.py:31
+msgid ""
+"Connect the adapter securely at both ends and try a working outlet. Stop "
+"using a cable or adapter that is damaged or unusually hot."
+msgstr ""
+"Anslut adaptern ordentligt i båda ändar och prova ett vägguttag som fungerar. "
+"Använd inte en kabel eller adapter som är skadad eller ovanligt varm."
+
+#: src/ubuntu_start.py:32
+msgid "Check the charging status"
+msgstr "Kontrollera laddningsstatusen"
+
+#: src/ubuntu_start.py:32
+msgid ""
+"Review the charge level and charging state on the Network and hardware page. "
+"If it is not charging, check the power connection and Power Settings."
+msgstr ""
+"Titta på laddningsnivån och statusen under Nätverk och maskinvara. Om batteriet "
+"inte laddas kontrollerar du strömanslutningen och ströminställningarna."
+
+#: src/ubuntu_start.py:33
+msgid "Check for battery wear"
+msgstr "Kontrollera batterislitage"
+
+#: src/ubuntu_start.py:33
+msgid ""
+"If the estimated capacity is much lower than the design capacity, consult the "
+"laptop manufacturer’s support information about battery service."
+msgstr ""
+"Om den uppskattade kapaciteten är mycket lägre än ursprungskapaciteten läser "
+"du datortillverkarens supportinformation om batteriservice."
+
+#: src/ubuntu_start.py:30
 msgid "Bluetooth"
 msgstr "Bluetooth"
 

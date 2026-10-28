@@ -27,6 +27,11 @@ GUIDES = [
         (_("Check the volume"), _("Make sure output volume is up and the device is not muted. Try another app or audio file.")),
         (_("Check the microphone"), _("Speak and watch the input level in Sound Settings. Check the app’s microphone permission if only one app is affected.")),
     ]),
+    (_("Battery and charging"), "power", [
+        (_("Check the power adapter"), _("Connect the adapter securely at both ends and try a working outlet. Stop using a cable or adapter that is damaged or unusually hot.")),
+        (_("Check the charging status"), _("Review the charge level and charging state on the Network and hardware page. If it is not charging, check the power connection and Power Settings.")),
+        (_("Check for battery wear"), _("If the estimated capacity is much lower than the design capacity, consult the laptop manufacturer’s support information about battery service.")),
+    ]),
     (_("Bluetooth"), "bluetooth", [
         (_("Check power and charge"), _("Make sure Bluetooth is enabled and the device has enough charge.")),
         (_("Turn on pairing mode"), _("Keep the device nearby and follow its instructions for pairing mode.")),
