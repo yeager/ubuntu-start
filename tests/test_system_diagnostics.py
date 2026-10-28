@@ -13,7 +13,11 @@ from system_diagnostics import (
     parse_memory_kib,
     parse_neighbor_mac,
     parse_nmcli_device_status,
+    parse_pactl_mute,
+    parse_pactl_volume,
+    parse_wpctl_volume,
     lookup_oui_vendor,
+    read_audio_status,
     read_battery_status,
     read_bluetooth_status,
     read_hardware_details,
@@ -94,6 +98,51 @@ class BluetoothStatusTests(unittest.TestCase):
             (Path(temporary) / "hci0").mkdir()
             self.assertEqual(read_bluetooth_status(controller_path=temporary), "powered")
         self.assertEqual(run.call_args.args[0], ["bluetoothctl", "show"])
+
+
+class AudioStatusTests(unittest.TestCase):
+    def test_parses_wpctl_volume_and_mute_state(self):
+        self.assertEqual(parse_wpctl_volume("Volume: 0.45 [MUTED]\n"), (45, True))
+        self.assertEqual(parse_wpctl_volume("Volume: 1.20\n"), (120, False))
+        self.assertIsNone(parse_wpctl_volume("No default node"))
+
+    def test_parses_pactl_volume_and_mute_state(self):
+        self.assertEqual(parse_pactl_volume("Volume: front-left: 65536 / 75% / -7.50 dB"), 75)
+        self.assertEqual(parse_pactl_mute("Mute: yes\n"), True)
+        self.assertEqual(parse_pactl_mute("Mute: no\n"), False)
+        self.assertIsNone(parse_pactl_mute("Unavailable"))
+
+    @patch("system_diagnostics.shutil.which", side_effect=lambda name: "/usr/bin/wpctl" if name == "wpctl" else None)
+    @patch("system_diagnostics._run_local")
+    def test_reads_wpctl_defaults_without_playing_audio(self, run, _which):
+        run.side_effect = [
+            subprocess.CompletedProcess([], 0, "Volume: 0.60\n", ""),
+            subprocess.CompletedProcess([], 0, "Volume: 0.25 [MUTED]\n", ""),
+        ]
+        self.assertEqual(
+            read_audio_status(),
+            {"output": (60, False), "input": (25, True), "error": None},
+        )
+        self.assertEqual(run.call_args_list[0].args[0], ["/usr/bin/wpctl", "get-volume", "@DEFAULT_AUDIO_SINK@"])
+        self.assertEqual(run.call_args_list[1].args[0], ["/usr/bin/wpctl", "get-volume", "@DEFAULT_AUDIO_SOURCE@"])
+
+    @patch("system_diagnostics.shutil.which", side_effect=lambda name: "/usr/bin/pactl" if name == "pactl" else None)
+    @patch("system_diagnostics._run_local")
+    def test_falls_back_to_pactl(self, run, _which):
+        run.side_effect = [
+            subprocess.CompletedProcess([], 0, "Volume: front-left: 65536 / 80%", ""),
+            subprocess.CompletedProcess([], 0, "Mute: no", ""),
+            subprocess.CompletedProcess([], 0, "Volume: front-left: 65536 / 40%", ""),
+            subprocess.CompletedProcess([], 0, "Mute: yes", ""),
+        ]
+        self.assertEqual(
+            read_audio_status(),
+            {"output": (80, False), "input": (40, True), "error": None},
+        )
+
+    @patch("system_diagnostics.shutil.which", return_value=None)
+    def test_reports_missing_audio_tools(self, _which):
+        self.assertEqual(read_audio_status(), {"output": None, "input": None, "error": "not-installed"})
 
 
 class ParseHardwareTests(unittest.TestCase):

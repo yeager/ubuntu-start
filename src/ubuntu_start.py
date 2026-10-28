@@ -11,7 +11,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import check_internet_connection, read_battery_status, read_bluetooth_status, read_hardware_details, read_network_devices, read_storage_status, run_network_diagnostics
+from system_diagnostics import check_internet_connection, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_network_devices, read_storage_status, run_network_diagnostics
 
 APP_ID = "se.nylander.UbuntuStart"
 DOMAIN = "ubuntu-start"
@@ -358,6 +358,20 @@ class UbuntuStart(Adw.Application):
         box.append(bluetooth_box)
         self.refresh_bluetooth_status(bluetooth_status)
 
+        audio_box, audio_rows = self.page(
+            _("Audio status"),
+            _("Read the default speaker and microphone volume and mute state. This check does not play sound or change settings."),
+        )
+        output_status = Adw.ActionRow(title=_("Speaker output"), subtitle=_("Checking status…"))
+        input_status = Adw.ActionRow(title=_("Microphone input"), subtitle=_("Checking status…"))
+        audio_rows.append(output_status)
+        audio_rows.append(input_status)
+        audio_refresh = Gtk.Button(label=_("Refresh audio status"), halign=Gtk.Align.START)
+        audio_refresh.connect("clicked", lambda *_: self.refresh_audio_status(output_status, input_status))
+        audio_box.append(audio_refresh)
+        box.append(audio_box)
+        self.refresh_audio_status(output_status, input_status)
+
         diagnostic_box, _diagnostic_rows = self.page(
             _("Connection quality"),
             _("The test looks up ubuntu.com using your configured DNS, pings your local gateway once, and reads its MAC address from the local neighbor table. DNS queries may be visible to your configured DNS provider; no diagnostic report is uploaded."),
@@ -560,6 +574,32 @@ class UbuntuStart(Adw.Application):
             "unavailable": _("Could not read Bluetooth controller status"),
         }
         status_row.set_subtitle(states.get(status, states["unavailable"]))
+        return GLib.SOURCE_REMOVE
+
+    def refresh_audio_status(self, output_row, input_row):
+        output_row.set_subtitle(_("Checking status…"))
+        input_row.set_subtitle(_("Checking status…"))
+
+        def read_status():
+            status = read_audio_status()
+            GLib.idle_add(self.show_audio_status, output_row, input_row, status)
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_audio_status(self, output_row, input_row, status):
+        error = status.get("error")
+        if error == "not-installed":
+            unavailable = _("PipeWire and PulseAudio tools are not installed")
+        else:
+            unavailable = _("No default audio device or volume status is available")
+        for row, key in ((output_row, "output"), (input_row, "input")):
+            reading = status.get(key)
+            if not isinstance(reading, tuple):
+                row.set_subtitle(unavailable if error else _("No default device is available"))
+                continue
+            percent, muted = reading
+            state = _("Muted") if muted else _("Not muted")
+            row.set_subtitle(_("{percent}% · {state}").format(percent=percent, state=state))
         return GLib.SOURCE_REMOVE
 
     def show_network_status(self, status_label, device_rows, devices, error):

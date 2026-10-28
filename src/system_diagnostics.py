@@ -95,6 +95,58 @@ def read_bluetooth_status(
     return parse_bluetooth_controller_status(result.stdout)
 
 
+def parse_wpctl_volume(output: str) -> tuple[int, bool] | None:
+    """Parse a volume percentage and mute flag from `wpctl get-volume`."""
+    match = re.search(r"\bVolume:\s*([0-9]+(?:\.[0-9]+)?)", output, re.IGNORECASE)
+    if not match:
+        return None
+    percent = round(float(match.group(1)) * 100)
+    muted = bool(re.search(r"\[MUTED\]", output, re.IGNORECASE))
+    return percent, muted
+
+
+def parse_pactl_volume(output: str) -> int | None:
+    """Parse the first channel percentage from `pactl get-*-volume`."""
+    match = re.search(r"\b([0-9]{1,3})%", output)
+    return int(match.group(1)) if match else None
+
+
+def parse_pactl_mute(output: str) -> bool | None:
+    match = re.search(r"\bMute:\s*(yes|no)\b", output, re.IGNORECASE)
+    return match.group(1).casefold() == "yes" if match else None
+
+
+def read_audio_status(timeout: float = 2.0) -> dict[str, tuple[int, bool] | None | str]:
+    """Read default speaker and microphone volume/mute state without changing it."""
+    wpctl = shutil.which("wpctl")
+    pactl = shutil.which("pactl")
+    result: dict[str, tuple[int, bool] | None | str] = {
+        "output": None, "input": None, "error": None,
+    }
+    if wpctl:
+        for key, endpoint in (("output", "@DEFAULT_AUDIO_SINK@"), ("input", "@DEFAULT_AUDIO_SOURCE@")):
+            response = _run_local([wpctl, "get-volume", endpoint], timeout)
+            if response and response.returncode == 0:
+                result[key] = parse_wpctl_volume(response.stdout)
+    if pactl and result["output"] is None and result["input"] is None:
+        for key, kind, endpoint in (
+            ("output", "sink", "@DEFAULT_SINK@"),
+            ("input", "source", "@DEFAULT_SOURCE@"),
+        ):
+            volume = _run_local([pactl, f"get-{kind}-volume", endpoint], timeout)
+            mute = _run_local([pactl, f"get-{kind}-mute", endpoint], timeout)
+            percent = parse_pactl_volume(volume.stdout) if volume and volume.returncode == 0 else None
+            muted = parse_pactl_mute(mute.stdout) if mute and mute.returncode == 0 else None
+            if percent is not None and muted is not None:
+                result[key] = (percent, muted)
+    if not wpctl and not pactl:
+        result["error"] = "not-installed"
+
+    if result["output"] is None and result["input"] is None and result["error"] is None:
+        result["error"] = "unavailable"
+    return result
+
+
 def parse_cpu_model(cpuinfo: str) -> str | None:
     """Return a useful CPU model from Linux procfs content."""
     for line in cpuinfo.splitlines():

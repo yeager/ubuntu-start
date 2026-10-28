@@ -16,11 +16,13 @@ An Ubuntu Desktop guide for first-run setup and device troubleshooting.
 
 ![Optional DNS and gateway diagnostics](screenshots/network-diagnostics-en.png)
 
+![Read-only speaker and microphone status](screenshots/audio-status-en.png)
+
 ![Beginner terminal guide](screenshots/terminal-guide-en.png)
 
 ![WiFi Analyzer recommendation in the Wi-Fi troubleshooting guide](screenshots/wifi-analyzer-en.png)
 
-[Swedish system guides](screenshots/system-guides-sv.png) · [Swedish network and hardware overview](screenshots/network-hardware-sv.png) · [Swedish diagnostics](screenshots/network-diagnostics-sv.png) · [Swedish terminal guide](screenshots/terminal-guide-sv.png) · [Swedish Wi-Fi analyzer recommendation](screenshots/wifi-analyzer-sv.png)
+[Swedish system guides](screenshots/system-guides-sv.png) · [Swedish network and hardware overview](screenshots/network-hardware-sv.png) · [Swedish diagnostics](screenshots/network-diagnostics-sv.png) · [Swedish audio status](screenshots/audio-status-sv.png) · [Swedish terminal guide](screenshots/terminal-guide-sv.png) · [Swedish Wi-Fi analyzer recommendation](screenshots/wifi-analyzer-sv.png)
 
 ![Ubuntu help links and privacy-conscious system summary](screenshots/help-en.png)
 
@@ -46,6 +48,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contributor guidance and the maintain
 - A beginner-friendly Terminal guide covers the prompt, `pwd`, `ls`, `cd`, `--help`, `man`, `sudo` and safe ways to stop a command.
 - Optional connection diagnostics report DNS lookup and gateway ping latency in milliseconds, plus the gateway MAC address and a local OUI vendor match. The test asks before running; it sends one DNS lookup to the configured resolver and one ping to the local gateway.
 - Read-only Bluetooth status reports whether a controller is present and powered on without scanning for nearby devices.
+- Read-only audio status checks the default speaker and microphone volume and mute state through PipeWire or PulseAudio without playing sounds or changing settings.
 - Wi-Fi troubleshooting recommends [WiFi Analyzer](https://github.com/yeager/wifi-analyzer) for nearby signal levels and channel use. Opening GitHub requires confirmation.
 - Built-in links to official Ubuntu documentation, Ask Ubuntu and the Ubuntu support forum.
 - Read-only NetworkManager, Bluetooth, hardware and storage summaries, battery charge and estimated capacity versus original design when exposed, plus a copyable support report that omits usernames, host names, serial numbers, network addresses, Wi-Fi names and installed applications.
@@ -73,11 +76,11 @@ LANGUAGE=sv UBUNTU_START_LOCALEDIR="$PWD/build/locale" python3 src/ubuntu_start.
 
 Run the unit tests with `PYTHONPATH=src python3 -m unittest discover -s tests -v`. The CI workflow runs these tests and builds the app for pull requests.
 
-NetworkManager, storage, battery and hardware summaries use local system information. DNS/gateway checks and external links require confirmation; DNS uses the configured resolver, ping targets the local gateway, and vendor matching uses a local OUI file when available. The separate internet test sends one HTTPS HEAD request to `ubuntu.com` after confirmation. No diagnostic report is uploaded, and serial numbers are not read. The app expects GTK 4, libadwaita and PyGObject. It has been installed and launched on the Ubuntu target described below.
+NetworkManager, Bluetooth, audio, storage, battery and hardware summaries use local system information. DNS/gateway tests and the WiFi Analyzer GitHub link ask for confirmation before contacting an external service; DNS uses the configured resolver, ping targets the local gateway, and vendor matching uses a local OUI file when available. The separate internet test sends one HTTPS HEAD request to `ubuntu.com` after confirmation. Other help pages open only when selected. No diagnostic report is uploaded, and serial numbers are not read. The app expects GTK 4, libadwaita and PyGObject.
 
 ## Validation
 
-On the Ubuntu 26.10 machine `trv2`, the previous application build was configured, compiled, installed and inspected under Xvfb in English and Swedish. The current additions have local unit coverage; network behavior against the machine's real gateway and DNS resolver has not been exercised here. The locale catalog is checked with `msgfmt --check` and the CI workflow requires complete, non-fuzzy translations.
+On the Ubuntu 26.10 machine `trv2`, the current source was built and staged with Meson, then launched under Xvfb in English and Swedish. All 29 unit tests passed on the target, AppStream validation succeeded, and the Swedish catalog has 297 translated messages with no fuzzy or untranslated strings. The target's PipeWire status reported a default speaker at 100% and unmuted, with no default microphone source. The DNS, gateway ping and internet tests were not run against the real network. Xvfb screenshots verify the interface but do not prove physical device behavior.
 
 The GNOME Control Center panel list on the target confirms the app's Bluetooth, Wi-Fi, printer, display, privacy and sound panel identifiers; the language/keyboard entry uses the current `keyboard` panel ID. Both Ubuntu driver/update utilities were downloaded as `.deb` packages and installed with `dpkg -i`, together with their dependencies. `Software & Updates --open-tab=4` opened the Swedish Additional Drivers tab under Xvfb; the target currently reports that no proprietary drivers are in use. Update Manager displayed its Swedish updates screen. `dpkg --audit` is clean and `apt-get check` reports no dependency errors. A final check found no pending upgrades and no reboot-required marker. GUI inspection ran under Xvfb, which cannot verify hardware acceleration or physical-device behavior.
 
