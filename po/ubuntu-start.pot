@@ -93,7 +93,7 @@ msgid ""
 "Make sure it is powered on and has paper, ink or toner, and no paper jam."
 msgstr ""
 
-#: src/ubuntu_start.py:37 src/ubuntu_start.py:70 src/ubuntu_start.py:75
+#: src/ubuntu_start.py:37 src/ubuntu_start.py:47 src/ubuntu_start.py:70 src/ubuntu_start.py:75
 msgid "Check the connection"
 msgstr ""
 
@@ -153,6 +153,70 @@ msgstr ""
 msgid ""
 "If graphics are unstable or a feature is missing, review the drivers offered "
 "by Ubuntu before changing anything."
+msgstr ""
+
+#: src/ubuntu_start.py:46
+msgid "Keyboards"
+msgstr ""
+
+#: src/ubuntu_start.py:47
+msgid ""
+"For a wired keyboard, reconnect the cable. For a wireless keyboard, check its "
+"charge or batteries, power switch and USB receiver."
+msgstr ""
+
+#: src/ubuntu_start.py:48
+msgid "Check the keyboard layout"
+msgstr ""
+
+#: src/ubuntu_start.py:48
+msgid ""
+"Open Keyboard Settings and select the layout you intend to use. Test the keys "
+"in another app to see whether the problem is app-specific."
+msgstr ""
+
+#: src/ubuntu_start.py:49
+msgid "Try another port or keyboard"
+msgstr ""
+
+#: src/ubuntu_start.py:49
+msgid ""
+"For a USB keyboard, try another port. If available, connect another keyboard "
+"to help identify whether the problem is with the keyboard or computer."
+msgstr ""
+
+#: src/ubuntu_start.py:51
+msgid "Touchpads"
+msgstr ""
+
+#: src/ubuntu_start.py:52
+msgid "Make sure the touchpad is enabled"
+msgstr ""
+
+#: src/ubuntu_start.py:52
+msgid ""
+"Open Mouse & Touchpad Settings and check that the touchpad is switched on. "
+"Some laptops also have a keyboard shortcut that turns it off."
+msgstr ""
+
+#: src/ubuntu_start.py:53
+msgid "Check the surface and pointer speed"
+msgstr ""
+
+#: src/ubuntu_start.py:53
+msgid ""
+"Keep the touchpad clean and dry. Adjust pointer speed in Settings, then test "
+"basic movement before trying gestures."
+msgstr ""
+
+#: src/ubuntu_start.py:54
+msgid "Compare with an external mouse"
+msgstr ""
+
+#: src/ubuntu_start.py:54
+msgid ""
+"If a mouse works but the touchpad does not, check for Ubuntu updates and "
+"consult the laptop support information before changing drivers."
 msgstr ""
 
 #: src/ubuntu_start.py:46 src/ubuntu_start.py:620

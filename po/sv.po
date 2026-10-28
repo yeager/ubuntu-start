@@ -100,7 +100,7 @@ msgstr ""
 "Se till att den är påslagen, har papper och bläck eller toner och inte har "
 "papperstrassel."
 
-#: src/ubuntu_start.py:37 src/ubuntu_start.py:70 src/ubuntu_start.py:75
+#: src/ubuntu_start.py:37 src/ubuntu_start.py:47 src/ubuntu_start.py:70 src/ubuntu_start.py:75
 msgid "Check the connection"
 msgstr "Kontrollera anslutningen"
 
@@ -171,6 +171,82 @@ msgid ""
 msgstr ""
 "Om grafiken är instabil eller någon funktion saknas granskar du "
 "drivrutinerna som Ubuntu erbjuder innan du ändrar något."
+
+#: src/ubuntu_start.py:46
+msgid "Keyboards"
+msgstr "Tangentbord"
+
+#: src/ubuntu_start.py:47
+msgid ""
+"For a wired keyboard, reconnect the cable. For a wireless keyboard, check its "
+"charge or batteries, power switch and USB receiver."
+msgstr ""
+"Anslut kabeln på nytt om tangentbordet är trådbundet. Kontrollera laddning "
+"eller batterier, strömbrytare och USB-mottagare om det är trådlöst."
+
+#: src/ubuntu_start.py:48
+msgid "Check the keyboard layout"
+msgstr "Kontrollera tangentbordslayouten"
+
+#: src/ubuntu_start.py:48
+msgid ""
+"Open Keyboard Settings and select the layout you intend to use. Test the keys "
+"in another app to see whether the problem is app-specific."
+msgstr ""
+"Öppna tangentbordsinställningarna och välj den layout du vill använda. Prova "
+"tangenterna i ett annat program för att se om problemet bara gäller en app."
+
+#: src/ubuntu_start.py:49
+msgid "Try another port or keyboard"
+msgstr "Prova en annan port eller ett annat tangentbord"
+
+#: src/ubuntu_start.py:49
+msgid ""
+"For a USB keyboard, try another port. If available, connect another keyboard "
+"to help identify whether the problem is with the keyboard or computer."
+msgstr ""
+"Prova en annan USB-port. Anslut ett annat tangentbord om du kan, så blir det "
+"lättare att avgöra om problemet ligger i tangentbordet eller datorn."
+
+#: src/ubuntu_start.py:51
+msgid "Touchpads"
+msgstr "Styrplattor"
+
+#: src/ubuntu_start.py:52
+msgid "Make sure the touchpad is enabled"
+msgstr "Kontrollera att styrplattan är aktiverad"
+
+#: src/ubuntu_start.py:52
+msgid ""
+"Open Mouse & Touchpad Settings and check that the touchpad is switched on. "
+"Some laptops also have a keyboard shortcut that turns it off."
+msgstr ""
+"Öppna inställningarna för mus och styrplatta och kontrollera att styrplattan "
+"är på. Vissa bärbara datorer har också ett kortkommando som stänger av den."
+
+#: src/ubuntu_start.py:53
+msgid "Check the surface and pointer speed"
+msgstr "Kontrollera ytan och pekarhastigheten"
+
+#: src/ubuntu_start.py:53
+msgid ""
+"Keep the touchpad clean and dry. Adjust pointer speed in Settings, then test "
+"basic movement before trying gestures."
+msgstr ""
+"Håll styrplattan ren och torr. Justera pekarhastigheten i Inställningar och "
+"prova grundläggande pekarrörelser innan du testar gester."
+
+#: src/ubuntu_start.py:54
+msgid "Compare with an external mouse"
+msgstr "Jämför med en extern mus"
+
+#: src/ubuntu_start.py:54
+msgid ""
+"If a mouse works but the touchpad does not, check for Ubuntu updates and "
+"consult the laptop support information before changing drivers."
+msgstr ""
+"Om en mus fungerar men styrplattan inte gör det, sök efter Ubuntu-uppdateringar "
+"och läs datorns supportinformation innan du ändrar drivrutiner."
 
 #: src/ubuntu_start.py:46 src/ubuntu_start.py:620
 msgid "Wi-Fi"

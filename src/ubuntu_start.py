@@ -43,6 +43,16 @@ GUIDES = [
         (_("Open Display Settings"), _("Check whether Ubuntu detects the display. Try a supported resolution and refresh rate.")),
         (_("Review graphics drivers"), _("If graphics are unstable or a feature is missing, review the drivers offered by Ubuntu before changing anything.")),
     ]),
+    (_("Keyboards"), "keyboard", [
+        (_("Check the connection"), _("For a wired keyboard, reconnect the cable. For a wireless keyboard, check its charge or batteries, power switch and USB receiver.")),
+        (_("Check the keyboard layout"), _("Open Keyboard Settings and select the layout you intend to use. Test the keys in another app to see whether the problem is app-specific.")),
+        (_("Try another port or keyboard"), _("For a USB keyboard, try another port. If available, connect another keyboard to help identify whether the problem is with the keyboard or computer.")),
+    ]),
+    (_("Touchpads"), "mouse", [
+        (_("Make sure the touchpad is enabled"), _("Open Mouse & Touchpad Settings and check that the touchpad is switched on. Some laptops also have a keyboard shortcut that turns it off.")),
+        (_("Check the surface and pointer speed"), _("Keep the touchpad clean and dry. Adjust pointer speed in Settings, then test basic movement before trying gestures.")),
+        (_("Compare with an external mouse"), _("If a mouse works but the touchpad does not, check for Ubuntu updates and consult the laptop support information before changing drivers.")),
+    ]),
     (_("Wi-Fi"), "wifi", [
         (_("Check Wi-Fi and airplane mode"), _("Turn airplane mode off and make sure Wi-Fi is enabled in Quick Settings.")),
         (_("Check the network"), _("See whether another device can connect. If none can, restart the router and check its internet connection.")),
