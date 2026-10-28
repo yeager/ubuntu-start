@@ -12,6 +12,6 @@ i18n.merge_file(
   install_dir: get_option('datadir') / 'applications',
 )
 install_data('data/se.nylander.UbuntuStart.metainfo.xml', install_dir: get_option('datadir') / 'metainfo')
-install_data('data/se.nylander.UbuntuStart.svg', install_dir: get_option('datadir') / 'icons' / 'hicolor' / 'scalable' / 'apps')
+install_data('data/se.nylander.UbuntuStart.png', install_dir: get_option('datadir') / 'icons' / 'hicolor' / '512x512' / 'apps')
 
 subdir('po')
