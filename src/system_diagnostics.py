@@ -212,7 +212,51 @@ def _read(path: Path) -> str | None:
         return None
 
 
-def _graphics_adapters(drm_path: Path) -> list[str]:
+def lookup_pci_device_name(
+    vendor_id: str,
+    device_id: str,
+    databases: tuple[str, ...] = (
+        "/usr/share/misc/pci.ids", "/usr/share/hwdata/pci.ids", "/usr/share/pci.ids",
+    ),
+) -> str | None:
+    """Resolve a PCI vendor/device pair from an installed pci.ids database only."""
+    vendor_match = re.fullmatch(r"(?:0x)?([0-9a-f]{4})", vendor_id.strip(), re.IGNORECASE)
+    device_match = re.fullmatch(r"(?:0x)?([0-9a-f]{4})", device_id.strip(), re.IGNORECASE)
+    if not vendor_match or not device_match:
+        return None
+    wanted_vendor = vendor_match.group(1).upper()
+    wanted_device = device_match.group(1).upper()
+
+    for database in databases:
+        try:
+            lines = Path(database).read_text(encoding="ascii", errors="replace").splitlines()
+        except OSError:
+            continue
+        vendor_name = None
+        for line in lines:
+            vendor = re.match(r"^([0-9A-Fa-f]{4})\s{2,}(.+?)\s*$", line)
+            if vendor:
+                if vendor.group(1).upper() == wanted_vendor:
+                    vendor_name = vendor.group(2).strip()
+                    continue
+                if vendor_name:
+                    break
+                continue
+            if vendor_name and line.startswith("\t") and not line.startswith("\t\t"):
+                device = re.match(r"^\t([0-9A-Fa-f]{4})\s{2,}(.+?)\s*$", line)
+                if device and device.group(1).upper() == wanted_device:
+                    return f"{vendor_name} {device.group(2).strip()}"
+        if vendor_name:
+            return vendor_name
+    return None
+
+
+def _graphics_adapters(
+    drm_path: Path,
+    pci_databases: tuple[str, ...] = (
+        "/usr/share/misc/pci.ids", "/usr/share/hwdata/pci.ids", "/usr/share/pci.ids",
+    ),
+) -> list[str]:
     adapters = []
     for device_path in sorted(drm_path.glob("card[0-9]*/device")):
         vendor = _read(device_path / "vendor")
@@ -225,7 +269,9 @@ def _graphics_adapters(drm_path: Path) -> list[str]:
         except OSError:
             driver = None
         pci_id = f"{vendor}:{device}"
-        adapters.append(f"{pci_id} ({driver})" if driver else pci_id)
+        name = lookup_pci_device_name(vendor, device, pci_databases)
+        description = f"{name} [{pci_id}]" if name else pci_id
+        adapters.append(f"{description} ({driver})" if driver else description)
     return adapters
 
 
@@ -233,6 +279,9 @@ def read_hardware_details(
     cpuinfo_path: str | Path = "/proc/cpuinfo",
     meminfo_path: str | Path = "/proc/meminfo",
     sys_root: str | Path = "/sys",
+    pci_databases: tuple[str, ...] = (
+        "/usr/share/misc/pci.ids", "/usr/share/hwdata/pci.ids", "/usr/share/pci.ids",
+    ),
 ) -> dict[str, str | None | list[str]]:
     """Read useful hardware facts while deliberately excluding serial numbers."""
     cpuinfo = _read(Path(cpuinfo_path)) or ""
@@ -248,7 +297,7 @@ def read_hardware_details(
         "system_model": product,
         "processor": parse_cpu_model(cpuinfo),
         "memory": memory,
-        "graphics": _graphics_adapters(sys_root / "class/drm"),
+        "graphics": _graphics_adapters(sys_root / "class/drm", pci_databases),
         "architecture": platform.machine(),
     }
 

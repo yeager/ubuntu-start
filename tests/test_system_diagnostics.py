@@ -18,6 +18,7 @@ from system_diagnostics import (
     parse_pactl_volume,
     parse_wpctl_volume,
     lookup_oui_vendor,
+    lookup_pci_device_name,
     read_audio_status,
     read_battery_status,
     read_bluetooth_status,
@@ -227,6 +228,28 @@ class AudioStatusTests(unittest.TestCase):
 
 
 class ParseHardwareTests(unittest.TestCase):
+    def test_resolves_graphics_name_from_local_pci_database(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            database = Path(temporary) / "pci.ids"
+            database.write_text(
+                """1234  Example Graphics Corp
+\t5678  Fast Display 9000
+\t\t1234 0001  Example board
+ABCD  Another Vendor
+\t5678  Different device
+""",
+                encoding="ascii",
+            )
+            self.assertEqual(
+                lookup_pci_device_name("0x1234", "0xabcd", (str(database),)),
+                "Example Graphics Corp",
+            )
+            self.assertEqual(
+                lookup_pci_device_name("1234", "5678", (str(database),)),
+                "Example Graphics Corp Fast Display 9000",
+            )
+            self.assertIsNone(lookup_pci_device_name("invalid", "5678", (str(database),)))
+
     def test_extracts_cpu_model(self):
         self.assertEqual(
             parse_cpu_model("processor : 0\nmodel name : Example CPU 9000\n"),
@@ -260,12 +283,21 @@ class ParseHardwareTests(unittest.TestCase):
             meminfo = root / "meminfo"
             meminfo.write_text("MemTotal: 8388608 kB\n", encoding="utf-8")
 
-            result = read_hardware_details(cpuinfo, meminfo, sys_root)
+            pci_ids = root / "pci.ids"
+            pci_ids.write_text(
+                "1234  Example Graphics Corp\n\tABCD  Example Adapter\n",
+                encoding="ascii",
+            )
+            result = read_hardware_details(
+                cpuinfo, meminfo, sys_root, pci_databases=(str(pci_ids),),
+            )
 
         self.assertEqual(result["system_model"], "Test Laptop")
         self.assertEqual(result["processor"], "Example CPU")
         self.assertEqual(result["memory"], "8 GiB")
-        self.assertEqual(result["graphics"], ["0x1234:0xabcd (example_gpu)"])
+        self.assertEqual(result["graphics"], [
+            "Example Graphics Corp Example Adapter [0x1234:0xabcd] (example_gpu)",
+        ])
         self.assertNotIn("DO-NOT-READ", repr(result))
 
 
