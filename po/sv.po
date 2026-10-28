@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ubuntu Start 0.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-28 16:29+0100\n"
+"POT-Creation-Date: 2026-10-28 16:31+0100\n"
 "PO-Revision-Date: 2026-10-28 15:18+0100\n"
 "Last-Translator: Ubuntu Start contributors\n"
 "Language-Team: Swedish\n"
@@ -1669,8 +1669,10 @@ msgstr ""
 "provat. Ta bort lösenord och andra personuppgifter."
 
 #: src/ubuntu_start.py:716
-msgid "Small shortcuts can make everyday Ubuntu tasks quicker."
-msgstr "Små genvägar kan göra vardagliga uppgifter i Ubuntu snabbare."
+msgid ""
+"These are Ubuntu’s default shortcuts. Open Keyboard Settings to review or "
+"change them; key labels can vary by device."
+msgstr "Det här är Ubuntus standardgenvägar. Öppna tangentbordsinställningarna för att se eller ändra dem. Tangentnamn kan variera mellan olika enheter."
 
 #: src/ubuntu_start.py:719
 msgid "Find apps and settings"
@@ -1678,7 +1680,8 @@ msgstr "Hitta appar och inställningar"
 
 #: src/ubuntu_start.py:719
 msgid "Press the Super key and start typing the name of an app or setting."
-msgstr "Tryck på Super-tangenten och börja skriva namnet på en app eller inställning."
+msgstr ""
+"Tryck på Super-tangenten och börja skriva namnet på en app eller inställning."
 
 #: src/ubuntu_start.py:720
 msgid "Switch between apps"
@@ -1696,13 +1699,17 @@ msgstr "Placera fönster bredvid varandra"
 msgid ""
 "Press Super+Left or Super+Right to place the current window on one side of "
 "the screen."
-msgstr "Tryck på Super+vänster eller Super+höger för att placera fönstret vid ena sidan av skärmen."
+msgstr ""
+"Tryck på Super+vänster eller Super+höger för att placera fönstret vid ena "
+"sidan av skärmen."
 
 #: src/ubuntu_start.py:722
 msgid ""
 "Select the system menu at the top-right to reach Wi-Fi, Bluetooth, sound, "
 "brightness and power controls."
-msgstr "Välj systemmenyn uppe till höger för att komma åt Wi-Fi, Bluetooth, ljud, ljusstyrka och strömreglage."
+msgstr ""
+"Välj systemmenyn uppe till höger för att komma åt Wi-Fi, Bluetooth, ljud, "
+"ljusstyrka och strömreglage."
 
 #: src/ubuntu_start.py:723
 msgid "Take a screenshot"
@@ -1712,7 +1719,9 @@ msgstr "Ta en skärmbild"
 msgid ""
 "On Ubuntu GNOME, press Print to open the screenshot controls and choose a "
 "screen, window or area."
-msgstr "I Ubuntu GNOME öppnar Print-tangenten skärmbildsverktyget, där du kan välja skärmen, ett fönster eller ett område."
+msgstr ""
+"I Ubuntu GNOME öppnar Print-tangenten skärmbildsverktyget, där du kan välja "
+"skärmen, ett fönster eller ett område."
 
 #: src/ubuntu_start.py:724
 msgid "Show hidden files"
@@ -1722,7 +1731,9 @@ msgstr "Visa dolda filer"
 msgid ""
 "In Files, press Ctrl+H to show or hide hidden files. Be careful when "
 "changing hidden configuration files."
-msgstr "I Filer trycker du på Ctrl+H för att visa eller dölja dolda filer. Var försiktig när du ändrar dolda konfigurationsfiler."
+msgstr ""
+"I Filer trycker du på Ctrl+H för att visa eller dölja dolda filer. Var "
+"försiktig när du ändrar dolda konfigurationsfiler."
 
 #: src/ubuntu_start.py:725
 msgid "Create a folder in Files"
@@ -1740,7 +1751,9 @@ msgstr "Växla tangentbordslayout"
 msgid ""
 "If you have added more than one layout, press Super+Space to switch between "
 "them."
-msgstr "Om du har lagt till fler än en layout trycker du på Super+Blanksteg för att växla mellan dem."
+msgstr ""
+"Om du har lagt till fler än en layout trycker du på Super+Blanksteg för att "
+"växla mellan dem."
 
 #: src/ubuntu_start.py:727
 msgid "Lock the screen"
@@ -1754,27 +1767,44 @@ msgstr "Tryck på Super+L för att låsa skärmen när du lämnar datorn."
 msgid ""
 "Ctrl+Alt+T opens Terminal on Ubuntu by default. You can change this shortcut "
 "in Keyboard Settings."
-msgstr "Ctrl+Alt+T öppnar terminalen som standard i Ubuntu. Du kan ändra kortkommandot i tangentbordsinställningarna."
+msgstr ""
+"Ctrl+Alt+T öppnar terminalen som standard i Ubuntu. Du kan ändra "
+"kortkommandot i tangentbordsinställningarna."
 
-#: src/ubuntu_start.py:737
+#: src/ubuntu_start.py:734
+msgid "Keyboard shortcuts"
+msgstr "Tangentbordsgenvägar"
+
+#: src/ubuntu_start.py:735
+msgid "Review or change the shortcuts used by your desktop."
+msgstr "Se över eller ändra skrivbordets kortkommandon."
+
+#: src/ubuntu_start.py:736
+msgid "Open Keyboard Settings"
+msgstr "Öppna tangentbordsinställningarna"
+
+#: src/ubuntu_start.py:744
 msgid "Clipboard is unavailable."
 msgstr "Urklipp är inte tillgängligt."
 
-#: src/ubuntu_start.py:741
+#: src/ubuntu_start.py:748
 msgid "System details copied."
 msgstr "Systemuppgifterna har kopierats."
 
-#: src/ubuntu_start.py:756
+#: src/ubuntu_start.py:763
 msgid "Could not open the requested tool"
 msgstr "Det gick inte att öppna verktyget"
 
-#: src/ubuntu_start.py:757
+#: src/ubuntu_start.py:764
 msgid "Close"
 msgstr "Stäng"
 
 #: data/se.nylander.UbuntuStart.desktop:3
 msgid "Get started with Ubuntu and troubleshoot devices"
 msgstr "Kom igång med Ubuntu och felsök anslutna enheter"
+
+#~ msgid "Small shortcuts can make everyday Ubuntu tasks quicker."
+#~ msgstr "Små genvägar kan göra vardagliga uppgifter i Ubuntu snabbare."
 
 #~ msgid ""
 #~ "Battery health and charge are read from local system information when the "

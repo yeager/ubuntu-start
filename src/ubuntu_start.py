@@ -713,7 +713,7 @@ class UbuntuStart(Adw.Application):
     def make_tips_page(self):
         box, rows = self.page(
             _("Tips and tricks"),
-            _("Small shortcuts can make everyday Ubuntu tasks quicker."),
+            _("These are Ubuntu’s default shortcuts. Open Keyboard Settings to review or change them; key labels can vary by device."),
         )
         tips = [
             (_("Find apps and settings"), _("Press the Super key and start typing the name of an app or setting.")),
@@ -729,6 +729,13 @@ class UbuntuStart(Adw.Application):
         ]
         for title, description in tips:
             self.row(rows, title, description)
+        self.row(
+            rows,
+            _("Keyboard shortcuts"),
+            _("Review or change the shortcuts used by your desktop."),
+            _("Open Keyboard Settings"),
+            lambda: self.open_app("gnome-control-center", "keyboard"),
+        )
         return box
 
     def copy_system_details(self, status_label):

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-28 16:29+0100\n"
+"POT-Creation-Date: 2026-10-28 16:31+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1486,7 +1486,9 @@ msgid ""
 msgstr ""
 
 #: src/ubuntu_start.py:716
-msgid "Small shortcuts can make everyday Ubuntu tasks quicker."
+msgid ""
+"These are Ubuntu’s default shortcuts. Open Keyboard Settings to review or "
+"change them; key labels can vary by device."
 msgstr ""
 
 #: src/ubuntu_start.py:719
@@ -1573,19 +1575,31 @@ msgid ""
 "in Keyboard Settings."
 msgstr ""
 
-#: src/ubuntu_start.py:737
+#: src/ubuntu_start.py:734
+msgid "Keyboard shortcuts"
+msgstr ""
+
+#: src/ubuntu_start.py:735
+msgid "Review or change the shortcuts used by your desktop."
+msgstr ""
+
+#: src/ubuntu_start.py:736
+msgid "Open Keyboard Settings"
+msgstr ""
+
+#: src/ubuntu_start.py:744
 msgid "Clipboard is unavailable."
 msgstr ""
 
-#: src/ubuntu_start.py:741
+#: src/ubuntu_start.py:748
 msgid "System details copied."
 msgstr ""
 
-#: src/ubuntu_start.py:756
+#: src/ubuntu_start.py:763
 msgid "Could not open the requested tool"
 msgstr ""
 
-#: src/ubuntu_start.py:757
+#: src/ubuntu_start.py:764
 msgid "Close"
 msgstr ""
 
