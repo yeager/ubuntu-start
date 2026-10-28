@@ -128,11 +128,13 @@ def read_audio_status(timeout: float = 2.0) -> dict[str, tuple[int, bool] | None
             response = _run_local([wpctl, "get-volume", endpoint], timeout)
             if response and response.returncode == 0:
                 result[key] = parse_wpctl_volume(response.stdout)
-    if pactl and result["output"] is None and result["input"] is None:
+    if pactl:
         for key, kind, endpoint in (
             ("output", "sink", "@DEFAULT_SINK@"),
             ("input", "source", "@DEFAULT_SOURCE@"),
         ):
+            if result[key] is not None:
+                continue
             volume = _run_local([pactl, f"get-{kind}-volume", endpoint], timeout)
             mute = _run_local([pactl, f"get-{kind}-mute", endpoint], timeout)
             percent = parse_pactl_volume(volume.stdout) if volume and volume.returncode == 0 else None

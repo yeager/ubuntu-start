@@ -140,6 +140,28 @@ class AudioStatusTests(unittest.TestCase):
             {"output": (80, False), "input": (40, True), "error": None},
         )
 
+    @patch(
+        "system_diagnostics.shutil.which",
+        side_effect=lambda name: f"/usr/bin/{name}" if name in {"wpctl", "pactl"} else None,
+    )
+    @patch("system_diagnostics._run_local")
+    def test_falls_back_per_endpoint_when_wpctl_has_no_default_source(self, run, _which):
+        run.side_effect = [
+            subprocess.CompletedProcess([], 0, "Volume: 0.60\n", ""),
+            subprocess.CompletedProcess([], 1, "", "No default source"),
+            subprocess.CompletedProcess([], 0, "Volume: front-left: 65536 / 35%", ""),
+            subprocess.CompletedProcess([], 0, "Mute: no", ""),
+        ]
+        self.assertEqual(
+            read_audio_status(),
+            {"output": (60, False), "input": (35, False), "error": None},
+        )
+        self.assertEqual(len(run.call_args_list), 4)
+        self.assertEqual(
+            run.call_args_list[2].args[0],
+            ["/usr/bin/pactl", "get-source-volume", "@DEFAULT_SOURCE@"],
+        )
+
     @patch("system_diagnostics.shutil.which", return_value=None)
     def test_reports_missing_audio_tools(self, _which):
         self.assertEqual(read_audio_status(), {"output": None, "input": None, "error": "not-installed"})
