@@ -809,6 +809,62 @@ msgstr ""
 "Välj Installera nu och ange lösenordet om du blir ombedd. Starta bara om när "
 "Ubuntu ber dig om det."
 
+#: src/ubuntu_start.py:134
+msgid "Install a desktop application"
+msgstr "Installera ett skrivbordsprogram"
+
+#: src/ubuntu_start.py:134
+msgid "Open Ubuntu App Center"
+msgstr "Öppna Ubuntus Appcenter"
+
+#: src/ubuntu_start.py:135
+msgid "Search for the app name"
+msgstr "Sök efter appens namn"
+
+#: src/ubuntu_start.py:135
+msgid "Enter the app’s exact name in the App Center search box. Check that the result is the app you intended."
+msgstr "Skriv appens exakta namn i Appcentrets sökruta. Kontrollera att resultatet är rätt app."
+
+#: src/ubuntu_start.py:136
+msgid "Review the publisher and source"
+msgstr "Granska utgivare och källa"
+
+#: src/ubuntu_start.py:136
+msgid "Check who publishes the app, where it comes from and which permissions it requests. Follow your organization’s software policy on managed computers."
+msgstr "Kontrollera vem som ger ut appen, varifrån den kommer och vilka behörigheter den begär. Följ organisationens programvarupolicy på en hanterad dator."
+
+#: src/ubuntu_start.py:137
+msgid "Install when you are ready"
+msgstr "Installera när du är redo"
+
+#: src/ubuntu_start.py:137
+msgid "Select Install only after reviewing the details. Ubuntu may ask you to confirm with your password."
+msgstr "Välj Installera först när du har granskat uppgifterna. Ubuntu kan be dig bekräfta med lösenordet."
+
+#: src/ubuntu_start.py:138
+msgid "Keep apps up to date"
+msgstr "Håll appar uppdaterade"
+
+#: src/ubuntu_start.py:138
+msgid "Use the App Center’s Updates section to review available app updates. Save your work before updating."
+msgstr "Använd avsnittet Uppdateringar i Appcentret för att granska tillgängliga appuppdateringar. Spara ditt arbete innan du uppdaterar."
+
+#: src/ubuntu_start.py:263
+msgid "Open Ubuntu App Center?"
+msgstr "Öppna Ubuntus Appcenter?"
+
+#: src/ubuntu_start.py:264
+msgid "The App Center may contact your configured software sources to show apps and updates. Ubuntu Start will not install anything. You can review app details and choose whether to install in the App Center."
+msgstr "Appcentret kan ansluta till dina konfigurerade programkällor för att visa appar och uppdateringar. Ubuntu Start installerar ingenting. Du kan granska appuppgifterna och själv välja om du vill installera i Appcentret."
+
+#: src/ubuntu_start.py:266
+msgid "Open App Center"
+msgstr "Öppna Appcenter"
+
+#: src/ubuntu_start.py:278
+msgid "No supported software center was found."
+msgstr "Inget programcenter som stöds hittades."
+
 #: src/ubuntu_start.py:127
 msgid "Use the Terminal"
 msgstr "Använd terminalen"

@@ -131,6 +131,12 @@ SYSTEM_GUIDES = [
         (_("Review available updates"), _("Read the update summary. Save your work before installing system updates.")),
         (_("Install and restart if asked"), _("Select Install Now and enter your password if prompted. Restart only when Ubuntu asks you to.")),
     ]),
+    (_("Install a desktop application"), ("app-center", ""), _("Open Ubuntu App Center"), [
+        (_("Search for the app name"), _("Enter the app’s exact name in the App Center search box. Check that the result is the app you intended.")),
+        (_("Review the publisher and source"), _("Check who publishes the app, where it comes from and which permissions it requests. Follow your organization’s software policy on managed computers.")),
+        (_("Install when you are ready"), _("Select Install only after reviewing the details. Ubuntu may ask you to confirm with your password.")),
+        (_("Keep apps up to date"), _("Use the App Center’s Updates section to review available app updates. Save your work before updating.")),
+    ]),
     (_("Use the Terminal"), ("terminal", ""), _("Open Terminal"), [
         (_("What the prompt means"), _("The prompt is the text before the cursor. It shows that the terminal is ready for a command. Type after it; do not type the prompt itself.")),
         (_("Run a command"), _("Type a command and press Enter to run it. For example, pwd shows the current folder and ls lists its files. These commands only show information.")),
@@ -247,8 +253,32 @@ class UbuntuStart(Adw.Application):
             self.open_app("gnome-control-center", value)
         elif kind == "terminal":
             self.open_terminal()
+        elif kind == "app-center":
+            self.confirm_app_center()
         else:
             self.open_app(value)
+
+    def confirm_app_center(self):
+        dialog = Adw.AlertDialog(
+            heading=_("Open Ubuntu App Center?"),
+            body=_("The App Center may contact your configured software sources to show apps and updates. Ubuntu Start will not install anything. You can review app details and choose whether to install in the App Center."),
+        )
+        dialog.add_response("cancel", _("Cancel"))
+        dialog.add_response("open", _("Open App Center"))
+        dialog.set_default_response("cancel")
+        dialog.set_close_response("cancel")
+
+        def on_response(_dialog, response):
+            if response != "open":
+                return
+            for executable in ("snap-store", "ubuntu-app-center", "gnome-software"):
+                if shutil.which(executable):
+                    self.open_app(executable)
+                    return
+            self.show_error(_("No supported software center was found."))
+
+        dialog.connect("response", on_response)
+        dialog.present(self.get_active_window())
 
     def open_terminal(self):
         for executable in ("ptyxis", "kgx", "gnome-terminal", "x-terminal-emulator"):
