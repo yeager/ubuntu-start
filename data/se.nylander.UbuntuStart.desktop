@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Ubuntu Start
+Comment=Get started with Ubuntu and troubleshoot devices
+Exec=python3 /usr/libexec/ubuntu-start/ubuntu_start.py
+Icon=se.nylander.UbuntuStart
+Terminal=false
+Type=Application
+Categories=Utility;GTK;GNOME;
+StartupNotify=true

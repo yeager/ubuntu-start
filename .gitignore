@@ -1,0 +1,4 @@
+/build/
+*.mo
+__pycache__/
+*.py[cod]

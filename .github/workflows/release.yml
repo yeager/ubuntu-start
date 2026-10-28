@@ -1,0 +1,33 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build dependencies
+        run: sudo apt-get update && sudo apt-get install -y gettext libadwaita-1-dev meson ninja-build python3-gi gir1.2-adw-1 gir1.2-gtk-4.0
+      - name: Validate translations
+        run: msgfmt --check po/sv.po -o /tmp/ubuntu-start-sv.mo
+      - name: Build and install into staging directory
+        run: |
+          meson setup build --prefix=/usr
+          meson compile -C build
+          DESTDIR="$PWD/stage" meson install -C build
+      - name: Create source archive
+        run: |
+          git archive --format=tar.gz --prefix=ubuntu-start-${GITHUB_REF_NAME#v}/ HEAD > "ubuntu-start-${GITHUB_REF_NAME#v}.tar.gz"
+          sha256sum ubuntu-start-*.tar.gz > SHA256SUMS
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" ubuntu-start-*.tar.gz SHA256SUMS --title "Ubuntu Start $GITHUB_REF_NAME" --generate-notes

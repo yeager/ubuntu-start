@@ -1,0 +1,453 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Ubuntu Start 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-28 11:06+0100\n"
+"PO-Revision-Date: 2026-10-28 00:00+0000\n"
+"Last-Translator: Ubuntu Start contributors\n"
+"Language-Team: Swedish\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: gettext\n"
+
+#: src/ubuntu_start.py:21
+msgid "Sound and microphones"
+msgstr "Ljud och mikrofoner"
+
+#: src/ubuntu_start.py:22
+msgid "Choose the right devices"
+msgstr "Välj rätt enheter"
+
+#: src/ubuntu_start.py:22
+msgid ""
+"Open Sound Settings and select the speakers or headphones you want to use."
+msgstr ""
+"Öppna ljudinställningarna och välj de högtalare eller hörlurar du vill "
+"använda."
+
+#: src/ubuntu_start.py:23
+msgid "Check the volume"
+msgstr "Kontrollera volymen"
+
+#: src/ubuntu_start.py:23
+msgid ""
+"Make sure output volume is up and the device is not muted. Try another app "
+"or audio file."
+msgstr ""
+"Se till att ljudet är på och inte avstängt. Prova en annan app eller ljudfil."
+
+#: src/ubuntu_start.py:24
+msgid "Check the microphone"
+msgstr "Kontrollera mikrofonen"
+
+#: src/ubuntu_start.py:24
+msgid ""
+"Speak and watch the input level in Sound Settings. Check the app’s "
+"microphone permission if only one app is affected."
+msgstr ""
+"Prata och se om ljudnivån reagerar i ljudinställningarna. Om problemet bara "
+"finns i en app kontrollerar du appens mikrofonbehörighet."
+
+#: src/ubuntu_start.py:26
+msgid "Bluetooth"
+msgstr "Bluetooth"
+
+#: src/ubuntu_start.py:27
+msgid "Check power and charge"
+msgstr "Kontrollera ström och batteri"
+
+#: src/ubuntu_start.py:27
+msgid "Make sure Bluetooth is enabled and the device has enough charge."
+msgstr ""
+"Se till att Bluetooth är aktiverat och att enheten har tillräckligt med "
+"batteri."
+
+#: src/ubuntu_start.py:28
+msgid "Turn on pairing mode"
+msgstr "Slå på parkopplingsläget"
+
+#: src/ubuntu_start.py:28
+msgid "Keep the device nearby and follow its instructions for pairing mode."
+msgstr "Håll enheten i närheten och följ instruktionerna för parkopplingsläge."
+
+#: src/ubuntu_start.py:29
+msgid "Try pairing again"
+msgstr "Parkoppla på nytt"
+
+#: src/ubuntu_start.py:29
+msgid ""
+"If an old pairing is listed, remove it in Settings, then pair the device "
+"again."
+msgstr ""
+"Om en gammal parkoppling visas tar du bort den i Inställningar och "
+"parkopplar sedan enheten igen."
+
+#: src/ubuntu_start.py:31
+msgid "Printers"
+msgstr "Skrivare"
+
+#: src/ubuntu_start.py:32
+msgid "Check the printer"
+msgstr "Kontrollera skrivaren"
+
+#: src/ubuntu_start.py:32
+msgid ""
+"Make sure it is powered on and has paper, ink or toner, and no paper jam."
+msgstr ""
+"Se till att den är påslagen, har papper och bläck eller toner och inte har "
+"papperstrassel."
+
+#: src/ubuntu_start.py:33
+msgid "Check the connection"
+msgstr "Kontrollera anslutningen"
+
+#: src/ubuntu_start.py:33
+msgid ""
+"For a network printer, confirm it is on the same network as this computer. "
+"For USB, reconnect the cable."
+msgstr ""
+"Om skrivaren är ansluten till nätverket kontrollerar du att den använder "
+"samma nätverk som datorn. Anslut USB-kabeln på nytt om skrivaren är kopplad "
+"med USB."
+
+#: src/ubuntu_start.py:34
+msgid "Add the printer"
+msgstr "Lägg till skrivaren"
+
+#: src/ubuntu_start.py:34
+msgid "Open Printer Settings, add the printer and send a test page."
+msgstr ""
+"Öppna skrivarinställningarna, lägg till skrivaren och skriv ut en testsida."
+
+#: src/ubuntu_start.py:35
+msgid "Check for a model-specific driver"
+msgstr "Kontrollera om modellen behöver en särskild drivrutin"
+
+#: src/ubuntu_start.py:35
+msgid ""
+"If printing still fails, consult Ubuntu’s documentation or the printer "
+"manufacturer before installing extra software."
+msgstr ""
+"Om utskriften fortfarande inte fungerar läser du Ubuntus dokumentation eller "
+"skrivarens tillverkares instruktioner innan du installerar extra program."
+
+#: src/ubuntu_start.py:37
+msgid "Displays and graphics"
+msgstr "Skärmar och grafik"
+
+#: src/ubuntu_start.py:38
+msgid "Check power and cables"
+msgstr "Kontrollera ström och kablar"
+
+#: src/ubuntu_start.py:38
+msgid ""
+"Make sure the display is on, the cable is connected and the correct input is "
+"selected."
+msgstr "Se till att skärmen är på, kabeln sitter i och rätt ingång är vald."
+
+#: src/ubuntu_start.py:39
+msgid "Open Display Settings"
+msgstr "Öppna skärminställningarna"
+
+#: src/ubuntu_start.py:39
+msgid ""
+"Check whether Ubuntu detects the display. Try a supported resolution and "
+"refresh rate."
+msgstr ""
+"Kontrollera om Ubuntu hittar skärmen. Prova en upplösning och "
+"uppdateringsfrekvens som stöds."
+
+#: src/ubuntu_start.py:40
+msgid "Review graphics drivers"
+msgstr "Granska grafikdrivrutiner"
+
+#: src/ubuntu_start.py:40
+msgid ""
+"If graphics are unstable or a feature is missing, review the drivers offered "
+"by Ubuntu before changing anything."
+msgstr ""
+"Om grafiken är instabil eller någon funktion saknas granskar du "
+"drivrutinerna som Ubuntu erbjuder innan du ändrar något."
+
+#: src/ubuntu_start.py:42
+msgid "Wi-Fi"
+msgstr "Wi-Fi"
+
+#: src/ubuntu_start.py:43
+msgid "Check Wi-Fi and airplane mode"
+msgstr "Kontrollera Wi-Fi och flygplansläge"
+
+#: src/ubuntu_start.py:43
+msgid ""
+"Turn airplane mode off and make sure Wi-Fi is enabled in Quick Settings."
+msgstr ""
+"Stäng av flygplansläget och kontrollera att Wi-Fi är på i "
+"snabbinställningarna."
+
+#: src/ubuntu_start.py:44
+msgid "Check the network"
+msgstr "Kontrollera nätverket"
+
+#: src/ubuntu_start.py:44
+msgid ""
+"See whether another device can connect. If none can, restart the router and "
+"check its internet connection."
+msgstr ""
+"Se om en annan enhet kan ansluta. Om ingen kommer ut på internet startar du "
+"om routern och kontrollerar anslutningen."
+
+#: src/ubuntu_start.py:45
+msgid "Reconnect to the network"
+msgstr "Anslut till nätverket på nytt"
+
+#: src/ubuntu_start.py:45
+msgid ""
+"Forget the network in Wi-Fi Settings, then connect again and carefully enter "
+"the password."
+msgstr ""
+"Glöm nätverket i Wi-Fi-inställningarna. Anslut sedan igen och skriv in "
+"lösenordet noggrant."
+
+#: src/ubuntu_start.py:46
+msgid "If only this computer has trouble"
+msgstr "Om bara den här datorn har problem"
+
+#: src/ubuntu_start.py:46
+msgid ""
+"Install available Ubuntu updates. Check the computer or Wi-Fi adapter "
+"support information before installing a driver."
+msgstr ""
+"Installera tillgängliga Ubuntu-uppdateringar. Läs informationen om datorns "
+"eller Wi-Fi-adapterns stöd innan du installerar en drivrutin."
+
+#: src/ubuntu_start.py:48
+msgid "Camera"
+msgstr "Kamera"
+
+#: src/ubuntu_start.py:49
+msgid "Check the camera"
+msgstr "Kontrollera kameran"
+
+#: src/ubuntu_start.py:49
+msgid ""
+"Open its privacy shutter or switch, reconnect it if external and make sure "
+"its indicator light turns on."
+msgstr ""
+"Öppna sekretessluckan eller reglaget. Anslut kameran igen om den är extern "
+"och kontrollera att lampan tänds."
+
+#: src/ubuntu_start.py:50
+msgid "Check app permissions"
+msgstr "Kontrollera appbehörigheter"
+
+#: src/ubuntu_start.py:50
+msgid ""
+"Review camera access in Privacy Settings. A managed work or school computer "
+"may restrict access."
+msgstr ""
+"Granska kameraåtkomsten i sekretessinställningarna. En dator som hanteras av "
+"jobbet eller skolan kan begränsa åtkomsten."
+
+#: src/ubuntu_start.py:51
+msgid "Close other camera apps"
+msgstr "Stäng andra kameraappar"
+
+#: src/ubuntu_start.py:51
+msgid ""
+"Quit video calls and other apps that may already be using the camera, then "
+"try again."
+msgstr ""
+"Avsluta videosamtal och andra appar som kan använda kameran. Försök sedan "
+"igen."
+
+#: src/ubuntu_start.py:61 src/ubuntu_start.py:67
+#: data/se.nylander.UbuntuStart.desktop:2
+msgid "Ubuntu Start"
+msgstr "Ubuntu Start"
+
+#: src/ubuntu_start.py:66
+msgid "Guide"
+msgstr "Guide"
+
+#: src/ubuntu_start.py:93
+msgid "Welcome"
+msgstr "Välkommen"
+
+#: src/ubuntu_start.py:94 src/ubuntu_start.py:133
+msgid "Get started"
+msgstr "Kom igång"
+
+#: src/ubuntu_start.py:95 src/ubuntu_start.py:152
+msgid "Fix a device"
+msgstr "Felsök en enhet"
+
+#: src/ubuntu_start.py:96
+msgid "Drivers"
+msgstr "Drivrutiner"
+
+#: src/ubuntu_start.py:127
+msgid "A calmer start with Ubuntu"
+msgstr "En lugnare start med Ubuntu"
+
+#: src/ubuntu_start.py:127
+msgid ""
+"Set up the essentials, then find clear steps when a device does not work."
+msgstr "Ställ in det viktigaste och få tydliga råd när en enhet inte fungerar."
+
+#: src/ubuntu_start.py:128
+msgid "Your computer, at a glance"
+msgstr "Överblick över datorn"
+
+#: src/ubuntu_start.py:128
+msgid ""
+"Use Settings to check your Ubuntu version, storage and connected devices."
+msgstr ""
+"Öppna Inställningar för att se Ubuntu-version, lagringsutrymme och anslutna "
+"enheter."
+
+#: src/ubuntu_start.py:128 src/ubuntu_start.py:141
+msgid "Open Settings"
+msgstr "Öppna Inställningar"
+
+#: src/ubuntu_start.py:129
+msgid "Take it one step at a time"
+msgstr "Ta ett steg i taget"
+
+#: src/ubuntu_start.py:129
+msgid "You can come back to any guide whenever you need it."
+msgstr "Du kan återvända till guiderna när du behöver dem."
+
+#: src/ubuntu_start.py:133
+msgid ""
+"A few useful places to begin. Ubuntu may ask for your password when you "
+"change system settings."
+msgstr ""
+"Några bra ställen att börja på. Ubuntu kan be om ditt lösenord när du ändrar "
+"systeminställningar."
+
+#: src/ubuntu_start.py:135
+msgid "Language and keyboard"
+msgstr "Språk och tangentbord"
+
+#: src/ubuntu_start.py:135
+msgid "Choose your display language, region and keyboard layout."
+msgstr "Välj språk för gränssnittet, region och tangentbordslayout."
+
+#: src/ubuntu_start.py:136
+msgid "Internet connection"
+msgstr "Internetanslutning"
+
+#: src/ubuntu_start.py:136
+msgid "Connect to Wi-Fi or a wired network."
+msgstr "Anslut till Wi-Fi eller ett nätverk med kabel."
+
+#: src/ubuntu_start.py:137
+msgid "Updates"
+msgstr "Uppdateringar"
+
+#: src/ubuntu_start.py:137
+msgid "Check for system updates and restart if Ubuntu asks you to."
+msgstr "Sök efter systemuppdateringar och starta om datorn om Ubuntu ber dig."
+
+#: src/ubuntu_start.py:138
+msgid "Sound and display"
+msgstr "Ljud och skärm"
+
+#: src/ubuntu_start.py:138
+msgid "Choose speakers, microphone and monitor settings."
+msgstr "Välj högtalare och mikrofon och ställ in skärmen."
+
+#: src/ubuntu_start.py:139
+msgid "Privacy and screen lock"
+msgstr "Sekretess och skärmlås"
+
+#: src/ubuntu_start.py:139
+msgid "Review app permissions and automatic screen locking."
+msgstr "Granska appbehörigheter och automatiskt skärmlås."
+
+#: src/ubuntu_start.py:152
+msgid ""
+"Choose a device and try these checks in order. They do not install software "
+"or change system files."
+msgstr ""
+"Välj en enhet och gå igenom kontrollerna i ordning. De installerar ingen "
+"programvara och ändrar inga systemfiler."
+
+#: src/ubuntu_start.py:158
+msgid "Suggested checks"
+msgstr "Föreslagna kontroller"
+
+#: src/ubuntu_start.py:165
+msgid "Open related Settings"
+msgstr "Öppna relevanta inställningar"
+
+#: src/ubuntu_start.py:177
+msgid "Graphics drivers"
+msgstr "Grafikdrivrutiner"
+
+#: src/ubuntu_start.py:177
+msgid ""
+"Ubuntu can offer compatible drivers for some graphics hardware. Review the "
+"available choices in Ubuntu’s Additional Drivers tool before installing "
+"anything."
+msgstr ""
+"Ubuntu kan erbjuda kompatibla drivrutiner för viss grafikhårdvara. Granska "
+"alternativen i Ubuntus verktyg Ytterligare drivrutiner innan du installerar "
+"något."
+
+#: src/ubuntu_start.py:178
+msgid "Review available drivers"
+msgstr "Granska tillgängliga drivrutiner"
+
+#: src/ubuntu_start.py:178
+msgid ""
+"This opens Ubuntu’s driver tool. Read the recommendation and confirm any "
+"changes there."
+msgstr ""
+"Det här öppnar Ubuntus drivrutinsverktyg. Läs rekommendationen och bekräfta "
+"eventuella ändringar där."
+
+#: src/ubuntu_start.py:178
+msgid "Open Drivers"
+msgstr "Öppna drivrutiner"
+
+#: src/ubuntu_start.py:179
+msgid "Secure Boot"
+msgstr "Secure Boot"
+
+#: src/ubuntu_start.py:179
+msgid ""
+"Some drivers need a one-time confirmation during restart when Secure Boot is "
+"enabled. Follow Ubuntu’s on-screen instructions."
+msgstr ""
+"Vissa drivrutiner kräver en engångsbekräftelse vid omstart när Secure Boot "
+"är aktiverat. Följ instruktionerna på skärmen."
+
+#: src/ubuntu_start.py:180
+msgid "Need more detail?"
+msgstr "Vill du veta mer?"
+
+#: src/ubuntu_start.py:180
+msgid "Ubuntu’s driver guidance explains the supported installation route."
+msgstr ""
+"Ubuntus drivrutinsguide beskriver hur du installerar drivrutiner på ett sätt "
+"som stöds."
+
+#: src/ubuntu_start.py:180
+msgid "Open Ubuntu help"
+msgstr "Öppna Ubuntus hjälp"
+
+#: src/ubuntu_start.py:196
+msgid "Could not open the requested tool"
+msgstr "Det gick inte att öppna verktyget"
+
+#: src/ubuntu_start.py:197
+msgid "Close"
+msgstr "Stäng"
+
+#: data/se.nylander.UbuntuStart.desktop:3
+msgid "Get started with Ubuntu and troubleshoot devices"
+msgstr "Kom igång med Ubuntu och felsök anslutna enheter"
