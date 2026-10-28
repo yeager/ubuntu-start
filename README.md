@@ -45,7 +45,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contributor guidance and the maintain
 - Everyday tips for search, window management and Files, plus guidance on backups and choosing trusted app sources.
 - Search across guided checks for sound, Bluetooth, batteries, printers, displays/graphics, keyboards, touchpads, Wi-Fi, Ethernet and cameras.
 - Step-by-step guides for Wi-Fi, Ethernet, printers, batteries, keyboards, touchpads, updates, larger text, screen magnification and the Orca screen reader.
-- Accessibility help opens GNOME settings for larger text, zoom and screen reading, with plain-language instructions before each change.
+- Accessibility guides explain larger text, zoom, screen reading, the on-screen keyboard and typing assistance, with plain-language steps before each change.
 - A beginner-friendly Terminal guide explains the prompt, command output and errors, `pwd`, `ls`, `cd`, paths with spaces, Tab completion, command history, `--help`, `man`, `sudo` and safe ways to stop a command.
 - Optional connection diagnostics report DNS lookup and gateway ping latency in milliseconds, plus the gateway MAC address and a local OUI vendor match. The test asks before running; it sends one DNS lookup to the configured resolver and one ping to the local gateway.
 - Read-only Bluetooth status reports whether a controller is present and powered on without scanning for nearby devices.
@@ -81,7 +81,7 @@ NetworkManager, Bluetooth, audio, storage, battery and hardware summaries use lo
 
 ## Validation
 
-The latest local revision has 34 passing unit tests. Source-string coverage, template sync, `msgfmt` and fuzzy/untranslated checks pass; all 357 Swedish messages are translated. The staged-install checker is covered with fixtures, but the current revision has not had a Meson build or UI launch on the Ubuntu target. The README screenshots predate the latest terminal, keyboard, touchpad, battery and tips-page updates.
+The latest local revision has 34 passing unit tests. Source-string coverage, template sync, `msgfmt` and fuzzy/untranslated checks pass; all 370 Swedish messages are translated. The staged-install checker is covered with fixtures, but the current revision has not had a Meson build or UI launch on the Ubuntu target. The README screenshots predate the latest terminal, keyboard, touchpad, battery and tips-page updates.
 
 An earlier revision was built and staged on Ubuntu 26.10 machine `trv2`, then launched under Xvfb in English and Swedish. At that point 29 tests passed on the target, AppStream validation succeeded, the Swedish catalog had 297 translated messages and PipeWire reported an unmuted default speaker at 100% with no default microphone. The GNOME Control Center panel list confirmed the Bluetooth, Wi-Fi, printer, display, privacy, sound and keyboard panel identifiers. The two Ubuntu driver/update utilities were also installed with `dpkg -i`; Additional Drivers and Update Manager opened in Swedish, and `dpkg --audit` and `apt-get check` reported no package errors. These are historical observations from that earlier revision. Network diagnostics were not run against the real network. Xvfb does not verify physical-device behavior or hardware acceleration.
 
