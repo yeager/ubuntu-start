@@ -30,6 +30,10 @@ jobs:
           PY
       - name: Install build dependencies
         run: sudo apt-get update && sudo apt-get install -y appstream gettext libadwaita-1-dev meson ninja-build python3-gi gir1.2-adw-1 gir1.2-gtk-4.0
+      - name: Check Python syntax and GTK imports
+        run: |
+          python3 -m compileall -q src tests scripts
+          PYTHONPATH=src python3 -c "import ubuntu_start"
       - name: Check source translation coverage
         run: python3 scripts/check-translations.py
       - name: Validate translations
