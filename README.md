@@ -1,10 +1,18 @@
 # Ubuntu Start
 
-A Swedish-first Ubuntu Desktop companion for first-run setup and device troubleshooting.
+An English-language Ubuntu Desktop guide with Swedish localization for first-run setup and device troubleshooting.
 
-![Ubuntu Start welcome screen in Swedish](screenshots/welcome-sv.png)
+![Ubuntu Start welcome screen in English](screenshots/welcome-en.png)
 
-[More screenshots](screenshots/)
+The interface uses English by default and switches to Swedish when the desktop language is Swedish.
+
+[Swedish welcome screen](screenshots/welcome-sv.png) · [More screenshots](screenshots/)
+
+![Search results for printer troubleshooting](screenshots/search-en.png)
+
+![Ubuntu help links and privacy-conscious system summary](screenshots/help-en.png)
+
+![The help page in Swedish](screenshots/help-sv.png)
 
 
 Ubuntu Start combines a first-run guide with practical device troubleshooting for Ubuntu Desktop. It is a GTK 4/libadwaita application intended for Ubuntu GNOME.
@@ -12,7 +20,9 @@ Ubuntu Start combines a first-run guide with practical device troubleshooting fo
 ## Current scope
 
 - First steps for language, networking, updates, sound, display and privacy.
-- Guided checks for sound, Bluetooth, printers, displays/graphics, Wi-Fi and cameras.
+- Search across guided checks for sound, Bluetooth, printers, displays/graphics, Wi-Fi and cameras.
+- Built-in links to official Ubuntu documentation, Ask Ubuntu and the Ubuntu support forum.
+- A privacy-conscious system summary you can copy when asking for help; it excludes your username, computer name, network address and installed applications.
 - Links into GNOME Control Center and Ubuntu's Additional Drivers tool. System changes remain in Ubuntu's own tools and require the user's confirmation.
 - gettext-based localization with English source strings and a complete Swedish (`sv`) catalog.
 
@@ -39,13 +49,13 @@ The app expects GTK 4, libadwaita and PyGObject. It has been installed and launc
 
 ## Validation
 
-On the Ubuntu 26.10 machine `trv2`, Meson configured, compiled and installed the app in the standard `/usr` application paths. The installed Python module matches the transferred source. The real desktop launcher was validated, and the installed GTK 4/libadwaita app was inspected under Xvfb with `sv_SE.utf8`; runtime inspection confirmed the Swedish welcome heading, all four navigation pages and all six device guides. The locale catalog compiled cleanly with 86 translated messages, and the desktop entry and AppStream metadata include Swedish text.
+On the Ubuntu 26.10 machine `trv2`, Meson configured, compiled and installed the app in the standard `/usr` application paths. The installed Python module matches the transferred source. The real desktop launcher was validated, and the installed GTK 4/libadwaita app was inspected under Xvfb with `sv_SE.utf8`; runtime inspection confirmed the Swedish welcome heading, all five navigation pages and all six device guides. English and Swedish launches showed their respective catalogs; searching for “printer” returned the four matching checks. The Help page displayed the system summary and support links in both languages. The locale catalog compiled cleanly with 113 translated messages, and the desktop entry and AppStream metadata include Swedish text.
 
 The GNOME Control Center panel list on the target confirms the app's Bluetooth, Wi-Fi, printer, display, privacy and sound panel identifiers; the language/keyboard entry uses the current `keyboard` panel ID. Both Ubuntu driver/update utilities were downloaded as `.deb` packages and installed with `dpkg -i`, together with their dependencies. `Software & Updates --open-tab=4` opened the Swedish Additional Drivers tab under Xvfb; the target currently reports that no proprietary drivers are in use. Update Manager displayed its Swedish updates screen. `dpkg --audit` is clean and `apt-get check` reports no dependency errors. A final check found no pending upgrades and no reboot-required marker. GUI inspection ran under Xvfb, which cannot verify hardware acceleration or physical-device behavior.
 
 ## Localization
 
-Source strings are English and are marked with gettext's `_()` function. Swedish translations live in `po/sv.po`; add language codes to `po/LINGUAS` and translate through Weblate or another gettext-compatible service. Regenerate the template with `xgettext` and validate catalogs with `msgfmt --check`.
+English is the source and default language. The app uses the desktop locale to select translations; Swedish strings live in `po/sv.po`. Add more languages through gettext catalogs and list their language codes in `po/LINGUAS`. Regenerate the template with `xgettext` and validate catalogs with `msgfmt --check`.
 
 ## Current limitations
 
@@ -58,4 +68,4 @@ Tagged versions (`v*`) are built and published by GitHub Actions. Each release i
 
 ## Screenshots
 
-The screenshots show the Swedish welcome page and Ubuntu Software & Updates additional drivers tab. The latter was captured while Ubuntu was still scanning for available drivers.
+The screenshots include the English default welcome page, the Swedish translation and Ubuntu Software & Updates. The driver-tool capture was taken while Ubuntu was still scanning for available drivers.

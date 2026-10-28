@@ -3,11 +3,12 @@
 import gettext
 import locale
 import os
+import platform
 import gi
 
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
-from gi.repository import Adw, Gio, GLib, Gtk
+from gi.repository import Adw, Gdk, Gio, GLib, Gtk
 
 APP_ID = "se.nylander.UbuntuStart"
 DOMAIN = "ubuntu-start"
@@ -94,6 +95,7 @@ class UbuntuStart(Adw.Application):
             (_("Get started"), self.make_get_started()),
             (_("Fix a device"), self.make_device_page()),
             (_("Drivers"), self.make_drivers()),
+            (_("Help and support"), self.make_help()),
         ]
         for name, page in pages:
             scroller = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER)
@@ -102,14 +104,15 @@ class UbuntuStart(Adw.Application):
         stack.set_visible_child_name(pages[0][0])
         win.present()
 
-    def page(self, title, subtitle=None):
+    def page(self, title, subtitle=None, include_rows=True):
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
         heading = Gtk.Label(label=title, xalign=0, wrap=True, css_classes=["title-1"])
         box.append(heading)
         if subtitle:
             box.append(Gtk.Label(label=subtitle, xalign=0, wrap=True, css_classes=["body"]))
         rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
-        box.append(rows)
+        if include_rows:
+            box.append(rows)
         return box, rows
 
     def row(self, parent, title, subtitle, action_label=None, callback=None):
@@ -149,9 +152,16 @@ class UbuntuStart(Adw.Application):
             self.open_app(value)
 
     def make_device_page(self):
-        box, _rows = self.page(_("Fix a device"), _("Choose a device and try these checks in order. They do not install software or change system files."))
+        box, _rows = self.page(
+            _("Fix a device"),
+            _("Choose a device or search all guides for a symptom. These checks do not install software or change system files."),
+            include_rows=False,
+        )
+        search = Gtk.SearchEntry(placeholder_text=_("Search all troubleshooting steps"))
+        box.append(search)
+        browse = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         chooser = Gtk.DropDown.new_from_strings([title for title, _panel, _steps in GUIDES])
-        box.append(chooser)
+        browse.append(chooser)
         steps_stack = Gtk.Stack(transition_type=Gtk.StackTransitionType.CROSSFADE)
         for index, (_title, _panel, steps) in enumerate(GUIDES):
             group = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
@@ -161,15 +171,46 @@ class UbuntuStart(Adw.Application):
                 rows.append(Adw.ActionRow(title=step_title, subtitle=description))
             group.append(rows)
             steps_stack.add_named(group, f"guide-{index}")
-        box.append(steps_stack)
+        browse.append(steps_stack)
+        box.append(browse)
+
+        results = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        result_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        results.append(result_rows)
+        no_results = Gtk.Label(label=_("No matching steps. Try another word."), xalign=0, wrap=True)
+        results.append(no_results)
+        results.set_visible(False)
+        box.append(results)
+
         open_button = Gtk.Button(label=_("Open related Settings"), halign=Gtk.Align.START)
-        box.append(open_button)
-        def update(*_):
+        browse.append(open_button)
+
+        def update_guide(*_):
             selected = chooser.get_selected()
             if selected < len(GUIDES):
                 steps_stack.set_visible_child_name(f"guide-{selected}")
-        chooser.connect("notify::selected", update)
-        update()
+
+        def update_search(*_):
+            query = search.get_text().strip().casefold()
+            browse.set_visible(not query)
+            results.set_visible(bool(query))
+            while (child := result_rows.get_first_child()) is not None:
+                result_rows.remove(child)
+            if not query:
+                return
+            terms = query.split()
+            count = 0
+            for guide_title, _panel, steps in GUIDES:
+                for step_title, description in steps:
+                    searchable = f"{guide_title} {step_title} {description}".casefold()
+                    if all(term in searchable for term in terms):
+                        result_rows.append(Adw.ActionRow(title=f"{guide_title}: {step_title}", subtitle=description))
+                        count += 1
+            no_results.set_visible(count == 0)
+
+        chooser.connect("notify::selected", update_guide)
+        search.connect("search-changed", update_search)
+        update_guide()
         open_button.connect("clicked", lambda *_: self.open_app("gnome-control-center", GUIDES[chooser.get_selected()][1]))
         return box
 
@@ -179,6 +220,57 @@ class UbuntuStart(Adw.Application):
         self.row(rows, _("Secure Boot"), _("Some drivers need a one-time confirmation during restart when Secure Boot is enabled. Follow Ubuntu’s on-screen instructions."))
         self.row(rows, _("Need more detail?"), _("Ubuntu’s driver guidance explains the supported installation route."), _("Open Ubuntu help"), lambda: self.open_uri("https://ubuntu.com/desktop/docs/en/latest/how-to/graphics/install-nvidia-drivers/"))
         return box
+
+    def system_details(self):
+        try:
+            os_info = platform.freedesktop_os_release()
+            os_name = os_info.get("PRETTY_NAME", _("Unknown Ubuntu version"))
+        except (AttributeError, OSError):
+            os_name = _("Unknown Ubuntu version")
+        desktop = os.environ.get("XDG_CURRENT_DESKTOP", "GNOME").replace(":", ", ")
+        details = [
+            (_("Ubuntu version"), os_name),
+            (_("Desktop"), desktop),
+            (_("Kernel"), platform.release()),
+            (_("Architecture"), platform.machine()),
+        ]
+        return details
+
+    def make_help(self):
+        box, rows = self.page(
+            _("Help and support"),
+            _("Find trusted instructions and prepare useful details when you ask others for help."),
+        )
+        self.row(rows, _("Ubuntu Desktop guide"), _("Official help for settings, accessibility, networks and common tasks."), _("Open guide"), lambda: self.open_uri("https://help.ubuntu.com/stable/ubuntu-help/"))
+        self.row(rows, _("Ask Ubuntu"), _("Search community answers or ask a focused question about Ubuntu."), _("Open Ask Ubuntu"), lambda: self.open_uri("https://askubuntu.com/"))
+        self.row(rows, _("Ubuntu community forum"), _("Get help from Ubuntu users and community members."), _("Open forum"), lambda: self.open_uri("https://discourse.ubuntu.com/c/support-and-help/306"))
+
+        details_box, details_rows = self.page(
+            _("System details"),
+            _("These read-only details can help explain a problem. They omit your username, computer name, network address and installed applications."),
+        )
+        for label, value in self.system_details():
+            self.row(details_rows, label, value)
+        copy_status = Gtk.Label(label="", xalign=0, wrap=True)
+        copy_button = Gtk.Button(label=_("Copy system details"), halign=Gtk.Align.START)
+        copy_button.connect("clicked", lambda *_: self.copy_system_details(copy_status))
+        details_box.append(copy_button)
+        details_box.append(copy_status)
+        box.append(details_box)
+
+        tips_box, tips_rows = self.page(_("When asking for help"))
+        self.row(tips_rows, _("Describe what happened"), _("Include your Ubuntu version, the device model, the exact error and what you already tried. Remove passwords and other personal details."))
+        box.append(tips_box)
+        return box
+
+    def copy_system_details(self, status_label):
+        display = Gdk.Display.get_default()
+        if display is None:
+            status_label.set_text(_("Clipboard is unavailable."))
+            return
+        report = "\n".join(f"{label}: {value}" for label, value in self.system_details())
+        display.get_clipboard().set(report)
+        status_label.set_text(_("System details copied."))
 
     def open_app(self, executable, *args):
         try:

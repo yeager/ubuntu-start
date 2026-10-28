@@ -8,7 +8,8 @@
   <project_license>GPL-3.0-or-later</project_license>
   <launchable type="desktop-id">se.nylander.UbuntuStart.desktop</launchable>
   <developer id="se.nylander"><name>Ubuntu Start contributors</name></developer>
-  <description><p>Get started with Ubuntu and follow practical troubleshooting steps for common devices.</p></description>
+  <description><p>Get started with Ubuntu and follow practical troubleshooting steps for common devices. Search all guides, find trusted support and copy a privacy-conscious system summary when asking for help.</p></description>
   <description xml:lang="sv"><p>Kom igång med Ubuntu och följ praktiska felsökningssteg för vanliga enheter.</p></description>
+  <releases><release version="0.2.0" date="2026-10-28"><description><p>Add searchable troubleshooting guides, Ubuntu support links and a copyable system summary.</p></description></release></releases>
   <content_rating type="oars-1.1"/>
 </component>

@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Ubuntu Start 0.1.0\n"
+"Project-Id-Version: Ubuntu Start 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-28 11:06+0100\n"
-"PO-Revision-Date: 2026-10-28 00:00+0000\n"
+"POT-Creation-Date: 2026-10-28 15:09+0100\n"
+"PO-Revision-Date: 2026-10-28 15:09+0100\n"
 "Last-Translator: Ubuntu Start contributors\n"
 "Language-Team: Swedish\n"
 "Language: sv\n"
@@ -451,3 +451,119 @@ msgstr "Stäng"
 #: data/se.nylander.UbuntuStart.desktop:3
 msgid "Get started with Ubuntu and troubleshoot devices"
 msgstr "Kom igång med Ubuntu och felsök anslutna enheter"
+
+#: src/ubuntu_start.py:98 src/ubuntu_start.py:239
+msgid "Help and support"
+msgstr "Hjälp och support"
+
+#: src/ubuntu_start.py:156
+msgid ""
+"Choose a device or search all guides for a symptom. These checks do not "
+"install software or change system files."
+msgstr "Välj en enhet eller sök i alla guider efter ett problem. Kontrollerna installerar inga program och ändrar inga systemfiler."
+
+#: src/ubuntu_start.py:158
+msgid "Search all troubleshooting steps"
+msgstr "Sök i alla felsökningssteg"
+
+#: src/ubuntu_start.py:178
+msgid "No matching steps. Try another word."
+msgstr "Inga steg matchar. Prova ett annat sökord."
+
+#: src/ubuntu_start.py:225 src/ubuntu_start.py:227
+msgid "Unknown Ubuntu version"
+msgstr "Okänd Ubuntu-version"
+
+#: src/ubuntu_start.py:230
+msgid "Ubuntu version"
+msgstr "Ubuntu-version"
+
+#: src/ubuntu_start.py:231
+msgid "Desktop"
+msgstr "Skrivbordsmiljö"
+
+#: src/ubuntu_start.py:232
+msgid "Kernel"
+msgstr "Linuxkärna"
+
+#: src/ubuntu_start.py:233
+msgid "Architecture"
+msgstr "Processorarkitektur"
+
+#: src/ubuntu_start.py:240
+msgid ""
+"Find trusted instructions and prepare useful details when you ask others for "
+"help."
+msgstr "Läs Ubuntus guider och ta fram systemuppgifter att dela när du ber om hjälp."
+
+#: src/ubuntu_start.py:242
+msgid "Ubuntu Desktop guide"
+msgstr "Ubuntu Desktop-handbok"
+
+#: src/ubuntu_start.py:242
+msgid "Official help for settings, accessibility, networks and common tasks."
+msgstr "Officiell hjälp om inställningar, hjälpmedel, nätverk och vanliga uppgifter."
+
+#: src/ubuntu_start.py:242
+msgid "Open guide"
+msgstr "Öppna handboken"
+
+#: src/ubuntu_start.py:243
+msgid "Ask Ubuntu"
+msgstr "Ask Ubuntu"
+
+#: src/ubuntu_start.py:243
+msgid "Search community answers or ask a focused question about Ubuntu."
+msgstr "Sök bland svar från andra användare eller ställ en tydlig fråga om Ubuntu."
+
+#: src/ubuntu_start.py:243
+msgid "Open Ask Ubuntu"
+msgstr "Öppna Ask Ubuntu"
+
+#: src/ubuntu_start.py:244
+msgid "Ubuntu community forum"
+msgstr "Ubuntus användarforum"
+
+#: src/ubuntu_start.py:244
+msgid "Get help from Ubuntu users and community members."
+msgstr "Få hjälp av Ubuntu-användare och andra i gemenskapen."
+
+#: src/ubuntu_start.py:244
+msgid "Open forum"
+msgstr "Öppna forumet"
+
+#: src/ubuntu_start.py:247
+msgid "System details"
+msgstr "Systemuppgifter"
+
+#: src/ubuntu_start.py:248
+msgid ""
+"These read-only details can help explain a problem. They omit your username, "
+"computer name, network address and installed applications."
+msgstr "Uppgifterna kan hjälpa andra att förstå ett problem. De innehåller inte ditt användarnamn, datornamn, nätverksadress eller installerade program."
+
+#: src/ubuntu_start.py:253
+msgid "Copy system details"
+msgstr "Kopiera systemuppgifter"
+
+#: src/ubuntu_start.py:259
+msgid "When asking for help"
+msgstr "När du ber om hjälp"
+
+#: src/ubuntu_start.py:260
+msgid "Describe what happened"
+msgstr "Beskriv vad som hände"
+
+#: src/ubuntu_start.py:260
+msgid ""
+"Include your Ubuntu version, the device model, the exact error and what you "
+"already tried. Remove passwords and other personal details."
+msgstr "Ange Ubuntu-version, enhetsmodell, exakt felmeddelande och vad du redan har provat. Ta bort lösenord och andra personuppgifter."
+
+#: src/ubuntu_start.py:267
+msgid "Clipboard is unavailable."
+msgstr "Urklipp är inte tillgängligt."
+
+#: src/ubuntu_start.py:271
+msgid "System details copied."
+msgstr "Systemuppgifterna har kopierats."

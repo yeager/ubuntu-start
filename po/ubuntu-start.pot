@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Ubuntu Start 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-28 11:07+0100\n"
+"POT-Creation-Date: 2026-10-28 15:09+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -404,4 +404,120 @@ msgstr ""
 
 #: data/se.nylander.UbuntuStart.desktop:3
 msgid "Get started with Ubuntu and troubleshoot devices"
+msgstr ""
+
+#: src/ubuntu_start.py:98 src/ubuntu_start.py:239
+msgid "Help and support"
+msgstr ""
+
+#: src/ubuntu_start.py:156
+msgid ""
+"Choose a device or search all guides for a symptom. These checks do not "
+"install software or change system files."
+msgstr ""
+
+#: src/ubuntu_start.py:158
+msgid "Search all troubleshooting steps"
+msgstr ""
+
+#: src/ubuntu_start.py:178
+msgid "No matching steps. Try another word."
+msgstr ""
+
+#: src/ubuntu_start.py:225 src/ubuntu_start.py:227
+msgid "Unknown Ubuntu version"
+msgstr ""
+
+#: src/ubuntu_start.py:230
+msgid "Ubuntu version"
+msgstr ""
+
+#: src/ubuntu_start.py:231
+msgid "Desktop"
+msgstr ""
+
+#: src/ubuntu_start.py:232
+msgid "Kernel"
+msgstr ""
+
+#: src/ubuntu_start.py:233
+msgid "Architecture"
+msgstr ""
+
+#: src/ubuntu_start.py:240
+msgid ""
+"Find trusted instructions and prepare useful details when you ask others for "
+"help."
+msgstr ""
+
+#: src/ubuntu_start.py:242
+msgid "Ubuntu Desktop guide"
+msgstr ""
+
+#: src/ubuntu_start.py:242
+msgid "Official help for settings, accessibility, networks and common tasks."
+msgstr ""
+
+#: src/ubuntu_start.py:242
+msgid "Open guide"
+msgstr ""
+
+#: src/ubuntu_start.py:243
+msgid "Ask Ubuntu"
+msgstr ""
+
+#: src/ubuntu_start.py:243
+msgid "Search community answers or ask a focused question about Ubuntu."
+msgstr ""
+
+#: src/ubuntu_start.py:243
+msgid "Open Ask Ubuntu"
+msgstr ""
+
+#: src/ubuntu_start.py:244
+msgid "Ubuntu community forum"
+msgstr ""
+
+#: src/ubuntu_start.py:244
+msgid "Get help from Ubuntu users and community members."
+msgstr ""
+
+#: src/ubuntu_start.py:244
+msgid "Open forum"
+msgstr ""
+
+#: src/ubuntu_start.py:247
+msgid "System details"
+msgstr ""
+
+#: src/ubuntu_start.py:248
+msgid ""
+"These read-only details can help explain a problem. They omit your username, "
+"computer name, network address and installed applications."
+msgstr ""
+
+#: src/ubuntu_start.py:253
+msgid "Copy system details"
+msgstr ""
+
+#: src/ubuntu_start.py:259
+msgid "When asking for help"
+msgstr ""
+
+#: src/ubuntu_start.py:260
+msgid "Describe what happened"
+msgstr ""
+
+#: src/ubuntu_start.py:260
+msgid ""
+"Include your Ubuntu version, the device model, the exact error and what you "
+"already tried. Remove passwords and other personal details."
+msgstr ""
+
+#: src/ubuntu_start.py:267
+msgid "Clipboard is unavailable."
+msgstr ""
+
+#: src/ubuntu_start.py:271
+msgid "System details copied."
 msgstr ""
