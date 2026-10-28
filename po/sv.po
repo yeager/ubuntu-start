@@ -815,7 +815,7 @@ msgstr "Installera ett skrivbordsprogram"
 
 #: src/ubuntu_start.py:134
 msgid "Open Ubuntu App Center"
-msgstr "Öppna Ubuntus Appcenter"
+msgstr "Öppna Ubuntu App Center"
 
 #: src/ubuntu_start.py:135
 msgid "Search for the app name"
@@ -823,7 +823,7 @@ msgstr "Sök efter appens namn"
 
 #: src/ubuntu_start.py:135
 msgid "Enter the app’s exact name in the App Center search box. Check that the result is the app you intended."
-msgstr "Skriv appens exakta namn i Appcentrets sökruta. Kontrollera att resultatet är rätt app."
+msgstr "Skriv appens exakta namn i sökfältet i App Center. Kontrollera att du valt rätt app."
 
 #: src/ubuntu_start.py:136
 msgid "Review the publisher and source"
@@ -831,7 +831,7 @@ msgstr "Granska utgivare och källa"
 
 #: src/ubuntu_start.py:136
 msgid "Check who publishes the app, where it comes from and which permissions it requests. Follow your organization’s software policy on managed computers."
-msgstr "Kontrollera vem som ger ut appen, varifrån den kommer och vilka behörigheter den begär. Följ organisationens programvarupolicy på en hanterad dator."
+msgstr "Kontrollera vem som har gett ut appen, vilken källa den kommer från och vilka behörigheter den begär. På en jobbdator följer du organisationens regler för programinstallation."
 
 #: src/ubuntu_start.py:137
 msgid "Install when you are ready"
@@ -839,7 +839,7 @@ msgstr "Installera när du är redo"
 
 #: src/ubuntu_start.py:137
 msgid "Select Install only after reviewing the details. Ubuntu may ask you to confirm with your password."
-msgstr "Välj Installera först när du har granskat uppgifterna. Ubuntu kan be dig bekräfta med lösenordet."
+msgstr "Välj Installera när du har granskat uppgifterna. Ubuntu kan be dig bekräfta installationen med ditt lösenord."
 
 #: src/ubuntu_start.py:138
 msgid "Keep apps up to date"
@@ -847,23 +847,23 @@ msgstr "Håll appar uppdaterade"
 
 #: src/ubuntu_start.py:138
 msgid "Use the App Center’s Updates section to review available app updates. Save your work before updating."
-msgstr "Använd avsnittet Uppdateringar i Appcentret för att granska tillgängliga appuppdateringar. Spara ditt arbete innan du uppdaterar."
+msgstr "Öppna avsnittet Uppdateringar i App Center för att se tillgängliga appuppdateringar. Spara arbetet innan du uppdaterar."
 
 #: src/ubuntu_start.py:263
 msgid "Open Ubuntu App Center?"
-msgstr "Öppna Ubuntus Appcenter?"
+msgstr "Öppna Ubuntu App Center?"
 
 #: src/ubuntu_start.py:264
 msgid "The App Center may contact your configured software sources to show apps and updates. Ubuntu Start will not install anything. You can review app details and choose whether to install in the App Center."
-msgstr "Appcentret kan ansluta till dina konfigurerade programkällor för att visa appar och uppdateringar. Ubuntu Start installerar ingenting. Du kan granska appuppgifterna och själv välja om du vill installera i Appcentret."
+msgstr "App Center kan ansluta till programkällorna du har lagt till för att visa appar och uppdateringar. Ubuntu Start installerar inget. Du granskar uppgifterna i App Center och väljer själv om du vill installera appen."
 
 #: src/ubuntu_start.py:266
 msgid "Open App Center"
-msgstr "Öppna Appcenter"
+msgstr "Öppna App Center"
 
 #: src/ubuntu_start.py:278
 msgid "No supported software center was found."
-msgstr "Inget programcenter som stöds hittades."
+msgstr "Det gick inte att hitta någon programbutik som stöds."
 
 #: src/ubuntu_start.py:127
 msgid "Use the Terminal"
