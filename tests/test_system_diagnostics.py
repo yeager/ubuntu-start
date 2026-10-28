@@ -7,6 +7,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from system_diagnostics import (
+    build_support_report,
     parse_cpu_model,
     parse_bluetooth_controller_status,
     parse_default_route,
@@ -25,6 +26,31 @@ from system_diagnostics import (
     read_storage_status,
     run_network_diagnostics,
 )
+
+
+class SupportReportTests(unittest.TestCase):
+    def test_report_contains_only_reviewable_system_details_and_latency(self):
+        report = build_support_report(
+            [("Ubuntu version", "Ubuntu 24.04"), ("Architecture", "x86_64")],
+            {
+                "dns_latency_ms": 12.3,
+                "gateway_latency_ms": 0.8,
+                "gateway": "192.168.1.1",
+                "gateway_interface": "wlan0",
+                "gateway_mac": "AA:BB:CC:DD:EE:FF",
+                "gateway_vendor": "Example Vendor",
+            },
+        )
+        self.assertIn("Ubuntu 24.04", report)
+        self.assertIn('"dns_latency_ms": 12.3', report)
+        self.assertIn('"gateway_reachable": true', report)
+        for private_value in ("192.168.1.1", "wlan0", "AA:BB:CC:DD:EE:FF", "Example Vendor"):
+            self.assertNotIn(private_value, report)
+
+    def test_report_without_network_tests_does_not_claim_a_test_ran(self):
+        report = build_support_report([("Architecture", "x86_64")])
+        self.assertIn("system", report)
+        self.assertNotIn("network_checks", report)
 
 
 class ParseNetworkStatusTests(unittest.TestCase):

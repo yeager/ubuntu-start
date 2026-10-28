@@ -10,7 +10,12 @@ permissions:
 
 jobs:
   validate:
-    runs-on: ubuntu-24.04
+    name: Validate on Ubuntu ${{ matrix.ubuntu }}
+    runs-on: ubuntu-${{ matrix.ubuntu }}
+    strategy:
+      fail-fast: false
+      matrix:
+        ubuntu: ['24.04', '26.04']
     steps:
       - uses: actions/checkout@v7
       - name: Install build dependencies

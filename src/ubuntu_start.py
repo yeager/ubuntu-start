@@ -12,7 +12,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import check_internet_connection, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_network_devices, read_storage_status, run_network_diagnostics
+from system_diagnostics import build_support_report, check_internet_connection, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_network_devices, read_storage_status, run_network_diagnostics
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -53,6 +53,12 @@ GUIDES = [
         (_("Check power and cables"), _("Make sure the display is on, the cable is connected and the correct input is selected.")),
         (_("Open Display Settings"), _("Check whether Ubuntu detects the display. Try a supported resolution and refresh rate.")),
         (_("Review graphics drivers"), _("If graphics are unstable or a feature is missing, review the drivers offered by Ubuntu before changing anything.")),
+    ]),
+    (_("External display or projector"), "display", [
+        (_("Check the display input"), _("Turn the display on and select the input that matches its cable, such as HDMI or DisplayPort.")),
+        (_("Reconnect the cable"), _("Disconnect and reconnect both ends. If you use a dock or adapter, test a direct connection when possible.")),
+        (_("Review display arrangement"), _("Open Display Settings, select Detect Displays if available, and check the arrangement, resolution and refresh rate.")),
+        (_("Test one display at a time"), _("Disconnect other external screens temporarily. If the display still is not detected, try another cable or port.")),
     ]),
     (_("Keyboards"), "keyboard", [
         (_("Check the connection"), _("For a wired keyboard, reconnect the cable. For a wireless keyboard, check its charge or batteries, power switch and USB receiver.")),
@@ -99,6 +105,18 @@ SYSTEM_GUIDES = [
         (_("Connect the printer"), _("Turn it on and connect it to the same network as your computer, or connect it with USB.")),
         (_("Add the printer"), _("Open Printers in Settings, select Add Printer and choose the printer Ubuntu finds.")),
         (_("Print a test page"), _("Follow the prompts, then print a test page. Install a model-specific driver only when Ubuntu or the manufacturer recommends it.")),
+    ]),
+    (_("Pair a Bluetooth device"), ("settings", "bluetooth"), _("Open Bluetooth Settings"), [
+        (_("Prepare the device"), _("Charge the device, keep it nearby and follow its instructions to enable pairing mode.")),
+        (_("Enable Bluetooth"), _("Open Bluetooth Settings and make sure Bluetooth is switched on. Managed computers may restrict this setting.")),
+        (_("Select and pair the device"), _("Choose the device from the list and confirm the pairing code on both devices if prompted.")),
+        (_("Reconnect if pairing fails"), _("Remove an old pairing, restart Bluetooth on the device and computer, then try again.")),
+    ]),
+    (_("Fix an external display"), ("settings", "display"), _("Open Display Settings"), [
+        (_("Select the right input"), _("Turn on the display and select the input that matches its cable.")),
+        (_("Check cable and adapter"), _("Reconnect both ends. If you use a dock or adapter, test a direct connection when possible.")),
+        (_("Review display settings"), _("Check that Ubuntu detects the display, then choose a supported resolution and refresh rate.")),
+        (_("Isolate the problem"), _("Disconnect other displays and try another cable or port to identify the cause.")),
     ]),
     (_("Make text easier to read"), ("settings", "universal-access"), _("Open Accessibility Settings"), [
         (_("Open Accessibility settings"), _("In Settings, choose Accessibility and open the Seeing section.")),
@@ -299,6 +317,9 @@ class UbuntuStart(Adw.Application):
             include_rows=False,
         )
         search = Gtk.SearchEntry(placeholder_text=_("Search all guides and steps"))
+        search_label = Gtk.Label(label=_("Search all guides and steps"), xalign=0)
+        search_label.set_mnemonic_widget(search)
+        box.append(search_label)
         box.append(search)
         browse = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         chooser = Gtk.DropDown.new_from_strings([title for title, _panel, _steps in GUIDES])
@@ -391,6 +412,9 @@ class UbuntuStart(Adw.Application):
         )
         chooser = Gtk.DropDown.new_from_strings([title for title, _target, _action, _steps in SYSTEM_GUIDES])
         self.system_guide_chooser = chooser
+        guide_label = Gtk.Label(label=_("Choose a system guide"), xalign=0)
+        guide_label.set_mnemonic_widget(chooser)
+        box.append(guide_label)
         box.append(chooser)
         guide_stack = Gtk.Stack(transition_type=Gtk.StackTransitionType.CROSSFADE)
         for index, (title, target, action, steps) in enumerate(SYSTEM_GUIDES):
@@ -475,6 +499,7 @@ class UbuntuStart(Adw.Application):
             include_rows=False,
         )
         diagnostic_status = Gtk.Label(label="", xalign=0, wrap=True)
+        self.last_network_diagnostics = None
         diagnostic_button = Gtk.Button(label=_("Test DNS and gateway"), halign=Gtk.Align.START)
         diagnostic_button.connect("clicked", lambda *_: self.confirm_network_diagnostics(diagnostic_button, diagnostic_status))
         diagnostic_box.append(diagnostic_button)
@@ -599,6 +624,7 @@ class UbuntuStart(Adw.Application):
 
     def show_network_diagnostic_result(self, button, status_label, result):
         button.set_sensitive(True)
+        self.last_network_diagnostics = result
         lines = []
         if result.get("dns_latency_ms") is not None:
             lines.append(_("DNS lookup: {ms} ms").format(ms=result["dns_latency_ms"]))
@@ -620,6 +646,10 @@ class UbuntuStart(Adw.Application):
                 lines.append(_("Gateway MAC address is not available in the local neighbor table."))
         else:
             lines.append(_("No default gateway was found."))
+        if result.get("dns_latency_ms") is None:
+            lines.append(_("Next step: check that the network is connected and review its DNS settings."))
+        if result.get("gateway") and result.get("gateway_latency_ms") is None:
+            lines.append(_("Next step: check the local connection. Some gateways block ping, so this alone does not prove that the network is down."))
         status_label.set_text("\n".join(lines))
         return GLib.SOURCE_REMOVE
 
@@ -781,6 +811,11 @@ class UbuntuStart(Adw.Application):
         copy_button.connect("clicked", lambda *_: self.copy_system_details(copy_status))
         details_box.append(copy_button)
         details_box.append(copy_status)
+        export_status = Gtk.Label(label="", xalign=0, wrap=True)
+        export_button = Gtk.Button(label=_("Review and save support report"), halign=Gtk.Align.START)
+        export_button.connect("clicked", lambda *_: self.review_support_report(export_status))
+        details_box.append(export_button)
+        details_box.append(export_status)
         box.append(details_box)
 
         tips_box, tips_rows = self.page(_("When asking for help"))
@@ -829,6 +864,64 @@ class UbuntuStart(Adw.Application):
         report = "\n".join(f"{label}: {value}" for label, value in self.system_details())
         display.get_clipboard().set(report)
         status_label.set_text(_("System details copied."))
+
+    def review_support_report(self, status_label):
+        report = build_support_report(self.system_details(), getattr(self, "last_network_diagnostics", None))
+        window = Adw.Window(
+            transient_for=self.get_active_window(), modal=True,
+            title=_("Review support report"), default_width=680, default_height=560,
+        )
+        content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        content.set_margin_top(18)
+        content.set_margin_bottom(18)
+        content.set_margin_start(18)
+        content.set_margin_end(18)
+        content.append(Gtk.Label(
+            label=_("Review or edit this report before saving. It stays on this computer unless you choose to share it. Network addresses, MAC addresses, host names and serial numbers are omitted."),
+            xalign=0, wrap=True,
+        ))
+        editor = Gtk.TextView(wrap_mode=Gtk.WrapMode.WORD_CHAR, monospace=True, vexpand=True)
+        editor.get_buffer().set_text(report)
+        scroller = Gtk.ScrolledWindow(vexpand=True, hexpand=True)
+        scroller.set_child(editor)
+        content.append(scroller)
+        buttons = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8, halign=Gtk.Align.END)
+        close_button = Gtk.Button(label=_("Close"))
+        save_button = Gtk.Button(label=_("Save report"), css_classes=["suggested-action"])
+        close_button.connect("clicked", lambda *_: window.close())
+        save_button.connect("clicked", lambda *_: self.choose_report_destination(window, editor, status_label))
+        buttons.append(close_button)
+        buttons.append(save_button)
+        content.append(buttons)
+        window.set_content(content)
+        window.present()
+
+    def choose_report_destination(self, parent, editor, status_label):
+        chooser = Gtk.FileChooserNative.new(
+            _("Save support report"), parent, Gtk.FileChooserAction.SAVE,
+            _("Save"), _("Cancel"),
+        )
+        chooser.set_current_name("ubuntu-start-support-report.json")
+
+        def on_response(dialog, response):
+            if response == Gtk.ResponseType.ACCEPT:
+                target = dialog.get_file()
+                text = editor.get_buffer().get_text(
+                    editor.get_buffer().get_start_iter(), editor.get_buffer().get_end_iter(), True,
+                )
+                try:
+                    target.replace_contents(
+                        text.encode("utf-8"), None, False,
+                        Gio.FileCreateFlags.REPLACE_DESTINATION, None,
+                    )
+                    status_label.set_text(_("Support report saved locally."))
+                    parent.close()
+                except GLib.Error as error:
+                    self.show_error(str(error))
+            dialog.destroy()
+
+        chooser.connect("response", on_response)
+        chooser.show()
 
     def open_app(self, executable, *args):
         try:

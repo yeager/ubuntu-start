@@ -27,7 +27,7 @@ meson compile -C build
 PYTHONPATH=src python3 -m unittest discover -s tests -v
 ```
 
-For user-interface changes, launch the app on Ubuntu GNOME in English and Swedish. Check the relevant page, its navigation, keyboard use, accessibility labels, links into GNOME Settings and any included screenshots. Pull request CI checks source-string coverage, Swedish translations, AppStream metadata, unit tests, the Meson build and a staged-install smoke check. CI does not replace checking the changed interface.
+For user-interface changes, launch the app on Ubuntu GNOME in English and Swedish. Check the relevant page, its navigation, keyboard use, screen-reader labels, links into GNOME Settings and any included screenshots. Pull request CI checks source-string coverage, Swedish translations, AppStream metadata, unit tests, the Meson build and a staged-install smoke check on Ubuntu 24.04 and 26.04. CI does not replace checking the changed interface.
 
 ## System and privacy changes
 

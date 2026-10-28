@@ -2,6 +2,15 @@
 
 Ubuntu Start uses gettext. English text in the application is the source. The shared template, `po/ubuntu-start.pot`, is the canonical list of messages for every translation catalog in this directory. The current catalog is Swedish (`po/sv.po`). You can improve it or contribute another language.
 
+## Language status
+
+| Language | Code | Status |
+| --- | --- | --- |
+| English (source) | `en` | Complete |
+| Swedish | `sv` | Complete |
+
+Every catalog listed in `po/LINGUAS` must be complete, non-fuzzy and pass CI. Add a language there only when its catalog is ready for users.
+
 ## Before translating
 
 - Read the whole screen or guide where a message appears. A short label can mean different things in different places.

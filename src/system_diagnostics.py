@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import os
 import ipaddress
+import json
 import platform
 from pathlib import Path
 import re
@@ -363,3 +364,22 @@ def run_network_diagnostics(timeout: float = 3.0) -> dict[str, str | float | Non
     else:
         result["dns_error"] = "lookup-failed"
     return result
+
+
+def build_support_report(
+    system_details: list[tuple[str, str]],
+    diagnostics: dict[str, str | float | None] | None = None,
+) -> str:
+    """Create a local, reviewable support report from explicitly supplied facts."""
+    report: dict[str, object] = {
+        "report_version": 1,
+        "system": {label: value for label, value in system_details},
+    }
+    if diagnostics is not None:
+        # Exclude gateway addresses, interface names and MAC addresses by design.
+        report["network_checks"] = {
+            "dns_latency_ms": diagnostics.get("dns_latency_ms"),
+            "gateway_latency_ms": diagnostics.get("gateway_latency_ms"),
+            "gateway_reachable": diagnostics.get("gateway_latency_ms") is not None,
+        }
+    return json.dumps(report, ensure_ascii=False, indent=2) + "\n"

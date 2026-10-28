@@ -32,15 +32,19 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contributor guidance and the maintain
 - First steps for language, networking, updates, sound, display and privacy.
 - Everyday tips for search, window management and Files, plus guidance on backups and choosing trusted app sources.
 - Search device checks and step-by-step system guides together, then open a matching guide directly. Topics include sound, Bluetooth, batteries, printers, displays/graphics, keyboards, touchpads, Wi-Fi, Ethernet, cameras, accessibility and Terminal basics.
+- Dedicated external-display and Bluetooth pairing guides help isolate cable, input, adapter and pairing problems.
 - Step-by-step guides for installing apps, updates, Wi-Fi, Ethernet, printers, batteries, keyboards, touchpads, larger text, screen magnification and the Orca screen reader.
 - Accessibility guides explain larger text, zoom, screen reading, the on-screen keyboard, typing assistance and visual sound alerts, with plain-language steps before each change.
 - A beginner-friendly Terminal guide explains the prompt, command output and errors, `pwd`, `ls`, `cd`, paths with spaces, Tab completion, command history, `--help`, `man`, `sudo` and safe ways to stop a command.
 - Optional connection diagnostics report DNS lookup and gateway ping latency in milliseconds, plus the gateway MAC address and a local OUI vendor match. The test asks before running; it sends one DNS lookup to the configured resolver and one ping to the local gateway.
+- DNS and gateway results include clear next steps when checks fail, while explaining that some gateways block ping.
 - Read-only Bluetooth status reports whether a controller is present and powered on without scanning for nearby devices.
 - Read-only audio status checks the default speaker and microphone volume and mute state through PipeWire or PulseAudio without playing sounds or changing settings.
 - Wi-Fi troubleshooting recommends [WiFi Analyzer](https://github.com/yeager/wifi-analyzer) for nearby signal levels and channel use. Opening GitHub requires confirmation.
 - Built-in links to official Ubuntu documentation, Ask Ubuntu and the Ubuntu support forum.
 - Read-only NetworkManager, Bluetooth, hardware and storage summaries, battery charge and estimated capacity versus original design when exposed, plus a copyable support report that omits usernames, host names, serial numbers, network addresses, Wi-Fi names and installed applications.
+- A local support report can be reviewed and edited before saving. It includes system details and optional DNS/gateway timing; it excludes network addresses, interfaces, MAC addresses and vendor matches. The app does not upload it.
+- Search and guide selectors have visible labels for assistive technology, and guides remain navigable with the keyboard.
 - Links into GNOME Control Center and Ubuntu's Additional Drivers tool. System changes remain in Ubuntu's own tools and require the user's confirmation.
 - gettext-based localization with English source strings and a complete Swedish (`sv`) catalog.
 
@@ -75,7 +79,7 @@ msgfmt po/sv.po -o build/locale/sv/LC_MESSAGES/ubuntu-start.mo
 LANGUAGE=sv UBUNTU_START_LOCALEDIR="$PWD/build/locale" python3 src/ubuntu_start.py
 ```
 
-Run the unit tests with `PYTHONPATH=src python3 -m unittest discover -s tests -v`. The CI workflow runs these tests and builds the app for pull requests.
+Run the unit tests with `PYTHONPATH=src python3 -m unittest discover -s tests -v`. The CI workflow runs these tests and builds the app on Ubuntu 24.04 and 26.04 for pull requests.
 
 NetworkManager, Bluetooth, audio, storage, battery and hardware summaries use local system information. DNS/gateway tests and the WiFi Analyzer GitHub link ask for confirmation before contacting an external service; DNS uses the configured resolver, ping targets the local gateway, and vendor matching uses a local OUI file when available. The separate internet test sends one HTTPS HEAD request to `ubuntu.com` after confirmation. Opening the Ubuntu App Center asks first because it may contact configured software sources; Ubuntu Start does not install apps. Other help pages open only when selected. No diagnostic report is uploaded, and serial numbers are not read. The app expects GTK 4, libadwaita and PyGObject.
 
@@ -88,6 +92,11 @@ An earlier revision was also launched under Xvfb in English and Swedish. At that
 ## Localization
 
 English is the source and default language. The app uses the desktop locale to select translations. Add languages through gettext catalogs and list their codes in `po/LINGUAS`. Regenerate the template with `xgettext` and validate catalogs with `msgfmt --check`.
+
+| Language | Code | Status |
+| --- | --- | --- |
+| English (source) | `en` | Complete |
+| Swedish | `sv` | Complete |
 
 See [po/README.md](po/README.md) for instructions on updating Swedish translations and contributing another language.
 
