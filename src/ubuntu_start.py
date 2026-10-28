@@ -102,7 +102,10 @@ SYSTEM_GUIDES = [
     (_("Use the Terminal"), ("terminal", ""), _("Open Terminal"), [
         (_("What the prompt means"), _("The prompt is the text before the cursor. It shows that the terminal is ready for a command. Type after it; do not type the prompt itself.")),
         (_("Run a command"), _("Type a command and press Enter to run it. For example, pwd shows the current folder and ls lists its files. These commands only show information.")),
+        (_("Read the result"), _("Commands may print information or an error message. Read the last lines first. If a command finishes without an error, it may return to the prompt without printing anything.")),
         (_("Move between folders"), _("Use cd Documents to enter a folder and cd .. to go up one level. Use pwd to check where you are.")),
+        (_("Use Tab and command history"), _("Press Tab to complete a file or folder name when it is unique. Press the Up Arrow to find a command you used earlier; check it before pressing Enter.")),
+        (_("Type paths with spaces"), _("Put quotation marks around a folder or file name that contains spaces, for example: cd \"My Documents\". You can also type the first letters and press Tab to complete the name.")),
         (_("Ask a command for help"), _("Try a command followed by --help, such as ls --help. For more detail, use man followed by the command name; press q to leave the manual.")),
         (_("Understand sudo"), _("sudo runs a command with administrator privileges. Use it only when you understand and trust the command. Your password is not shown while you type it.")),
         (_("Stop a running command"), _("Ctrl+C asks the current command to stop. It does not undo changes the command has already made.")),

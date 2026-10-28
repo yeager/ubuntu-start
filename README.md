@@ -45,7 +45,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contributor guidance and the maintain
 - Search across guided checks for sound, Bluetooth, printers, displays/graphics, Wi-Fi, Ethernet and cameras.
 - Step-by-step guides for Wi-Fi, Ethernet, printers, updates, larger text, screen magnification and the Orca screen reader.
 - Accessibility help opens GNOME settings for larger text, zoom and screen reading, with plain-language instructions before each change.
-- A beginner-friendly Terminal guide covers the prompt, `pwd`, `ls`, `cd`, `--help`, `man`, `sudo` and safe ways to stop a command.
+- A beginner-friendly Terminal guide explains the prompt, command output and errors, `pwd`, `ls`, `cd`, paths with spaces, Tab completion, command history, `--help`, `man`, `sudo` and safe ways to stop a command.
 - Optional connection diagnostics report DNS lookup and gateway ping latency in milliseconds, plus the gateway MAC address and a local OUI vendor match. The test asks before running; it sends one DNS lookup to the configured resolver and one ping to the local gateway.
 - Read-only Bluetooth status reports whether a controller is present and powered on without scanning for nearby devices.
 - Read-only audio status checks the default speaker and microphone volume and mute state through PipeWire or PulseAudio without playing sounds or changing settings.

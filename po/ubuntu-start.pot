@@ -548,6 +548,38 @@ msgid ""
 msgstr ""
 
 #: src/ubuntu_start.py:105
+msgid "Read the result"
+msgstr ""
+
+#: src/ubuntu_start.py:105
+msgid ""
+"Commands may print information or an error message. Read the last lines "
+"first. If a command finishes without an error, it may return to the prompt "
+"without printing anything."
+msgstr ""
+
+#: src/ubuntu_start.py:107
+msgid "Use Tab and command history"
+msgstr ""
+
+#: src/ubuntu_start.py:107
+msgid ""
+"Press Tab to complete a file or folder name when it is unique. Press the Up "
+"Arrow to find a command you used earlier; check it before pressing Enter."
+msgstr ""
+
+#: src/ubuntu_start.py:108
+msgid "Type paths with spaces"
+msgstr ""
+
+#: src/ubuntu_start.py:108
+msgid ""
+"Put quotation marks around a folder or file name that contains spaces, for "
+"example: cd \"My Documents\". You can also type the first letters and press "
+"Tab to complete the name."
+msgstr ""
+
+#: src/ubuntu_start.py:105
 msgid "Move between folders"
 msgstr ""
 

@@ -628,6 +628,47 @@ msgstr ""
 "mapp och ls listar filerna där. De här kommandona visar bara information."
 
 #: src/ubuntu_start.py:105
+msgid "Read the result"
+msgstr "Läs resultatet"
+
+#: src/ubuntu_start.py:105
+msgid ""
+"Commands may print information or an error message. Read the last lines "
+"first. If a command finishes without an error, it may return to the prompt "
+"without printing anything."
+msgstr ""
+"Kommandon kan visa information eller ett felmeddelande. Läs först de sista "
+"raderna. Om ett kommando avslutas utan fel kan prompten visas igen utan att "
+"något skrivs ut."
+
+#: src/ubuntu_start.py:107
+msgid "Use Tab and command history"
+msgstr "Använd Tab och kommandohistoriken"
+
+#: src/ubuntu_start.py:107
+msgid ""
+"Press Tab to complete a file or folder name when it is unique. Press the Up "
+"Arrow to find a command you used earlier; check it before pressing Enter."
+msgstr ""
+"Tryck på Tab för att komplettera ett fil- eller mappnamn när det bara finns "
+"ett möjligt alternativ. Tryck på uppåtpilen för att hitta ett tidigare "
+"kommando. Kontrollera det innan du trycker på Retur."
+
+#: src/ubuntu_start.py:108
+msgid "Type paths with spaces"
+msgstr "Skriv sökvägar med mellanslag"
+
+#: src/ubuntu_start.py:108
+msgid ""
+"Put quotation marks around a folder or file name that contains spaces, for "
+"example: cd \"My Documents\". You can also type the first letters and press "
+"Tab to complete the name."
+msgstr ""
+"Sätt citationstecken runt ett fil- eller mappnamn som innehåller mellanslag, "
+"till exempel cd \"Mina dokument\". Du kan också skriva de första "
+"bokstäverna och trycka på Tab för att komplettera namnet."
+
+#: src/ubuntu_start.py:105
 msgid "Move between folders"
 msgstr "Byt mellan mappar"
 
