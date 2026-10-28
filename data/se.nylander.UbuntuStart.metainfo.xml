@@ -16,8 +16,8 @@
   <releases>
     <release version="0.3.0" date="2026-10-28">
       <description>
-        <p>Add guides for keyboards, touchpads, battery charging and terminal basics. Show Bluetooth and audio status without changing settings.</p>
-        <p xml:lang="sv">Lägg till guider för tangentbord, styrplattor, batteriladdning och terminalens grunder. Visa Bluetooth- och ljudstatus utan att ändra inställningar.</p>
+        <p>Search device troubleshooting and system guides together and open a matching guide directly. Add step-by-step help for app installation, accessibility, networking and everyday shortcuts, plus tips for backups and trusted software sources. Ubuntu Start asks before opening App Center because it may contact configured software sources; it never installs apps itself.</p>
+        <p xml:lang="sv">Sök bland enhetsfelsökning och systemguider på en gång och öppna rätt guide direkt. Få steg-för-steg-hjälp med appinstallation, hjälpmedel, nätverk och vanliga genvägar samt råd om säkerhetskopiering och betrodda programkällor. Ubuntu Start frågar innan App Center öppnas eftersom det kan ansluta till programkällor. Ubuntu Start installerar inte appar.</p>
       </description>
     </release>
     <release version="0.2.0" date="2026-10-28">
