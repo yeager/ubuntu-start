@@ -57,7 +57,7 @@ sudo meson install -C build
 
 To build an installable Debian package after installing the dependencies, run `scripts/build-deb.sh`. It creates `build/packages/ubuntu-start_0.3.1-1_all.deb`. Install it with `sudo apt install ./build/packages/ubuntu-start_0.3.1-1_all.deb`; APT resolves the declared GTK and Python runtime dependencies.
 
-The PyPI wheel and source distribution are prepared. The initial upload needs a Trusted Publisher registered for this repository; after that, tagged releases publish automatically. Once the package is available, install the GTK platform dependencies with APT first, then install it in an isolated environment that can access system PyGObject bindings:
+The wheel and source distribution are published on [PyPI](https://pypi.org/project/ubuntu-start/). Install the GTK platform dependencies with APT first, then install the package in an isolated environment that can access system PyGObject bindings:
 
 ```sh
 sudo apt install python3-gi gir1.2-gtk-4.0 gir1.2-adw-1 gettext
@@ -81,19 +81,19 @@ NetworkManager, Bluetooth, audio, storage, battery and hardware summaries use lo
 
 ## Validation
 
-Release `v0.3.0` passed GitHub CI and the release workflow. The current 0.3.1 working tree passes all 41 unit tests, source-string coverage, translation checks, Python wheel/sdist builds and `twine check`. The 0.3.1 Debian package was built and installed on Ubuntu 26.10 machine `trv2`; package audit and APT dependency checks passed. A live GTK session exposed and verified a fix for search results with matching guides. Orca's AT-SPI app list detects Ubuntu Start. The network diagnostics remain unrun pending approval in the app's consent dialog. GNOME is selected as the next GDM session; TigerVNC currently uses Openbox because this Ubuntu image provides GNOME only as a Wayland session.
+Release `v0.3.1` passed GitHub CI and the release workflow, including 41 unit tests, translation checks, AppStream validation, staged installation, Debian packaging and PyPI publishing. The Debian package and the published PyPI wheel were installed on Ubuntu 26.10 machine `trv2`; the wheel loaded the Swedish catalog successfully. The Swedish catalog contains 394 translated messages. A live GTK session verified search results, and Orca's AT-SPI app list detects Ubuntu Start. After approval, the network check on `trv2` completed its DNS lookup and gateway ping. GNOME Wayland is selected for the next GDM login; runtime GNOME login was not verified. TigerVNC uses Openbox because this Ubuntu image provides GNOME only as a Wayland session.
 
 An earlier revision was also launched under Xvfb in English and Swedish. At that point PipeWire reported an unmuted default speaker at 100% and no default microphone. The GNOME Control Center panel list confirmed the Bluetooth, Wi-Fi, printer, display, privacy, sound and keyboard panel identifiers. The two Ubuntu driver/update utilities were installed with `dpkg -i`; Additional Drivers and Update Manager opened in Swedish, and `dpkg --audit` and `apt-get check` reported no package errors. These observations apply to that earlier revision. Xvfb does not verify physical-device behavior or hardware acceleration.
 
 ## Localization
 
-English is the source and default language. The app uses the desktop locale to select translations; Swedish strings live in `po/sv.po`. Add more languages through gettext catalogs and list their language codes in `po/LINGUAS`. Regenerate the template with `xgettext` and validate catalogs with `msgfmt --check`.
+English is the source and default language. The app uses the desktop locale to select translations. Add languages through gettext catalogs and list their codes in `po/LINGUAS`. Regenerate the template with `xgettext` and validate catalogs with `msgfmt --check`.
 
 See [po/README.md](po/README.md) for instructions on updating Swedish translations and contributing another language.
 
 ## Current limitations
 
-Device troubleshooting guides are instructional. Optional network diagnostics run only after confirmation, use DNS for `ubuntu.com` and ping the local gateway, and do not upload a report. The app does not install packages or run privileged operations; system changes remain in Ubuntu's own tools. Settings panel names and the Additional Drivers launcher can differ across Ubuntu releases, so validate integrations on each supported release.
+Ubuntu Start targets Ubuntu Desktop with GNOME. Device guides explain checks for the user to perform; they do not identify physical faults or change the system. Network diagnostics ask first, make one DNS lookup for `ubuntu.com` and one ping to the local gateway, and do not upload a report. The app does not install packages, drivers or run privileged operations; changes remain in Ubuntu's own tools. GNOME panel names and the Additional Drivers launcher can vary by Ubuntu release. If a shortcut does not open the expected page, open Settings and choose the section manually. For drivers, search for Software & Updates and select Additional Drivers.
 
 
 ## Releases

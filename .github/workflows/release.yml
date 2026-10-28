@@ -36,11 +36,15 @@ jobs:
           PYTHONPATH=src python3 -c "import ubuntu_start"
       - name: Check source translation coverage
         run: python3 scripts/check-translations.py
-      - name: Validate translations
+      - name: Validate configured translations
         run: |
-          test -z "$(msgattrib --untranslated --no-obsolete po/sv.po)"
-          test -z "$(msgattrib --only-fuzzy --no-obsolete po/sv.po)"
-          msgfmt --check --statistics po/sv.po -o /tmp/ubuntu-start-sv.mo
+          while IFS= read -r language || [ -n "$language" ]; do
+            case "$language" in ''|'#'*) continue ;; esac
+            catalog="po/$language.po"
+            test -z "$(msgattrib --untranslated --no-obsolete "$catalog")"
+            test -z "$(msgattrib --only-fuzzy --no-obsolete "$catalog")"
+            msgfmt --check --check-format --statistics "$catalog" -o "/tmp/ubuntu-start-$language.mo"
+          done < po/LINGUAS
       - name: Validate AppStream metadata
         run: appstreamcli validate data/se.nylander.UbuntuStart.metainfo.xml
       - name: Run unit tests

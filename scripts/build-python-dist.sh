@@ -3,10 +3,18 @@ set -eu
 
 root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 build_dir=${1:-"$root/build/python-dist"}
-mkdir -p "$build_dir/locale/sv/LC_MESSAGES" "$build_dir/python-dist"
-mkdir -p "$root/packaging/pypi/locale/sv/LC_MESSAGES"
+mkdir -p "$build_dir/python-dist"
 
-msgfmt --check --check-format "$root/po/sv.po" -o "$build_dir/locale/sv/LC_MESSAGES/ubuntu-start.mo"
-install -m 0644 "$build_dir/locale/sv/LC_MESSAGES/ubuntu-start.mo" "$root/packaging/pypi/locale/sv/LC_MESSAGES/ubuntu-start.mo"
+while IFS= read -r language || [ -n "$language" ]; do
+    case "$language" in
+        ''|'#'*) continue ;;
+    esac
+    catalog="$root/po/$language.po"
+    output_dir="$build_dir/locale/$language/LC_MESSAGES"
+    package_dir="$root/packaging/pypi/locale/$language/LC_MESSAGES"
+    mkdir -p "$output_dir" "$package_dir"
+    msgfmt --check --check-format "$catalog" -o "$output_dir/ubuntu-start.mo"
+    install -m 0644 "$output_dir/ubuntu-start.mo" "$package_dir/ubuntu-start.mo"
+done < "$root/po/LINGUAS"
 
 printf 'Prepared Python distribution assets in %s\n' "$build_dir"

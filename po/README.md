@@ -1,6 +1,6 @@
 # Contributing translations
 
-Ubuntu Start uses gettext. English text in the application is the source; translated catalogs live in this directory. Swedish (`sv`) is the current translation. You can help improve Swedish or contribute a new language.
+Ubuntu Start uses gettext. English text in the application is the source. The shared template, `po/ubuntu-start.pot`, is the canonical list of messages for every translation catalog in this directory. The current catalog is Swedish (`po/sv.po`). You can improve it or contribute another language.
 
 ## Before translating
 
@@ -8,30 +8,43 @@ Ubuntu Start uses gettext. English text in the application is the source; transl
 - Keep the meaning, tone and level of detail. Use clear language that makes sense to a new Ubuntu Desktop user.
 - Keep product and proper names such as Ubuntu, App Center, Orca and WiFi Analyzer unchanged.
 - Preserve placeholders exactly, including their braces and spelling. For example, `{free}`, `{total}` and `{percent}` are filled in by the application.
-- Do not translate gettext metadata, message IDs, source-code references or the POT template.
+- Do not translate gettext metadata, message IDs or source-code references. Do not edit the POT template by hand; regenerate it from the English source.
 - Leave a message fuzzy only while it still needs review. Remove the fuzzy marker after checking the finished translation.
 
-## Update a translation
+## Update the shared template and catalogs
 
-From the repository root, regenerate the English message template and merge it into the Swedish catalog:
+Keep `po/ubuntu-start.pot` in version control. It is used by `msgmerge` to bring existing `.po` catalogs up to date, and by `msginit` to start catalogs for new languages. When English text changes or a new source string is added, regenerate the template from both the Python app and its desktop entry, then merge it into each catalog.
+
+Run these commands from the repository root:
 
 ```sh
 xgettext --from-code=UTF-8 --language=Python --keyword=_ \
+  --package-name="Ubuntu Start" --package-version=0.3.1 \
+  --copyright-holder="Ubuntu Start contributors" \
+  --msgid-bugs-address=https://github.com/yeager/ubuntu-start/issues \
   --output=po/ubuntu-start.pot src/ubuntu_start.py
 xgettext --from-code=UTF-8 --language=Desktop --join-existing \
+  --package-name="Ubuntu Start" --package-version=0.3.1 \
+  --copyright-holder="Ubuntu Start contributors" \
+  --msgid-bugs-address=https://github.com/yeager/ubuntu-start/issues \
   --output=po/ubuntu-start.pot data/se.nylander.UbuntuStart.desktop
 msgmerge --update --backup=none --no-fuzzy-matching \
   po/sv.po po/ubuntu-start.pot
 ```
 
-Edit the `msgstr` values in `po/sv.po`. Keep each translation next to its `msgid`, and check that placeholders and punctuation still match the sentence. Do not edit `po/ubuntu-start.pot` by hand; it is generated from the English source.
+If the project version changes, update `--package-version` to match `meson.build`. Repeat the `msgmerge` command for every `.po` file listed in `po/LINGUAS`. Edit only the `msgstr` values in a translation catalog. Keep each translation next to its `msgid`, and check that placeholders and punctuation still match the sentence.
 
 ## Add another language
 
-1. Copy `po/sv.po` to a catalog named with the new language code, such as `po/fr.po`.
-2. Update its language metadata and translate every `msgstr`.
+1. Create a catalog from the shared template, replacing `fr` with the language code:
+
+   ```sh
+   msginit --input=po/ubuntu-start.pot --locale=fr --output-file=po/fr.po
+   ```
+
+2. Translate each `msgstr`. Keep the generated language metadata and plural forms for that locale.
 3. Add the language code to `po/LINGUAS`, one code per line.
-4. Run the checks below and include the catalog and `LINGUAS` change in your pull request.
+4. Run the checks below and include the new catalog and `LINGUAS` change in your pull request.
 
 ## Check your work
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Ensure every translatable source string exists in the Swedish catalog."""
+"""Ensure every configured translation catalog matches the source template."""
 
 from pathlib import Path
 import ast
@@ -51,7 +51,20 @@ def message_keys(path: Path) -> set[tuple[str, str, str]]:
 
 
 def main() -> None:
-    run(["msgcmp", "po/sv.po", "po/ubuntu-start.pot"])
+    languages = [
+        line.strip()
+        for line in (ROOT / "po/LINGUAS").read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    ]
+    if not languages:
+        raise SystemExit("po/LINGUAS does not list any translation catalogs")
+    catalogs = [ROOT / "po" / f"{language}.po" for language in languages]
+    missing = [str(catalog.relative_to(ROOT)) for catalog in catalogs if not catalog.is_file()]
+    if missing:
+        raise SystemExit("Missing catalog(s) listed in po/LINGUAS: " + ", ".join(missing))
+
+    for catalog in catalogs:
+        run(["msgcmp", str(catalog), "po/ubuntu-start.pot"])
     with tempfile.TemporaryDirectory(prefix="ubuntu-start-l10n-") as temporary:
         template = Path(temporary) / "ubuntu-start.pot"
         run([
@@ -62,7 +75,8 @@ def main() -> None:
             "xgettext", "--from-code=UTF-8", "--language=Desktop", "--join-existing",
             f"--output={template}", "data/se.nylander.UbuntuStart.desktop",
         ])
-        run(["msgcmp", "po/sv.po", str(template)])
+        for catalog in catalogs:
+            run(["msgcmp", str(catalog), str(template)])
         if message_keys(ROOT / "po/ubuntu-start.pot") != message_keys(template):
             raise SystemExit("po/ubuntu-start.pot is out of date; regenerate the gettext template")
 
