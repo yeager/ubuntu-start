@@ -1494,3 +1494,7 @@ msgstr ""
 #: src/ubuntu_start.py:717
 msgid "Close"
 msgstr ""
+
+#: data/se.nylander.UbuntuStart.desktop:3
+msgid "Get started with Ubuntu and troubleshoot devices"
+msgstr ""

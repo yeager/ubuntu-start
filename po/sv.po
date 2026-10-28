@@ -1673,6 +1673,10 @@ msgstr "Det gick inte att öppna verktyget"
 msgid "Close"
 msgstr "Stäng"
 
+#: data/se.nylander.UbuntuStart.desktop:3
+msgid "Get started with Ubuntu and troubleshoot devices"
+msgstr "Kom igång med Ubuntu och felsök anslutna enheter"
+
 #~ msgid ""
 #~ "Battery health and charge are read from local system information when the "
 #~ "hardware provides them."
@@ -1693,9 +1697,6 @@ msgstr "Stäng"
 #~ msgstr ""
 #~ "Välj en enhet och gå igenom kontrollerna i ordning. De installerar ingen "
 #~ "programvara och ändrar inga systemfiler."
-
-#~ msgid "Get started with Ubuntu and troubleshoot devices"
-#~ msgstr "Kom igång med Ubuntu och felsök anslutna enheter"
 
 #~ msgid ""
 #~ "These read-only details can help explain a problem. They omit your "
