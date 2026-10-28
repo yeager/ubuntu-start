@@ -24,6 +24,8 @@ from system_diagnostics import (
     read_hardware_details,
     read_network_devices,
     read_storage_status,
+    read_wifi_link_status,
+    parse_iw_link_status,
     run_network_diagnostics,
 )
 
@@ -54,6 +56,37 @@ class SupportReportTests(unittest.TestCase):
 
 
 class ParseNetworkStatusTests(unittest.TestCase):
+    def test_parses_active_wifi_metrics_without_returning_network_identifiers(self):
+        output = """Connected to AA:BB:CC:DD:EE:FF (on wlp2s0)
+\tSSID: private-network-name
+\tsignal: -53 dBm
+\trx bitrate: 780.0 MBit/s
+\ttx bitrate: 650.5 MBit/s
+"""
+        details = parse_iw_link_status(output)
+        self.assertEqual(details, {
+            "signal_dbm": -53,
+            "rx_bitrate_mbps": 780.0,
+            "tx_bitrate_mbps": 650.5,
+        })
+        self.assertNotIn("private-network-name", repr(details))
+        self.assertNotIn("AA:BB:CC:DD:EE:FF", repr(details))
+
+    @patch("system_diagnostics.shutil.which", return_value="/usr/sbin/iw")
+    @patch("system_diagnostics._run_local")
+    def test_reads_current_wifi_link_without_scanning(self, run, _which):
+        run.return_value = subprocess.CompletedProcess(
+            ["iw", "dev", "wlp2s0", "link"], 0, "signal: -62 dBm\n", "",
+        )
+        self.assertEqual(read_wifi_link_status("wlp2s0"), {"signal_dbm": -62})
+        self.assertEqual(run.call_args.args[0], ["/usr/sbin/iw", "dev", "wlp2s0", "link"])
+
+    @patch("system_diagnostics.shutil.which", return_value="/usr/sbin/iw")
+    @patch("system_diagnostics._run_local")
+    def test_rejects_unexpected_interface_values(self, run, _which):
+        self.assertIsNone(read_wifi_link_status("wlan0; reboot"))
+        run.assert_not_called()
+
     def test_parses_devices_and_skips_loopback(self):
         output = """DEVICE:TYPE:STATE
 wlp2s0:wifi:connected

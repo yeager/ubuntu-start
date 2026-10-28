@@ -12,7 +12,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import build_support_report, check_internet_connection, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_network_devices, read_storage_status, run_network_diagnostics
+from system_diagnostics import build_support_report, check_internet_connection, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_network_devices, read_storage_status, read_wifi_link_status, run_network_diagnostics
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -473,7 +473,7 @@ class UbuntuStart(Adw.Application):
 
         network_box, _unused = self.page(
             _("Network status"),
-            _("NetworkManager device states help show whether Ubuntu sees a wired or wireless adapter."),
+            _("NetworkManager device states help show whether Ubuntu sees a wired or wireless adapter. If the optional iw tool is installed, signal strength and link rates are read from the active Wi-Fi link; the network name is not collected and nearby networks are not scanned. Signal values closer to 0 dBm are usually stronger. Link rates are not internet speed tests."),
             include_rows=False,
         )
         network_status = Gtk.Label(label=_("Network status has not been refreshed yet."), xalign=0, wrap=True)
@@ -694,7 +694,13 @@ class UbuntuStart(Adw.Application):
 
         def read_status():
             devices, error = read_network_devices()
-            GLib.idle_add(self.show_network_status, status_label, device_rows, devices, error, announce)
+            wifi_details = {
+                name: details
+                for name, device_type, state in devices
+                if device_type == "wifi" and state == "connected"
+                if (details := read_wifi_link_status(name))
+            }
+            GLib.idle_add(self.show_network_status, status_label, device_rows, devices, error, announce, wifi_details)
 
         threading.Thread(target=read_status, daemon=True).start()
 
@@ -811,7 +817,7 @@ class UbuntuStart(Adw.Application):
             self.announce_to_screen_reader(output_row, " ".join(announcements))
         return GLib.SOURCE_REMOVE
 
-    def show_network_status(self, status_label, device_rows, devices, error, announce=False):
+    def show_network_status(self, status_label, device_rows, devices, error, announce=False, wifi_details=None):
         errors = {
             "not-installed": _("NetworkManager command-line tools are not installed."),
             "timeout": _("NetworkManager did not respond in time. Try refreshing again."),
@@ -832,8 +838,6 @@ class UbuntuStart(Adw.Application):
 
         message = _("This is local device status; internet access has not been tested.")
         status_label.set_text(message)
-        if announce:
-            self.announce_to_screen_reader(status_label, message)
         device_types = {
             "wifi": _("Wi-Fi"),
             "ethernet": _("Wired"),
@@ -849,9 +853,27 @@ class UbuntuStart(Adw.Application):
             "unmanaged": _("Not managed by NetworkManager"),
             "unavailable (firmware missing)": _("Unavailable (missing firmware)"),
         }
+        device_announcements = []
         for name, device_type, state in devices:
             title = f"{device_types.get(device_type, device_type)} · {name}"
-            self.row(device_rows, title, states.get(state, state))
+            subtitle = states.get(state, state)
+            metrics = (wifi_details or {}).get(name, {})
+            details = []
+            if "signal_dbm" in metrics:
+                details.append(_("Signal: {dbm} dBm").format(dbm=metrics["signal_dbm"]))
+            if "rx_bitrate_mbps" in metrics:
+                details.append(_("Receive rate: {rate} Mbit/s").format(rate=metrics["rx_bitrate_mbps"]))
+            if "tx_bitrate_mbps" in metrics:
+                details.append(_("Transmit rate: {rate} Mbit/s").format(rate=metrics["tx_bitrate_mbps"]))
+            if details:
+                subtitle = f"{subtitle} · {' · '.join(details)}"
+            self.row(device_rows, title, subtitle)
+            device_announcements.append(f"{title}: {subtitle}")
+        if announce:
+            announcement = _("Network status updated: {details}").format(
+                details="; ".join(device_announcements),
+            )
+            self.announce_to_screen_reader(status_label, announcement)
         return GLib.SOURCE_REMOVE
 
     def make_drivers(self):

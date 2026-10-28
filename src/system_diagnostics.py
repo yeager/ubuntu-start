@@ -32,6 +32,37 @@ def parse_nmcli_device_status(output: str) -> list[tuple[str, str, str]]:
     return devices
 
 
+def parse_iw_link_status(output: str) -> dict[str, float | int]:
+    """Extract signal and link rates without retaining SSID or access-point MAC."""
+    details: dict[str, float | int] = {}
+    signal = re.search(r"^\s*signal:\s*(-?\d+)\s*dBm\s*$", output, re.IGNORECASE | re.MULTILINE)
+    if signal:
+        details["signal_dbm"] = int(signal.group(1))
+    for direction in ("rx", "tx"):
+        match = re.search(
+            rf"^\s*{direction} bitrate:\s*([0-9]+(?:\.[0-9]+)?)\s*MBit/s\s*$",
+            output,
+            re.IGNORECASE | re.MULTILINE,
+        )
+        if match:
+            details[f"{direction}_bitrate_mbps"] = float(match.group(1))
+    return details
+
+
+def read_wifi_link_status(interface: str, timeout: float = 2.0) -> dict[str, float | int] | None:
+    """Read active Wi-Fi link metrics only; do not scan or expose network identifiers."""
+    if not re.fullmatch(r"[A-Za-z0-9_.:-]{1,64}", interface):
+        return None
+    iw = shutil.which("iw")
+    if not iw:
+        return None
+    result = _run_local([iw, "dev", interface, "link"], timeout)
+    if result is None or result.returncode != 0:
+        return None
+    details = parse_iw_link_status(result.stdout)
+    return details or None
+
+
 def read_network_devices(timeout: float = 3.0) -> tuple[list[tuple[str, str, str]], str | None]:
     """Read local NetworkManager device state without probing the network."""
     if shutil.which("nmcli") is None:

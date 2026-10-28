@@ -63,6 +63,32 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
             "NetworkManager did not respond in time. Try refreshing again.",
         )
 
+    def test_network_status_shows_local_wifi_signal_and_link_rates(self):
+        status = Mock()
+        rows = Mock()
+        self.app.row = Mock()
+
+        UbuntuStart.show_network_status(
+            self.app, status, rows,
+            [("wlp2s0", "wifi", "connected")], None,
+            announce=True,
+            wifi_details={"wlp2s0": {
+                "signal_dbm": -53,
+                "rx_bitrate_mbps": 780.0,
+                "tx_bitrate_mbps": 650.5,
+            }},
+        )
+
+        self.app.row.assert_called_once_with(
+            rows,
+            "Wi-Fi · wlp2s0",
+            "Connected · Signal: -53 dBm · Receive rate: 780.0 Mbit/s · Transmit rate: 650.5 Mbit/s",
+        )
+        self.app.announce_to_screen_reader.assert_called_once_with(
+            status,
+            "Network status updated: Wi-Fi · wlp2s0: Connected · Signal: -53 dBm · Receive rate: 780.0 Mbit/s · Transmit rate: 650.5 Mbit/s",
+        )
+
     def test_missing_gateway_result_includes_and_announces_next_step(self):
         button = Mock()
         status = Mock()
