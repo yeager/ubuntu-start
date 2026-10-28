@@ -137,7 +137,7 @@ def read_storage_status(path: str | Path = "/") -> dict[str, int]:
 
 
 def read_battery_status(power_supply_path: str | Path = "/sys/class/power_supply") -> list[dict[str, str | int]]:
-    """Read battery percentage and state without accessing device identifiers."""
+    """Read charge and optional full-charge capacity estimate without device identifiers."""
     batteries = []
     for battery in sorted(Path(power_supply_path).glob("*") if Path(power_supply_path).exists() else []):
         if _read(battery / "type") != "Battery":
@@ -148,7 +148,17 @@ def read_battery_status(power_supply_path: str | Path = "/sys/class/power_supply
             capacity = -1
         status = _read(battery / "status")
         if 0 <= capacity <= 100:
-            batteries.append({"capacity": capacity, "status": status or "Unknown"})
+            details: dict[str, str | int] = {"capacity": capacity, "status": status or "Unknown"}
+            for full_name, design_name in (("energy_full", "energy_full_design"), ("charge_full", "charge_full_design")):
+                try:
+                    full = int(_read(battery / full_name) or "")
+                    design = int(_read(battery / design_name) or "")
+                except ValueError:
+                    continue
+                if full > 0 and design > 0:
+                    details["design_capacity_percent"] = round(full / design * 100)
+                    break
+            batteries.append(details)
     return batteries
 
 

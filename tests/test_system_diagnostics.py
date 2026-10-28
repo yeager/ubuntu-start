@@ -122,6 +122,29 @@ class LocalDiagnosticsTests(unittest.TestCase):
             result = read_battery_status(root)
         self.assertEqual(result, [{"capacity": 72, "status": "Discharging"}])
 
+    def test_estimates_battery_capacity_against_design_when_available(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            battery = Path(temporary) / "BAT0"
+            battery.mkdir()
+            (battery / "type").write_text("Battery\n", encoding="utf-8")
+            (battery / "capacity").write_text("55\n", encoding="utf-8")
+            (battery / "status").write_text("Charging\n", encoding="utf-8")
+            (battery / "energy_full").write_text("42000000\n", encoding="utf-8")
+            (battery / "energy_full_design").write_text("50000000\n", encoding="utf-8")
+            result = read_battery_status(temporary)
+        self.assertEqual(result[0]["design_capacity_percent"], 84)
+
+    def test_uses_charge_capacity_fallback_and_ignores_invalid_design_values(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            battery = Path(temporary) / "BAT0"
+            battery.mkdir()
+            (battery / "type").write_text("Battery\n", encoding="utf-8")
+            (battery / "capacity").write_text("55\n", encoding="utf-8")
+            (battery / "charge_full").write_text("4200\n", encoding="utf-8")
+            (battery / "charge_full_design").write_text("5000\n", encoding="utf-8")
+            result = read_battery_status(temporary)
+        self.assertEqual(result[0]["design_capacity_percent"], 84)
+
     @patch("system_diagnostics.urllib.request.build_opener")
     def test_explicit_internet_check_uses_ubuntu_https_without_following_redirects(self, build_opener):
         response = build_opener.return_value.open.return_value.__enter__.return_value

@@ -47,7 +47,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contributor guidance and the maintain
 - Optional connection diagnostics report DNS lookup and gateway ping latency in milliseconds, plus the gateway MAC address and a local OUI vendor match. The test asks before running; it sends one DNS lookup to the configured resolver and one ping to the local gateway.
 - Wi-Fi troubleshooting recommends [WiFi Analyzer](https://github.com/yeager/wifi-analyzer) for nearby signal levels and channel use. Opening GitHub requires confirmation.
 - Built-in links to official Ubuntu documentation, Ask Ubuntu and the Ubuntu support forum.
-- Read-only NetworkManager, hardware, storage and battery summaries, plus a copyable support report that omits usernames, host names, serial numbers, network addresses, Wi-Fi names and installed applications.
+- Read-only NetworkManager, hardware and storage summaries, battery charge and estimated capacity versus original design when exposed, plus a copyable support report that omits usernames, host names, serial numbers, network addresses, Wi-Fi names and installed applications.
 - Links into GNOME Control Center and Ubuntu's Additional Drivers tool. System changes remain in Ubuntu's own tools and require the user's confirmation.
 - gettext-based localization with English source strings and a complete Swedish (`sv`) catalog.
 

@@ -386,13 +386,25 @@ class UbuntuStart(Adw.Application):
         batteries = read_battery_status()
         battery_box, battery_rows = self.page(
             _("Battery"),
-            _("Battery health and charge are read from local system information when the hardware provides them."),
+            _("Charge level and charging state come from local system information. An estimated capacity compared with the original design is shown only if the battery exposes both values."),
         )
+        battery_states = {
+            "Charging": _("Charging"),
+            "Discharging": _("Discharging"),
+            "Full": _("Full"),
+            "Not charging": _("Not charging"),
+            "Unknown": _("Unknown"),
+        }
         if batteries:
             for index, battery in enumerate(batteries, start=1):
-                self.row(battery_rows, _("Battery {number}").format(number=index), _("{capacity}% · {status}").format(
-                    capacity=battery["capacity"], status=_(battery["status"]),
+                title = _("Battery {number}").format(number=index)
+                self.row(battery_rows, title, _("Charge: {capacity}% · {status}").format(
+                    capacity=battery["capacity"], status=battery_states.get(battery["status"], battery_states["Unknown"]),
                 ))
+                if "design_capacity_percent" in battery:
+                    self.row(battery_rows, _("Estimated capacity vs. design"), _("{percent}% of original design capacity").format(
+                        percent=battery["design_capacity_percent"],
+                    ))
         else:
             self.row(battery_rows, _("No battery information"), _("This computer may not have a battery, or the system does not expose battery data."))
         box.append(battery_box)
