@@ -16,23 +16,9 @@ An Ubuntu Desktop guide for first-run setup and device troubleshooting.
 
 ![Read-only network and hardware overview](screenshots/network-hardware-en.png)
 
-![Optional DNS and gateway diagnostics](screenshots/network-diagnostics-en.png)
+[More screenshots: network diagnostics (EN)](screenshots/network-diagnostics-en.png) · [audio status (EN)](screenshots/audio-status-en.png) · [Terminal guide (EN)](screenshots/terminal-guide-en.png) · [WiFi Analyzer recommendation (EN)](screenshots/wifi-analyzer-en.png) · [help page (EN)](screenshots/help-en.png) · [hardware summary (EN)](screenshots/help-hardware-en.png)
 
-![Read-only speaker and microphone status](screenshots/audio-status-en.png)
-
-![Beginner terminal guide](screenshots/terminal-guide-en.png)
-
-![WiFi Analyzer recommendation in the Wi-Fi troubleshooting guide](screenshots/wifi-analyzer-en.png)
-
-[Swedish system guides](screenshots/system-guides-sv.png) · [Swedish network and hardware overview](screenshots/network-hardware-sv.png) · [Swedish diagnostics](screenshots/network-diagnostics-sv.png) · [Swedish audio status](screenshots/audio-status-sv.png) · [Swedish terminal guide](screenshots/terminal-guide-sv.png) · [Swedish Wi-Fi analyzer recommendation](screenshots/wifi-analyzer-sv.png)
-
-![Ubuntu help links and privacy-conscious system summary](screenshots/help-en.png)
-
-![System details including hardware information](screenshots/help-hardware-en.png)
-
-![The help page in Swedish](screenshots/help-sv.png)
-
-[Swedish hardware summary](screenshots/help-hardware-sv.png) · [Accessibility settings opened from the guide](screenshots/accessibility-panel-en.png)
+[Swedish system guides](screenshots/system-guides-sv.png) · [network and hardware overview](screenshots/network-hardware-sv.png) · [network diagnostics](screenshots/network-diagnostics-sv.png) · [audio status](screenshots/audio-status-sv.png) · [Terminal guide](screenshots/terminal-guide-sv.png) · [WiFi Analyzer recommendation](screenshots/wifi-analyzer-sv.png) · [help page](screenshots/help-sv.png) · [hardware summary](screenshots/help-hardware-sv.png) · [accessibility settings](screenshots/accessibility-panel-en.png)
 
 
 Ubuntu Start combines a first-run guide with practical device troubleshooting for Ubuntu Desktop. It is a GTK 4/libadwaita application intended for Ubuntu GNOME.
