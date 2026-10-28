@@ -880,6 +880,13 @@ class UbuntuStart(Adw.Application):
         box, rows = self.page(_("Graphics drivers"), _("Ubuntu can offer compatible drivers for some graphics hardware. Review the available choices in Ubuntu’s Additional Drivers tool before installing anything."))
         self.row(rows, _("Review available drivers"), _("This opens Ubuntu’s driver tool. Read the recommendation and confirm any changes there."), _("Open Drivers"), lambda: self.open_app("software-properties-gtk", "--open-tab=4"))
         self.row(rows, _("Secure Boot"), _("Some drivers need a one-time confirmation during restart when Secure Boot is enabled. Follow Ubuntu’s on-screen instructions."))
+        self.row(
+            rows,
+            _("If the graphics adapter has no name"),
+            _("Adapter names come from a local PCI database. If only a PCI ID is shown, keep that ID and the driver name to identify the hardware. Choose drivers through Ubuntu’s Additional Drivers tool."),
+            _("Open hardware overview"),
+            lambda: self.main_stack.set_visible_child_name(_("Network and hardware")),
+        )
         self.row(rows, _("Need more detail?"), _("Ubuntu’s driver guidance explains the supported installation route."), _("Open Ubuntu help"), lambda: self.open_uri("https://ubuntu.com/desktop/docs/en/latest/how-to/graphics/install-nvidia-drivers/"))
         return box
 

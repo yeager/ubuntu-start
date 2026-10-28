@@ -192,5 +192,21 @@ class AboutDialogTests(unittest.TestCase):
         dialog.present.assert_called_once_with(app.get_active_window.return_value)
 
 
+class DriverGuideTests(unittest.TestCase):
+    def test_unknown_adapter_help_links_to_hardware_overview(self):
+        app = Mock()
+        app.page.return_value = (Mock(), Mock())
+        app.main_stack = Mock()
+
+        UbuntuStart.make_drivers(app)
+
+        calls = [call_args for call_args in app.row.call_args_list
+                 if call_args.args[1] == "If the graphics adapter has no name"]
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(calls[0].args[3], "Open hardware overview")
+        calls[0].args[4]()
+        app.main_stack.set_visible_child_name.assert_called_once_with("Network and hardware")
+
+
 if __name__ == "__main__":
     unittest.main()
