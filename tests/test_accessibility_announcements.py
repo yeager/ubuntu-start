@@ -63,6 +63,24 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
             "NetworkManager did not respond in time. Try refreshing again.",
         )
 
+    def test_missing_gateway_result_includes_and_announces_next_step(self):
+        button = Mock()
+        status = Mock()
+
+        UbuntuStart.show_network_diagnostic_result(
+            self.app, button, status,
+            {"dns_latency_ms": 14.2, "gateway": None, "gateway_latency_ms": None},
+        )
+
+        message = status.set_text.call_args.args[0]
+        self.assertIn("No default gateway was found.", message)
+        self.assertIn(
+            "Next step: check Wi-Fi or wired connection in Settings. On a managed network, ask the administrator before changing route settings.",
+            message,
+        )
+        button.set_sensitive.assert_called_once_with(True)
+        self.app.announce_to_screen_reader.assert_called_once_with(status, message)
+
     def test_manual_audio_refresh_announces_both_endpoints_once(self):
         output = Mock()
         output.get_title.return_value = "Speaker output"
