@@ -168,6 +168,7 @@ class UbuntuStart(Adw.Application):
         pages = [
             (_("Welcome"), self.make_welcome()),
             (_("Get started"), self.make_get_started()),
+            (_("Tips and tricks"), self.make_tips_page()),
             (_("Fix a device"), self.make_device_page()),
             (_("System guides"), self.make_system_guides()),
             (_("Network and hardware"), self.make_network_hardware()),
@@ -707,6 +708,27 @@ class UbuntuStart(Adw.Application):
         tips_box, tips_rows = self.page(_("When asking for help"))
         self.row(tips_rows, _("Describe what happened"), _("Include your Ubuntu version, the device model, the exact error and what you already tried. Remove passwords and other personal details."))
         box.append(tips_box)
+        return box
+
+    def make_tips_page(self):
+        box, rows = self.page(
+            _("Tips and tricks"),
+            _("Small shortcuts can make everyday Ubuntu tasks quicker."),
+        )
+        tips = [
+            (_("Find apps and settings"), _("Press the Super key and start typing the name of an app or setting.")),
+            (_("Switch between apps"), _("Press Alt+Tab to move between open apps.")),
+            (_("Arrange windows side by side"), _("Press Super+Left or Super+Right to place the current window on one side of the screen.")),
+            (_("Open Quick Settings"), _("Select the system menu at the top-right to reach Wi-Fi, Bluetooth, sound, brightness and power controls.")),
+            (_("Take a screenshot"), _("On Ubuntu GNOME, press Print to open the screenshot controls and choose a screen, window or area.")),
+            (_("Show hidden files"), _("In Files, press Ctrl+H to show or hide hidden files. Be careful when changing hidden configuration files.")),
+            (_("Create a folder in Files"), _("Press Ctrl+Shift+N to create a folder in the current location.")),
+            (_("Switch keyboard layouts"), _("If you have added more than one layout, press Super+Space to switch between them.")),
+            (_("Lock the screen"), _("Press Super+L before leaving your computer to lock the screen.")),
+            (_("Open Terminal"), _("Ctrl+Alt+T opens Terminal on Ubuntu by default. You can change this shortcut in Keyboard Settings.")),
+        ]
+        for title, description in tips:
+            self.row(rows, title, description)
         return box
 
     def copy_system_details(self, status_label):

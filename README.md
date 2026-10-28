@@ -42,6 +42,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contributor guidance and the maintain
 ## Current scope
 
 - First steps for language, networking, updates, sound, display and privacy.
+- Everyday shortcuts and tips for search, window management, Files, screenshots and screen locking.
 - Search across guided checks for sound, Bluetooth, batteries, printers, displays/graphics, keyboards, touchpads, Wi-Fi, Ethernet and cameras.
 - Step-by-step guides for Wi-Fi, Ethernet, printers, batteries, keyboards, touchpads, updates, larger text, screen magnification and the Orca screen reader.
 - Accessibility help opens GNOME settings for larger text, zoom and screen reading, with plain-language instructions before each change.
