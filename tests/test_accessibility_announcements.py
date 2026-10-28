@@ -84,6 +84,41 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
             "Speaker output: 65% · Not muted Microphone input: 20% · Muted",
         )
 
+    def test_manual_battery_refresh_announces_charge_and_state(self):
+        button = Mock()
+        status = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+
+        UbuntuStart.show_battery_status(
+            self.app, button, status, rows,
+            [{"capacity": 82, "status": "Charging", "design_capacity_percent": 91}],
+            announce=True,
+        )
+
+        button.set_sensitive.assert_called_once_with(True)
+        self.app.row.assert_any_call(rows, "Battery 1", "Charge: 82% · Charging")
+        self.app.row.assert_any_call(rows, "Estimated capacity vs. design", "91% of original design capacity")
+        status.set_text.assert_called_once_with("Battery status updated: 82% · Charging")
+        self.app.announce_to_screen_reader.assert_called_once_with(
+            status, "Battery status updated: 82% · Charging",
+        )
+
+    def test_background_battery_refresh_does_not_announce(self):
+        button = Mock()
+        status = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+
+        UbuntuStart.show_battery_status(
+            self.app, button, status, rows, [],
+        )
+
+        self.app.row.assert_called_once_with(
+            rows, "No battery information",
+            "No battery information found. This computer may not have a battery, or the system does not expose battery data.",
+        )
+        self.app.announce_to_screen_reader.assert_not_called()
 
 class AboutDialogTests(unittest.TestCase):
     def test_about_dialog_api_is_available_on_supported_platforms(self):

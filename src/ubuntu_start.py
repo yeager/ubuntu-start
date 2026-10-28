@@ -550,30 +550,24 @@ class UbuntuStart(Adw.Application):
             self.row(storage_rows, _("Storage is almost full"), _("Remove files you no longer need or review large downloads. Avoid deleting system files."))
         box.append(storage_box)
 
-        batteries = read_battery_status()
-        battery_box, battery_rows = self.page(
+        battery_box, _battery_rows = self.page(
             _("Battery"),
             _("Charge level and charging state come from local system information. An estimated capacity compared with the original design is shown only if the battery exposes both values."),
+            include_rows=False,
         )
-        battery_states = {
-            "Charging": _("Charging"),
-            "Discharging": _("Discharging"),
-            "Full": _("Full"),
-            "Not charging": _("Not charging"),
-            "Unknown": _("Unknown"),
-        }
-        if batteries:
-            for index, battery in enumerate(batteries, start=1):
-                title = _("Battery {number}").format(number=index)
-                self.row(battery_rows, title, _("Charge: {capacity}% · {status}").format(
-                    capacity=battery["capacity"], status=battery_states.get(battery["status"], battery_states["Unknown"]),
-                ))
-                if "design_capacity_percent" in battery:
-                    self.row(battery_rows, _("Estimated capacity vs. design"), _("{percent}% of original design capacity").format(
-                        percent=battery["design_capacity_percent"],
-                    ))
-        else:
-            self.row(battery_rows, _("No battery information"), _("This computer may not have a battery, or the system does not expose battery data."))
+        battery_refresh = Gtk.Button(label=_("Refresh battery status"), halign=Gtk.Align.START)
+        battery_status_label = Gtk.Label(label="", xalign=0, wrap=True)
+        battery_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        battery_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_battery_status(
+                battery_refresh, battery_status_label, battery_rows, announce=True,
+            ),
+        )
+        battery_box.append(battery_refresh)
+        battery_box.append(battery_status_label)
+        battery_box.append(battery_rows)
+        self.refresh_battery_status(battery_refresh, battery_status_label, battery_rows)
         box.append(battery_box)
 
         hardware_box, hardware_rows = self.page(
@@ -737,6 +731,61 @@ class UbuntuStart(Adw.Application):
             GLib.idle_add(self.show_audio_status, output_row, input_row, status, announce)
 
         threading.Thread(target=read_status, daemon=True).start()
+
+    def refresh_battery_status(self, button, status_label, battery_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking battery status…"))
+
+        def read_status():
+            batteries = read_battery_status()
+            GLib.idle_add(
+                self.show_battery_status, button, status_label, battery_rows,
+                batteries, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_battery_status(self, button, status_label, battery_rows, batteries, announce=False):
+        button.set_sensitive(True)
+        while (child := battery_rows.get_first_child()) is not None:
+            battery_rows.remove(child)
+
+        battery_states = {
+            "Charging": _("Charging"),
+            "Discharging": _("Discharging"),
+            "Full": _("Full"),
+            "Not charging": _("Not charging"),
+            "Unknown": _("Unknown"),
+        }
+        if batteries:
+            summaries = []
+            for index, battery in enumerate(batteries, start=1):
+                title = _("Battery {number}").format(number=index)
+                state = battery_states.get(battery["status"], battery_states["Unknown"])
+                charge = _("Charge: {capacity}% · {status}").format(
+                    capacity=battery["capacity"], status=state,
+                )
+                self.row(battery_rows, title, charge)
+                summaries.append(_("{capacity}% · {status}").format(
+                    capacity=battery["capacity"], status=state,
+                ))
+                if "design_capacity_percent" in battery:
+                    self.row(
+                        battery_rows,
+                        _("Estimated capacity vs. design"),
+                        _("{percent}% of original design capacity").format(
+                            percent=battery["design_capacity_percent"],
+                        ),
+                    )
+            message = _("Battery status updated: {details}").format(details="; ".join(summaries))
+        else:
+            message = _("No battery information found. This computer may not have a battery, or the system does not expose battery data.")
+            self.row(battery_rows, _("No battery information"), message)
+
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
 
     def show_audio_status(self, output_row, input_row, status, announce=False):
         error = status.get("error")
