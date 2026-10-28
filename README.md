@@ -1,6 +1,6 @@
 # Ubuntu Start
 
-An English-language Ubuntu Desktop guide with Swedish localization for first-run setup and device troubleshooting.
+An Ubuntu Desktop guide with localization for first-run setup and device troubleshooting.
 
 ![Ubuntu Start welcome screen in English](screenshots/welcome-en.png)
 
