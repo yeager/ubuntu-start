@@ -5,6 +5,7 @@ import locale
 import os
 import platform
 import shutil
+import sys
 import threading
 import gi
 
@@ -16,7 +17,11 @@ from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
 DOMAIN = "ubuntu-start"
-LOCALEDIR = os.environ.get("UBUNTU_START_LOCALEDIR", "/usr/share/locale")
+_prefix_locale_dir = os.path.join(os.path.dirname(sys.executable), "..", "share", "locale")
+LOCALEDIR = os.environ.get(
+    "UBUNTU_START_LOCALEDIR",
+    _prefix_locale_dir if os.path.isdir(_prefix_locale_dir) else "/usr/share/locale",
+)
 locale.setlocale(locale.LC_ALL, "")
 gettext.bindtextdomain(DOMAIN, LOCALEDIR)
 gettext.textdomain(DOMAIN)
@@ -55,7 +60,7 @@ GUIDES = [
         (_("Try another port or keyboard"), _("For a USB keyboard, try another port. If available, connect another keyboard to help identify whether the problem is with the keyboard or computer.")),
     ]),
     (_("Touchpads"), "mouse", [
-        (_("Make sure the touchpad is enabled"), _("Open Mouse & Touchpad Settings and check that the touchpad is switched on. Some laptops also have a keyboard shortcut that turns it off.")),
+        (_("Make sure the touchpad is enabled"), _("Open Mouse and Touchpad Settings and check that the touchpad is switched on. Some laptops also have a keyboard shortcut that turns it off.")),
         (_("Check the surface and pointer speed"), _("Keep the touchpad clean and dry. Adjust pointer speed in Settings, then test basic movement before trying gestures.")),
         (_("Compare with an external mouse"), _("If a mouse works but the touchpad does not, check for Ubuntu updates and consult the laptop support information before changing drivers.")),
     ]),
@@ -352,7 +357,7 @@ class UbuntuStart(Adw.Application):
             if selected < len(GUIDES):
                 steps_stack.set_visible_child_name(f"guide-{selected}")
 
-        def update_search(*_):
+        def update_search(*_args):
             query = search.get_text().strip().casefold()
             browse.set_visible(not query)
             results.set_visible(bool(query))
@@ -373,7 +378,7 @@ class UbuntuStart(Adw.Application):
             no_results.set_visible(not matches)
 
         chooser.connect("notify::selected", update_guide)
-        search.connect("search-changed", update_search)
+        search.connect("changed", update_search)
         update_guide()
         open_button.connect("clicked", lambda *_: self.open_app("gnome-control-center", GUIDES[chooser.get_selected()][1]))
         return box

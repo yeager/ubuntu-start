@@ -1,0 +1,8 @@
+include LICENSE README.md pyproject.toml
+include data/se.nylander.UbuntuStart.desktop
+include data/se.nylander.UbuntuStart.metainfo.xml
+include data/se.nylander.UbuntuStart.png
+include po/sv.po po/LINGUAS po/POTFILES.in po/ubuntu-start.pot
+include packaging/pypi/locale/sv/LC_MESSAGES/ubuntu-start.mo
+recursive-include src *.py
+recursive-include tests *.py

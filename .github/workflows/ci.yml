@@ -36,3 +36,19 @@ jobs:
           meson compile -C build
           DESTDIR="$PWD/stage" meson install -C build
           sh scripts/check-staged-install.sh "$PWD/stage"
+      - name: Build and inspect Debian package
+        run: |
+          scripts/build-deb.sh "$PWD/build/packages"
+          set -- "$PWD"/build/packages/*.deb
+          test "$#" -eq 1
+          package=$1
+          test "$(dpkg-deb --field "$package" Architecture)" = all
+          dpkg-deb --contents "$package" | grep -Fq './usr/share/applications/se.nylander.UbuntuStart.desktop'
+          dpkg-deb --contents "$package" | grep -Fq './usr/share/icons/hicolor/512x512/apps/se.nylander.UbuntuStart.png'
+      - name: Build Python distributions
+        run: |
+          sh scripts/build-python-dist.sh
+          python3 -m venv build/package-venv
+          build/package-venv/bin/pip install --disable-pip-version-check build setuptools wheel twine
+          build/package-venv/bin/python -m build --no-isolation --outdir build/python-distributions
+          build/package-venv/bin/python -m twine check build/python-distributions/*

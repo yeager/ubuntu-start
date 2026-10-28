@@ -51,11 +51,41 @@ jobs:
           meson compile -C build
           DESTDIR="$PWD/stage" meson install -C build
           sh scripts/check-staged-install.sh "$PWD/stage"
+      - name: Build Debian package
+        run: scripts/build-deb.sh "$PWD/release-assets"
       - name: Create source archive
         run: |
-          git archive --format=tar.gz --prefix=ubuntu-start-${GITHUB_REF_NAME#v}/ HEAD > "ubuntu-start-${GITHUB_REF_NAME#v}.tar.gz"
-          sha256sum ubuntu-start-*.tar.gz > SHA256SUMS
+          git archive --format=tar.gz --prefix="ubuntu-start-${GITHUB_REF_NAME#v}/" HEAD > "release-assets/ubuntu-start-${GITHUB_REF_NAME#v}.tar.gz"
+          (cd release-assets && sha256sum ubuntu-start-*.tar.gz ubuntu-start_*.deb > SHA256SUMS)
       - name: Publish GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" ubuntu-start-*.tar.gz SHA256SUMS --title "Ubuntu Start $GITHUB_REF_NAME" --generate-notes
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" release-assets/ubuntu-start-*.tar.gz release-assets/ubuntu-start_*.deb release-assets/SHA256SUMS --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" release-assets/ubuntu-start-*.tar.gz release-assets/ubuntu-start_*.deb release-assets/SHA256SUMS --title "Ubuntu Start $GITHUB_REF_NAME" --generate-notes
+          fi
+
+  pypi-publish:
+    needs: release
+    runs-on: ubuntu-24.04
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gettext
+          python3 -m venv build/package-venv
+          build/package-venv/bin/pip install --disable-pip-version-check build setuptools wheel
+      - name: Build Python distributions
+        run: |
+          sh scripts/build-python-dist.sh
+          build/package-venv/bin/python -m build --no-isolation --outdir dist
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/

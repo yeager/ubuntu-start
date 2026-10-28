@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.1" date="2026-10-28">
+      <description>
+        <p>Provide an installable Debian package and improve the touchpad troubleshooting text so it displays correctly in GTK.</p>
+        <p xml:lang="sv">Lägg till ett installerbart Debianpaket och justera felsökningstexten för styrplattor så att den visas korrekt i GTK.</p>
+      </description>
+    </release>
     <release version="0.3.0" date="2026-10-28">
       <description>
         <p>Search device troubleshooting and system guides together and open a matching guide directly. Add step-by-step help for app installation, accessibility, networking and everyday shortcuts, plus tips for backups and trusted software sources. Ubuntu Start asks before opening App Center because it may contact configured software sources; it never installs apps itself.</p>

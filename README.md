@@ -55,6 +55,18 @@ meson compile -C build
 sudo meson install -C build
 ```
 
+To build an installable Debian package after installing the dependencies, run `scripts/build-deb.sh`. It creates `build/packages/ubuntu-start_0.3.1-1_all.deb`. Install it with `sudo apt install ./build/packages/ubuntu-start_0.3.1-1_all.deb`; APT resolves the declared GTK and Python runtime dependencies.
+
+The PyPI wheel and source distribution are prepared. The initial upload needs a Trusted Publisher registered for this repository; after that, tagged releases publish automatically. Once the package is available, install the GTK platform dependencies with APT first, then install it in an isolated environment that can access system PyGObject bindings:
+
+```sh
+sudo apt install python3-gi gir1.2-gtk-4.0 gir1.2-adw-1 gettext
+python3 -m venv --system-site-packages .venv
+. .venv/bin/activate
+python -m pip install ubuntu-start
+ubuntu-start
+```
+
 For a source checkout, run `python3 src/ubuntu_start.py` to use the English source strings. To try the Swedish catalog from the checkout:
 
 ```sh
@@ -69,7 +81,7 @@ NetworkManager, Bluetooth, audio, storage, battery and hardware summaries use lo
 
 ## Validation
 
-Release `v0.3.0` passed GitHub CI and the release workflow. All 41 unit tests pass; source-string coverage, template sync, translation checks and AppStream validation pass, with 394 Swedish messages translated. On Ubuntu 26.10 machine `trv2`, Meson 1.10.1 built the release, the staged-install checker passed and the AppStream metadata validated. This verifies the build and package layout, not behavior with physical devices or a live user session. Network diagnostics were not run against the real network. Some screenshots predate the v0.3.0 guide-search, app-installation, accessibility and tips updates.
+Release `v0.3.0` passed GitHub CI and the release workflow. The current 0.3.1 working tree passes all 41 unit tests, source-string coverage, translation checks, Python wheel/sdist builds and `twine check`. The 0.3.1 Debian package was built and installed on Ubuntu 26.10 machine `trv2`; package audit and APT dependency checks passed. A live GTK session exposed and verified a fix for search results with matching guides. Orca's AT-SPI app list detects Ubuntu Start. The network diagnostics remain unrun pending approval in the app's consent dialog. GNOME is selected as the next GDM session; TigerVNC currently uses Openbox because this Ubuntu image provides GNOME only as a Wayland session.
 
 An earlier revision was also launched under Xvfb in English and Swedish. At that point PipeWire reported an unmuted default speaker at 100% and no default microphone. The GNOME Control Center panel list confirmed the Bluetooth, Wi-Fi, printer, display, privacy, sound and keyboard panel identifiers. The two Ubuntu driver/update utilities were installed with `dpkg -i`; Additional Drivers and Update Manager opened in Swedish, and `dpkg --audit` and `apt-get check` reported no package errors. These observations apply to that earlier revision. Xvfb does not verify physical-device behavior or hardware acceleration.
 
@@ -86,11 +98,11 @@ Device troubleshooting guides are instructional. Optional network diagnostics ru
 
 ## Releases
 
-Tagged versions (`v*`) are built and published by GitHub Actions. Each release includes a source archive and SHA-256 checksum.
+Tagged versions (`v*`) are built by GitHub Actions. Releases include a source archive, an installable `.deb` package and SHA-256 checksums. The workflow also publishes the Python wheel and source distribution to PyPI after the repository is registered as a Trusted Publisher.
 
 ## Screenshots
 
-The screenshots show the welcome page, searchable troubleshooting, system how-to guides, accessibility settings, local network and hardware information, the support summary and Ubuntu Software & Updates. The driver-tool capture was taken while Ubuntu was still scanning for available drivers.
+The screenshots show the welcome page, matching printer troubleshooting steps, a Wi-Fi how-to guide, accessibility instructions and local network and hardware status.
 
 
 ## License
