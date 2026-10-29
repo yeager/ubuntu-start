@@ -2469,9 +2469,9 @@ GUIDES.extend([
 ])
 
 SYSTEM_GUIDES.append((_("Use Mouse Keys"), ("settings", "universal-access"), _("Open Accessibility Settings"), [
-    (_("Open Pointing & Clicking"), _("In Accessibility Settings, open the Pointing & Clicking section.")),
+    (_("Open Pointing and Clicking"), _("In Accessibility Settings, open the Pointing and Clicking section.")),
     (_("Turn on Mouse Keys"), _("Mouse Keys lets you control the pointer with the numeric keypad. Turn Num Lock off to use the keypad for pointer movement.")),
-    (_("Test it and turn it off if needed"), _("Try moving the pointer and clicking a simple target. Return to Pointing & Clicking to turn Mouse Keys off when you are finished.")),
+    (_("Test it and turn it off if needed"), _("Try moving the pointer and clicking a simple target. Return to Pointing and Clicking to turn Mouse Keys off when you are finished.")),
 ]))
 
 
