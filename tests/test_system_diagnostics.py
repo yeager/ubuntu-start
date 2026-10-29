@@ -21,6 +21,7 @@ from system_diagnostics import (
     parse_pactl_mute,
     parse_pactl_volume,
     parse_printer_status,
+    parse_printer_job_counts,
     parse_wpctl_endpoint_name,
     parse_wpctl_volume,
     lookup_oui_vendor,
@@ -404,15 +405,40 @@ job user-secret is printing on Office_Laser
         ])
         self.assertNotIn("user-secret", repr(parse_printer_status(output)))
 
+    def test_counts_only_jobs_for_known_queues(self):
+        output = """Office_Laser-100 alice 1024 confidential-report.pdf
+Office_Laser-101 bob 2048 private-document.pdf
+Office_Laser-extra unknown
+Other_Queue-4 user 10 secret.txt
+"""
+        counts = parse_printer_job_counts(output, ["Office_Laser"])
+        self.assertEqual(counts, {"Office_Laser": 2})
+        self.assertNotIn("alice", repr(counts))
+        self.assertNotIn("confidential-report", repr(counts))
+
     @patch("system_diagnostics.shutil.which", return_value="/usr/bin/lpstat")
     @patch("system_diagnostics.subprocess.run")
     def test_queries_local_cups_only_with_stable_locale(self, run, _which):
+        run.side_effect = [
+            subprocess.CompletedProcess([], 0, "printer Office_Laser is idle. enabled since now\n", ""),
+            subprocess.CompletedProcess([], 0, "Office_Laser-100 alice 1024 private.pdf\n", ""),
+        ]
+        self.assertEqual(read_printer_status(), ([("Office_Laser", "idle", 1)], None))
+        self.assertEqual(run.call_args_list[0].args[0], ["/usr/bin/lpstat", "-h", "localhost", "-p"])
+        self.assertEqual(run.call_args_list[1].args[0], [
+            "/usr/bin/lpstat", "-h", "localhost", "-W", "not-completed", "-o",
+        ])
+        self.assertEqual(run.call_args.kwargs["env"]["LC_ALL"], "C")
+
+    @patch("system_diagnostics._run_local")
+    @patch("system_diagnostics.subprocess.run")
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/lpstat")
+    def test_job_count_failure_preserves_queue_state(self, _which, run, run_local):
         run.return_value = subprocess.CompletedProcess(
             [], 0, "printer Office_Laser is idle. enabled since now\n", "",
         )
-        self.assertEqual(read_printer_status(), ([("Office_Laser", "idle")], None))
-        self.assertEqual(run.call_args.args[0], ["/usr/bin/lpstat", "-h", "localhost", "-p"])
-        self.assertEqual(run.call_args.kwargs["env"]["LC_ALL"], "C")
+        run_local.return_value = None
+        self.assertEqual(read_printer_status(), ([("Office_Laser", "idle", None)], None))
 
     @patch("system_diagnostics.shutil.which", return_value=None)
     def test_reports_missing_cups_tools(self, _which):

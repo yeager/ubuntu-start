@@ -68,7 +68,7 @@ def main() -> None:
     with tempfile.TemporaryDirectory(prefix="ubuntu-start-l10n-") as temporary:
         template = Path(temporary) / "ubuntu-start.pot"
         run([
-            "xgettext", "--from-code=UTF-8", "--language=Python", "--keyword=_",
+            "xgettext", "--from-code=UTF-8", "--language=Python", "--keyword=_", "--keyword=_n:1,2",
             f"--output={template}", "src/ubuntu_start.py",
         ])
         run([

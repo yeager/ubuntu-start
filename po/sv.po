@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ubuntu Start 0.3.1\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 05:56+0100\n"
+"POT-Creation-Date: 2026-10-29 06:07+0100\n"
 "PO-Revision-Date: 2026-10-28 15:18+0100\n"
 "Last-Translator: Ubuntu Start contributors\n"
 "Language-Team: Swedish\n"
@@ -1143,7 +1143,7 @@ msgstr "Gör texten lättare att läsa"
 
 #: src/ubuntu_start.py:168 src/ubuntu_start.py:173 src/ubuntu_start.py:178
 #: src/ubuntu_start.py:183 src/ubuntu_start.py:188 src/ubuntu_start.py:193
-#: src/ubuntu_start.py:2233
+#: src/ubuntu_start.py:2267
 msgid "Open Accessibility Settings"
 msgstr "Öppna hjälpmedelsinställningarna"
 
@@ -1754,6 +1754,7 @@ msgstr "Tips och knep"
 
 #: src/ubuntu_start.py:284 src/ubuntu_start.py:303 src/ubuntu_start.py:461
 #: src/ubuntu_start.py:606 src/ubuntu_start.py:1042 src/ubuntu_start.py:2220
+#: src/ubuntu_start.py:2248
 msgid "Fix a device"
 msgstr "Felsök en enhet"
 
@@ -2936,10 +2937,6 @@ msgstr "Upptagen"
 msgid "Stopped"
 msgstr "Stoppad"
 
-#: src/ubuntu_start.py:1429
-msgid "Status unknown"
-msgstr "Okänd status"
-
 #: src/ubuntu_start.py:1430
 #, python-brace-format
 msgid "Printer status updated: {count} printer queues found."
@@ -3803,7 +3800,11 @@ msgid ""
 "Read connection and active states reported for display connectors by Linux. "
 "The check does not read monitor identifiers or change display settings. Some "
 "graphics drivers and virtual machines expose limited connector data."
-msgstr "Läs anslutningsstatus och aktivt läge för bildskärmsutgångar enligt Linux. Kontrollen läser inga bildskärmsidentifierare och ändrar inga skärminställningar. Vissa grafikdrivrutiner och virtuella maskiner visar inte all information om anslutningarna."
+msgstr ""
+"Läs anslutningsstatus och aktivt läge för bildskärmsutgångar enligt Linux. "
+"Kontrollen läser inga bildskärmsidentifierare och ändrar inga "
+"skärminställningar. Vissa grafikdrivrutiner och virtuella maskiner visar "
+"inte all information om anslutningarna."
 
 #: src/ubuntu_start.py:2142
 msgid "Refresh display status"
@@ -3847,17 +3848,94 @@ msgstr "Linux rapporterar ingen status för bildskärmsanslutningar."
 msgid ""
 "A graphics driver or virtual machine may not expose connector data. Open "
 "Display Settings to check whether a monitor is detected."
-msgstr "Grafikdrivrutinen eller den virtuella maskinen kanske inte visar anslutningsinformation. Öppna skärminställningarna och kontrollera om skärmen visas där."
+msgstr ""
+"Grafikdrivrutinen eller den virtuella maskinen kanske inte visar "
+"anslutningsinformation. Öppna skärminställningarna och kontrollera om "
+"skärmen visas där."
 
 #: src/ubuntu_start.py:2224
+msgid "Open print queue guide"
+msgstr "Öppna guiden om skrivarkön"
+
+#: src/ubuntu_start.py:2230
+msgid "Status unknown"
+msgstr "Okänd status"
+
+#: src/ubuntu_start.py:2232
+msgid "Unfinished job count unavailable"
+msgstr "Antalet väntande utskrifter är inte tillgängligt"
+
+#: src/ubuntu_start.py:2235
+#, python-brace-format
+msgid "{count} unfinished print job"
+msgid_plural "{count} unfinished print jobs"
+msgstr[0] "{count} utskrift väntar"
+msgstr[1] "{count} utskrifter väntar"
+
+#: src/ubuntu_start.py:2244 src/ubuntu_start.py:2252
+msgid "Print job is stuck or the queue is paused"
+msgstr "Utskriften har fastnat eller kön är pausad"
+
+#: src/ubuntu_start.py:2253
+msgid "Check the printer itself"
+msgstr "Kontrollera själva skrivaren"
+
+#: src/ubuntu_start.py:2253
+msgid ""
+"Check its display or status lights, power, paper, open covers, and ink or "
+"toner before sending the job again."
+msgstr ""
+"Kontrollera skrivarens skärm eller statuslampor, ström, papper, öppna luckor "
+"och bläck eller toner innan du skickar utskriften igen."
+
+#: src/ubuntu_start.py:2254
+msgid "Refresh the local queue"
+msgstr "Uppdatera den lokala kön"
+
+#: src/ubuntu_start.py:2254
+msgid ""
+"Open Network and hardware and refresh Printer queue status. The queue state "
+"and unfinished-job count can show whether work is waiting or the queue is "
+"paused."
+msgstr ""
+"Öppna Nätverk och maskinvara och uppdatera skrivarstatusen. Köstatusen och "
+"antalet väntande utskrifter kan visa om jobb väntar eller om kön är pausad."
+
+#: src/ubuntu_start.py:2255
+msgid "Review the queue in Printer Settings"
+msgstr "Granska kön i Skrivarinställningar"
+
+#: src/ubuntu_start.py:2255
+msgid ""
+"Open Printer Settings and inspect the queue. Cancel only a job you own and "
+"are ready to discard. On a shared printer, ask its owner or administrator "
+"before changing other jobs."
+msgstr ""
+"Öppna Skrivarinställningar och granska kön. Avbryt bara ett jobb som du "
+"själv äger och är beredd att ta bort. Be ägaren eller administratören om lov "
+"innan du ändrar andra jobb i en delad skrivare."
+
+#: src/ubuntu_start.py:2256
+msgid "Send one test page"
+msgstr "Skriv ut en testsida"
+
+#: src/ubuntu_start.py:2256
+msgid ""
+"After fixing the cause, send one test page. Avoid resending the same "
+"document repeatedly if it does not print."
+msgstr ""
+"När du har åtgärdat problemet kan du skriva ut en testsida. Skicka inte "
+"samma dokument upprepade gånger om det inte skrivs ut."
+
+#: src/ubuntu_start.py:2258
 msgid "Wi-Fi is slow or keeps disconnecting"
 msgstr "Wi-Fi är långsamt eller kopplar från"
 
-#: src/ubuntu_start.py:2225
+#: src/ubuntu_start.py:2259
 msgid "Compare the connection near the router"
 msgstr "Jämför anslutningen nära routern"
 
-#: src/ubuntu_start.py:2225
+#: src/ubuntu_start.py:2259
 msgid ""
 "Move closer to the router and try the same task again. If it works better "
 "nearby, distance or obstacles may be weakening the signal."
@@ -3865,11 +3943,11 @@ msgstr ""
 "Gå närmare routern och prova samma sak igen. Fungerar det bättre där kan "
 "avstånd eller hinder försvaga signalen."
 
-#: src/ubuntu_start.py:2226
+#: src/ubuntu_start.py:2260
 msgid "Check the active Wi-Fi link"
 msgstr "Kontrollera den aktiva Wi-Fi-länken"
 
-#: src/ubuntu_start.py:2226
+#: src/ubuntu_start.py:2260
 msgid ""
 "Refresh Network status on the Network and hardware page. When available, "
 "signal values closer to 0 dBm are stronger. Receive and transmit rates "
@@ -3880,11 +3958,11 @@ msgstr ""
 "sändningshastigheten gäller Wi-Fi-länken, inte den uppmätta "
 "internethastigheten."
 
-#: src/ubuntu_start.py:2227
+#: src/ubuntu_start.py:2261
 msgid "Compare another device or service"
 msgstr "Jämför med en annan enhet eller tjänst"
 
-#: src/ubuntu_start.py:2227
+#: src/ubuntu_start.py:2261
 msgid ""
 "Try another device on the same Wi-Fi and another app or website. If several "
 "devices have trouble, check the router or ask your internet provider. If "
@@ -3895,11 +3973,11 @@ msgstr ""
 "internetleverantören. Om bara den här datorn berörs kan du kontrollera "
 "nätverkskortet och leta efter Ubuntu-uppdateringar."
 
-#: src/ubuntu_start.py:2228
+#: src/ubuntu_start.py:2262
 msgid "Look for nearby channel overlap"
 msgstr "Undersök störningar från närliggande kanaler"
 
-#: src/ubuntu_start.py:2228
+#: src/ubuntu_start.py:2262
 msgid ""
 "The WiFi Analyzer recommendation on the Network and hardware page can help "
 "you review nearby signal levels and channel use. It opens an external "
@@ -3911,11 +3989,11 @@ msgstr ""
 "projektets externa webbsida. Fråga den som ansvarar för nätverket innan du "
 "ändrar routerinställningarna."
 
-#: src/ubuntu_start.py:2229
+#: src/ubuntu_start.py:2263
 msgid "Keep private details out of support requests"
 msgstr "Skydda privata uppgifter när du ber om hjälp"
 
-#: src/ubuntu_start.py:2229
+#: src/ubuntu_start.py:2263
 msgid ""
 "Share the adapter model, hardware ID and driver if you need help. Do not "
 "share the Wi-Fi password or private network details."
@@ -3923,23 +4001,23 @@ msgstr ""
 "Om du ber om hjälp kan du ange nätverkskortets modell, maskinvaru-ID och "
 "drivrutin. Dela inte Wi-Fi-lösenordet eller privata nätverksuppgifter."
 
-#: src/ubuntu_start.py:2233
+#: src/ubuntu_start.py:2267
 msgid "Use Mouse Keys"
 msgstr "Använd Mustangenter"
 
-#: src/ubuntu_start.py:2234
+#: src/ubuntu_start.py:2268
 msgid "Open Pointing & Clicking"
 msgstr "Öppna Peka och klicka"
 
-#: src/ubuntu_start.py:2234
+#: src/ubuntu_start.py:2268
 msgid "In Accessibility Settings, open the Pointing & Clicking section."
 msgstr "Öppna avsnittet Peka och klicka i hjälpmedelsinställningarna."
 
-#: src/ubuntu_start.py:2235
+#: src/ubuntu_start.py:2269
 msgid "Turn on Mouse Keys"
 msgstr "Aktivera Mustangenter"
 
-#: src/ubuntu_start.py:2235
+#: src/ubuntu_start.py:2269
 msgid ""
 "Mouse Keys lets you control the pointer with the numeric keypad. Turn Num "
 "Lock off to use the keypad for pointer movement."
@@ -3947,11 +4025,11 @@ msgstr ""
 "Med Mustangenter styr du pekaren med det numeriska tangentbordet. Stäng av "
 "Num Lock om du vill använda siffertangenterna för att flytta pekaren."
 
-#: src/ubuntu_start.py:2236
+#: src/ubuntu_start.py:2270
 msgid "Test it and turn it off if needed"
 msgstr "Prova funktionen och stäng av den vid behov"
 
-#: src/ubuntu_start.py:2236
+#: src/ubuntu_start.py:2270
 msgid ""
 "Try moving the pointer and clicking a simple target. Return to Pointing & "
 "Clicking to turn Mouse Keys off when you are finished."

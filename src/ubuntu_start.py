@@ -676,8 +676,8 @@ class UbuntuStart(Adw.Application):
                 printer_refresh, printer_status, printer_rows, announce=True,
             ),
         )
-        printer_box.append(printer_refresh)
-        printer_box.append(printer_status)
+        self.add_printer_controls(printer_box, printer_refresh, printer_status)
+
         printer_box.append(printer_rows)
         box.append(printer_box)
         self.refresh_printer_status(printer_refresh, printer_status, printer_rows)
@@ -1425,8 +1425,8 @@ class UbuntuStart(Adw.Application):
             "stopped": _("Stopped"),
         }
         if printers:
-            for name, state in printers:
-                self.row(printer_rows, name, labels.get(state, _("Status unknown")))
+            for name, state, pending_jobs in printers:
+                self.row(printer_rows, name, self.printer_queue_status(state, pending_jobs, labels))
             message = _("Printer status updated: {count} printer queues found.").format(count=len(printers))
         else:
             messages = {
@@ -2219,8 +2219,42 @@ class UbuntuStart(Adw.Application):
         self.device_chooser.set_selected(display_index)
         self.main_stack.set_visible_child_name(_("Fix a device"))
 
+    def add_printer_controls(self, parent, refresh_button, status_label):
+        parent.append(refresh_button)
+        guide_button = Gtk.Button(label=_("Open print queue guide"), halign=Gtk.Align.START)
+        guide_button.connect("clicked", lambda *_: self.open_printer_guide())
+        parent.append(guide_button)
+        parent.append(status_label)
+
+    def printer_queue_status(self, state, pending_jobs, labels):
+        status = labels.get(state, _("Status unknown"))
+        if pending_jobs is None:
+            unavailable = _("Unfinished job count unavailable")
+            return f"{status} · {unavailable}"
+        job_count = _n(
+            "{count} unfinished print job",
+            "{count} unfinished print jobs",
+            pending_jobs,
+        ).format(count=pending_jobs)
+        return f"{status} · {job_count}"
+
+    def open_printer_guide(self):
+        printer_index = next(
+            index for index, (title, _target, _steps) in enumerate(GUIDES)
+            if title == _("Print job is stuck or the queue is paused")
+        )
+        self.device_search.set_text("")
+        self.device_chooser.set_selected(printer_index)
+        self.main_stack.set_visible_child_name(_("Fix a device"))
+
 
 GUIDES.extend([
+    (_("Print job is stuck or the queue is paused"), "printers", [
+        (_("Check the printer itself"), _("Check its display or status lights, power, paper, open covers, and ink or toner before sending the job again.")),
+        (_("Refresh the local queue"), _("Open Network and hardware and refresh Printer queue status. The queue state and unfinished-job count can show whether work is waiting or the queue is paused.")),
+        (_("Review the queue in Printer Settings"), _("Open Printer Settings and inspect the queue. Cancel only a job you own and are ready to discard. On a shared printer, ask its owner or administrator before changing other jobs.")),
+        (_("Send one test page"), _("After fixing the cause, send one test page. Avoid resending the same document repeatedly if it does not print.")),
+    ]),
     (_("Wi-Fi is slow or keeps disconnecting"), "wifi", [
         (_("Compare the connection near the router"), _("Move closer to the router and try the same task again. If it works better nearby, distance or obstacles may be weakening the signal.")),
         (_("Check the active Wi-Fi link"), _("Refresh Network status on the Network and hardware page. When available, signal values closer to 0 dBm are stronger. Receive and transmit rates describe the Wi-Fi link, not your measured internet speed.")),
@@ -2244,6 +2278,9 @@ def format_milliseconds(value: int | float) -> str:
     formatted = f"{value:.{precision}f}"
     decimal_point = locale.localeconv().get("decimal_point") or "."
     return formatted.replace(".", decimal_point, 1)
+
+
+_n = gettext.ngettext
 
 
 def main():

@@ -1002,21 +1002,39 @@ class SystemGuideTests(unittest.TestCase):
 
 
 class PrinterStatusAnnouncementTests(unittest.TestCase):
-    def test_printer_refresh_displays_only_queue_name_and_safe_state(self):
+    def test_printer_refresh_displays_queue_state_and_safe_job_count(self):
         app = Mock()
         button = Mock()
         status_label = Mock()
         rows = Mock()
+        app.printer_queue_status.side_effect = lambda state, jobs, labels: (
+            UbuntuStart.printer_queue_status(app, state, jobs, labels)
+        )
 
         UbuntuStart.show_printer_status(
             app, button, status_label, rows,
-            [("Office_Laser", "idle")], None, announce=True,
+            [("Office_Laser", "idle", 2)], None, announce=True,
         )
 
         button.set_sensitive.assert_called_once_with(True)
-        app.row.assert_called_once_with(rows, "Office_Laser", "Ready")
+        app.row.assert_called_once_with(rows, "Office_Laser", "Ready · 2 unfinished print jobs")
         app.announce_to_screen_reader.assert_called_once_with(
             status_label, "Printer status updated: 1 printer queues found.",
+        )
+
+    def test_printer_refresh_handles_unknown_job_count(self):
+        app = Mock()
+        rows = Mock()
+        app.printer_queue_status.side_effect = lambda state, jobs, labels: (
+            UbuntuStart.printer_queue_status(app, state, jobs, labels)
+        )
+
+        UbuntuStart.show_printer_status(
+            app, Mock(), Mock(), rows, [("Office_Laser", "idle", None)], None,
+        )
+
+        app.row.assert_called_once_with(
+            rows, "Office_Laser", "Ready · Unfinished job count unavailable",
         )
 
     def test_no_printer_queues_reports_missing_cups_tools(self):
@@ -1207,6 +1225,16 @@ class DisplayStatusAnnouncementTests(unittest.TestCase):
         app.device_chooser.set_selected.assert_called_once_with(
             next(index for index, (title, _target, _steps) in enumerate(GUIDES)
                  if title == "External display or projector")
+        )
+        app.main_stack.set_visible_child_name.assert_called_once_with("Fix a device")
+
+    def test_open_printer_guide_selects_stuck_queue_steps(self):
+        app = Mock()
+        UbuntuStart.open_printer_guide(app)
+        app.device_search.set_text.assert_called_once_with("")
+        app.device_chooser.set_selected.assert_called_once_with(
+            next(index for index, (title, _target, _steps) in enumerate(GUIDES)
+                 if title == "Print job is stuck or the queue is paused")
         )
         app.main_stack.set_visible_child_name.assert_called_once_with("Fix a device")
 

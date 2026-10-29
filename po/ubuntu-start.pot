@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ubuntu Start 0.3.1\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 05:56+0100\n"
+"POT-Creation-Date: 2026-10-29 06:07+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: src/ubuntu_start.py:32
 msgid "Sound and microphones"
@@ -968,7 +969,7 @@ msgstr ""
 
 #: src/ubuntu_start.py:168 src/ubuntu_start.py:173 src/ubuntu_start.py:178
 #: src/ubuntu_start.py:183 src/ubuntu_start.py:188 src/ubuntu_start.py:193
-#: src/ubuntu_start.py:2233
+#: src/ubuntu_start.py:2267
 msgid "Open Accessibility Settings"
 msgstr ""
 
@@ -1491,6 +1492,7 @@ msgstr ""
 
 #: src/ubuntu_start.py:284 src/ubuntu_start.py:303 src/ubuntu_start.py:461
 #: src/ubuntu_start.py:606 src/ubuntu_start.py:1042 src/ubuntu_start.py:2220
+#: src/ubuntu_start.py:2248
 msgid "Fix a device"
 msgstr ""
 
@@ -2545,10 +2547,6 @@ msgstr ""
 msgid "Stopped"
 msgstr ""
 
-#: src/ubuntu_start.py:1429
-msgid "Status unknown"
-msgstr ""
-
 #: src/ubuntu_start.py:1430
 #, python-brace-format
 msgid "Printer status updated: {count} printer queues found."
@@ -3404,46 +3402,111 @@ msgid ""
 msgstr ""
 
 #: src/ubuntu_start.py:2224
+msgid "Open print queue guide"
+msgstr ""
+
+#: src/ubuntu_start.py:2230
+msgid "Status unknown"
+msgstr ""
+
+#: src/ubuntu_start.py:2232
+msgid "Unfinished job count unavailable"
+msgstr ""
+
+#: src/ubuntu_start.py:2235
+#, python-brace-format
+msgid "{count} unfinished print job"
+msgid_plural "{count} unfinished print jobs"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/ubuntu_start.py:2244 src/ubuntu_start.py:2252
+msgid "Print job is stuck or the queue is paused"
+msgstr ""
+
+#: src/ubuntu_start.py:2253
+msgid "Check the printer itself"
+msgstr ""
+
+#: src/ubuntu_start.py:2253
+msgid ""
+"Check its display or status lights, power, paper, open covers, and ink or "
+"toner before sending the job again."
+msgstr ""
+
+#: src/ubuntu_start.py:2254
+msgid "Refresh the local queue"
+msgstr ""
+
+#: src/ubuntu_start.py:2254
+msgid ""
+"Open Network and hardware and refresh Printer queue status. The queue state "
+"and unfinished-job count can show whether work is waiting or the queue is "
+"paused."
+msgstr ""
+
+#: src/ubuntu_start.py:2255
+msgid "Review the queue in Printer Settings"
+msgstr ""
+
+#: src/ubuntu_start.py:2255
+msgid ""
+"Open Printer Settings and inspect the queue. Cancel only a job you own and "
+"are ready to discard. On a shared printer, ask its owner or administrator "
+"before changing other jobs."
+msgstr ""
+
+#: src/ubuntu_start.py:2256
+msgid "Send one test page"
+msgstr ""
+
+#: src/ubuntu_start.py:2256
+msgid ""
+"After fixing the cause, send one test page. Avoid resending the same "
+"document repeatedly if it does not print."
+msgstr ""
+
+#: src/ubuntu_start.py:2258
 msgid "Wi-Fi is slow or keeps disconnecting"
 msgstr ""
 
-#: src/ubuntu_start.py:2225
+#: src/ubuntu_start.py:2259
 msgid "Compare the connection near the router"
 msgstr ""
 
-#: src/ubuntu_start.py:2225
+#: src/ubuntu_start.py:2259
 msgid ""
 "Move closer to the router and try the same task again. If it works better "
 "nearby, distance or obstacles may be weakening the signal."
 msgstr ""
 
-#: src/ubuntu_start.py:2226
+#: src/ubuntu_start.py:2260
 msgid "Check the active Wi-Fi link"
 msgstr ""
 
-#: src/ubuntu_start.py:2226
+#: src/ubuntu_start.py:2260
 msgid ""
 "Refresh Network status on the Network and hardware page. When available, "
 "signal values closer to 0 dBm are stronger. Receive and transmit rates "
 "describe the Wi-Fi link, not your measured internet speed."
 msgstr ""
 
-#: src/ubuntu_start.py:2227
+#: src/ubuntu_start.py:2261
 msgid "Compare another device or service"
 msgstr ""
 
-#: src/ubuntu_start.py:2227
+#: src/ubuntu_start.py:2261
 msgid ""
 "Try another device on the same Wi-Fi and another app or website. If several "
 "devices have trouble, check the router or ask your internet provider. If "
 "only this computer is affected, check its adapter and Ubuntu updates."
 msgstr ""
 
-#: src/ubuntu_start.py:2228
+#: src/ubuntu_start.py:2262
 msgid "Look for nearby channel overlap"
 msgstr ""
 
-#: src/ubuntu_start.py:2228
+#: src/ubuntu_start.py:2262
 msgid ""
 "The WiFi Analyzer recommendation on the Network and hardware page can help "
 "you review nearby signal levels and channel use. It opens an external "
@@ -3451,43 +3514,43 @@ msgid ""
 "router settings."
 msgstr ""
 
-#: src/ubuntu_start.py:2229
+#: src/ubuntu_start.py:2263
 msgid "Keep private details out of support requests"
 msgstr ""
 
-#: src/ubuntu_start.py:2229
+#: src/ubuntu_start.py:2263
 msgid ""
 "Share the adapter model, hardware ID and driver if you need help. Do not "
 "share the Wi-Fi password or private network details."
 msgstr ""
 
-#: src/ubuntu_start.py:2233
+#: src/ubuntu_start.py:2267
 msgid "Use Mouse Keys"
 msgstr ""
 
-#: src/ubuntu_start.py:2234
+#: src/ubuntu_start.py:2268
 msgid "Open Pointing & Clicking"
 msgstr ""
 
-#: src/ubuntu_start.py:2234
+#: src/ubuntu_start.py:2268
 msgid "In Accessibility Settings, open the Pointing & Clicking section."
 msgstr ""
 
-#: src/ubuntu_start.py:2235
+#: src/ubuntu_start.py:2269
 msgid "Turn on Mouse Keys"
 msgstr ""
 
-#: src/ubuntu_start.py:2235
+#: src/ubuntu_start.py:2269
 msgid ""
 "Mouse Keys lets you control the pointer with the numeric keypad. Turn Num "
 "Lock off to use the keypad for pointer movement."
 msgstr ""
 
-#: src/ubuntu_start.py:2236
+#: src/ubuntu_start.py:2270
 msgid "Test it and turn it off if needed"
 msgstr ""
 
-#: src/ubuntu_start.py:2236
+#: src/ubuntu_start.py:2270
 msgid ""
 "Try moving the pointer and clicking a simple target. Return to Pointing & "
 "Clicking to turn Mouse Keys off when you are finished."

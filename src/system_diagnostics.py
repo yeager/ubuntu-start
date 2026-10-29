@@ -324,8 +324,24 @@ def parse_printer_status(output: str) -> list[tuple[str, str]]:
     return printers
 
 
-def read_printer_status(timeout: float = 3.0) -> tuple[list[tuple[str, str]], str | None]:
-    """Read printer queue states from the local CUPS scheduler; never submit a job."""
+def parse_printer_job_counts(output: str, printer_names: list[str]) -> dict[str, int]:
+    """Count unfinished jobs per known queue without retaining user or job names."""
+    counts = {name: 0 for name in printer_names}
+    for line in output.splitlines():
+        fields = line.split(None, 1)
+        if not fields:
+            continue
+        job_id = fields[0]
+        for name in sorted(counts, key=len, reverse=True):
+            suffix = job_id[len(name) + 1:] if job_id.startswith(f"{name}-") else ""
+            if suffix.isdecimal():
+                counts[name] += 1
+                break
+    return counts
+
+
+def read_printer_status(timeout: float = 3.0) -> tuple[list[tuple[str, str, int | None]], str | None]:
+    """Read local CUPS queue state and unfinished job counts; never submit or cancel jobs."""
     lpstat = shutil.which("lpstat")
     if not lpstat:
         return [], "not-installed"
@@ -348,7 +364,20 @@ def read_printer_status(timeout: float = 3.0) -> tuple[list[tuple[str, str]], st
     if result.returncode != 0:
         return [], "unavailable"
     printers = parse_printer_status(result.stdout)
-    return printers, None if printers else "no-printers"
+    if not printers:
+        return [], "no-printers"
+
+    jobs = _run_local(
+        [lpstat, "-h", "localhost", "-W", "not-completed", "-o"], timeout, env,
+    )
+    counts = (
+        parse_printer_job_counts(jobs.stdout, [name for name, _state in printers])
+        if jobs and jobs.returncode == 0 else None
+    )
+    return [
+        (name, state, counts.get(name) if counts is not None else None)
+        for name, state in printers
+    ], None
 
 
 ACCESSIBILITY_SETTINGS = {

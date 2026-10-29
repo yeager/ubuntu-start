@@ -27,7 +27,7 @@ Keep `po/ubuntu-start.pot` in version control. It is used by `msgmerge` to bring
 Run these commands from the repository root:
 
 ```sh
-xgettext --from-code=UTF-8 --language=Python --keyword=_ \
+xgettext --from-code=UTF-8 --language=Python --keyword=_ --keyword=_n:1,2 \
   --package-name="Ubuntu Start" --package-version=0.3.1 \
   --copyright-holder="Ubuntu Start contributors" \
   --msgid-bugs-address=https://github.com/yeager/ubuntu-start/issues \
