@@ -65,6 +65,22 @@ def main() -> int:
 
     environment = os.environ.copy()
     environment.update({"GTK_A11Y": "atspi", "GSK_RENDERER": "cairo", "LANGUAGE": "en"})
+    benchmark_tools = tempfile.TemporaryDirectory(prefix="ubuntu-start-benchmark-tools-")
+    delayed_benchmark_marker = Path(benchmark_tools.name, "delay-once")
+    environment["UBUNTU_START_BENCHMARK_DELAY_ONCE"] = str(delayed_benchmark_marker)
+    for tool_name in ("glmark2", "glmark2-wayland"):
+        fake_tool = Path(benchmark_tools.name, tool_name)
+        fake_tool.write_text(
+            "#!/bin/sh\n"
+            "if [ -f \"$UBUNTU_START_BENCHMARK_DELAY_ONCE\" ]; then\n"
+            "  rm -f \"$UBUNTU_START_BENCHMARK_DELAY_ONCE\"\n"
+            "  exec sleep 30\n"
+            "fi\n"
+            "printf '%s\\n' 'glmark2 Score: 4242'\n",
+            encoding="utf-8",
+        )
+        fake_tool.chmod(0o755)
+    environment["PATH"] = benchmark_tools.name + os.pathsep + environment.get("PATH", "")
     log = tempfile.TemporaryFile(mode="w+t", encoding="utf-8")
     process = subprocess.Popen(
         [sys.executable, "src/ubuntu_start.py"],
@@ -194,6 +210,188 @@ def main() -> int:
                 if not select_page("Network and hardware"):
                     missing.append("selectable Network and hardware guide")
                 else:
+                    benchmark_deadline = time.monotonic() + 5
+                    benchmark_names = {
+                        "Check benchmark readiness",
+                        "Run CPU benchmark",
+                        "Run graphics benchmark",
+                        "Cancel graphics benchmark",
+                        "Open disk read benchmark",
+                        "Open GNOME disk benchmark guide",
+                        "Open optional disk write benchmark…",
+                    }
+                    benchmark_buttons = set()
+                    readiness_button = None
+                    while time.monotonic() < benchmark_deadline:
+                        entries = accessible_tree(app)
+                        benchmark_buttons = {
+                            name for role, name, _node in entries
+                            if role in BUTTON_ROLES and name in benchmark_names
+                        }
+                        readiness_button = next(
+                            (
+                                node for role, name, node in entries
+                                if role in BUTTON_ROLES and name == "Check benchmark readiness"
+                            ),
+                            None,
+                        )
+                        if benchmark_buttons == benchmark_names:
+                            break
+                        time.sleep(0.25)
+                    for name in sorted(benchmark_names - benchmark_buttons):
+                        missing.append(f"button: {name} on Network and hardware")
+                    if readiness_button:
+                        try:
+                            activated = readiness_button.get_n_actions() > 0 and readiness_button.do_action(0)
+                        except Exception:
+                            activated = False
+                        if not activated:
+                            missing.append("benchmark readiness button could not be activated")
+                        else:
+                            readiness_deadline = time.monotonic() + 8
+                            readiness_updated = False
+                            while time.monotonic() < readiness_deadline:
+                                entries = accessible_tree(app)
+                                readiness_updated = any(
+                                    role == "label" and name.startswith("Power profile:")
+                                    for role, name, _node in entries
+                                )
+                                if readiness_updated:
+                                    break
+                                time.sleep(0.25)
+                            if not readiness_updated:
+                                missing.append("benchmark readiness status did not update")
+                    graphics_button = next(
+                        (
+                            node for role, name, node in entries
+                            if role in BUTTON_ROLES and name == "Run graphics benchmark"
+                        ),
+                        None,
+                    )
+                    if graphics_button:
+                        try:
+                            graphics_activated = graphics_button.get_n_actions() > 0 and graphics_button.do_action(0)
+                        except Exception:
+                            graphics_activated = False
+                        if not graphics_activated:
+                            missing.append("graphics benchmark button could not be activated")
+                        else:
+                            confirmation_deadline = time.monotonic() + 5
+                            run_button = None
+                            while time.monotonic() < confirmation_deadline:
+                                entries = accessible_tree(app)
+                                run_button = next(
+                                    (
+                                        node for role, name, node in entries
+                                        if role in BUTTON_ROLES and name == "Run benchmark"
+                                    ),
+                                    None,
+                                )
+                                if run_button:
+                                    break
+                                time.sleep(0.25)
+                            if run_button is None:
+                                missing.append("graphics benchmark confirmation was not exposed")
+                            else:
+                                try:
+                                    confirmed = run_button.get_n_actions() > 0 and run_button.do_action(0)
+                                except Exception:
+                                    confirmed = False
+                                if not confirmed:
+                                    missing.append("graphics benchmark confirmation could not be activated")
+                                else:
+                                    score_deadline = time.monotonic() + 5
+                                    graphics_score_shown = False
+                                    while time.monotonic() < score_deadline:
+                                        entries = accessible_tree(app)
+                                        graphics_score_shown = any(
+                                            role == "label" and name.startswith("Graphics baseline: 4242")
+                                            for role, name, _node in entries
+                                        )
+                                        if graphics_score_shown:
+                                            break
+                                        time.sleep(0.25)
+                                    if not graphics_score_shown:
+                                        missing.append("graphics benchmark score was not displayed")
+                                    else:
+                                        delayed_benchmark_marker.touch()
+                                        entries = accessible_tree(app)
+                                        graphics_button = next(
+                                            (node for role, name, node in entries
+                                             if role in BUTTON_ROLES and name == "Run graphics benchmark"),
+                                            None,
+                                        )
+                                        try:
+                                            activated = bool(
+                                                graphics_button
+                                                and graphics_button.get_n_actions() > 0
+                                                and graphics_button.do_action(0)
+                                            )
+                                        except Exception:
+                                            activated = False
+                                        if not activated:
+                                            missing.append("graphics benchmark could not be started for cancellation check")
+                                        else:
+                                            cancel_run_deadline = time.monotonic() + 5
+                                            run_button = None
+                                            while time.monotonic() < cancel_run_deadline:
+                                                entries = accessible_tree(app)
+                                                run_button = next(
+                                                    (node for role, name, node in entries
+                                                     if role in BUTTON_ROLES and name == "Run benchmark"),
+                                                    None,
+                                                )
+                                                if run_button:
+                                                    break
+                                                time.sleep(0.1)
+                                            if not run_button:
+                                                missing.append("second graphics benchmark confirmation was not exposed")
+                                            else:
+                                                try:
+                                                    confirmed = run_button.get_n_actions() > 0 and run_button.do_action(0)
+                                                except Exception:
+                                                    confirmed = False
+                                                if not confirmed:
+                                                    missing.append("second graphics benchmark could not be confirmed")
+                                                else:
+                                                    cancel_deadline = time.monotonic() + 5
+                                                    cancel_button = None
+                                                    while time.monotonic() < cancel_deadline:
+                                                        entries = accessible_tree(app)
+                                                        cancel_button = next(
+                                                            (node for role, name, node in entries
+                                                             if role in BUTTON_ROLES and name == "Cancel graphics benchmark"),
+                                                            None,
+                                                        )
+                                                        if cancel_button and cancel_button.get_state_set().contains(
+                                                            Atspi.StateType.SENSITIVE
+                                                        ):
+                                                            break
+                                                        cancel_button = None
+                                                        time.sleep(0.1)
+                                                    if not cancel_button:
+                                                        missing.append("graphics benchmark cancel button did not become available")
+                                                    else:
+                                                        try:
+                                                            cancelled = cancel_button.get_n_actions() > 0 and cancel_button.do_action(0)
+                                                        except Exception:
+                                                            cancelled = False
+                                                        if not cancelled:
+                                                            missing.append("graphics benchmark cancel button could not be activated")
+                                                        else:
+                                                            cancel_result_deadline = time.monotonic() + 5
+                                                            cancellation_reported = False
+                                                            while time.monotonic() < cancel_result_deadline:
+                                                                entries = accessible_tree(app)
+                                                                cancellation_reported = any(
+                                                                    role == "label" and name == "Graphics benchmark was cancelled."
+                                                                    for role, name, _node in entries
+                                                                )
+                                                                if cancellation_reported:
+                                                                    break
+                                                                time.sleep(0.1)
+                                                            if not cancellation_reported:
+                                                                missing.append("graphics benchmark cancellation result was not displayed")
                     usb_deadline = time.monotonic() + 5
                     usb_refresh_button = None
                     while time.monotonic() < usb_deadline:
@@ -336,6 +534,7 @@ def main() -> int:
                     for control in (
                         "Refresh radio status", "Open battery and charging guide",
                         "Open Wi-Fi troubleshooting guide", "Open sound and microphone guide",
+                        "Open Sound Settings",
                         "Refresh display status", "Open external display guide",
                     ):
                         if not any(
@@ -393,7 +592,7 @@ def main() -> int:
                 )
                 if search_entry and search_entry.get_state_set().contains(Atspi.StateType.FOCUSED):
                     print(
-                        "AT-SPI verified guide names, About, Mouse Keys, Accessibility Settings, USB, PCI, Bluetooth, wireless-radio, Wi-Fi, sound, battery, date/time, video, displays, printer queue guide, memory, system-pressure, service-status, temperature, package-health and Secure Boot controls, and the labeled search entry; "
+                        "AT-SPI verified guide names, About, Mouse Keys, Accessibility Settings, USB, PCI, Bluetooth, wireless-radio, Wi-Fi, sound, battery, date/time, video, displays, printer queue guide, memory, benchmark readiness, graphics benchmark result and cancellation, system-pressure, service-status, temperature, package-health and Secure Boot controls, and the labeled search entry; "
                         "Ctrl+F moved focus to search."
                     )
                     return 0
@@ -406,7 +605,7 @@ def main() -> int:
         observed_controls = [
             (role, name)
             for role, name, _node in entries
-            if name in {"About", "Mouse Keys", "Open Accessibility Settings", "Refresh USB device list", "Refresh PCI device list", "Open Bluetooth pairing guide", "Open date and time guide", "Refresh radio status", "Open Wi-Fi troubleshooting guide", "Open sound and microphone guide", "Open battery and charging guide", "Refresh video device status", "Open camera guide", "Refresh display status", "Open external display guide", "Refresh printer status", "Open print queue guide", "Refresh memory status", "Refresh system pressure", "Refresh system service status", "Refresh temperature status", "Check package health", "Check Secure Boot status", "Search all guides and steps"}
+            if name in {"About", "Mouse Keys", "Open Accessibility Settings", "Refresh USB device list", "Refresh PCI device list", "Open Bluetooth pairing guide", "Open date and time guide", "Refresh radio status", "Open Wi-Fi troubleshooting guide", "Open sound and microphone guide", "Open battery and charging guide", "Refresh video device status", "Open camera guide", "Refresh display status", "Open external display guide", "Refresh printer status", "Open print queue guide", "Refresh memory status", "Check benchmark readiness", "Run CPU benchmark", "Run graphics benchmark", "Cancel graphics benchmark", "Open disk read benchmark", "Open GNOME disk benchmark guide", "Open optional disk write benchmark…", "Refresh system pressure", "Refresh system service status", "Refresh temperature status", "Check package health", "Check Secure Boot status", "Search all guides and steps"}
         ]
         if observed_controls:
             print(f"Observed accessible roles and names: {observed_controls!r}", file=sys.stderr)
@@ -429,6 +628,7 @@ def main() -> int:
                 process.kill()
                 process.wait(timeout=5)
         log.close()
+        benchmark_tools.cleanup()
 
 
 if __name__ == "__main__":

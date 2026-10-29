@@ -125,6 +125,28 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         status_label.set_text.assert_called_once_with(message)
         self.app.announce_to_screen_reader.assert_called_once_with(status_label, message)
 
+    def test_resource_pressure_includes_full_memory_and_io_stalls(self):
+        button = Mock()
+        status_label = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+
+        UbuntuStart.show_resource_pressure(
+            self.app, button, status_label, rows,
+            {
+                "cpu": {"some": 0.0},
+                "memory": {"some": 15.0, "full": 3.5},
+                "io": {"some": 10.0, "full": 1.2},
+            },
+        )
+
+        self.app.row.assert_any_call(
+            rows, "All tasks waiting on memory", "3.5% in the last 10 seconds",
+        )
+        self.app.row.assert_any_call(
+            rows, "All tasks waiting on storage I/O", "1.2% in the last 10 seconds",
+        )
+
     def test_slow_computer_memory_troubleshooting_is_searchable(self):
         entries = [
             ("device", index, guide_title, step_title, description)
@@ -172,6 +194,40 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
 
         self.assertTrue(matches)
         self.assertTrue(all(match[2] == "Wi-Fi is slow or keeps disconnecting" for match in matches))
+
+    def test_connected_wifi_without_internet_help_is_searchable(self):
+        entries = [
+            ("device", index, guide_title, step_title, description)
+            for index, (guide_title, _panel, steps) in enumerate(GUIDES)
+            for step_title, description in steps
+        ]
+
+        matches = find_guide_matches("captive portal certificate warning", entries)
+
+        self.assertTrue(matches)
+        self.assertTrue(all(
+            match[2] == "Wi-Fi is connected but the internet does not work"
+            for match in matches
+        ))
+
+        vpn_matches = find_guide_matches("VPN security policy", entries)
+        self.assertTrue(vpn_matches)
+        self.assertTrue(all(
+            match[2] == "Wi-Fi is connected but the internet does not work"
+            for match in vpn_matches
+        ))
+
+    def test_terminal_password_and_paste_help_is_searchable(self):
+        entries = [
+            ("system", index, guide_title, step_title, description)
+            for index, (guide_title, _target, _action, steps) in enumerate(SYSTEM_GUIDES)
+            for step_title, description in steps
+        ]
+
+        matches = find_guide_matches("password prompt paste", entries)
+
+        self.assertTrue(matches)
+        self.assertTrue(all(match[2] == "Use the Terminal" for match in matches))
 
     def test_pci_device_help_is_searchable(self):
         entries = [
@@ -610,11 +666,49 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         )
 
         output.set_subtitle.assert_called_once_with("USB speakers · 65% · Not muted")
-        input_device.set_subtitle.assert_called_once_with("Built-in microphone · 20% · Muted")
+        input_device.set_subtitle.assert_called_once_with(
+            "Built-in microphone · 20% · Muted · Open Sound Settings to unmute this device.",
+        )
         self.app.announce_to_screen_reader.assert_called_once_with(
             output,
-            "Speaker output: USB speakers · 65% · Not muted Microphone input: Built-in microphone · 20% · Muted",
+            "Speaker output: USB speakers · 65% · Not muted Microphone input: Built-in microphone · 20% · Muted · Open Sound Settings to unmute this device.",
         )
+
+    def test_audio_status_suggests_sound_settings_for_muted_and_zero_volume(self):
+        output = Mock()
+        output.get_title.return_value = "Speaker output"
+        input_device = Mock()
+        input_device.get_title.return_value = "Microphone input"
+
+        UbuntuStart.show_audio_status(
+            self.app, output, input_device,
+            {
+                "output": (0, False), "input": (0, False), "error": None,
+            },
+        )
+
+        self.assertIn(
+            "Raise the output volume in Sound Settings.",
+            output.set_subtitle.call_args.args[0],
+        )
+        self.assertIn(
+            "Raise the input volume in Sound Settings.",
+            input_device.set_subtitle.call_args.args[0],
+        )
+
+    def test_missing_audio_devices_suggests_sound_settings(self):
+        output = Mock()
+        output.get_title.return_value = "Speaker output"
+        input_device = Mock()
+        input_device.get_title.return_value = "Microphone input"
+
+        UbuntuStart.show_audio_status(
+            self.app, output, input_device,
+            {"output": None, "input": None, "error": None},
+        )
+
+        self.assertIn("Open Sound Settings", output.set_subtitle.call_args.args[0])
+        self.assertIn("Open Sound Settings", input_device.set_subtitle.call_args.args[0])
 
     def test_manual_battery_refresh_announces_charge_and_state(self):
         button = Mock()
@@ -816,6 +910,13 @@ class USBStatusTests(unittest.TestCase):
 
         app.open_app.assert_called_once_with("gnome-control-center", "wifi")
 
+    def test_sound_settings_action_opens_the_sound_panel(self):
+        app = Mock()
+
+        UbuntuStart.open_sound_settings(app)
+
+        app.open_app.assert_called_once_with("gnome-control-center", "sound")
+
 
 class InternetTestResultTests(unittest.TestCase):
     def test_formats_milliseconds_with_the_active_decimal_separator(self):
@@ -841,6 +942,53 @@ class InternetTestResultTests(unittest.TestCase):
         message = status.set_text.call_args.args[0]
         self.assertIn("DNS lookup: 12,3 ms", message)
         self.assertIn("Gateway response: 1,2 ms", message)
+
+    def test_network_diagnostics_run_only_after_confirmation(self):
+        app = Mock()
+        button = Mock()
+        status = Mock()
+        dialog = Mock()
+        result = {"dns_latency_ms": 10.0, "gateway_latency_ms": 1.0}
+
+        with patch("ubuntu_start.Adw.AlertDialog", return_value=dialog), \
+                patch("ubuntu_start.threading.Thread") as thread, \
+                patch("ubuntu_start.run_network_diagnostics", return_value=result) as run, \
+                patch("ubuntu_start.GLib.idle_add") as idle_add:
+            UbuntuStart.confirm_network_diagnostics(app, button, status)
+            on_response = dialog.connect.call_args.args[1]
+
+            on_response(dialog, "cancel")
+            thread.assert_not_called()
+            run.assert_not_called()
+
+            on_response(dialog, "run")
+            button.set_sensitive.assert_called_once_with(False)
+            status.set_text.assert_called_once_with("Testing DNS and gateway…")
+            thread.return_value.start.assert_called_once_with()
+            thread.call_args.kwargs["target"]()
+
+        run.assert_called_once_with()
+        idle_add.assert_called_once_with(
+            app.show_network_diagnostic_result, button, status, result,
+        )
+
+    def test_dns_failure_includes_elapsed_time(self):
+        app = Mock()
+        button = Mock()
+        status = Mock()
+        result = {
+            "dns_latency_ms": None,
+            "dns_test_duration_ms": 75.0,
+            "gateway": None,
+            "gateway_latency_ms": None,
+        }
+
+        with patch("ubuntu_start.locale.localeconv", return_value={"decimal_point": ","}):
+            UbuntuStart.show_network_diagnostic_result(app, button, status, result)
+
+        message = status.set_text.call_args.args[0]
+        self.assertIn("DNS lookup failed after 75 ms.", message)
+        self.assertIn("Next step: check that the network is connected", message)
 
     def test_missing_ping_tool_recommends_package_without_blaming_gateway(self):
         app = Mock()
@@ -1029,6 +1177,14 @@ class SystemGuideTests(unittest.TestCase):
 
         app.open_app.assert_called_once_with("gnome-control-center", "universal-access")
 
+    def test_date_time_guide_uses_ubuntu_panel_arguments(self):
+        app = Mock()
+        guide = next(guide for guide in SYSTEM_GUIDES if guide[0] == "Check date and time")
+
+        UbuntuStart.open_target(app, guide[1])
+
+        app.open_app.assert_called_once_with("gnome-control-center", "system", "datetime")
+
     def test_backup_guide_covers_destination_encryption_and_restore_verification(self):
         guide = next(
             guide for guide in SYSTEM_GUIDES if guide[0] == "Set up backups"
@@ -1076,6 +1232,41 @@ class SystemGuideTests(unittest.TestCase):
         UbuntuStart.open_target(app, target)
 
         app.open_app.assert_called_once_with("gnome-control-center", "network")
+
+    @patch("ubuntu_start.GLib.timeout_add")
+    def test_connection_results_guide_explains_measurements_and_opens_diagnostics(self, timeout_add):
+        guide = next(guide for guide in SYSTEM_GUIDES if guide[0] == "Understand connection test results")
+        _title, target, action, steps = guide
+        step_text = " ".join(f"{title} {description}" for title, description in steps)
+        self.assertEqual(target, ("overview", "network-diagnostics"))
+        self.assertEqual(action, "Open network diagnostics")
+        self.assertIn("does not measure the speed of every website", step_text)
+        self.assertIn("does not prove that the network is down", step_text)
+
+        app = Mock()
+        app.scroll_to_network_diagnostics = UbuntuStart.scroll_to_network_diagnostics.__get__(app)
+        UbuntuStart.open_target(app, target)
+
+        app.main_stack.set_visible_child_name.assert_called_once_with("Network and hardware")
+        callback = timeout_add.call_args.args[1]
+        self.assertIs(callback.__self__, app)
+        self.assertEqual(callback.__func__, UbuntuStart.scroll_to_network_diagnostics)
+        self.assertEqual(timeout_add.call_args.args[0], 50)
+
+    def test_network_diagnostics_navigation_scrolls_to_the_connection_test(self):
+        app = Mock()
+        scroller = Mock()
+        bounds = Mock()
+        bounds.get_y.return_value = 610.0
+        app.main_stack.get_visible_child.return_value = scroller
+        app.network_diagnostics_box.get_mapped.return_value = True
+        app.network_diagnostics_box.compute_bounds.return_value = (True, bounds)
+
+        result = UbuntuStart.scroll_to_network_diagnostics(app)
+
+        app.network_diagnostics_box.compute_bounds.assert_called_once_with(scroller.get_child.return_value)
+        scroller.get_vadjustment().set_value.assert_called_once_with(610.0)
+        self.assertEqual(result, GLib.SOURCE_REMOVE)
 
     @patch("ubuntu_start.GLib.timeout_add")
     def test_storage_guide_opens_and_schedules_the_storage_overview(self, timeout_add):

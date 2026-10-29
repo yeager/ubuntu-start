@@ -265,9 +265,12 @@ def parse_wpctl_volume(output: str) -> tuple[int, bool] | None:
     match = re.search(r"\bVolume:\s*([0-9]+(?:\.[0-9]+)?)", output, re.IGNORECASE)
     if not match:
         return None
-    percent = round(float(match.group(1)) * 100)
+    volume = float(match.group(1))
+    percent = volume * 100
+    if not math.isfinite(percent):
+        return None
     muted = bool(re.search(r"\[MUTED\]", output, re.IGNORECASE))
-    return percent, muted
+    return round(percent), muted
 
 
 def parse_wpctl_endpoint_name(output: str) -> str | None:
@@ -570,6 +573,13 @@ def _read(path: Path) -> str | None:
         return None
 
 
+def _clean_display_label(value: str, limit: int = 120) -> str:
+    """Collapse untrusted local labels and remove control characters."""
+    return " ".join(
+        "".join(character if character.isprintable() else " " for character in value).split()
+    )[:limit]
+
+
 def read_memory_status(meminfo_path: str | Path = "/proc/meminfo") -> dict[str, int] | None:
     """Read total and available RAM plus swap use from local Linux procfs."""
     meminfo = _read(Path(meminfo_path))
@@ -617,6 +627,19 @@ def parse_pressure_status(output: str) -> dict[str, float] | None:
         if math.isfinite(percentage) and 0 <= percentage <= 100:
             result[fields[0]] = percentage
     return result or None
+
+
+def pressure_threshold_exceeded(
+    pressure: dict[str, dict[str, float]] | None,
+    resource: str,
+    metric: str,
+    threshold: float,
+) -> bool | None:
+    """Compare an available pressure reading with a threshold; keep missing data unknown."""
+    value = pressure.get(resource, {}).get(metric) if pressure else None
+    if not isinstance(value, (int, float)) or not math.isfinite(value):
+        return None
+    return value >= threshold
 
 
 def read_resource_pressure(pressure_path: str | Path = "/proc/pressure") -> dict[str, dict[str, float]] | None:
@@ -691,7 +714,7 @@ def lookup_pci_device_name(
             vendor = re.match(r"^([0-9A-Fa-f]{4})\s{2,}(.+?)\s*$", line)
             if vendor:
                 if vendor.group(1).upper() == wanted_vendor:
-                    vendor_name = vendor.group(2).strip()
+                    vendor_name = _clean_display_label(vendor.group(2))
                     continue
                 if vendor_name:
                     break
@@ -699,7 +722,8 @@ def lookup_pci_device_name(
             if vendor_name and line.startswith("\t") and not line.startswith("\t\t"):
                 device = re.match(r"^\t([0-9A-Fa-f]{4})\s{2,}(.+?)\s*$", line)
                 if device and device.group(1).upper() == wanted_device:
-                    return f"{vendor_name} {device.group(2).strip()}"
+                    device_name = _clean_display_label(device.group(2))
+                    return _clean_display_label(f"{vendor_name} {device_name}")
         if vendor_name:
             return vendor_name
     return None
@@ -796,12 +820,12 @@ def lookup_usb_device_name(
                 if vendor_name:
                     break
                 if vendor_match.group(1).upper() == wanted_vendor:
-                    vendor_name = vendor_match.group(2).strip()
+                    vendor_name = _clean_display_label(vendor_match.group(2))
                 continue
             if vendor_name and line.startswith("\t") and not line.startswith("\t\t"):
                 product_match = re.match(r"^\t([0-9A-Fa-f]{4})\s{2,}(.+?)\s*$", line)
                 if product_match and product_match.group(1).upper() == wanted_product:
-                    return vendor_name, product_match.group(2).strip()
+                    return vendor_name, _clean_display_label(product_match.group(2))
         if vendor_name:
             return vendor_name, None
     return None
@@ -979,15 +1003,19 @@ def read_hardware_details(
     }
 
 
-def read_storage_status(path: str | Path = "/") -> dict[str, int]:
-    """Return local filesystem capacity in bytes."""
+def read_storage_status(path: str | Path = "/") -> dict[str, int | bool | None]:
+    """Return local filesystem capacity and whether it is mounted read-only."""
     usage = shutil.disk_usage(path)
-    return {"total": usage.total, "used": usage.used, "free": usage.free}
+    try:
+        read_only = bool(os.statvfs(path).f_flag & os.ST_RDONLY)
+    except OSError:
+        read_only = None
+    return {"total": usage.total, "used": usage.used, "free": usage.free, "read_only": read_only}
 
 
 def read_storage_locations(
     root_path: str | Path = "/", home_path: str | Path | None = None,
-) -> dict[str, dict[str, int]]:
+) -> dict[str, dict[str, int | bool | None]]:
     """Read root storage and a separate home filesystem when one is mounted."""
     home_path = Path.home() if home_path is None else Path(home_path)
     locations = {"system": read_storage_status(root_path)}
@@ -1036,6 +1064,30 @@ def read_battery_status(power_supply_path: str | Path = "/sys/class/power_supply
                     break
             batteries.append(details)
     return batteries
+
+
+def battery_is_discharging(batteries: list[dict[str, str | int]]) -> bool:
+    """Whether any detected battery reports that it is discharging."""
+    return any(str(item.get("status", "")).casefold() == "discharging" for item in batteries)
+
+
+def battery_power_status_unknown(batteries: list[dict[str, str | int]]) -> bool:
+    """Whether batteries exist but none reports a recognized external-power state."""
+    known = {"charging", "full", "not charging", "discharging"}
+    return bool(batteries) and not any(
+        str(item.get("status", "")).casefold() in known for item in batteries
+    )
+
+
+def sensor_near_critical_limit(
+    sensors: list[dict[str, str | float]], margin_c: float = 10.0,
+) -> bool:
+    """Check whether the hottest sensor is close to its device-reported critical limit."""
+    if not sensors:
+        return False
+    hottest = max(sensors, key=lambda item: item["temperature_c"])
+    critical = hottest.get("critical_c")
+    return isinstance(critical, (int, float)) and hottest["temperature_c"] >= critical - margin_c
 
 
 def read_temperature_sensors(
@@ -1117,6 +1169,62 @@ def read_power_profile(timeout: float = 2.0) -> str:
         return "unavailable"
     profile = result.stdout.strip().casefold()
     return profile if profile in {"power-saver", "balanced", "performance"} else "unavailable"
+
+
+def run_cpu_benchmark(duration_seconds: float = 1.0) -> dict[str, float | int]:
+    """Run a short, unprivileged integer workload; useful only for same-version comparisons."""
+    duration_seconds = max(0.1, min(float(duration_seconds), 5.0))
+    deadline = time.perf_counter() + duration_seconds
+    value = 1
+    iterations = 0
+    started = time.perf_counter()
+    while time.perf_counter() < deadline:
+        value = (value * 1664525 + 1013904223) & 0xFFFFFFFF
+        iterations += 1
+    elapsed = time.perf_counter() - started
+    return {
+        "iterations": iterations,
+        "duration_seconds": round(elapsed, 3),
+        "iterations_per_second": round(iterations / elapsed) if elapsed else 0,
+    }
+
+
+def benchmark_score_change_percent(current: float, previous: float) -> float | None:
+    """Return a relative score change, or None when no valid baseline exists."""
+    if not math.isfinite(current) or not math.isfinite(previous) or previous <= 0:
+        return None
+    return round((current - previous) / previous * 100, 1)
+
+
+def find_benchmark_tool(name: str) -> str | None:
+    """Return only known benchmark launchers, when installed."""
+    allowed = {"glmark2-wayland", "glmark2", "gnome-disks"}
+    if name not in allowed:
+        return None
+    return shutil.which(name)
+
+
+def find_graphics_benchmark_tool(session_type: str | None = None) -> str | None:
+    """Prefer the glmark2 launcher matching the current display session."""
+    session_type = (session_type or os.environ.get("XDG_SESSION_TYPE", "")).casefold()
+    candidates = (
+        ("glmark2-wayland", "glmark2")
+        if session_type == "wayland"
+        else ("glmark2", "glmark2-wayland")
+    )
+    for candidate in candidates:
+        executable = find_benchmark_tool(candidate)
+        if executable:
+            return executable
+    return None
+
+
+def parse_glmark2_score(output: str) -> int | None:
+    """Extract glmark2's final aggregate score from its output."""
+    if not isinstance(output, str):
+        return None
+    match = re.search(r"^\s*glmark2 Score:\s*(\d+)\s*$", output, re.IGNORECASE | re.MULTILINE)
+    return int(match.group(1)) if match else None
 
 
 def parse_secure_boot_status(output: str) -> str | None:
@@ -1307,7 +1415,7 @@ def _run_local(
 def run_network_diagnostics(timeout: float = 3.0) -> dict[str, str | float | None]:
     """Measure configured DNS and gateway latency; call only after user starts the check."""
     result: dict[str, str | float | None] = {
-        "dns_latency_ms": None, "dns_error": None,
+        "dns_latency_ms": None, "dns_test_duration_ms": None, "dns_error": None,
         "gateway": None, "gateway_interface": None,
         "gateway_latency_ms": None, "gateway_test_duration_ms": None,
         "gateway_error": None,
@@ -1347,8 +1455,10 @@ def run_network_diagnostics(timeout: float = 3.0) -> dict[str, str | float | Non
 
     start = time.monotonic()
     dns = _run_local(["getent", "ahosts", "ubuntu.com"], timeout)
+    dns_elapsed_ms = round((time.monotonic() - start) * 1000, 1)
+    result["dns_test_duration_ms"] = dns_elapsed_ms
     if dns and dns.returncode == 0 and dns.stdout.strip():
-        result["dns_latency_ms"] = round((time.monotonic() - start) * 1000, 1)
+        result["dns_latency_ms"] = dns_elapsed_ms
     else:
         result["dns_error"] = "lookup-failed"
     return result

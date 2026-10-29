@@ -33,18 +33,27 @@ from system_diagnostics import (
     parse_dpkg_audit,
     read_package_health,
     read_battery_status,
+    battery_is_discharging,
+    battery_power_status_unknown,
     read_apt_update_status,
     read_reboot_required,
     read_power_profile,
+    run_cpu_benchmark,
+    find_benchmark_tool,
+    benchmark_score_change_percent,
+    find_graphics_benchmark_tool,
+    parse_glmark2_score,
     parse_secure_boot_status,
     read_secure_boot_status,
     read_memory_status,
     parse_pressure_status,
+    pressure_threshold_exceeded,
     read_resource_pressure,
     read_bluetooth_status,
     parse_failed_services,
     read_failed_services,
     read_temperature_sensors,
+    sensor_near_critical_limit,
     read_hardware_details,
     read_network_devices,
     read_rfkill_status,
@@ -63,6 +72,66 @@ from system_diagnostics import (
     parse_iw_link_status,
     run_network_diagnostics,
 )
+
+
+class BenchmarkTests(unittest.TestCase):
+    def test_battery_readiness_uses_reported_state(self):
+        self.assertTrue(battery_is_discharging([{"status": "Discharging"}]))
+        self.assertFalse(battery_is_discharging([{"status": "Charging"}]))
+        self.assertFalse(battery_power_status_unknown([]))
+        self.assertTrue(battery_power_status_unknown([{"status": "Unknown"}]))
+        self.assertFalse(battery_power_status_unknown([{"status": "Full"}]))
+
+    def test_temperature_readiness_uses_hottest_sensor_reported_limit(self):
+        self.assertTrue(sensor_near_critical_limit([
+            {"name": "CPU", "temperature_c": 91.0, "critical_c": 100.0},
+        ]))
+        self.assertFalse(sensor_near_critical_limit([
+            {"name": "CPU", "temperature_c": 80.0, "critical_c": 100.0},
+        ]))
+        self.assertFalse(sensor_near_critical_limit([
+            {"name": "CPU", "temperature_c": 91.0},
+        ]))
+
+    def test_cpu_benchmark_returns_positive_metrics(self):
+        result = run_cpu_benchmark(0.1)
+        self.assertGreater(result["iterations"], 0)
+        self.assertGreater(result["duration_seconds"], 0)
+        self.assertGreater(result["iterations_per_second"], 0)
+
+    def test_score_change_compares_to_previous_run(self):
+        self.assertEqual(benchmark_score_change_percent(110, 100), 10.0)
+        self.assertEqual(benchmark_score_change_percent(90, 100), -10.0)
+
+    def test_score_change_rejects_missing_or_invalid_baseline(self):
+        self.assertIsNone(benchmark_score_change_percent(110, 0))
+        self.assertIsNone(benchmark_score_change_percent(float("inf"), 100))
+
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/glmark2")
+    def test_benchmark_tool_lookup_is_allowlisted(self, _which):
+        self.assertEqual(find_benchmark_tool("glmark2"), "/usr/bin/glmark2")
+        self.assertIsNone(find_benchmark_tool("sh"))
+
+    @patch("system_diagnostics.find_benchmark_tool")
+    def test_graphics_launcher_follows_session_type(self, find_tool):
+        find_tool.side_effect = lambda name: {
+            "glmark2": "/usr/bin/glmark2",
+            "glmark2-wayland": "/usr/bin/glmark2-wayland",
+        }.get(name)
+
+        self.assertEqual(find_graphics_benchmark_tool("x11"), "/usr/bin/glmark2")
+        self.assertEqual(find_graphics_benchmark_tool("wayland"), "/usr/bin/glmark2-wayland")
+        self.assertEqual(find_tool.call_count, 2)
+
+    def test_parses_glmark2_final_score(self):
+        self.assertEqual(
+            parse_glmark2_score("[scene] FPS: 120\n    glmark2 Score: 1234 \n"),
+            1234,
+        )
+
+    def test_rejects_missing_or_malformed_glmark2_score(self):
+        self.assertIsNone(parse_glmark2_score("glmark2 Score: 0x10"))
+        self.assertIsNone(parse_glmark2_score("no final score"))
 
 
 class SupportReportTests(unittest.TestCase):
@@ -593,6 +662,9 @@ class AudioStatusTests(unittest.TestCase):
         self.assertEqual(parse_wpctl_volume("Volume: 1.20\n"), (120, False))
         self.assertIsNone(parse_wpctl_volume("No default node"))
 
+    def test_rejects_wpctl_volume_that_overflows_when_converted_to_percent(self):
+        self.assertIsNone(parse_wpctl_volume(f"Volume: {'9' * 400}\n"))
+
     def test_parses_only_sanitized_human_facing_wpctl_endpoint_name(self):
         output = '''id 47, type PipeWire:Interface:Node
   * node.description = "USB headphones\\\" Left"
@@ -727,6 +799,12 @@ class ParseHardwareTests(unittest.TestCase):
         self.assertIsNone(parse_pressure_status("some avg10=101.0 avg60=1 total=0\n"))
         self.assertIsNone(parse_pressure_status("some avg60=1 total=0\n"))
 
+    def test_pressure_threshold_preserves_unavailable_state(self):
+        self.assertIsNone(pressure_threshold_exceeded(None, "cpu", "some", 20))
+        self.assertIsNone(pressure_threshold_exceeded({"cpu": {}}, "cpu", "some", 20))
+        self.assertFalse(pressure_threshold_exceeded({"cpu": {"some": 5.0}}, "cpu", "some", 20))
+        self.assertTrue(pressure_threshold_exceeded({"cpu": {"some": 20.0}}, "cpu", "some", 20))
+
     def test_reads_available_system_resource_pressure_files(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -781,6 +859,18 @@ ABCD  Another Vendor
                 "Example Graphics Corp Fast Display 9000",
             )
             self.assertIsNone(lookup_pci_device_name("invalid", "5678", (str(database),)))
+
+    def test_sanitizes_and_limits_local_pci_database_names(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            database = Path(temporary) / "pci.ids"
+            database.write_text(
+                "1234  Vendor\x01" + "V" * 150 + "\n\t5678  Device\x02" + "D" * 150 + "\n",
+                encoding="ascii",
+            )
+            name = lookup_pci_device_name("1234", "5678", (str(database),))
+        self.assertEqual(len(name), 120)
+        self.assertTrue(name.startswith("Vendor"))
+        self.assertTrue(name.isprintable())
 
     def test_reads_pci_devices_and_driver_without_listing_bridges(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -943,6 +1033,17 @@ ABCD  Another Vendor
             )
             self.assertIsNone(lookup_usb_device_name("invalid", "0001", (str(database),)))
 
+    def test_sanitizes_and_limits_local_usb_database_names(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            database = Path(temporary) / "usb.ids"
+            database.write_text(
+                "0627  Vendor\x01" + "V" * 150 + "\n\t0001  Device\x02" + "D" * 150 + "\n",
+                encoding="ascii",
+            )
+            names = lookup_usb_device_name("0627", "0001", (str(database),))
+        self.assertIsNotNone(names)
+        self.assertTrue(all(len(name) <= 120 and name.isprintable() for name in names))
+
     def test_enriches_usb_device_with_vendor_from_local_database(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -1059,10 +1160,27 @@ Inst package-two [2.0] (2.1 repo [amd64])
         self.assertGreater(result["total"], 0)
         self.assertGreaterEqual(result["free"], 0)
         self.assertGreaterEqual(result["used"], 0)
+        self.assertIsInstance(result["read_only"], bool)
+
+    @patch("system_diagnostics.os.statvfs", return_value=SimpleNamespace(f_flag=1))
+    @patch("system_diagnostics.shutil.disk_usage", return_value=SimpleNamespace(total=1000, used=700, free=300))
+    def test_reports_read_only_filesystem(self, _disk_usage, _statvfs):
+        self.assertTrue(read_storage_status("/system")["read_only"])
+
+    @patch("system_diagnostics.os.statvfs", return_value=SimpleNamespace(f_flag=0))
+    @patch("system_diagnostics.shutil.disk_usage", return_value=SimpleNamespace(total=1000, used=700, free=300))
+    def test_reports_writable_filesystem(self, _disk_usage, _statvfs):
+        self.assertFalse(read_storage_status("/system")["read_only"])
+
+    @patch("system_diagnostics.os.statvfs", side_effect=OSError("unavailable"))
+    @patch("system_diagnostics.shutil.disk_usage", return_value=SimpleNamespace(total=1000, used=700, free=300))
+    def test_handles_unavailable_mount_flags(self, _disk_usage, _statvfs):
+        self.assertIsNone(read_storage_status("/system")["read_only"])
 
     @patch("system_diagnostics.shutil.disk_usage")
     @patch("system_diagnostics.os.stat")
-    def test_reads_separate_home_filesystem_only_when_mount_differs(self, stat, disk_usage):
+    @patch("system_diagnostics.os.statvfs", return_value=SimpleNamespace(f_flag=0))
+    def test_reads_separate_home_filesystem_only_when_mount_differs(self, _statvfs, stat, disk_usage):
         stat.side_effect = [SimpleNamespace(st_dev=1), SimpleNamespace(st_dev=2)]
         disk_usage.side_effect = [
             SimpleNamespace(total=1000, used=700, free=300),
@@ -1072,20 +1190,21 @@ Inst package-two [2.0] (2.1 repo [amd64])
         locations = read_storage_locations("/system", "/home/user")
 
         self.assertEqual(locations, {
-            "system": {"total": 1000, "used": 700, "free": 300},
-            "home": {"total": 2000, "used": 1900, "free": 100},
+            "system": {"total": 1000, "used": 700, "free": 300, "read_only": False},
+            "home": {"total": 2000, "used": 1900, "free": 100, "read_only": False},
         })
         self.assertEqual(disk_usage.call_args_list[1].args, (Path("/home/user"),))
 
     @patch("system_diagnostics.shutil.disk_usage")
     @patch("system_diagnostics.os.stat")
-    def test_does_not_duplicate_home_when_it_shares_system_filesystem(self, stat, disk_usage):
+    @patch("system_diagnostics.os.statvfs", return_value=SimpleNamespace(f_flag=0))
+    def test_does_not_duplicate_home_when_it_shares_system_filesystem(self, _statvfs, stat, disk_usage):
         stat.side_effect = [SimpleNamespace(st_dev=1), SimpleNamespace(st_dev=1)]
         disk_usage.return_value = SimpleNamespace(total=1000, used=700, free=300)
 
         locations = read_storage_locations("/system", "/home/user")
 
-        self.assertEqual(locations, {"system": {"total": 1000, "used": 700, "free": 300}})
+        self.assertEqual(locations, {"system": {"total": 1000, "used": 700, "free": 300, "read_only": False}})
         self.assertEqual(disk_usage.call_count, 1)
 
     def test_reads_battery_capacity_without_device_name(self):
@@ -1284,6 +1403,24 @@ Inst package-two [2.0] (2.1 repo [amd64])
         self.assertEqual(run.call_args_list[1].args[0][-1], "192.168.1.1")
         self.assertEqual(run.call_args_list[2].args[0], ["ip", "-4", "neigh", "show", "to", "192.168.1.1", "dev", "wlp2s0"])
         self.assertEqual(run.call_args_list[3].args[0], ["getent", "ahosts", "ubuntu.com"])
+
+    @patch("system_diagnostics.shutil.which", return_value=None)
+    @patch("system_diagnostics.lookup_oui_vendor", return_value=None)
+    @patch("system_diagnostics._run_local")
+    @patch("system_diagnostics.time.monotonic", side_effect=[5.0, 5.075])
+    def test_reports_elapsed_time_when_dns_lookup_fails(self, _clock, run, _vendor, _which):
+        run.side_effect = [
+            subprocess.CompletedProcess([], 0, "default via 192.168.1.1 dev eth0\n", ""),
+            subprocess.CompletedProcess([], 0, "192.168.1.1 dev eth0 lladdr 00:11:22:33:44:55 REACHABLE\n", ""),
+            subprocess.CompletedProcess([], 2, "", "temporary failure in name resolution\n"),
+        ]
+
+        result = run_network_diagnostics()
+
+        self.assertEqual(result["dns_error"], "lookup-failed")
+        self.assertIsNone(result["dns_latency_ms"])
+        self.assertEqual(result["dns_test_duration_ms"], 75.0)
+        self.assertEqual(run.call_args_list[-1].args[0], ["getent", "ahosts", "ubuntu.com"])
 
     @patch("system_diagnostics.shutil.which", return_value="/usr/bin/ping")
     @patch("system_diagnostics.lookup_oui_vendor", return_value=None)

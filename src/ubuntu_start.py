@@ -13,7 +13,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_reboot_required, read_resource_pressure, read_rfkill_status, read_secure_boot_status, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
+from system_diagnostics import battery_is_discharging, battery_power_status_unknown, benchmark_score_change_percent, build_support_report, check_internet_connection, find_benchmark_tool, find_graphics_benchmark_tool, parse_glmark2_score, pressure_threshold_exceeded, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_reboot_required, read_resource_pressure, read_rfkill_status, read_secure_boot_status, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_cpu_benchmark, run_network_diagnostics, sensor_near_critical_limit
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -137,7 +137,13 @@ SYSTEM_GUIDES = [
         (_("Wait for Ubuntu"), _("A wired connection is usually configured automatically. The network menu shows when it is ready.")),
         (_("Check the connection"), _("Open Network Settings and make sure the Wired switch is on. If there is no link light, try another port or cable.")),
     ]),
-    (_("Check date and time"), ("settings", "datetime"), _("Open Date & Time Settings"), [
+    (_("Understand connection test results"), ("overview", "network-diagnostics"), _("Open network diagnostics"), [
+        (_("Read the DNS time"), _("The DNS time measures one lookup for ubuntu.com using your configured resolver. It does not measure the speed of every website or your full internet connection. Compare repeated results on the same network; there is no single pass value for every connection.")),
+        (_("Read the gateway response"), _("The gateway time measures one ping between this computer and the local router. A Wi-Fi signal, router load and local network conditions can affect it. Some gateways ignore ping, so no reply alone does not prove that the network is down.")),
+        (_("Compare the two checks"), _("If the gateway responds but DNS fails, review DNS settings and check for a network sign-in page. If gateway replies are slow on Wi-Fi, move closer to the access point and compare again. These checks suggest where to look; they do not diagnose the cause.")),
+        (_("Understand the manufacturer match"), _("The gateway manufacturer is matched locally from its MAC address. The database may be missing or outdated, and a randomized or reassigned address may not identify the router maker.")),
+    ]),
+    (_("Check date and time"), ("settings", ("system", "datetime")), _("Open Date & Time Settings"), [
         (_("Check the time zone"), _("Make sure the selected time zone matches your location. A wrong time zone changes the displayed local time.")),
         (_("Review automatic time"), _("If automatic date and time is available, turn it on so Ubuntu can keep the system clock synchronized.")),
         (_("Check the network connection"), _("If the clock is not synchronized, check the internet connection and review Date and Time Settings again.")),
@@ -227,11 +233,14 @@ SYSTEM_GUIDES = [
         (_("What the prompt means"), _("The prompt is the text before the cursor. It shows that the terminal is ready for a command. Type after it; do not type the prompt itself.")),
         (_("Run a command"), _("Type a command and press Enter to run it. For example, pwd shows the current folder and ls lists its files. These commands only show information.")),
         (_("Read the result"), _("Commands may print information or an error message. Read the last lines first. If a command finishes without an error, it may return to the prompt without printing anything.")),
+        (_("Copy and paste safely"), _("Copy text with Ctrl+Shift+C and paste with Ctrl+Shift+V. Before pasting a command, read all of it: some terminals can run multiple pasted lines, and commands may change or delete files.")),
         (_("Move between folders"), _("Use cd Documents to enter a folder and cd .. to go up one level. Use pwd to check where you are.")),
         (_("Use Tab and command history"), _("Press Tab to complete a file or folder name when it is unique. Press the Up Arrow to find a command you used earlier; check it before pressing Enter.")),
         (_("Type paths with spaces"), _("Put quotation marks around a folder or file name that contains spaces, for example: cd \"My Documents\". You can also type the first letters and press Tab to complete the name.")),
         (_("Ask a command for help"), _("Try a command followed by --help, such as ls --help. For more detail, use man followed by the command name; press q to leave the manual.")),
         (_("Understand sudo"), _("sudo runs a command with administrator privileges. Use it only when you understand and trust the command. Your password is not shown while you type it.")),
+        (_("Enter a password at a prompt"), _("When sudo or another trusted tool asks for your password, typing may show no letters or dots. Type it only if you expected the prompt and trust the command, then press Enter. Press Ctrl+C if the prompt is unexpected; never share your password.")),
+        (_("Wait for a command to finish"), _("While a command is working, the prompt may not appear. Wait for it to return before typing another command. Some commands take time. Ctrl+C asks a command to stop but cannot undo changes already made; do not close the terminal during system updates or file operations.")),
         (_("Stop a running command"), _("Ctrl+C asks the current command to stop. It does not undo changes the command has already made.")),
         (_("Keep commands from trusted sources"), _("Do not paste commands you do not understand, especially commands using sudo, rm, disk tools or scripts downloaded from the internet.")),
     ]),
@@ -413,7 +422,8 @@ class UbuntuStart(Adw.Application):
     def open_target(self, target):
         kind, value = target
         if kind == "settings":
-            self.open_app("gnome-control-center", value)
+            arguments = value if isinstance(value, (tuple, list)) else (value,)
+            self.open_app("gnome-control-center", *arguments)
         elif kind == "terminal":
             self.open_terminal()
         elif kind == "app-center":
@@ -430,6 +440,9 @@ class UbuntuStart(Adw.Application):
         elif kind == "overview" and value == "printer":
             self.main_stack.set_visible_child_name(_("Network and hardware"))
             GLib.timeout_add(50, self.scroll_to_printer_status)
+        elif kind == "overview" and value == "network-diagnostics":
+            self.main_stack.set_visible_child_name(_("Network and hardware"))
+            GLib.timeout_add(50, self.scroll_to_network_diagnostics)
         else:
             self.open_app(value)
 
@@ -449,6 +462,14 @@ class UbuntuStart(Adw.Application):
             if found:
                 adjustment = scroller.get_vadjustment()
                 adjustment.set_value(bounds.get_y())
+        return GLib.SOURCE_REMOVE
+
+    def scroll_to_network_diagnostics(self):
+        scroller = self.main_stack.get_visible_child()
+        if scroller and self.network_diagnostics_box.get_mapped():
+            found, bounds = self.network_diagnostics_box.compute_bounds(scroller.get_child())
+            if found:
+                scroller.get_vadjustment().set_value(bounds.get_y())
         return GLib.SOURCE_REMOVE
 
     def confirm_app_center(self):
@@ -706,11 +727,14 @@ class UbuntuStart(Adw.Application):
         audio_rows.append(input_status)
         audio_refresh = Gtk.Button(label=_("Refresh audio status"), halign=Gtk.Align.START)
         audio_refresh.connect("clicked", lambda *_: self.refresh_audio_status(output_status, input_status, announce=True))
+        audio_settings_button = Gtk.Button(label=_("Open Sound Settings"), halign=Gtk.Align.START)
+        audio_settings_button.connect("clicked", lambda *_: self.open_sound_settings())
         audio_guide_button = Gtk.Button(
             label=_("Open sound and microphone guide"), halign=Gtk.Align.START,
         )
         audio_guide_button.connect("clicked", lambda *_: self.open_sound_guide())
         audio_box.append(audio_refresh)
+        audio_box.append(audio_settings_button)
         audio_box.append(audio_guide_button)
         box.append(audio_box)
         self.refresh_audio_status(output_status, input_status)
@@ -741,6 +765,7 @@ class UbuntuStart(Adw.Application):
             _("The test looks up ubuntu.com using your configured DNS, pings your local gateway once, and reads its MAC address from the local neighbor table. DNS queries may be visible to your configured DNS provider; no diagnostic report is uploaded."),
             include_rows=False,
         )
+        self.network_diagnostics_box = diagnostic_box
         diagnostic_status = Gtk.Label(label="", xalign=0, wrap=True)
         self.last_network_diagnostics = None
         diagnostic_button = Gtk.Button(label=_("Test DNS and gateway"), halign=Gtk.Align.START)
@@ -822,6 +847,12 @@ class UbuntuStart(Adw.Application):
             if storage_percent >= 95:
                 warning_title = _("System filesystem is almost full") if location == "system" else _("Home folder filesystem is almost full")
                 self.row(storage_rows, warning_title, _("Remove files you no longer need or review large downloads. Ubuntu may need free space for updates. Avoid deleting system files."))
+            if storage.get("read_only") is True:
+                self.row(
+                    storage_rows,
+                    _("Filesystem is mounted read-only"),
+                    _("Ubuntu cannot write to this filesystem right now. If this is unexpected, restart the computer. If it remains read-only, use Ubuntu recovery options or ask a trusted support person before attempting repairs."),
+                )
         box.append(storage_box)
 
         battery_box, _battery_rows = self.page(
@@ -924,9 +955,234 @@ class UbuntuStart(Adw.Application):
         box.append(memory_box)
         self.refresh_memory_status(memory_refresh, memory_status, memory_rows)
 
+        benchmark_box, _benchmark_rows = self.page(
+            _("Performance benchmark"),
+            _("Run a single-threaded integer workload on one CPU thread and open Ubuntu tools for graphics and disk measurements. Results are not uploaded. The CPU score measures this app's workload only; compare it on the same computer with the same app version. Readiness checks are short-term indicators, not a diagnosis; unavailable readings are shown as unavailable."),
+            include_rows=False,
+        )
+        benchmark_status = Gtk.Label(label=_("Before testing: connect power, save work, close heavy apps and let the computer cool. Benchmarks can make the computer warm and use battery power."), xalign=0, wrap=True)
+        benchmark_results = Gtk.Label(label=_("No benchmark has run yet."), xalign=0, wrap=True)
+        previous_cpu_score = {"value": None}
+        previous_graphics_score = {"value": None}
+        precheck = Gtk.Button(label=_("Check benchmark readiness"), halign=Gtk.Align.START)
+        cpu_button = Gtk.Button(label=_("Run CPU benchmark"), halign=Gtk.Align.START)
+        graphics_button = Gtk.Button(label=_("Run graphics benchmark"), halign=Gtk.Align.START)
+        cancel_graphics_button = Gtk.Button(label=_("Cancel graphics benchmark"), halign=Gtk.Align.START)
+        cancel_graphics_button.set_sensitive(False)
+        graphics_run = {"process": None, "cancelled": False}
+        disk_button = Gtk.Button(label=_("Open disk read benchmark"), halign=Gtk.Align.START)
+        disk_help_button = Gtk.Button(label=_("Open GNOME disk benchmark guide"), halign=Gtk.Align.START)
+        disk_write_button = Gtk.Button(label=_("Open optional disk write benchmark…"), halign=Gtk.Align.START)
+
+        def readiness(*_args):
+            precheck.set_sensitive(False)
+            message = _("Checking benchmark readiness…")
+            benchmark_status.set_text(message)
+            self.announce_to_screen_reader(benchmark_status, message)
+
+            def read_status():
+                profile = read_power_profile()
+                pressure = read_resource_pressure()
+                battery = read_battery_status()
+                sensors = read_temperature_sensors()
+                GLib.idle_add(show_readiness, profile, pressure, battery, sensors)
+
+            threading.Thread(target=read_status, daemon=True).start()
+
+        def show_readiness(profile, pressure, battery, sensors):
+            precheck.set_sensitive(True)
+            notes = []
+            notes.append(_("Power profile: {profile}").format(profile=profile if profile != "unavailable" else _("not available")))
+            if battery_is_discharging(battery):
+                notes.append(_("The battery is discharging; connect AC power for a more comparable run."))
+            elif battery_power_status_unknown(battery):
+                notes.append(_("Battery power status is unknown; connect AC power for a more comparable run."))
+            cpu_busy = pressure_threshold_exceeded(pressure, "cpu", "some", 20)
+            if cpu_busy is True:
+                notes.append(_("CPU pressure is elevated right now; close busy apps and check again."))
+            elif cpu_busy is False:
+                notes.append(_("No high CPU pressure was detected in the recent sample."))
+            else:
+                notes.append(_("CPU pressure data is not available; readiness could not be checked."))
+            memory_full = pressure_threshold_exceeded(pressure, "memory", "full", 1)
+            memory_some = pressure_threshold_exceeded(pressure, "memory", "some", 20)
+            if memory_full is True or memory_some is True:
+                notes.append(_("Memory pressure is elevated; save work and close apps you recognize before benchmarking."))
+            elif memory_full is False and memory_some is False:
+                notes.append(_("No high memory pressure was detected in the recent sample."))
+            else:
+                notes.append(_("Memory pressure data is not available; readiness could not be checked."))
+            io_busy = pressure_threshold_exceeded(pressure, "io", "some", 10)
+            if io_busy is True:
+                notes.append(_("Storage I/O is busy; wait for file copies or updates to finish before measuring the disk."))
+            elif io_busy is False:
+                notes.append(_("No high storage I/O pressure was detected in the recent sample."))
+            else:
+                notes.append(_("Storage I/O pressure data is not available; readiness could not be checked."))
+            if profile == "power-saver":
+                notes.append(_("Power Saver can reduce performance. On AC power, review Power Settings and use Performance only if it is offered."))
+            if sensors:
+                hottest_sensor = max(sensors, key=lambda item: item["temperature_c"])
+                hottest = hottest_sensor["temperature_c"]
+                notes.append(_("Hottest exposed sensor: {temperature} °C; sensor meaning varies by device.").format(temperature=hottest))
+                if sensor_near_critical_limit(sensors):
+                    notes.append(_("This sensor is within 10 °C of its reported critical limit. Let the computer cool before benchmarking; the limit is device-specific."))
+            else:
+                notes.append(_("Temperature sensors are not available."))
+            message = "\n".join(notes)
+            benchmark_status.set_text(message)
+            self.announce_to_screen_reader(benchmark_status, message)
+            return GLib.SOURCE_REMOVE
+
+        def confirmed_cpu():
+            dialog = Adw.AlertDialog(heading=_("Run the CPU benchmark?"), body=_("This runs a one-second, single-threaded CPU workload. It can increase heat and battery use. Save work first; the result is a relative app-specific score, not a whole-system rating."))
+            dialog.add_response("cancel", _("Cancel"))
+            dialog.add_response("run", _("Run benchmark"))
+            dialog.set_default_response("run")
+            dialog.set_response_appearance("run", Adw.ResponseAppearance.SUGGESTED)
+            dialog.connect("response", lambda _dialog, response: start_cpu() if response == "run" else None)
+            dialog.present(self.get_active_window())
+
+        def start_cpu():
+            cpu_button.set_sensitive(False)
+            message = _("Running CPU benchmark…")
+            benchmark_results.set_text(message)
+            self.announce_to_screen_reader(benchmark_results, message)
+            def work():
+                result = run_cpu_benchmark()
+                GLib.idle_add(show_cpu, result)
+            threading.Thread(target=work, daemon=True).start()
+
+        def show_cpu(result):
+            cpu_button.set_sensitive(True)
+            score = result["iterations_per_second"]
+            previous = previous_cpu_score["value"]
+            change = benchmark_score_change_percent(score, previous) if previous else None
+            if change is not None:
+                message = _("Single-thread CPU: {score} iterations/second; {change} % since the previous run. Keep power and temperature conditions similar when comparing.").format(score=score, change=f"{change:+.1f}")
+            else:
+                message = _("Single-thread CPU baseline: {score} iterations/second ({duration} seconds). Run again after a change to compare.").format(score=score, duration=result["duration_seconds"])
+            previous_cpu_score["value"] = score
+            benchmark_results.set_text(message)
+            self.announce_to_screen_reader(benchmark_results, message)
+
+        def launch_graphics(*_args):
+            executable = find_graphics_benchmark_tool()
+            if not executable:
+                message = _("Graphics benchmark unavailable. Install the Ubuntu package glmark2 from your configured software sources or ask your administrator. Ubuntu Start will not install it.")
+                benchmark_results.set_text(message)
+                self.announce_to_screen_reader(benchmark_results, message)
+                return
+            dialog = Adw.AlertDialog(heading=_("Run the graphics benchmark?"), body=_("This opens glmark2 and renders a graphics workload. It can make the computer warm and use battery power. The result depends on the graphics driver, display and desktop session."))
+            dialog.add_response("cancel", _("Cancel"))
+            dialog.add_response("run", _("Run benchmark"))
+            dialog.set_default_response("run")
+            dialog.connect("response", lambda _dialog, response: run_graphics(executable) if response == "run" else None)
+            dialog.present(self.get_active_window())
+
+        def run_graphics(executable):
+            graphics_button.set_sensitive(False)
+            graphics_run["cancelled"] = False
+            message = _("Running graphics benchmark…")
+            benchmark_results.set_text(message)
+            self.announce_to_screen_reader(benchmark_results, message)
+            try:
+                process = Gio.Subprocess.new(
+                    [executable],
+                    Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_MERGE,
+                )
+                graphics_run["process"] = process
+                cancel_graphics_button.set_sensitive(True)
+                process.communicate_utf8_async(None, None, graphics_finished, None)
+            except GLib.Error:
+                graphics_button.set_sensitive(True)
+                message = _("Could not start the graphics benchmark.")
+                benchmark_results.set_text(message)
+                self.announce_to_screen_reader(benchmark_results, message)
+
+        def cancel_graphics(*_args):
+            process = graphics_run["process"]
+            if process is None:
+                return
+            graphics_run["cancelled"] = True
+            cancel_graphics_button.set_sensitive(False)
+            message = _("Stopping graphics benchmark…")
+            benchmark_results.set_text(message)
+            self.announce_to_screen_reader(benchmark_results, message)
+            process.force_exit()
+
+        def graphics_finished(process, async_result, _user_data):
+            graphics_button.set_sensitive(True)
+            cancel_graphics_button.set_sensitive(False)
+            graphics_run["process"] = None
+            try:
+                completed, output, _stderr = process.communicate_utf8_finish(async_result)
+            except GLib.Error:
+                completed, output = False, ""
+            if graphics_run["cancelled"]:
+                message = _("Graphics benchmark was cancelled.")
+                graphics_run["cancelled"] = False
+            elif not completed or not process.get_successful():
+                message = _("Graphics benchmark did not complete successfully.")
+            else:
+                score = parse_glmark2_score(output or "")
+                if score is None:
+                    message = _("Could not read the glmark2 score from its output.")
+                else:
+                    previous = previous_graphics_score["value"]
+                    change = benchmark_score_change_percent(score, previous) if previous else None
+                    if change is None:
+                        message = _("Graphics baseline: {score}. Run again later to compare with the same settings.").format(score=score)
+                    else:
+                        message = _("Graphics score: {score}; {change} % since the previous run. Keep the display, driver and session the same when comparing.").format(score=score, change=f"{change:+.1f}")
+                    previous_graphics_score["value"] = score
+            benchmark_results.set_text(message)
+            self.announce_to_screen_reader(benchmark_results, message)
+
+        def launch_disk(*_args):
+            executable = find_benchmark_tool("gnome-disks")
+            if not executable:
+                message = _("GNOME Disks is not installed. The Ubuntu package is gnome-disk-utility; install it from your configured software sources or ask your administrator. Ubuntu Start will not install it.")
+                benchmark_results.set_text(message)
+                self.announce_to_screen_reader(benchmark_results, message)
+                return
+            self.open_app(executable)
+            message = _("In Disks, select a drive, open its menu and choose Benchmark… Use the read-only benchmark first. It may take several minutes.")
+            benchmark_results.set_text(message)
+            self.announce_to_screen_reader(benchmark_results, message)
+
+        def launch_write(*_args):
+            executable = find_benchmark_tool("gnome-disks")
+            if not executable:
+                message = _("GNOME Disks is not installed. The Ubuntu package is gnome-disk-utility; install it from your configured software sources or ask your administrator. Ubuntu Start will not install it.")
+                benchmark_results.set_text(message)
+                self.announce_to_screen_reader(benchmark_results, message)
+                return
+            dialog = Adw.AlertDialog(heading=_("Open the optional disk write benchmark?"), body=_("A write benchmark writes data to the selected drive and may require administrator approval. Use it only if you understand the risk and have a current backup. The app does not run or authorize the write test."))
+            dialog.add_response("cancel", _("Cancel"))
+            dialog.add_response("open", _("Open Disks"))
+            dialog.set_default_response("cancel")
+            dialog.connect("response", lambda _dialog, response: self.open_app(executable) if response == "open" else None)
+            dialog.present(self.get_active_window())
+
+        precheck.connect("clicked", readiness)
+        cpu_button.connect("clicked", lambda *_: confirmed_cpu())
+        graphics_button.connect("clicked", launch_graphics)
+        cancel_graphics_button.connect("clicked", cancel_graphics)
+        disk_button.connect("clicked", launch_disk)
+        disk_help_button.connect("clicked", lambda *_: self.confirm_external_link(
+            "https://help.gnome.org/gnome-help/disk-benchmark.html",
+            _("Open GNOME disk benchmark guide?"),
+            _("This opens GNOME's online guide to disk tests and results in your browser. The website receives a normal web request and can see your IP address."),
+        ))
+        disk_write_button.connect("clicked", launch_write)
+        for widget in (precheck, cpu_button, graphics_button, cancel_graphics_button, disk_button, disk_help_button, disk_write_button, benchmark_status, benchmark_results):
+            benchmark_box.append(widget)
+        box.append(benchmark_box)
+
         pressure_box, _pressure_rows = self.page(
             _("System resource pressure"),
-            _("Linux reports how often at least one task was waiting for CPU time, memory or storage I/O during the last 10 seconds. These system-wide readings do not identify a process or prove the cause of a slowdown."),
+            _("Linux reports how often at least one task was waiting for CPU time, memory or storage I/O during the last 10 seconds. Memory and storage may also report periods when all non-idle tasks were stalled at once. These system-wide readings do not identify a process or prove the cause of a slowdown."),
             include_rows=False,
         )
         pressure_status = Gtk.Label(label="", xalign=0, wrap=True)
@@ -1109,6 +1365,9 @@ class UbuntuStart(Adw.Application):
     def open_sound_guide(self):
         self.open_device_guide(_("Sound and microphones"))
 
+    def open_sound_settings(self):
+        self.open_app("gnome-control-center", "sound")
+
     def open_time_guide(self):
         guide_index = next(
             index for index, (title, _target, _action, _steps) in enumerate(SYSTEM_GUIDES)
@@ -1208,6 +1467,10 @@ class UbuntuStart(Adw.Application):
         lines = []
         if result.get("dns_latency_ms") is not None:
             lines.append(_("DNS lookup: {ms} ms").format(ms=format_milliseconds(result["dns_latency_ms"])))
+        elif result.get("dns_test_duration_ms") is not None:
+            lines.append(_("DNS lookup failed after {ms} ms. Check DNS settings or the network connection.").format(
+                ms=format_milliseconds(result["dns_test_duration_ms"]),
+            ))
         else:
             lines.append(_("DNS lookup failed. Check DNS settings or the network connection."))
         gateway = result.get("gateway")
@@ -1728,6 +1991,18 @@ class UbuntuStart(Adw.Application):
                 )
                 self.row(pressure_rows, label, value)
                 details.append(f"{label}: {value}")
+                full_percentage = status.get(resource, {}).get("full")
+                if resource in {"memory", "io"} and full_percentage is not None:
+                    full_label = (
+                        _("All tasks waiting on memory")
+                        if resource == "memory"
+                        else _("All tasks waiting on storage I/O")
+                    )
+                    full_value = _("{percent:.1f}% in the last 10 seconds").format(
+                        percent=full_percentage,
+                    )
+                    self.row(pressure_rows, full_label, full_value)
+                    details.append(f"{full_label}: {full_value}")
             message = _("System pressure updated: {details}").format(details="; ".join(details))
 
         status_label.set_text(message)
@@ -1934,7 +2209,11 @@ class UbuntuStart(Adw.Application):
         for row, key in ((output_row, "output"), (input_row, "input")):
             reading = status.get(key)
             if not isinstance(reading, tuple):
-                message = unavailable if error else _("No default device is available")
+                message = (
+                    f"{unavailable}. " + _("Open Sound Settings to choose a default device.")
+                    if error else
+                    _("No default device is available. Open Sound Settings to choose a default device.")
+                )
                 row.set_subtitle(message)
                 announcements.append(f"{row.get_title()}: {message}")
                 continue
@@ -1942,6 +2221,14 @@ class UbuntuStart(Adw.Application):
             state = _("Muted") if muted else _("Not muted")
             name = status.get(f"{key}_name")
             volume_state = _("{percent}% · {state}").format(percent=percent, state=state)
+            if muted:
+                volume_state += " · " + _("Open Sound Settings to unmute this device.")
+            elif percent == 0:
+                volume_state += " · " + (
+                    _("Raise the output volume in Sound Settings.")
+                    if key == "output" else
+                    _("Raise the input volume in Sound Settings.")
+                )
             message = f"{name} · {volume_state}" if isinstance(name, str) and name else volume_state
             row.set_subtitle(message)
             announcements.append(f"{row.get_title()}: {message}")
@@ -2465,6 +2752,13 @@ GUIDES.extend([
         (_("Compare another device or service"), _("Try another device on the same Wi-Fi and another app or website. If several devices have trouble, check the router or ask your internet provider. If only this computer is affected, check its adapter and Ubuntu updates.")),
         (_("Look for nearby channel overlap"), _("The WiFi Analyzer recommendation on the Network and hardware page can help you review nearby signal levels and channel use. It opens an external project page after confirmation; ask the network owner before changing router settings.")),
         (_("Keep private details out of support requests"), _("Share the adapter model, hardware ID and driver if you need help. Do not share the Wi-Fi password or private network details.")),
+    ]),
+    (_("Wi-Fi is connected but the internet does not work"), "network", [
+        (_("Check whether the problem affects other devices"), _("Try another device on the same network and try a different website or app. If several devices are affected, check the router or contact the internet provider.")),
+        (_("Look for a network sign-in page"), _("Public Wi-Fi in places such as hotels, libraries and airports may require a sign-in page, sometimes called a captive portal. Open a browser and follow the network's instructions only if you expected this page. Do not ignore certificate warnings or enter sensitive account details on an unfamiliar page.")),
+        (_("Check the VPN if you use one"), _("A VPN or managed work or school policy can affect internet access. Check its status and ask your administrator for help; do not bypass your organization's VPN or security policy.")),
+        (_("Run the optional connection checks"), _("On the Network and hardware page, you can choose Test DNS and gateway or Test internet connection. Each test asks first and shows its duration. DNS uses your configured resolver, gateway ping stays on the local network, and the internet test contacts ubuntu.com.")),
+        (_("Review network settings"), _("Open Network Settings and check that the expected Wi-Fi or wired connection is active. Avoid changing proxy, DNS or manual IP settings unless your network administrator or provider gives you the correct values.")),
     ]),
 ])
 
