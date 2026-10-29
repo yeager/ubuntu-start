@@ -6,6 +6,7 @@ import ipaddress
 import json
 import math
 import platform
+from importlib import metadata
 from pathlib import Path
 import re
 import shutil
@@ -1204,6 +1205,23 @@ _BENCHMARK_METHODS = {
 }
 
 
+def get_application_version(project_file: str | Path | None = None) -> str:
+    """Return the installed version, or read it from the source checkout."""
+    if project_file is None:
+        project_file = Path(__file__).resolve().parent.parent / "pyproject.toml"
+        if not Path(project_file).is_file():
+            try:
+                return metadata.version("ubuntu-start")
+            except metadata.PackageNotFoundError:
+                return "unknown"
+    try:
+        contents = Path(project_file).read_text(encoding="utf-8")
+    except OSError:
+        return "unknown"
+    match = re.search(r'(?m)^version\s*=\s*"([^"\n]+)"\s*$', contents)
+    return match.group(1) if match else "unknown"
+
+
 def _benchmark_state_path(path: str | Path | None = None) -> Path:
     if path is not None:
         return Path(path)
@@ -1216,6 +1234,7 @@ def _benchmark_state_path(path: str | Path | None = None) -> Path:
 def load_benchmark_baselines(
     path: str | Path | None = None,
     session_type: str | None = None,
+    app_version: str | None = None,
 ) -> dict[str, dict[str, float | str]]:
     """Load compatible benchmark baselines from the user's private state directory."""
     try:
@@ -1223,17 +1242,23 @@ def load_benchmark_baselines(
             payload = json.load(handle)
     except (OSError, json.JSONDecodeError, TypeError):
         return {}
-    if not isinstance(payload, dict) or payload.get("schema_version") != 1:
+    if not isinstance(payload, dict) or payload.get("schema_version") != 2:
         return {}
     entries = payload.get("baselines")
     if not isinstance(entries, dict):
         return {}
     current_session = (session_type or os.environ.get("XDG_SESSION_TYPE", "unknown")).casefold()
+    current_version = app_version or get_application_version()
 
     baselines: dict[str, dict[str, float | str]] = {}
     for kind, method in _BENCHMARK_METHODS.items():
         entry = entries.get(kind)
         if not isinstance(entry, dict) or entry.get("method") != method:
+            continue
+        recorded_version = entry.get("app_version")
+        if not isinstance(recorded_version, str) or (
+            current_version != "*" and recorded_version != current_version
+        ):
             continue
         score = entry.get("score")
         if isinstance(score, bool) or not isinstance(score, (int, float)):
@@ -1249,6 +1274,7 @@ def load_benchmark_baselines(
         baseline: dict[str, float | str] = {
             "score": float(score),
             "method": method,
+            "app_version": recorded_version,
         }
         recorded_at = entry.get("recorded_at")
         if isinstance(recorded_at, str):
@@ -1275,6 +1301,7 @@ def save_benchmark_baseline(
     path: str | Path | None = None,
     recorded_at: str | None = None,
     session_type: str | None = None,
+    app_version: str | None = None,
 ) -> bool:
     """Atomically save one score locally, with a restrictive file mode."""
     method = _BENCHMARK_METHODS.get(kind)
@@ -1286,6 +1313,7 @@ def save_benchmark_baseline(
     baseline: dict[str, float | str] = {
         "score": float(score),
         "method": method,
+        "app_version": app_version or get_application_version(),
         "recorded_at": recorded_at or datetime.now(timezone.utc).isoformat(timespec="seconds"),
     }
     if kind == "graphics":
@@ -1303,7 +1331,11 @@ def save_benchmark_baseline(
         baseline["duration_seconds"] = float(duration_seconds)
 
     destination = _benchmark_state_path(path)
-    baselines = load_benchmark_baselines(destination, session_type="*")
+    baselines = load_benchmark_baselines(
+        destination,
+        session_type="*",
+        app_version=str(baseline["app_version"]),
+    )
     baselines[kind] = baseline
     temporary_path = None
     descriptor = None
@@ -1314,7 +1346,7 @@ def save_benchmark_baseline(
         handle = os.fdopen(descriptor, "w", encoding="utf-8")
         descriptor = None
         with handle:
-            json.dump({"schema_version": 1, "baselines": baselines}, handle, indent=2)
+            json.dump({"schema_version": 2, "baselines": baselines}, handle, indent=2)
             handle.write("\n")
             handle.flush()
             os.fsync(handle.fileno())
