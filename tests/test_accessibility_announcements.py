@@ -683,10 +683,26 @@ class SystemGuideTests(unittest.TestCase):
 
         app.confirm_external_link.assert_called_once_with(
             "https://help.ubuntu.com/stable/ubuntu-help/backup-why.html.en",
-            "Open Ubuntu backup help?",
-            "This opens Ubuntu’s backup documentation in your browser. The website will receive a normal web request and can see your IP address.",
+            "Open Ubuntu help?",
+            "This opens Ubuntu Desktop documentation in your browser. The website will receive a normal web request and can see your IP address.",
         )
         app.open_uri.assert_not_called()
+
+    def test_vpn_guide_opens_network_settings_and_protects_credentials(self):
+        guide = next(guide for guide in SYSTEM_GUIDES if guide[0] == "Connect to a VPN")
+        _title, target, action, steps = guide
+        step_text = " ".join(f"{step} {description}" for step, description in steps)
+
+        self.assertEqual(target, ("settings", "network"))
+        self.assertEqual(action, "Open Network Settings")
+        self.assertIn("Never share passwords", step_text)
+        self.assertIn("private keys", step_text)
+        self.assertIn("does not make all online activity anonymous", step_text)
+
+        app = Mock()
+        UbuntuStart.open_target(app, target)
+
+        app.open_app.assert_called_once_with("gnome-control-center", "network")
 
     @patch("ubuntu_start.GLib.timeout_add")
     def test_storage_guide_opens_and_schedules_the_storage_overview(self, timeout_add):

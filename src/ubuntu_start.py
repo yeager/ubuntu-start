@@ -125,6 +125,11 @@ SYSTEM_GUIDES = [
         (_("Enter the password"), _("Type the network password when Ubuntu asks, then select Connect. Never share the password in a support request.")),
         (_("Check the connection"), _("Wait for the Wi-Fi icon to settle. If it disconnects, move closer to the router and check the password.")),
     ]),
+    (_("Connect to a VPN"), ("settings", "network"), _("Open Network Settings"), [
+        (_("Get the connection details"), _("Ask your VPN provider or work or school administrator for the connection type and setup details. Never share passwords, private keys or VPN configuration files in a support request.")),
+        (_("Add the VPN in Network Settings"), _("Open Network Settings and look for the VPN section. Choose + if it is available. If your connection type is not listed, ask the provider or administrator which trusted Ubuntu component is required.")),
+        (_("Connect and check the status"), _("Select the saved VPN from the system menu and choose Connect. If it fails, check your internet connection, device clock and setup details. A VPN does not make all online activity anonymous.")),
+    ]),
     (_("Connect with an Ethernet cable"), ("settings", "network"), _("Open Network Settings"), [
         (_("Connect the cable"), _("Plug one end into the computer and the other into a router, switch or active wall socket.")),
         (_("Wait for Ubuntu"), _("A wired connection is usually configured automatically. The network menu shows when it is ready.")),
@@ -390,8 +395,8 @@ class UbuntuStart(Adw.Application):
         elif kind == "external":
             self.confirm_external_link(
                 value,
-                _("Open Ubuntu backup help?"),
-                _("This opens Ubuntu’s backup documentation in your browser. The website will receive a normal web request and can see your IP address."),
+                _("Open Ubuntu help?"),
+                _("This opens Ubuntu Desktop documentation in your browser. The website will receive a normal web request and can see your IP address."),
             )
         elif kind == "overview" and value == "storage":
             self.main_stack.set_visible_child_name(_("Network and hardware"))
