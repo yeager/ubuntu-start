@@ -717,7 +717,13 @@ def read_hardware_details(
 
     memory_kib = parse_memory_kib(meminfo)
     memory = f"{round(memory_kib / 1_048_576)} GiB" if memory_kib is not None else None
+    try:
+        operating_system = platform.freedesktop_os_release().get("PRETTY_NAME")
+    except (AttributeError, OSError):
+        operating_system = None
     return {
+        "operating_system": operating_system,
+        "kernel": platform.release(),
         "system_model": product,
         "processor": parse_cpu_model(cpuinfo),
         "memory": memory,

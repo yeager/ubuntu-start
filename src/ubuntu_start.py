@@ -757,6 +757,8 @@ class UbuntuStart(Adw.Application):
         )
         hardware = read_hardware_details()
         values = [
+            (_("Operating system"), hardware["operating_system"]),
+            (_("Kernel"), hardware["kernel"]),
             (_("System model"), hardware["system_model"]),
             (_("Processor"), hardware["processor"]),
             (_("Memory"), hardware["memory"]),

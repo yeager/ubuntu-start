@@ -500,6 +500,17 @@ class AudioStatusTests(unittest.TestCase):
 
 
 class ParseHardwareTests(unittest.TestCase):
+    @patch("system_diagnostics.platform.release", return_value="6.14.0-test")
+    @patch("system_diagnostics.platform.freedesktop_os_release", return_value={"PRETTY_NAME": "Ubuntu test"})
+    def test_hardware_overview_includes_os_and_kernel_versions(self, _os_release, _release):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            result = read_hardware_details(
+                root / "cpuinfo", root / "meminfo", root / "sys", pci_databases=(),
+            )
+        self.assertEqual(result["operating_system"], "Ubuntu test")
+        self.assertEqual(result["kernel"], "6.14.0-test")
+
     def test_parses_pressure_stall_average_percentages(self):
         output = "some avg10=12.34 avg60=2.00 avg300=0.10 total=100\nfull avg10=1.5 avg60=0.2 avg300=0.0 total=10\n"
         self.assertEqual(parse_pressure_status(output), {"some": 12.34, "full": 1.5})
