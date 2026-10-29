@@ -27,7 +27,9 @@ from system_diagnostics import (
     lookup_pci_device_name,
     read_audio_status,
     read_accessibility_settings,
+    parse_apt_upgrade_simulation,
     read_battery_status,
+    read_apt_update_status,
     read_power_profile,
     read_bluetooth_status,
     read_hardware_details,
@@ -616,6 +618,32 @@ class VideoDeviceTests(unittest.TestCase):
 
 
 class LocalDiagnosticsTests(unittest.TestCase):
+    def test_parses_upgrade_and_held_back_counts_from_apt_simulation(self):
+        output = """NOTE: This is only a simulation!
+Inst package-one [1.0] (1.1 repo [amd64])
+Inst package-two [2.0] (2.1 repo [amd64])
+2 upgraded, 0 newly installed, 0 to remove and 3 not upgraded.
+"""
+        self.assertEqual(parse_apt_upgrade_simulation(output), (2, 3))
+
+    def test_apt_simulation_parser_rejects_unexpected_output(self):
+        self.assertIsNone(parse_apt_upgrade_simulation("Listing...\n"))
+
+    @patch("system_diagnostics.Path.stat")
+    @patch("system_diagnostics._run_local")
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/apt-get")
+    def test_reads_apt_update_status_using_offline_simulation(self, _which, run_local, stat):
+        run_local.return_value = SimpleNamespace(
+            returncode=0,
+            stdout="Inst package-one [1.0] (1.1 repo [amd64])\n1 upgraded, 0 newly installed, 0 to remove and 2 not upgraded.\n",
+        )
+        stat.return_value = SimpleNamespace(st_mtime_ns=1_234_000_000)
+        status, error = read_apt_update_status(update_stamp="/tmp/update-stamp")
+        self.assertIsNone(error)
+        self.assertEqual(status, {"upgradeable": 1, "held_back": 2, "last_updated": 1})
+        self.assertEqual(run_local.call_args.args[:2], (["/usr/bin/apt-get", "-s", "upgrade"], 15.0))
+        self.assertEqual(run_local.call_args.kwargs["env"]["LC_ALL"], "C")
+
     def test_reads_storage_capacity(self):
         result = read_storage_status("/")
         self.assertGreater(result["total"], 0)

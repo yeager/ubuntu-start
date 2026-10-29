@@ -692,6 +692,40 @@ def read_power_profile(timeout: float = 2.0) -> str:
     return profile if profile in {"power-saver", "balanced", "performance"} else "unavailable"
 
 
+def parse_apt_upgrade_simulation(output: str) -> tuple[int, int] | None:
+    """Return upgradeable and held-back package counts from `apt-get -s upgrade`."""
+    if not isinstance(output, str) or not output.strip():
+        return None
+    upgrade_count = sum(1 for line in output.splitlines() if line.startswith("Inst "))
+    summary = re.search(r"\b(\d+) not upgraded\.", output)
+    if not summary:
+        return None
+    return upgrade_count, int(summary.group(1))
+
+
+def read_apt_update_status(
+    timeout: float = 15.0,
+    update_stamp: str | Path = "/var/lib/apt/periodic/update-success-stamp",
+) -> tuple[dict[str, int | None] | None, str | None]:
+    """Simulate an APT upgrade against cached indexes; never refresh or install packages."""
+    apt_get = shutil.which("apt-get")
+    if not apt_get:
+        return None, "not-installed"
+    result = _run_local([apt_get, "-s", "upgrade"], timeout, env={**os.environ, "LC_ALL": "C"})
+    if result is None:
+        return None, "timeout"
+    if result.returncode != 0:
+        return None, "unavailable"
+    counts = parse_apt_upgrade_simulation(result.stdout)
+    if counts is None:
+        return None, "unavailable"
+    try:
+        last_updated = Path(update_stamp).stat().st_mtime_ns // 1_000_000_000
+    except OSError:
+        last_updated = None
+    return {"upgradeable": counts[0], "held_back": counts[1], "last_updated": last_updated}, None
+
+
 def check_internet_connection(timeout: float = 5.0) -> str:
     """Make a small HTTPS request to Ubuntu; call only after explicit user consent."""
     request = urllib.request.Request("https://ubuntu.com/", method="HEAD", headers={"User-Agent": "Ubuntu-Start-connectivity-check"})
@@ -759,9 +793,11 @@ def lookup_oui_vendor(mac: str | None, databases: tuple[str, ...] = (
     return None
 
 
-def _run_local(command: list[str], timeout: float = 3.0) -> subprocess.CompletedProcess[str] | None:
+def _run_local(
+    command: list[str], timeout: float = 3.0, env: dict[str, str] | None = None,
+) -> subprocess.CompletedProcess[str] | None:
     try:
-        return subprocess.run(command, capture_output=True, text=True, check=False, timeout=timeout)
+        return subprocess.run(command, capture_output=True, text=True, check=False, timeout=timeout, env=env)
     except (OSError, subprocess.TimeoutExpired):
         return None
 

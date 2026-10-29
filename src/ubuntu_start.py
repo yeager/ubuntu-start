@@ -12,7 +12,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_interface_ip_status, read_network_devices, read_power_profile, read_printer_status, read_storage_locations, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
+from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_interface_ip_status, read_network_devices, read_power_profile, read_printer_status, read_storage_locations, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -657,6 +657,29 @@ class UbuntuStart(Adw.Application):
         internet_box.append(internet_status)
         box.append(internet_box)
 
+        updates_box, _updates_rows = self.page(
+            _("Ubuntu update status"),
+            _("Simulate an upgrade using local APT package lists only. This check does not contact a network, refresh package lists, install packages or make system changes."),
+            include_rows=False,
+        )
+        updates_status = Gtk.Label(label="", xalign=0, wrap=True)
+        updates_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        updates_refresh = Gtk.Button(label=_("Check cached update status"), halign=Gtk.Align.START)
+        updates_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_apt_update_status(
+                updates_refresh, updates_status, updates_rows, announce=True,
+            ),
+        )
+        updates_open = Gtk.Button(label=_("Open Software Updater"), halign=Gtk.Align.START)
+        updates_open.connect("clicked", lambda *_: self.open_app("update-manager"))
+        updates_box.append(updates_refresh)
+        updates_box.append(updates_open)
+        updates_box.append(updates_status)
+        updates_box.append(updates_rows)
+        box.append(updates_box)
+        self.refresh_apt_update_status(updates_refresh, updates_status, updates_rows)
+
         storage_locations = read_storage_locations()
         storage_box, storage_rows = self.page(
             _("Storage"),
@@ -1145,6 +1168,55 @@ class UbuntuStart(Adw.Application):
             )
 
         threading.Thread(target=read_status, daemon=True).start()
+
+    def refresh_apt_update_status(self, button, status_label, update_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking cached package update status…"))
+
+        def read_status():
+            status, error = read_apt_update_status()
+            GLib.idle_add(
+                self.show_apt_update_status, button, status_label, update_rows,
+                status, error, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_apt_update_status(self, button, status_label, update_rows, status, error, announce=False):
+        button.set_sensitive(True)
+        while (child := update_rows.get_first_child()) is not None:
+            update_rows.remove(child)
+
+        error_messages = {
+            "not-installed": _("APT package tools are not available."),
+            "timeout": _("The local package check took too long. Try again later."),
+            "unavailable": _("Could not read update status from the local package lists."),
+        }
+        if error or not status:
+            message = error_messages.get(error, error_messages["unavailable"])
+        else:
+            self.row(
+                update_rows,
+                _("Packages ready to upgrade"),
+                str(status["upgradeable"]),
+            )
+            self.row(
+                update_rows,
+                _("Packages kept back"),
+                str(status["held_back"]),
+            )
+            last_updated = status.get("last_updated")
+            if last_updated is None:
+                updated_text = _("Not available")
+            else:
+                updated_text = GLib.DateTime.new_from_unix_local(last_updated).format("%x %H:%M")
+            self.row(update_rows, _("Package lists last updated"), updated_text)
+            message = _("Local package update check complete. No packages were changed.")
+
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
 
     def show_battery_status(self, button, status_label, battery_rows, batteries, announce=False, power_profile="unavailable"):
         button.set_sensitive(True)

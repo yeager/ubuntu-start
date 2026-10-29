@@ -37,6 +37,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contributor guidance and the maintain
 - Accessibility guides explain larger text, zoom, screen reading, the on-screen keyboard, typing assistance and visual sound alerts, with plain-language steps before each change.
 - A read-only accessibility summary shows GNOME screen reader, magnifier, on-screen keyboard, high contrast, Sticky Keys, Slow Keys, Bounce Keys, visual sound alerts, text scaling and pointer size settings when available. It never changes them.
 - A read-only date and time summary shows the local time zone, automatic time synchronization setting and whether the clock is synchronized. It reads `timedatectl` status only; it does not contact a time server, start synchronization or change settings.
+- A local Ubuntu update check simulates `apt-get upgrade` against cached package lists. It reports packages ready to upgrade, packages held back and when the lists were last refreshed, then lets the user open Software Updater. It does not contact a network, refresh lists or install anything.
 - A beginner-friendly Terminal guide explains the prompt, command output and errors, `pwd`, `ls`, `cd`, paths with spaces, Tab completion, command history, `--help`, `man`, `sudo` and safe ways to stop a command.
 - Optional connection diagnostics report DNS lookup and gateway ping latency in milliseconds, plus the gateway MAC address and a local OUI vendor match. The test asks before running; it sends one DNS lookup to the configured resolver and one ping to the local gateway.
 - DNS and gateway results include clear next steps when checks fail, while explaining that some gateways block ping.
@@ -106,7 +107,7 @@ See [po/README.md](po/README.md) for instructions on updating Swedish translatio
 
 ## Current limitations
 
-Ubuntu Start targets Ubuntu Desktop with GNOME. Device guides explain checks for the user to perform; they do not identify physical faults or change the system. Network diagnostics ask first, make one DNS lookup for `ubuntu.com` and one ping to the local gateway, and do not upload a report. The app does not install packages, drivers or run privileged operations; changes remain in Ubuntu's own tools. GNOME panel names and the Additional Drivers launcher can vary by Ubuntu release. If a shortcut does not open the expected page, open Settings and choose the section manually. For drivers, search for Software & Updates and select Additional Drivers.
+Ubuntu Start targets Ubuntu Desktop with GNOME. Device guides explain checks for the user to perform; they do not identify physical faults or change the system. Network diagnostics ask first, make one DNS lookup for `ubuntu.com` and one ping to the local gateway, and do not upload a report. The update status check uses only existing APT package lists, so its results can be out of date; open Software Updater to refresh the lists and review changes. The app does not install packages, drivers or run privileged operations; changes remain in Ubuntu's own tools. GNOME panel names and the Additional Drivers launcher can vary by Ubuntu release. If a shortcut does not open the expected page, open Settings and choose the section manually. For drivers, search for Software & Updates and select Additional Drivers.
 
 
 ## Releases

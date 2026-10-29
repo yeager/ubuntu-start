@@ -5,6 +5,44 @@ from ubuntu_start import Adw, Gdk, GLib, Gtk, GUIDES, UbuntuStart
 
 
 class AccessibilityAnnouncementTests(unittest.TestCase):
+    def test_manual_apt_update_check_announces_cached_results(self):
+        button = Mock()
+        status_label = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+
+        UbuntuStart.show_apt_update_status(
+            self.app, button, status_label, rows,
+            {"upgradeable": 4, "held_back": 2, "last_updated": None}, None,
+            announce=True,
+        )
+
+        button.set_sensitive.assert_called_once_with(True)
+        self.app.row.assert_any_call(rows, "Packages ready to upgrade", "4")
+        self.app.row.assert_any_call(rows, "Packages kept back", "2")
+        self.app.row.assert_any_call(rows, "Package lists last updated", "Not available")
+        status_label.set_text.assert_called_once_with(
+            "Local package update check complete. No packages were changed.",
+        )
+        self.app.announce_to_screen_reader.assert_called_once_with(
+            status_label, "Local package update check complete. No packages were changed.",
+        )
+
+    def test_background_apt_update_check_does_not_announce(self):
+        button = Mock()
+        status_label = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+
+        UbuntuStart.show_apt_update_status(
+            self.app, button, status_label, rows, None, "timeout",
+        )
+
+        status_label.set_text.assert_called_once_with(
+            "The local package check took too long. Try again later.",
+        )
+        self.app.announce_to_screen_reader.assert_not_called()
+
     def setUp(self):
         self.app = Mock()
 
