@@ -1013,6 +1013,13 @@ class DriverGuideTests(unittest.TestCase):
 
 
 class SystemGuideTests(unittest.TestCase):
+    def test_accessibility_settings_target_opens_gnome_control_center(self):
+        app = Mock()
+
+        UbuntuStart.open_target(app, ("settings", "universal-access"))
+
+        app.open_app.assert_called_once_with("gnome-control-center", "universal-access")
+
     def test_backup_guide_covers_destination_encryption_and_restore_verification(self):
         guide = next(
             guide for guide in SYSTEM_GUIDES if guide[0] == "Set up backups"

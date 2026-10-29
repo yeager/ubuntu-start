@@ -353,6 +353,10 @@ class UbuntuStart(Adw.Application):
         self.accessibility_box = accessibility_box
         accessibility_status = Gtk.Label(label="", xalign=0, wrap=True)
         accessibility_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        accessibility_settings = Gtk.Button(label=_("Open Accessibility Settings"), halign=Gtk.Align.START)
+        accessibility_settings.connect(
+            "clicked", lambda *_: self.open_target(("settings", "universal-access")),
+        )
         accessibility_refresh = Gtk.Button(label=_("Refresh accessibility status"), halign=Gtk.Align.START)
         accessibility_refresh.connect(
             "clicked",
@@ -360,6 +364,7 @@ class UbuntuStart(Adw.Application):
                 accessibility_refresh, accessibility_status, accessibility_rows, announce=True,
             ),
         )
+        accessibility_box.append(accessibility_settings)
         accessibility_box.append(accessibility_refresh)
         accessibility_box.append(accessibility_status)
         accessibility_box.append(accessibility_rows)

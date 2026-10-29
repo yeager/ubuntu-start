@@ -157,6 +157,23 @@ def main() -> int:
                     if mouse_keys_status is None:
                         missing.append("Mouse Keys status row on Get started")
 
+                    settings_deadline = time.monotonic() + 5
+                    accessibility_settings_button = None
+                    while time.monotonic() < settings_deadline:
+                        entries = accessible_tree(app)
+                        accessibility_settings_button = next(
+                            (
+                                node for role, name, node in entries
+                                if role in BUTTON_ROLES and name == "Open Accessibility Settings"
+                            ),
+                            None,
+                        )
+                        if accessibility_settings_button:
+                            break
+                        time.sleep(0.25)
+                    if accessibility_settings_button is None:
+                        missing.append("button: Open Accessibility Settings on Get started")
+
                     time_guide_deadline = time.monotonic() + 5
                     time_guide_button = None
                     while time.monotonic() < time_guide_deadline:
@@ -376,7 +393,7 @@ def main() -> int:
                 )
                 if search_entry and search_entry.get_state_set().contains(Atspi.StateType.FOCUSED):
                     print(
-                        "AT-SPI verified guide names, About, Mouse Keys, USB, PCI, Bluetooth, wireless-radio, Wi-Fi, sound, battery, date/time, video, displays, printer queue guide, memory, system-pressure, service-status, temperature, package-health and Secure Boot controls, and the labeled search entry; "
+                        "AT-SPI verified guide names, About, Mouse Keys, Accessibility Settings, USB, PCI, Bluetooth, wireless-radio, Wi-Fi, sound, battery, date/time, video, displays, printer queue guide, memory, system-pressure, service-status, temperature, package-health and Secure Boot controls, and the labeled search entry; "
                         "Ctrl+F moved focus to search."
                     )
                     return 0
@@ -389,7 +406,7 @@ def main() -> int:
         observed_controls = [
             (role, name)
             for role, name, _node in entries
-            if name in {"About", "Mouse Keys", "Refresh USB device list", "Refresh PCI device list", "Open Bluetooth pairing guide", "Open date and time guide", "Refresh radio status", "Open Wi-Fi troubleshooting guide", "Open sound and microphone guide", "Open battery and charging guide", "Refresh video device status", "Open camera guide", "Refresh display status", "Open external display guide", "Refresh printer status", "Open print queue guide", "Refresh memory status", "Refresh system pressure", "Refresh system service status", "Refresh temperature status", "Check package health", "Check Secure Boot status", "Search all guides and steps"}
+            if name in {"About", "Mouse Keys", "Open Accessibility Settings", "Refresh USB device list", "Refresh PCI device list", "Open Bluetooth pairing guide", "Open date and time guide", "Refresh radio status", "Open Wi-Fi troubleshooting guide", "Open sound and microphone guide", "Open battery and charging guide", "Refresh video device status", "Open camera guide", "Refresh display status", "Open external display guide", "Refresh printer status", "Open print queue guide", "Refresh memory status", "Refresh system pressure", "Refresh system service status", "Refresh temperature status", "Check package health", "Check Secure Boot status", "Search all guides and steps"}
         ]
         if observed_controls:
             print(f"Observed accessible roles and names: {observed_controls!r}", file=sys.stderr)
