@@ -518,6 +518,9 @@ class SystemDetailsTests(unittest.TestCase):
         "usb_devices": [{
             "id": "046d:c534", "name": "Logitech USB Receiver", "drivers": ["usbhid"],
         }],
+        "pci_devices": [{
+            "id": "1234:5678", "name": "Example Network Adapter", "driver": "example_net",
+        }],
     })
     @patch("ubuntu_start.platform.freedesktop_os_release", return_value={"PRETTY_NAME": "Ubuntu Test"})
     def test_system_details_include_usb_hardware_id_and_driver_without_serial(self, *_mocks):
@@ -528,6 +531,10 @@ class SystemDetailsTests(unittest.TestCase):
             "Logitech USB Receiver [046d:c534] (driver: usbhid)",
         )
         self.assertNotIn("serial", details["Connected USB devices"].casefold())
+        self.assertEqual(
+            details["PCI devices"],
+            "Example Network Adapter [1234:5678] (example_net)",
+        )
 
 
 class USBStatusTests(unittest.TestCase):

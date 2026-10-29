@@ -689,6 +689,7 @@ ABCD  Another Vendor
             "Example Graphics Corp Example Adapter [0x1234:0xabcd] (example_gpu)",
         ])
         self.assertEqual(result["usb_devices"], [])
+        self.assertEqual(result["pci_devices"], [])
         self.assertNotIn("DO-NOT-READ", repr(result))
 
     def test_reads_usb_descriptors_and_interface_driver_without_serial_numbers(self):

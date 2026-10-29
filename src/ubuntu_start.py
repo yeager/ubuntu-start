@@ -1747,6 +1747,14 @@ class UbuntuStart(Adw.Application):
                     )
                 )
             details.append((_("Connected USB devices"), "; ".join(usb_summaries)))
+        pci_devices = hardware.get("pci_devices", [])
+        if pci_devices:
+            pci_summaries = []
+            for device in pci_devices:
+                name = device["name"] or _("PCI device")
+                driver = device["driver"] or _("No kernel driver is currently attached.")
+                pci_summaries.append(f"{name} [{device['id']}] ({driver})")
+            details.append((_("PCI devices"), "; ".join(pci_summaries)))
         for location, storage in storage_locations.items():
             label = _("System filesystem") if location == "system" else _("Home folder filesystem")
             percent = round(storage["used"] / storage["total"] * 100) if storage["total"] else 0

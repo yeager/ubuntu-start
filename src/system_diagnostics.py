@@ -806,7 +806,7 @@ def read_hardware_details(
     pci_databases: tuple[str, ...] = (
         "/usr/share/misc/pci.ids", "/usr/share/hwdata/pci.ids", "/usr/share/pci.ids",
     ),
-) -> dict[str, str | None | list[str]]:
+) -> dict[str, str | None | list[str] | list[dict[str, str | None]]]:
     """Read useful hardware facts while deliberately excluding serial numbers."""
     cpuinfo = _read(Path(cpuinfo_path)) or ""
     meminfo = _read(Path(meminfo_path)) or ""
@@ -828,6 +828,7 @@ def read_hardware_details(
         "processor": parse_cpu_model(cpuinfo),
         "memory": memory,
         "graphics": _graphics_adapters(sys_root / "class/drm", pci_databases),
+        "pci_devices": read_pci_devices(sys_root / "bus/pci/devices", pci_databases),
         "usb_devices": read_usb_devices(sys_root / "bus/usb/devices"),
         "architecture": platform.machine(),
     }
