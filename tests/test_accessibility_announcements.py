@@ -651,6 +651,37 @@ class DriverGuideTests(unittest.TestCase):
 
 
 class SystemGuideTests(unittest.TestCase):
+    def test_backup_guide_covers_destination_encryption_and_restore_verification(self):
+        guide = next(
+            guide for guide in SYSTEM_GUIDES if guide[0] == "Set up backups"
+        )
+        title, target, action, steps = guide
+
+        self.assertEqual(
+            target,
+            ("external", "https://help.ubuntu.com/stable/ubuntu-help/backup-why.html.en"),
+        )
+        self.assertEqual(action, "Open Ubuntu backup help")
+        step_text = " ".join(f"{step} {description}" for step, description in steps)
+        self.assertIn("external drive", step_text)
+        self.assertIn("recovery password", step_text)
+        self.assertIn("restore", step_text)
+
+    def test_backup_guide_requires_confirmation_before_opening_external_help(self):
+        app = Mock()
+
+        UbuntuStart.open_target(
+            app,
+            ("external", "https://help.ubuntu.com/stable/ubuntu-help/backup-why.html.en"),
+        )
+
+        app.confirm_external_link.assert_called_once_with(
+            "https://help.ubuntu.com/stable/ubuntu-help/backup-why.html.en",
+            "Open Ubuntu backup help?",
+            "This opens Ubuntu’s backup documentation in your browser. The website will receive a normal web request and can see your IP address.",
+        )
+        app.open_uri.assert_not_called()
+
     @patch("ubuntu_start.GLib.timeout_add")
     def test_storage_guide_opens_and_schedules_the_storage_overview(self, timeout_add):
         app = Mock()

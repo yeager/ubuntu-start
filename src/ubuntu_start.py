@@ -197,6 +197,13 @@ SYSTEM_GUIDES = [
         (_("Leave system files alone"), _("Do not delete files from system folders or paste cleanup commands that use sudo. Ask for help if you are unsure what a file does.")),
         (_("Check storage again"), _("Return to the storage overview after cleaning up. If you need space for Ubuntu updates, run Software Updater again when enough space is available.")),
     ]),
+    (_("Set up backups"), ("external", "https://help.ubuntu.com/stable/ubuntu-help/backup-why.html.en"), _("Open Ubuntu backup help"), [
+        (_("Choose what matters most"), _("Start with personal files that would be difficult or impossible to replace, such as documents, photos and videos.")),
+        (_("Choose a separate destination"), _("Use an external drive or a trusted backup service with enough free space. A backup on the same computer may be lost if the computer fails or is stolen.")),
+        (_("Use a backup application or Files"), _("If a backup app is available, follow its instructions to choose folders and a destination. You can also copy files you recognize to an external drive with Files.")),
+        (_("Protect the backup"), _("If you enable encryption, keep the recovery password somewhere safe. Without it, you may not be able to restore your files.")),
+        (_("Check that recovery works"), _("After the first backup, check that it completed and restore or open a non-critical file. Repeat backups regularly, especially after important changes.")),
+    ]),
     (_("Install Ubuntu updates"), ("app", "update-manager"), _("Open Software Updater"), [
         (_("Open Software Updater"), _("Ubuntu checks for updates when Software Updater opens. Select Check if it does not start checking.")),
         (_("Review available updates"), _("Read the update summary. Save your work before installing system updates.")),
@@ -380,6 +387,12 @@ class UbuntuStart(Adw.Application):
             self.open_terminal()
         elif kind == "app-center":
             self.confirm_app_center()
+        elif kind == "external":
+            self.confirm_external_link(
+                value,
+                _("Open Ubuntu backup help?"),
+                _("This opens Ubuntu’s backup documentation in your browser. The website will receive a normal web request and can see your IP address."),
+            )
         elif kind == "overview" and value == "storage":
             self.main_stack.set_visible_child_name(_("Network and hardware"))
             GLib.timeout_add(50, self.scroll_to_storage_overview)
