@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.16" date="2026-10-29">
+      <description>
+        <p>Add a safe, step-by-step guide for recovering from interrupted package updates.</p>
+        <p xml:lang="sv">Lägg till en säker steg-för-steg-guide för att återställa avbrutna paketuppdateringar.</p>
+      </description>
+    </release>
     <release version="0.3.15" date="2026-10-29">
       <description>
         <p>Add beginner-friendly guidance for reverse-searching command history and clearing the terminal view.</p>

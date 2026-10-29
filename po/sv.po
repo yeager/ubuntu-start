@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Ubuntu Start 0.3.15\n"
+"Project-Id-Version: Ubuntu Start 0.3.16\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 20:29+0100\n"
+"POT-Creation-Date: 2026-10-29 20:57+0100\n"
 "PO-Revision-Date: 2026-10-28 15:18+0100\n"
 "Last-Translator: Ubuntu Start contributors\n"
 "Language-Team: Swedish\n"
@@ -1751,6 +1751,42 @@ msgstr ""
 "Spara arbetet först. Välj Installera nu och ange lösenord om du blir "
 "tillfrågad. Starta om från Ubuntus systemmeny när en uppdatering ber dig om "
 "det. Appen startar aldrig om datorn."
+
+#: src/ubuntu_start.py:238
+msgid "Recover from an interrupted package update"
+msgstr "Återställ en avbruten paketuppdatering"
+
+#: src/ubuntu_start.py:239
+msgid "Make sure no package operation is running"
+msgstr "Kontrollera att ingen pakethantering pågår"
+
+#: src/ubuntu_start.py:239
+msgid "Check that Software Updater or App Center is not currently installing or updating packages. Save your work and wait for any active operation to finish. Do not remove package-manager lock files."
+msgstr "Kontrollera att Programuppdateraren eller App Center inte håller på att installera eller uppdatera paket. Spara arbetet och vänta tills en pågående åtgärd är klar. Ta inte bort pakethanterarens låsfiler."
+
+#: src/ubuntu_start.py:240
+msgid "Finish package configuration"
+msgstr "Slutför paketkonfigurationen"
+
+#: src/ubuntu_start.py:240
+msgid "Open Terminal and run sudo dpkg --configure -a to finish configuring packages that were already unpacked. Enter your password only if you expected the sudo prompt. Wait for the prompt to return and read any errors."
+msgstr "Öppna terminalen och kör sudo dpkg --configure -a för att färdigställa konfigurationen av paket som redan har packats upp. Skriv bara in lösenordet om du väntade dig en sudo-fråga. Vänta tills prompten visas igen och läs eventuella fel."
+
+#: src/ubuntu_start.py:241
+msgid "Repair broken dependencies"
+msgstr "Reparera trasiga beroenden"
+
+#: src/ubuntu_start.py:241
+msgid "If dpkg finishes without errors but APT still reports broken dependencies, run sudo apt --fix-broken install without -y. Review which packages APT proposes to install, upgrade or remove. Confirm only a plan you understand; type n and press Enter to cancel if anything looks unexpected. Ask your administrator if this is a managed computer."
+msgstr "Om dpkg avslutas utan fel men APT fortfarande rapporterar trasiga beroenden, kör sudo apt --fix-broken install utan -y. Granska vilka paket APT vill installera, uppgradera eller ta bort. Bekräfta bara en plan du förstår. Skriv n och tryck på Retur för att avbryta om något verkar oväntat. Fråga administratören om datorn hanteras av jobbet eller skolan."
+
+#: src/ubuntu_start.py:242
+msgid "Check the result"
+msgstr "Kontrollera resultatet"
+
+#: src/ubuntu_start.py:242
+msgid "Open Software Updater again or rerun Ubuntu Start’s package health check. If the error remains, note its exact text and ask for help. Do not delete lock files or remove packages named only in an error."
+msgstr "Öppna Programuppdateraren igen eller kör paketkontrollen i Ubuntu Start på nytt. Om felet kvarstår, anteckna det exakta felmeddelandet och be om hjälp. Ta inte bort låsfiler eller paket som bara nämns i ett felmeddelande."
 
 #: src/ubuntu_start.py:235
 msgid "Plan an Ubuntu version upgrade"

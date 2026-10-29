@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Ubuntu Start 0.3.15\n"
+"Project-Id-Version: Ubuntu Start 0.3.16\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 20:29+0100\n"
+"POT-Creation-Date: 2026-10-29 20:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1479,6 +1479,42 @@ msgid ""
 "Save your work first. Select Install Now and enter your password if "
 "prompted. Restart from Ubuntu’s system menu when an update asks you to; this "
 "app never restarts the computer."
+msgstr ""
+
+#: src/ubuntu_start.py:238
+msgid "Recover from an interrupted package update"
+msgstr ""
+
+#: src/ubuntu_start.py:239
+msgid "Make sure no package operation is running"
+msgstr ""
+
+#: src/ubuntu_start.py:239
+msgid "Check that Software Updater or App Center is not currently installing or updating packages. Save your work and wait for any active operation to finish. Do not remove package-manager lock files."
+msgstr ""
+
+#: src/ubuntu_start.py:240
+msgid "Finish package configuration"
+msgstr ""
+
+#: src/ubuntu_start.py:240
+msgid "Open Terminal and run sudo dpkg --configure -a to finish configuring packages that were already unpacked. Enter your password only if you expected the sudo prompt. Wait for the prompt to return and read any errors."
+msgstr ""
+
+#: src/ubuntu_start.py:241
+msgid "Repair broken dependencies"
+msgstr ""
+
+#: src/ubuntu_start.py:241
+msgid "If dpkg finishes without errors but APT still reports broken dependencies, run sudo apt --fix-broken install without -y. Review which packages APT proposes to install, upgrade or remove. Confirm only a plan you understand; type n and press Enter to cancel if anything looks unexpected. Ask your administrator if this is a managed computer."
+msgstr ""
+
+#: src/ubuntu_start.py:242
+msgid "Check the result"
+msgstr ""
+
+#: src/ubuntu_start.py:242
+msgid "Open Software Updater again or rerun Ubuntu Start’s package health check. If the error remains, note its exact text and ask for help. Do not delete lock files or remove packages named only in an error."
 msgstr ""
 
 #: src/ubuntu_start.py:235

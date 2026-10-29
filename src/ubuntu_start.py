@@ -235,6 +235,12 @@ SYSTEM_GUIDES = [
         (_("Review available updates"), _("Read the update summary. Save your work before installing system updates.")),
         (_("Install and restart if asked"), _("Save your work first. Select Install Now and enter your password if prompted. Restart from Ubuntu’s system menu when an update asks you to; this app never restarts the computer.")),
     ]),
+    (_("Recover from an interrupted package update"), ("terminal", ""), _("Open Terminal"), [
+        (_("Make sure no package operation is running"), _("Check that Software Updater or App Center is not currently installing or updating packages. Save your work and wait for any active operation to finish. Do not remove package-manager lock files.")),
+        (_("Finish package configuration"), _("Open Terminal and run sudo dpkg --configure -a to finish configuring packages that were already unpacked. Enter your password only if you expected the sudo prompt. Wait for the prompt to return and read any errors.")),
+        (_("Repair broken dependencies"), _("If dpkg finishes without errors but APT still reports broken dependencies, run sudo apt --fix-broken install without -y. Review which packages APT proposes to install, upgrade or remove. Confirm only a plan you understand; type n and press Enter to cancel if anything looks unexpected. Ask your administrator if this is a managed computer.")),
+        (_("Check the result"), _("Open Software Updater again or rerun Ubuntu Start’s package health check. If the error remains, note its exact text and ask for help. Do not delete lock files or remove packages named only in an error.")),
+    ]),
     (_("Plan an Ubuntu version upgrade"), ("external", "https://ubuntu.com/desktop/docs/en/latest/how-to/upgrade-ubuntu-desktop/"), _("Open Ubuntu’s upgrade guide"), [
         (_("Find your current Ubuntu version"), _("Open Settings and choose System, then About. On older Ubuntu releases, version details may be under Details. You can also see the version in Ubuntu Start’s system details.")),
         (_("Check the support period"), _("LTS releases receive five years of standard security maintenance. Interim releases are supported for nine months. Ubuntu Pro can extend security coverage for eligible LTS systems. Check the official release lifecycle for your version.")),

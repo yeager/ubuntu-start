@@ -285,6 +285,26 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.assertTrue(matches)
         self.assertTrue(all(match[2] == "Install Ubuntu updates" for match in matches))
 
+    def test_interrupted_package_recovery_is_searchable_and_cautious(self):
+        entries = [
+            ("system", index, guide_title, step_title, description)
+            for index, (guide_title, _target, _action, steps) in enumerate(SYSTEM_GUIDES)
+            for step_title, description in steps
+        ]
+
+        matches = find_guide_matches("interrupted package dpkg configure", entries)
+
+        self.assertTrue(matches)
+        self.assertTrue(all(
+            match[2] == "Recover from an interrupted package update"
+            for match in matches
+        ))
+        guide_text = " ".join(match[3] + " " + match[4] for match in matches)
+        self.assertIn("sudo dpkg --configure -a", guide_text)
+        self.assertIn("sudo apt --fix-broken install without -y", guide_text)
+        self.assertIn("type n and press Enter to cancel", guide_text)
+        self.assertIn("Do not remove package-manager lock files", guide_text)
+
     def test_release_upgrade_guidance_is_searchable(self):
         entries = [
             ("system", index, guide_title, step_title, description)
