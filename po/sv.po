@@ -3600,13 +3600,13 @@ msgstr ""
 "Varmaste tillgängliga sensorn: {temperature} °C. Sensorernas betydelse "
 "varierar mellan enheter."
 
-#: src/ubuntu_start.py:1300
+#: src/ubuntu_start.py:1289
 msgid ""
-"This sensor is within 10 °C of its reported critical limit. Let the computer "
-"cool before benchmarking; the limit is device-specific."
+"At least one sensor is within 10 °C of its reported critical limit. Let the "
+"computer cool before benchmarking; each limit is specific to its sensor."
 msgstr ""
-"Sensorn ligger inom 10 °C från sin rapporterade kritiska gräns. Låt datorn "
-"svalna innan du testar. Gränsen är specifik för enheten."
+"Minst en sensor ligger inom 10 °C från sin rapporterade kritiska gräns. "
+"Låt datorn svalna innan du testar. Gränsen gäller den enskilda sensorn."
 
 #: src/ubuntu_start.py:1302
 msgid "Temperature sensors are not available."

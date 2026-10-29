@@ -1259,12 +1259,19 @@ def battery_power_status_unknown(batteries: list[dict[str, str | int]]) -> bool:
 def sensor_near_critical_limit(
     sensors: list[dict[str, str | float]], margin_c: float = 10.0,
 ) -> bool:
-    """Check whether the hottest sensor is close to its device-reported critical limit."""
-    if not sensors:
-        return False
-    hottest = max(sensors, key=lambda item: item["temperature_c"])
-    critical = hottest.get("critical_c")
-    return isinstance(critical, (int, float)) and hottest["temperature_c"] >= critical - margin_c
+    """Check every sensor with a reported critical limit for proximity to it."""
+    for sensor in sensors:
+        temperature = sensor.get("temperature_c")
+        critical = sensor.get("critical_c")
+        if (
+            isinstance(temperature, (int, float))
+            and not isinstance(temperature, bool)
+            and isinstance(critical, (int, float))
+            and not isinstance(critical, bool)
+            and temperature >= critical - margin_c
+        ):
+            return True
+    return False
 
 
 def read_temperature_sensors(

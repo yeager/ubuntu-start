@@ -215,7 +215,7 @@ class BackupToolTests(unittest.TestCase):
         self.assertTrue(battery_power_status_unknown([{"status": "Unknown"}]))
         self.assertFalse(battery_power_status_unknown([{"status": "Full"}]))
 
-    def test_temperature_readiness_uses_hottest_sensor_reported_limit(self):
+    def test_temperature_readiness_checks_each_sensor_with_a_reported_limit(self):
         self.assertTrue(sensor_near_critical_limit([
             {"name": "CPU", "temperature_c": 91.0, "critical_c": 100.0},
         ]))
@@ -224,6 +224,10 @@ class BackupToolTests(unittest.TestCase):
         ]))
         self.assertFalse(sensor_near_critical_limit([
             {"name": "CPU", "temperature_c": 91.0},
+        ]))
+        self.assertTrue(sensor_near_critical_limit([
+            {"name": "GPU", "temperature_c": 98.0},
+            {"name": "CPU", "temperature_c": 91.0, "critical_c": 100.0},
         ]))
 
     def test_cpu_benchmark_returns_positive_metrics(self):

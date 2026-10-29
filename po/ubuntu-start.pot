@@ -3025,10 +3025,10 @@ msgid ""
 "Hottest exposed sensor: {temperature} °C; sensor meaning varies by device."
 msgstr ""
 
-#: src/ubuntu_start.py:1300
+#: src/ubuntu_start.py:1289
 msgid ""
-"This sensor is within 10 °C of its reported critical limit. Let the computer "
-"cool before benchmarking; the limit is device-specific."
+"At least one sensor is within 10 °C of its reported critical limit. Let the "
+"computer cool before benchmarking; each limit is specific to its sensor."
 msgstr ""
 
 #: src/ubuntu_start.py:1302

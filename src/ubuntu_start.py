@@ -1286,7 +1286,7 @@ class UbuntuStart(Adw.Application):
                 hottest = hottest_sensor["temperature_c"]
                 notes.append(_("Hottest exposed sensor: {temperature} °C; sensor meaning varies by device.").format(temperature=hottest))
                 if sensor_near_critical_limit(sensors):
-                    notes.append(_("This sensor is within 10 °C of its reported critical limit. Let the computer cool before benchmarking; the limit is device-specific."))
+                    notes.append(_("At least one sensor is within 10 °C of its reported critical limit. Let the computer cool before benchmarking; each limit is specific to its sensor."))
             else:
                 notes.append(_("Temperature sensors are not available."))
             message = "\n".join(notes)
