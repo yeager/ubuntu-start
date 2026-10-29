@@ -416,17 +416,31 @@ class UbuntuStart(Adw.Application):
         box.append(self.first_run_progress)
         box.append(checklist_rows)
         for task_id, title, subtitle, target in tasks:
-            row = Adw.ActionRow(title=title, subtitle=subtitle)
-            check = Gtk.CheckButton(active=task_id in self.first_run_completed, valign=Gtk.Align.CENTER)
-            check.update_property([Gtk.AccessibleProperty.LABEL], [title])
-            check.update_property([Gtk.AccessibleProperty.DESCRIPTION], [_("Mark this setup step as complete")])
+            row = Gtk.ListBoxRow()
+            task_content = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+            task_description = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+            check = Gtk.CheckButton(
+                label=title, active=task_id in self.first_run_completed,
+                valign=Gtk.Align.CENTER, hexpand=True,
+            )
+            check.update_property([Gtk.AccessibleProperty.DESCRIPTION], [subtitle])
             handler_id = check.connect("toggled", self.on_first_run_task_toggled, task_id)
             self.first_run_checks[task_id] = (check, handler_id)
-            row.add_suffix(check)
+            subtitle_label = Gtk.Label(
+                label=subtitle, xalign=0, wrap=True, css_classes=["dim-label"],
+            )
+            task_description.append(check)
+            task_description.append(subtitle_label)
+            task_description.set_hexpand(True)
+            task_content.append(task_description)
             button = Gtk.Button(label=_("Open Settings"), valign=Gtk.Align.CENTER)
             button.connect("clicked", lambda *_args, selected=target: self.open_target(selected))
-            row.add_suffix(button)
-            row.set_activatable_widget(check)
+            task_content.append(button)
+            task_content.set_margin_start(12)
+            task_content.set_margin_end(12)
+            task_content.set_margin_top(8)
+            task_content.set_margin_bottom(8)
+            row.set_child(task_content)
             checklist_rows.append(row)
         self.update_first_run_progress()
         box.append(self.first_run_save_status)
