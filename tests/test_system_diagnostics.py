@@ -35,6 +35,7 @@ from system_diagnostics import (
     read_printer_status,
     read_storage_status,
     read_storage_locations,
+    read_video_devices,
     parse_time_status,
     read_time_status,
     read_usb_devices,
@@ -571,6 +572,29 @@ ABCD  Another Vendor
             result = read_usb_devices(temporary)
 
         self.assertEqual(result[0]["name"], "QEMU USB Tablet")
+
+
+class VideoDeviceTests(unittest.TestCase):
+    def test_reads_only_video_nodes_and_sanitizes_names(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            first = root / "video0"
+            second = root / "video2"
+            ignored = root / "media0"
+            first.mkdir()
+            second.mkdir()
+            ignored.mkdir()
+            (first / "name").write_text("Integrated Camera\n", encoding="utf-8")
+            (second / "name").write_text("USB\n Camera\tUnit", encoding="utf-8")
+            (ignored / "name").write_text("Unrelated", encoding="utf-8")
+
+            devices = read_video_devices(root)
+
+        self.assertEqual(devices, ["Integrated Camera", "USB Camera Unit"])
+
+    def test_handles_missing_video_subsystem_directory(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            self.assertEqual(read_video_devices(Path(temporary) / "missing"), [])
 
 
 class LocalDiagnosticsTests(unittest.TestCase):

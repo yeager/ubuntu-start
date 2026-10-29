@@ -12,7 +12,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_interface_ip_status, read_network_devices, read_printer_status, read_storage_locations, read_time_status, read_usb_devices, read_wifi_link_status, run_network_diagnostics
+from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_interface_ip_status, read_network_devices, read_printer_status, read_storage_locations, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -110,7 +110,7 @@ SYSTEM_GUIDES = [
     (_("Check date and time"), ("settings", "datetime"), _("Open Date & Time Settings"), [
         (_("Check the time zone"), _("Make sure the selected time zone matches your location. A wrong time zone changes the displayed local time.")),
         (_("Review automatic time"), _("If automatic date and time is available, turn it on so Ubuntu can keep the system clock synchronized.")),
-        (_("Check the network connection"), _("If the clock is not synchronized, check the internet connection and review Date & Time Settings again.")),
+        (_("Check the network connection"), _("If the clock is not synchronized, check the internet connection and review Date and Time Settings again.")),
         (_("Ask before changing a managed computer"), _("Work or school computers may control time settings centrally. Ask the administrator if the options are locked.")),
     ]),
     (_("Add a printer"), ("settings", "printers"), _("Open Printer Settings"), [
@@ -695,6 +695,27 @@ class UbuntuStart(Adw.Application):
         self.refresh_battery_status(battery_refresh, battery_status_label, battery_rows)
         box.append(battery_box)
 
+        video_box, _video_rows = self.page(
+            _("Video device status"),
+            _("Read names of video devices reported by Linux. Ubuntu Start does not open a camera or test video or audio."),
+            include_rows=False,
+        )
+        video_status = Gtk.Label(label="", xalign=0, wrap=True)
+        video_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        video_refresh = Gtk.Button(label=_("Refresh video device status"), halign=Gtk.Align.START)
+        video_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_video_status(video_refresh, video_status, video_rows, announce=True),
+        )
+        video_guide_button = Gtk.Button(label=_("Open camera guide"), halign=Gtk.Align.START)
+        video_guide_button.connect("clicked", lambda *_: self.open_camera_guide())
+        video_box.append(video_refresh)
+        video_box.append(video_guide_button)
+        video_box.append(video_status)
+        video_box.append(video_rows)
+        box.append(video_box)
+        self.refresh_video_status(video_refresh, video_status, video_rows)
+
         hardware_box, hardware_rows = self.page(
             _("Hardware overview"),
             _("This summary reads local system files. Serial numbers are never collected."),
@@ -741,6 +762,50 @@ class UbuntuStart(Adw.Application):
             )
 
         threading.Thread(target=read_status, daemon=True).start()
+
+    def refresh_video_status(self, button, status_label, device_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Reading video devices…"))
+        while (child := device_rows.get_first_child()) is not None:
+            device_rows.remove(child)
+
+        def read_status():
+            devices = read_video_devices()
+            GLib.idle_add(self.show_video_status, button, status_label, device_rows, devices, announce)
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_video_status(self, button, status_label, device_rows, devices, announce=False):
+        button.set_sensitive(True)
+        while (child := device_rows.get_first_child()) is not None:
+            device_rows.remove(child)
+        if devices:
+            for device in devices:
+                self.row(device_rows, device, _("Reported by Linux"))
+            if len(devices) == 1:
+                message = _("Video device status updated: 1 device found.")
+            else:
+                message = _("Video device status updated: {count} devices found.").format(count=len(devices))
+        else:
+            message = _("No video devices reported by Linux")
+            self.row(
+                device_rows,
+                message,
+                _("Connect a camera or check its privacy shutter, then refresh. This status does not test the camera."),
+            )
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
+
+    def open_camera_guide(self):
+        camera_index = next(
+            index for index, (title, _target, _steps) in enumerate(GUIDES)
+            if title == _("Camera")
+        )
+        self.device_search.set_text("")
+        self.device_chooser.set_selected(camera_index)
+        self.main_stack.set_visible_child_name(_("Fix a device"))
 
     def show_usb_status(self, button, status_label, device_rows, devices, announce=False):
         button.set_sensitive(True)

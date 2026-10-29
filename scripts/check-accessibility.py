@@ -156,6 +156,31 @@ def main() -> int:
                         time.sleep(0.25)
                     if usb_refresh_button is None:
                         missing.append("button: Refresh USB device list on Network and hardware")
+                    video_deadline = time.monotonic() + 5
+                    camera_guide_button = None
+                    while time.monotonic() < video_deadline:
+                        entries = accessible_tree(app)
+                        video_refresh_button = next(
+                            (
+                                node for role, name, node in entries
+                                if role in BUTTON_ROLES and name == "Refresh video device status"
+                            ),
+                            None,
+                        )
+                        camera_guide_button = next(
+                            (
+                                node for role, name, node in entries
+                                if role in BUTTON_ROLES and name == "Open camera guide"
+                            ),
+                            None,
+                        )
+                        if video_refresh_button and camera_guide_button:
+                            break
+                        time.sleep(0.25)
+                    if video_refresh_button is None:
+                        missing.append("button: Refresh video device status on Network and hardware")
+                    if camera_guide_button is None:
+                        missing.append("button: Open camera guide on Network and hardware")
                 if not select_page("Welcome"):
                     missing.append("selectable Welcome guide before Ctrl+F")
 
@@ -187,7 +212,7 @@ def main() -> int:
                 )
                 if search_entry and search_entry.get_state_set().contains(Atspi.StateType.FOCUSED):
                     print(
-                        "AT-SPI verified guide names, About and USB refresh buttons, and the labeled search entry; "
+                        "AT-SPI verified guide names, About, USB and video controls, and the labeled search entry; "
                         "Ctrl+F moved focus to search."
                     )
                     return 0
@@ -200,10 +225,17 @@ def main() -> int:
         observed_controls = [
             (role, name)
             for role, name, _node in entries
-            if name in {"About", "Refresh USB device list", "Search all guides and steps"}
+            if name in {"About", "Refresh USB device list", "Refresh video device status", "Open camera guide", "Search all guides and steps"}
         ]
         if observed_controls:
             print(f"Observed accessible roles and names: {observed_controls!r}", file=sys.stderr)
+        relevant_controls = [
+            (role, name)
+            for role, name, _node in entries
+            if any(term in name.casefold() for term in ("camera", "video device"))
+        ]
+        if relevant_controls:
+            print(f"Observed camera/video controls: {relevant_controls!r}", file=sys.stderr)
         if details:
             print(details, file=sys.stderr)
         return 1

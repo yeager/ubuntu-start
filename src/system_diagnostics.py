@@ -82,6 +82,29 @@ def read_interface_ip_status(interface: str, timeout: float = 2.0) -> dict[str, 
     return parse_interface_ip_status(result.stdout)
 
 
+def read_video_devices(sysfs_directory: str | Path = "/sys/class/video4linux") -> list[str]:
+    """List locally exposed video4linux device names without opening device nodes."""
+    directory = Path(sysfs_directory)
+    devices = []
+    try:
+        entries = sorted(directory.iterdir(), key=lambda path: path.name)
+    except OSError:
+        return devices
+    for entry in entries:
+        if not re.fullmatch(r"video\d+", entry.name):
+            continue
+        try:
+            raw_name = (entry / "name").read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        name = " ".join(
+            "".join(character if character.isprintable() else " " for character in raw_name).split()
+        )[:120]
+        if name and name not in devices:
+            devices.append(name)
+    return devices
+
+
 def parse_iw_link_status(output: str) -> dict[str, float | int]:
     """Extract signal and link rates without retaining SSID or access-point MAC."""
     details: dict[str, float | int] = {}

@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import Mock, call, patch
 
-from ubuntu_start import Adw, Gdk, GLib, Gtk, UbuntuStart
+from ubuntu_start import Adw, Gdk, GLib, Gtk, GUIDES, UbuntuStart
 
 
 class AccessibilityAnnouncementTests(unittest.TestCase):
@@ -494,6 +494,47 @@ class TimeStatusAnnouncementTests(unittest.TestCase):
         )
         self.assertEqual(app.row.call_count, 3)
         status_label.set_text.assert_called_once_with("Could not read the local date and time status.")
+
+
+class VideoStatusAnnouncementTests(unittest.TestCase):
+    def test_video_status_lists_local_device_names_and_announces(self):
+        app = Mock()
+        status_label = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+        UbuntuStart.show_video_status(
+            app, Mock(), status_label, rows, ["Integrated Camera"], announce=True,
+        )
+        app.row.assert_called_once_with(
+            rows, "Integrated Camera", "Reported by Linux",
+        )
+        status_label.set_text.assert_called_once_with(
+            "Video device status updated: 1 device found.",
+        )
+        app.announce_to_screen_reader.assert_called_once_with(
+            status_label, "Video device status updated: 1 device found.",
+        )
+
+    def test_video_status_explains_missing_camera_is_not_a_device_test(self):
+        app = Mock()
+        status_label = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+        UbuntuStart.show_video_status(app, Mock(), status_label, rows, [])
+        app.row.assert_called_once_with(
+            rows,
+            "No video devices reported by Linux",
+            "Connect a camera or check its privacy shutter, then refresh. This status does not test the camera.",
+        )
+
+    def test_open_camera_guide_selects_the_camera_steps(self):
+        app = Mock()
+        UbuntuStart.open_camera_guide(app)
+        app.device_search.set_text.assert_called_once_with("")
+        app.device_chooser.set_selected.assert_called_once_with(
+            next(index for index, (title, _target, _steps) in enumerate(GUIDES) if title == "Camera")
+        )
+        app.main_stack.set_visible_child_name.assert_called_once_with("Fix a device")
 
 
 if __name__ == "__main__":
