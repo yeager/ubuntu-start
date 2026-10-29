@@ -240,6 +240,13 @@ def main() -> int:
                         time.sleep(0.25)
                     for name in sorted(benchmark_names - benchmark_buttons):
                         missing.append(f"button: {name} on Network and hardware")
+                    wifi_check_names = {"Check Wi-Fi connection", "Open Wi-Fi Settings"}
+                    wifi_check_buttons = {
+                        name for role, name, _node in entries
+                        if role in BUTTON_ROLES and name in wifi_check_names
+                    }
+                    for name in sorted(wifi_check_names - wifi_check_buttons):
+                        missing.append(f"button: {name} on Network and hardware")
                     if readiness_button:
                         try:
                             activated = readiness_button.get_n_actions() > 0 and readiness_button.do_action(0)

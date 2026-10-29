@@ -581,6 +581,32 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
             "Radio block status is not available on this computer.",
         )
 
+    def test_wifi_quick_check_explains_connected_ip_and_announces_scope(self):
+        button, status = Mock(), Mock()
+
+        UbuntuStart.show_wifi_quick_check(
+            self.app, button, status, [("wlan0", "wifi", "connected")], None,
+            [], {"wlan0": {"ipv4": True, "ipv6": False, "link_local": False}},
+            {}, announce=True,
+        )
+
+        message = "Wi-Fi is connected and has an IP address. This does not confirm internet access; run Test DNS and gateway if websites still fail."
+        button.set_sensitive.assert_called_once_with(True)
+        status.set_text.assert_called_once_with(message)
+        self.app.announce_to_screen_reader.assert_called_once_with(status, message)
+
+    def test_wifi_quick_check_prioritizes_software_radio_block(self):
+        status = Mock()
+
+        UbuntuStart.show_wifi_quick_check(
+            self.app, Mock(), status, [("wlan0", "wifi", "disconnected")], None,
+            [{"type": "wlan", "soft_blocked": True, "hard_blocked": False}], {}, {},
+        )
+
+        status.set_text.assert_called_once_with(
+            "Wi-Fi is blocked in software. Check airplane mode or the Wi-Fi switch in Quick Settings.",
+        )
+
     def test_network_status_shows_local_wifi_signal_and_link_rates(self):
         status = Mock()
         rows = Mock()

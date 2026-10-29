@@ -19,10 +19,10 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
-    <release version="0.3.3" date="2026-10-29">
+    <release version="0.3.4" date="2026-10-29">
       <description>
-        <p>Add performance readiness checks and cancellable graphics benchmarks, explain network diagnostic results with a searchable guide, and improve hardware label handling and Swedish localization.</p>
-        <p xml:lang="sv">Lägg till kontroller inför prestandatest och möjlighet att avbryta grafikkortstest. Förklara nätverksdiagnostikens resultat i en sökbar guide och förbättra hanteringen av maskinvarunamn och svensk översättning.</p>
+        <p>Add an on-demand local Wi-Fi connection check with practical next-step guidance. Add performance readiness checks and cancellable graphics benchmarks, explain network diagnostic results with a searchable guide, and improve hardware label handling and Swedish localization.</p>
+        <p xml:lang="sv">Lägg till en lokal wifi-kontroll som ger praktiska förslag på nästa steg. Lägg till kontroller inför prestandatest och möjlighet att avbryta grafikkortstest. Förklara nätverksdiagnostikens resultat i en sökbar guide och förbättra hanteringen av maskinvarunamn och svensk översättning.</p>
       </description>
     </release>
     <release version="0.3.2" date="2026-10-29">

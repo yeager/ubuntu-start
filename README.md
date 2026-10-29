@@ -33,6 +33,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contributor guidance and the maintain
 - Everyday tips for search, window management and Files, plus guidance on backups and choosing trusted app sources.
 - Search device checks and step-by-step system guides together, then open a matching guide directly. Topics include sound, Bluetooth, batteries, USB devices, printers, displays/graphics, keyboards, touchpads, Wi-Fi, Ethernet, VPNs, cameras, storage, accessibility and Terminal basics.
 - A searchable PCI troubleshooting guide and local PCI device list show hardware IDs and attached kernel drivers; PCI bridges are omitted and a missing driver is not presented as a confirmed fault.
+- An on-demand Wi-Fi quick check combines local NetworkManager, radio-block and IP-address status to suggest next steps; it does not contact the internet or scan nearby networks.
 - Dedicated USB, external-display and Bluetooth pairing guides help isolate connection, port, cable, input, adapter and pairing problems.
 - A read-only display status check lists Linux DRM connector connection state and whether a connector is active. It does not read monitor EDID or serial numbers; some drivers and virtual machines do not expose connector data.
 - Step-by-step guides for freeing disk space safely, installing apps, updates, Wi-Fi signal and disconnect problems, Wi-Fi sign-in pages and internet access, VPNs, Ethernet, printers, batteries, keyboards, touchpads, larger text, screen magnification and the Orca screen reader.
@@ -74,7 +75,7 @@ meson compile -C build
 sudo meson install -C build
 ```
 
-To build an installable Debian package after installing the dependencies, run `scripts/build-deb.sh`. It creates `build/packages/ubuntu-start_0.3.3-1_all.deb`. Install it with `sudo apt install ./build/packages/ubuntu-start_0.3.3-1_all.deb`; APT resolves the declared GTK and Python runtime dependencies.
+To build an installable Debian package after installing the dependencies, run `scripts/build-deb.sh`. It creates `build/packages/ubuntu-start_0.3.4-1_all.deb`. Install it with `sudo apt install ./build/packages/ubuntu-start_0.3.4-1_all.deb`; APT resolves the declared GTK and Python runtime dependencies.
 
 The wheel and source distribution are published on [PyPI](https://pypi.org/project/ubuntu-start/). Install the GTK platform dependencies with APT first, then install the package in an isolated environment that can access system PyGObject bindings:
 

@@ -677,6 +677,27 @@ class UbuntuStart(Adw.Application):
         box.append(network_box)
         self.refresh_network_status(network_status, network_rows)
 
+        wifi_check_box, _wifi_check_rows = self.page(
+            _("Wi-Fi quick check"),
+            _("Combine local connection, radio-block and IP-address status to suggest a next step. This check does not contact the internet or scan nearby networks."),
+            include_rows=False,
+        )
+        wifi_check_status = Gtk.Label(label=_("Wi-Fi check has not been run yet."), xalign=0, wrap=True)
+        wifi_check_button = Gtk.Button(label=_("Check Wi-Fi connection"), halign=Gtk.Align.START)
+        wifi_check_button.connect(
+            "clicked",
+            lambda *_: self.refresh_wifi_quick_check(wifi_check_button, wifi_check_status, announce=True),
+        )
+        wifi_settings_button = Gtk.Button(label=_("Open Wi-Fi Settings"), halign=Gtk.Align.START)
+        wifi_settings_button.connect("clicked", lambda *_: self.open_wifi_settings())
+        wifi_guide_button = Gtk.Button(label=_("Open Wi-Fi troubleshooting guide"), halign=Gtk.Align.START)
+        wifi_guide_button.connect("clicked", lambda *_: self.open_wifi_guide())
+        wifi_check_box.append(wifi_check_button)
+        wifi_check_box.append(wifi_settings_button)
+        wifi_check_box.append(wifi_guide_button)
+        wifi_check_box.append(wifi_check_status)
+        box.append(wifi_check_box)
+
         radio_box, _radio_unused = self.page(
             _("Wireless radio status"),
             _("Read local Linux radio block flags for Wi-Fi, Bluetooth and other wireless devices. This does not enable or disable radios."),
@@ -1565,6 +1586,88 @@ class UbuntuStart(Adw.Application):
             )
 
         threading.Thread(target=read_status, daemon=True).start()
+
+    def refresh_wifi_quick_check(self, button, status_label, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking Wi-Fi status…"))
+
+        def read_status():
+            devices, error = read_network_devices()
+            radios = read_rfkill_status()
+            connected = [
+                name for name, device_type, state in devices
+                if device_type == "wifi" and state == "connected"
+            ]
+            interface_ips = {
+                name: details for name in connected
+                if (details := read_interface_ip_status(name)) is not None
+            }
+            wifi_details = {
+                name: details for name in connected
+                if (details := read_wifi_link_status(name))
+            }
+            GLib.idle_add(
+                self.show_wifi_quick_check, button, status_label, devices, error,
+                radios, interface_ips, wifi_details, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_wifi_quick_check(
+        self, button, status_label, devices, error, radios,
+        interface_ips, wifi_details, announce=False,
+    ):
+        button.set_sensitive(True)
+        if error:
+            message = _("Could not read Wi-Fi connection status from NetworkManager. Refresh Network status and try again.")
+        else:
+            wifi_devices = [
+                (name, state) for name, device_type, state in devices
+                if device_type == "wifi"
+            ]
+            if not wifi_devices:
+                message = _("NetworkManager reports no Wi-Fi device. If this computer has Wi-Fi, review the hardware and driver details.")
+            else:
+                name, state = wifi_devices[0]
+                wlan = next((radio for radio in radios or () if radio["type"] == "wlan"), None)
+                if wlan and wlan["soft_blocked"] and wlan["hard_blocked"]:
+                    message = _("Wi-Fi is blocked in software and by hardware or firmware. Check airplane mode and the computer’s Wi-Fi switch or keyboard shortcut.")
+                elif wlan and wlan["soft_blocked"]:
+                    message = _("Wi-Fi is blocked in software. Check airplane mode or the Wi-Fi switch in Quick Settings.")
+                elif wlan and wlan["hard_blocked"]:
+                    message = _("Wi-Fi is blocked by hardware or firmware. Check the computer’s physical switch or keyboard shortcut and consult its manual.")
+                elif state == "disconnected":
+                    message = _("The Wi-Fi device is available but not connected. Open Wi-Fi Settings and choose a network you recognize.")
+                elif state == "unavailable (firmware missing)":
+                    message = _("NetworkManager reports that Wi-Fi firmware is missing. Review the hardware and driver details, then ask the computer manufacturer or administrator for help.")
+                elif state == "unavailable":
+                    message = _("The Wi-Fi device is unavailable. Check radio-block status and review the hardware and driver details.")
+                elif state == "connecting":
+                    message = _("Wi-Fi is connecting. Wait briefly, refresh the status, and check the Wi-Fi guide if it does not connect.")
+                elif state != "connected":
+                    message = _("Wi-Fi status is {state}. Refresh the status or open the Wi-Fi guide for next steps.").format(state=state)
+                else:
+                    addresses = (interface_ips or {}).get(name)
+                    if addresses is None:
+                        message = _("Wi-Fi is connected, but IP-address status is unavailable. Internet access has not been tested.")
+                    elif addresses["ipv4"] or addresses["ipv6"]:
+                        message = _("Wi-Fi is connected and has an IP address. This does not confirm internet access; run Test DNS and gateway if websites still fail.")
+                    elif addresses["link_local"]:
+                        message = _("Wi-Fi is connected but only a link-local address was found. Check router address assignment or a network sign-in page.")
+                    else:
+                        message = _("Wi-Fi is connected but no IP address was found. Check router address assignment or a network sign-in page.")
+                    metrics = (wifi_details or {}).get(name, {})
+                    if "signal_dbm" in metrics:
+                        message += "\n" + _("Reported Wi-Fi signal: {signal} dBm. Values closer to 0 are generally stronger; compare from the same location.").format(signal=metrics["signal_dbm"])
+                if radios is None:
+                    message += "\n" + _("Radio-block status is unavailable, so the hardware or software block could not be checked.")
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
+
+    def open_wifi_settings(self):
+        self.open_app("gnome-control-center", "wifi")
 
     def refresh_rfkill_status(self, button, status_label, radio_rows, announce=False):
         button.set_sensitive(False)
