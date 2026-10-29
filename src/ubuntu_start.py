@@ -95,6 +95,13 @@ GUIDES = [
         (_("Check the driver status"), _("A device with no attached driver may need a driver, but this status alone does not prove a fault. Check Ubuntu’s Additional Drivers tool and the device manufacturer’s Ubuntu support information.")),
         (_("Keep the hardware ID for support"), _("Share the PCI hardware ID and driver name when asking for help. Do not install drivers from an untrusted source.")),
     ]),
+    (_("Check whether a storage drive is healthy"), "disks", [
+        (_("Back up important files first"), _("If you hear unusual noises from the disk, see read errors or suspect that the drive is failing, back up important files to another drive or a trusted backup service before testing. Avoid benchmarks for now.")),
+        (_("Open Disks and select the drive"), _("Open Disks from the Activities overview and select the physical drive by its model and capacity. Check carefully that you selected the drive you intend to inspect.")),
+        (_("Review SMART health information"), _("Open the drive menu and choose SMART Data and Self-Tests. Read the overall assessment and attributes. This option may be unavailable for some drives, USB adapters or virtual machines.")),
+        (_("Run a short self-test if available"), _("Only start a short self-test after important files are backed up. Wait for it to finish. A passed test cannot guarantee that a drive is fault-free.")),
+        (_("Act on warnings"), _("If the assessment or test reports a problem, avoid repeated tests and writes, back up any remaining important files and contact the manufacturer or support. Missing SMART data does not prove that a drive is healthy or failing.")),
+    ]),
     (_("Wired network"), "network", [
         (_("Check the Ethernet cable"), _("Connect the cable firmly to the computer and to a router, switch or wall socket. Look for a link light near the port.")),
         (_("Wait for a connection"), _("Ubuntu normally configures a wired connection automatically. Give it a few seconds and check the network menu.")),
@@ -706,11 +713,14 @@ class UbuntuStart(Adw.Application):
             selected = chooser.get_selected()
             if selected < len(GUIDES):
                 steps_stack.set_visible_child_name(f"guide-{selected}")
-                open_button.set_label(
-                    _("Open hardware overview")
-                    if GUIDES[selected][1] == "hardware"
-                    else _("Open related Settings")
-                )
+                target = GUIDES[selected][1]
+                if target == "hardware":
+                    label = _("Open hardware overview")
+                elif target == "disks":
+                    label = _("Open Disks")
+                else:
+                    label = _("Open related Settings")
+                open_button.set_label(label)
 
         def update_search(*_args):
             query = search.get_text().strip().casefold()
@@ -744,6 +754,8 @@ class UbuntuStart(Adw.Application):
     def open_device_target(self, target):
         if target == "hardware":
             self.main_stack.set_visible_child_name(_("Network and hardware"))
+        elif target == "disks":
+            self.open_app("gnome-disks")
         else:
             self.open_app("gnome-control-center", target)
 

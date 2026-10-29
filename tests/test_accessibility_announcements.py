@@ -200,6 +200,21 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.assertTrue(matches)
         self.assertTrue(all(match[2] == "Computer gets hot or the fan is loud" for match in matches))
 
+    def test_storage_drive_health_guide_is_searchable_and_cautious(self):
+        guide = next(guide for guide in GUIDES if guide[0] == "Check whether a storage drive is healthy")
+        entries = [
+            ("device", index, guide[0], title, description)
+            for index, (title, description) in enumerate(guide[2])
+        ]
+
+        matches = find_guide_matches("disk failing backup", entries)
+        text = " ".join(" ".join(step) for step in guide[2])
+
+        self.assertTrue(matches)
+        self.assertIn("Avoid benchmarks for now", text)
+        self.assertIn("A passed test cannot guarantee", text)
+        self.assertIn("Missing SMART data does not prove", text)
+
     def test_slow_or_unstable_wifi_help_is_searchable(self):
         entries = [
             ("device", index, guide_title, step_title, description)
@@ -1673,6 +1688,13 @@ class VideoStatusAnnouncementTests(unittest.TestCase):
             next(index for index, (title, _target, _steps) in enumerate(GUIDES) if title == "Camera")
         )
         app.main_stack.set_visible_child_name.assert_called_once_with("Fix a device")
+
+    def test_open_storage_drive_guide_launches_gnome_disks(self):
+        app = Mock()
+
+        UbuntuStart.open_device_target(app, "disks")
+
+        app.open_app.assert_called_once_with("gnome-disks")
 
 
 class DisplayStatusAnnouncementTests(unittest.TestCase):
