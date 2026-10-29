@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.14" date="2026-10-29">
+      <description>
+        <p>Show whether the active desktop session is local or remote when logind can determine it, without including remote host details in system summaries.</p>
+        <p xml:lang="sv">Visa om den aktiva skrivbordssessionen är lokal eller fjärransluten när logind kan avgöra det. Systemöversikten tar inte med fjärrvärdens namn eller adress.</p>
+      </description>
+    </release>
     <release version="0.3.13" date="2026-10-29">
       <description>
         <p>Add step-by-step guidance for inspecting failed system services and sharing relevant log details safely.</p>

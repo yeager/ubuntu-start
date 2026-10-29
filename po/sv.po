@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Ubuntu Start 0.3.9\n"
+"Project-Id-Version: Ubuntu Start 0.3.14\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
 "POT-Creation-Date: 2026-10-29 17:05+0100\n"
 "PO-Revision-Date: 2026-10-28 15:18+0100\n"
@@ -4604,6 +4604,10 @@ msgstr "Skrivbordsmiljö"
 msgid "Session type"
 msgstr "Sessionstyp"
 
+#: src/ubuntu_start.py:2703
+msgid "Desktop connection"
+msgstr "Skrivbordsanslutning"
+
 #: src/ubuntu_start.py:2708
 msgid "Unknown USB device"
 msgstr "Okänd USB-enhet"
@@ -5741,3 +5745,11 @@ msgstr "Kom igång med Ubuntu och felsök anslutna enheter"
 #~ msgstr ""
 #~ "Uppgifterna kan hjälpa andra att förstå ett problem. De innehåller inte "
 #~ "ditt användarnamn, datornamn, nätverksadress eller installerade program."
+
+#: src/ubuntu_start.py:3095
+msgid "Remote desktop"
+msgstr "Fjärrskrivbord"
+
+#: src/ubuntu_start.py:3097
+msgid "Local desktop"
+msgstr "Lokalt skrivbord"

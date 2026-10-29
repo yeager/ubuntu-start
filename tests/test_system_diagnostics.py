@@ -48,6 +48,7 @@ from system_diagnostics import (
     find_graphics_benchmark_tool,
     parse_glmark2_score,
     parse_secure_boot_status,
+    read_remote_session,
     read_secure_boot_status,
     read_memory_status,
     parse_pressure_status,
@@ -263,6 +264,54 @@ class SessionTypeTests(unittest.TestCase):
 
     def test_does_not_guess_a_desktop_when_xdg_values_are_missing(self):
         self.assertIsNone(normalize_desktop_name(None, None))
+
+
+class RemoteSessionTests(unittest.TestCase):
+    @patch.dict("system_diagnostics.os.environ", {"XDG_SESSION_ID": "42"}, clear=True)
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/loginctl")
+    @patch("system_diagnostics._run_local")
+    def test_reads_remote_flag_for_current_session(self, run_local, _which):
+        run_local.return_value = SimpleNamespace(returncode=0, stdout="yes\n")
+
+        self.assertIs(read_remote_session(), True)
+        self.assertEqual(
+            run_local.call_args.args[0],
+            ["/usr/bin/loginctl", "show-session", "42", "--property=Remote", "--value"],
+        )
+
+    @patch.dict("system_diagnostics.os.environ", {}, clear=True)
+    @patch("system_diagnostics.os.getuid", return_value=1002)
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/loginctl")
+    @patch("system_diagnostics._run_local")
+    def test_finds_active_display_session_when_session_id_is_not_in_environment(
+        self, run_local, _which, _getuid,
+    ):
+        run_local.side_effect = [
+            SimpleNamespace(returncode=0, stdout="18410\n"),
+            SimpleNamespace(returncode=0, stdout="yes\n"),
+        ]
+
+        self.assertIs(read_remote_session(), True)
+        self.assertEqual(
+            run_local.call_args_list[0].args[0],
+            ["/usr/bin/loginctl", "show-user", "1002", "--property=Display", "--value"],
+        )
+        self.assertEqual(
+            run_local.call_args_list[1].args[0],
+            ["/usr/bin/loginctl", "show-session", "18410", "--property=Remote", "--value"],
+        )
+
+    @patch.dict("system_diagnostics.os.environ", {"XDG_SESSION_ID": "42"}, clear=True)
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/loginctl")
+    @patch("system_diagnostics._run_local")
+    def test_reports_local_session(self, run_local, _which):
+        run_local.return_value = SimpleNamespace(returncode=0, stdout="no\n")
+
+        self.assertIs(read_remote_session(), False)
+
+    @patch("system_diagnostics.shutil.which", return_value=None)
+    def test_preserves_unavailable_state_when_loginctl_is_missing(self, _which):
+        self.assertIsNone(read_remote_session())
 
 
 class SupportReportTests(unittest.TestCase):

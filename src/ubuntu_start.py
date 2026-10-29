@@ -13,7 +13,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import battery_is_discharging, battery_power_status_unknown, benchmark_score_change_percent, build_support_report, check_internet_connection, clear_benchmark_baselines, find_benchmark_tool, find_graphics_benchmark_tool, load_benchmark_baselines, normalize_desktop_name, normalize_session_type, parse_glmark2_score, pressure_threshold_exceeded, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_reboot_required, read_resource_pressure, read_rfkill_status, read_secure_boot_status, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_cpu_benchmark, run_network_diagnostics, save_benchmark_baseline, sensor_near_critical_limit
+from system_diagnostics import battery_is_discharging, battery_power_status_unknown, benchmark_score_change_percent, build_support_report, check_internet_connection, clear_benchmark_baselines, find_benchmark_tool, find_graphics_benchmark_tool, load_benchmark_baselines, normalize_desktop_name, normalize_session_type, parse_glmark2_score, pressure_threshold_exceeded, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_remote_session, read_reboot_required, read_resource_pressure, read_rfkill_status, read_secure_boot_status, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_cpu_benchmark, run_network_diagnostics, save_benchmark_baseline, sensor_near_critical_limit
 from guide_search import find_guide_matches
 from first_run_state import TASK_IDS as FIRST_RUN_TASK_IDS, load_completed_tasks, save_completed_tasks
 
@@ -2700,6 +2700,7 @@ class UbuntuStart(Adw.Application):
             (_("Ubuntu version"), os_name),
             (_("Desktop"), desktop),
             (_("Session type"), session_type_label),
+            (_("Desktop connection"), desktop_connection_label(read_remote_session())),
             (_("Kernel"), platform.release()),
             (_("System model"), hardware["system_model"] or _("Not available")),
             (_("Processor"), hardware["processor"] or _("Not available")),
@@ -3086,6 +3087,15 @@ def format_milliseconds(value: int | float) -> str:
 
 
 _n = gettext.ngettext
+
+
+def desktop_connection_label(remote_session: bool | None) -> str:
+    """Describe local/remote access without displaying a remote host identity."""
+    if remote_session is True:
+        return _("Remote desktop")
+    if remote_session is False:
+        return _("Local desktop")
+    return _("Not available")
 
 
 def main():

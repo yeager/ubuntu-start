@@ -1018,6 +1018,44 @@ def normalize_session_type(session_type: str | None) -> str | None:
     }.get(session_type.strip().casefold())
 
 
+def read_remote_session(timeout: float = 1.5) -> bool | None:
+    """Report whether the current user's active graphical session is remote.
+
+    Only logind's local Remote flag is returned. Host names, addresses and
+    session identifiers are never included in the result.
+    """
+    loginctl = shutil.which("loginctl")
+    if not loginctl:
+        return None
+
+    env = os.environ.copy()
+    env.update({"LANG": "C", "LC_ALL": "C"})
+    env.pop("LANGUAGE", None)
+    session_id = os.environ.get("XDG_SESSION_ID", "").strip()
+    if not re.fullmatch(r"[0-9]+", session_id):
+        user_session = _run_local(
+            [loginctl, "show-user", str(os.getuid()), "--property=Display", "--value"],
+            timeout,
+            env=env,
+        )
+        if not user_session or user_session.returncode != 0:
+            return None
+        session_id = user_session.stdout.strip()
+        if not re.fullmatch(r"[0-9]+", session_id):
+            return None
+
+    result = _run_local(
+        [loginctl, "show-session", session_id, "--property=Remote", "--value"],
+        timeout,
+        env=env,
+    )
+    if not result or result.returncode != 0:
+        return None
+    return {"yes": True, "true": True, "no": False, "false": False}.get(
+        result.stdout.strip().casefold()
+    )
+
+
 def normalize_desktop_name(current_desktop: str | None, session_desktop: str | None) -> str | None:
     """Return the reported desktop names without guessing when XDG values are absent."""
     for value in (current_desktop, session_desktop):

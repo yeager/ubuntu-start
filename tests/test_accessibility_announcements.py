@@ -2,7 +2,8 @@ import unittest
 from unittest.mock import Mock, call, patch
 
 from ubuntu_start import (
-    Adw, Gdk, GLib, Gtk, GUIDES, SYSTEM_GUIDES, UbuntuStart, format_milliseconds,
+    Adw, Gdk, GLib, Gtk, GUIDES, SYSTEM_GUIDES, UbuntuStart,
+    desktop_connection_label, format_milliseconds,
 )
 from guide_search import find_guide_matches
 
@@ -850,7 +851,13 @@ class AboutDialogTests(unittest.TestCase):
 
 
 class SystemDetailsTests(unittest.TestCase):
+    def test_desktop_connection_label_preserves_unknown_state(self):
+        self.assertEqual(desktop_connection_label(True), "Remote desktop")
+        self.assertEqual(desktop_connection_label(False), "Local desktop")
+        self.assertEqual(desktop_connection_label(None), "Not available")
+
     @patch.dict("ubuntu_start.os.environ", {"XDG_SESSION_TYPE": "wayland"})
+    @patch("ubuntu_start.read_remote_session", return_value=True)
     @patch("ubuntu_start.read_storage_locations", return_value={
         "system": {"total": 1000, "used": 500, "free": 500},
     })
@@ -863,6 +870,7 @@ class SystemDetailsTests(unittest.TestCase):
         details = dict(UbuntuStart.system_details(Mock()))
 
         self.assertEqual(details["Session type"], "Wayland")
+        self.assertEqual(details["Desktop connection"], "Remote desktop")
 
     @patch("ubuntu_start.read_storage_locations")
     @patch("ubuntu_start.read_hardware_details")
