@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.13" date="2026-10-29">
+      <description>
+        <p>Add step-by-step guidance for inspecting failed system services and sharing relevant log details safely.</p>
+        <p xml:lang="sv">Lägg till stegvis hjälp för att granska systemtjänster som misslyckats och dela relevanta logguppgifter på ett säkert sätt.</p>
+      </description>
+    </release>
     <release version="0.3.12" date="2026-10-29">
       <description>
         <p>Report the desktop environment from XDG session data without assuming GNOME when it is unavailable.</p>

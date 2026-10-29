@@ -586,6 +586,41 @@ msgid ""
 msgstr ""
 
 #: src/ubuntu_start.py:114
+msgid "Inspect one service in Terminal"
+msgstr ""
+
+#: src/ubuntu_start.py:114
+msgid ""
+"Open Terminal and run systemctl status SERVICE.service, replacing "
+"SERVICE.service with the exact unit name shown. Read the Active and "
+"Description lines first. This command only displays current status; it does "
+"not change the service."
+msgstr ""
+
+#: src/ubuntu_start.py:115
+msgid "Read recent service messages"
+msgstr ""
+
+#: src/ubuntu_start.py:115
+msgid ""
+"If you need more detail, run journalctl -u SERVICE.service -b --no-pager -n "
+"40 with the same unit name. This displays up to 40 recent messages from this "
+"boot. Review the output before sharing it because logs can contain private "
+"details."
+msgstr ""
+
+#: src/ubuntu_start.py:116
+msgid "Ask for help with useful details"
+msgstr ""
+
+#: src/ubuntu_start.py:116
+msgid ""
+"Share the exact service unit name, what feature is affected, and the "
+"relevant error lines after removing usernames, device names and other "
+"private details. Never post a full log without reviewing it."
+msgstr ""
+
+#: src/ubuntu_start.py:117
 msgid "Get help before changing services"
 msgstr ""
 

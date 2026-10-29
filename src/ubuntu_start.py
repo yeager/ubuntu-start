@@ -111,6 +111,9 @@ GUIDES = [
     (_("A system service is marked failed"), "hardware", [
         (_("Check whether a feature is affected"), _("A failed service does not always mean something is broken. First check whether a device or feature related to the service is actually not working.")),
         (_("Read the service name and description"), _("Refresh System service status in systemd and compare the name with the feature that has a problem. The list does not show why the service failed.")),
+        (_("Inspect one service in Terminal"), _("Open Terminal and run systemctl status SERVICE.service, replacing SERVICE.service with the exact unit name shown. Read the Active and Description lines first. This command only displays current status; it does not change the service.")),
+        (_("Read recent service messages"), _("If you need more detail, run journalctl -u SERVICE.service -b --no-pager -n 40 with the same unit name. This displays up to 40 recent messages from this boot. Review the output before sharing it because logs can contain private details.")),
+        (_("Ask for help with useful details"), _("Share the exact service unit name, what feature is affected, and the relevant error lines after removing usernames, device names and other private details. Never post a full log without reviewing it.")),
         (_("Get help before changing services"), _("Check Ubuntu documentation or ask your system administrator before stopping, restarting or disabling a service. Some failures are temporary or expected.")),
     ]),
     (_("Computer gets hot or the fan is loud"), "hardware", [

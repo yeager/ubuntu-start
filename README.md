@@ -78,7 +78,7 @@ meson compile -C build
 sudo meson install -C build
 ```
 
-To build an installable Debian package after installing the dependencies, run `scripts/build-deb.sh`. It creates `build/packages/ubuntu-start_0.3.12-1_all.deb`. Install it with `sudo apt install ./build/packages/ubuntu-start_0.3.12-1_all.deb`; APT resolves the declared GTK and Python runtime dependencies.
+To build an installable Debian package after installing the dependencies, run `scripts/build-deb.sh`. It creates `build/packages/ubuntu-start_0.3.13-1_all.deb`. Install it with `sudo apt install ./build/packages/ubuntu-start_0.3.13-1_all.deb`; APT resolves the declared GTK and Python runtime dependencies.
 
 The wheel and source distribution are published on [PyPI](https://pypi.org/project/ubuntu-start/). Install the GTK platform dependencies with APT first, then install the package in an isolated environment that can access system PyGObject bindings:
 
@@ -104,7 +104,7 @@ NetworkManager, Bluetooth, audio, storage, battery and hardware summaries use lo
 
 ## Validation
 
-Release `v0.3.12` passed GitHub Actions, including unit tests, translation checks, AppStream validation, staged installation, Debian packaging and PyPI publishing. On Ubuntu 26.10 machine `trv2`, `dpkg-query` reports `ubuntu-start 0.3.12-1`; `dpkg --audit` and `apt-get check` report no package errors. The installed app's Swedish system details report `Openbox` and `X11` when given the active TigerVNC session's XDG values, rather than assuming GNOME. In that session, its AT-SPI tree exposed all eight Swedish guide pages. The framebuffer screenshot was black, so this was not visual verification. GNOME/Wayland rendering and physical hardware remain unverified; GDM offers the Ubuntu GNOME Wayland session but is at its login screen.
+Version `0.3.13` adds step-by-step instructions for inspecting a failed system service and reviewing recent log messages safely. On Ubuntu 26.10 machine `trv2`, 271 unit tests and the Xvfb/AT-SPI accessibility check passed; AppStream validation passed, and package `0.3.13-1` installed with clean `dpkg --audit` and `apt-get check` results. The new Swedish strings are present in the installed catalog. The active desktop is X11; GNOME/Wayland rendering and physical hardware remain unverified because GDM is at its login screen.
 
 The CI workflow launches the application under Xvfb and checks its AT-SPI tree. On Ubuntu 24.04 and 26.04, it verifies that all eight guide pages are named list items, the About, USB, video and display controls are named buttons, the Mouse Keys status row is exposed, and Ctrl+F moves keyboard focus to the named guide-search entry; Orca 51 also lists the app on `trv2`. Ubuntu 26.10 now runs the same unit, accessibility and package checks in CI, and the released app has also passed a local GTK smoke test on that release. Earlier checks confirmed search behavior in a live GTK session and the Bluetooth, Wi-Fi, printer, display, privacy, sound and keyboard panel identifiers in GNOME Control Center. The two Ubuntu driver/update utilities were installed with `dpkg -i`; Additional Drivers and Update Manager opened in Swedish, and `dpkg --audit` and `apt-get check` reported no package errors. Those device and utility checks apply to the earlier revision. Xvfb does not verify physical-device behavior, hardware acceleration or GNOME/Wayland rendering.
 

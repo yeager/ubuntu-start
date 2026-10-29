@@ -8,6 +8,22 @@ from guide_search import find_guide_matches
 
 
 class AccessibilityAnnouncementTests(unittest.TestCase):
+    def test_failed_service_guide_explains_read_only_status_and_log_commands(self):
+        guide = next(guide for guide in GUIDES if guide[0] == "A system service is marked failed")
+        entries = [
+            ("device", index, guide[0], title, description)
+            for index, (title, description) in enumerate(guide[2])
+        ]
+
+        status_matches = find_guide_matches("systemctl status", entries)
+        log_matches = find_guide_matches("journalctl recent messages", entries)
+        step_text = " ".join(" ".join(entry[3:]) for entry in entries)
+
+        self.assertTrue(status_matches)
+        self.assertTrue(log_matches)
+        self.assertIn("does not change the service", step_text)
+        self.assertIn("private details", step_text)
+
     def test_pci_status_lists_ids_and_driver_and_announces_summary(self):
         button = Mock()
         status = Mock()

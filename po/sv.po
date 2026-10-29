@@ -693,6 +693,41 @@ msgstr ""
 "funktionen som inte fungerar. Listan visar inte varför tjänsten misslyckades."
 
 #: src/ubuntu_start.py:114
+msgid "Inspect one service in Terminal"
+msgstr "Granska en tjänst i Terminal"
+
+#: src/ubuntu_start.py:114
+msgid ""
+"Open Terminal and run systemctl status SERVICE.service, replacing "
+"SERVICE.service with the exact unit name shown. Read the Active and "
+"Description lines first. This command only displays current status; it does "
+"not change the service."
+msgstr "Öppna Terminal och kör systemctl status SERVICE.service. Ersätt SERVICE.service med det exakta enhetsnamnet i listan. Börja med raderna Active och Description. Kommandot visar aktuell status och ändrar inte tjänsten."
+
+#: src/ubuntu_start.py:115
+msgid "Read recent service messages"
+msgstr "Läs de senaste tjänstemeddelandena"
+
+#: src/ubuntu_start.py:115
+msgid ""
+"If you need more detail, run journalctl -u SERVICE.service -b --no-pager -n "
+"40 with the same unit name. This displays up to 40 recent messages from this "
+"boot. Review the output before sharing it because logs can contain private "
+"details."
+msgstr "Om du behöver mer information kör du journalctl -u SERVICE.service -b --no-pager -n 40 med samma enhetsnamn. Kommandot visar upp till 40 av de senaste meddelandena från den här uppstarten. Granska utskriften innan du delar den eftersom loggar kan innehålla privata uppgifter."
+
+#: src/ubuntu_start.py:116
+msgid "Ask for help with useful details"
+msgstr "Be om hjälp med relevanta uppgifter"
+
+#: src/ubuntu_start.py:116
+msgid ""
+"Share the exact service unit name, what feature is affected, and the "
+"relevant error lines after removing usernames, device names and other "
+"private details. Never post a full log without reviewing it."
+msgstr "Ange tjänstens exakta enhetsnamn, vilken funktion som påverkas och relevanta felrader. Ta bort användarnamn, enhetsnamn och andra privata uppgifter. Publicera aldrig en hel logg utan att granska den."
+
+#: src/ubuntu_start.py:117
 msgid "Get help before changing services"
 msgstr "Ta hjälp innan du ändrar tjänster"
 
