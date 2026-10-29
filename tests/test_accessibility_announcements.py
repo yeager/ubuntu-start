@@ -8,6 +8,19 @@ from ubuntu_start import (
 from guide_search import find_guide_matches
 
 
+class ApplicationActivationTests(unittest.TestCase):
+    def test_reactivation_presents_existing_window_without_creating_another(self):
+        app = Mock()
+        window = Mock()
+        app.get_windows.return_value = [window]
+
+        with patch("ubuntu_start.Adw.ApplicationWindow") as create_window:
+            UbuntuStart.on_activate(app, app)
+
+        window.present.assert_called_once_with()
+        create_window.assert_not_called()
+
+
 class BackupAppAnnouncementTests(unittest.TestCase):
     def test_installed_backup_app_status_does_not_claim_backup_is_configured(self):
         app = Mock()

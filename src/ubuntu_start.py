@@ -322,6 +322,10 @@ class UbuntuStart(Adw.Application):
         self.connect("activate", self.on_activate)
 
     def on_activate(self, app):
+        windows = app.get_windows()
+        if windows:
+            windows[0].present()
+            return
         win = Adw.ApplicationWindow(application=app, title=_("Ubuntu Start"), default_width=900, default_height=620)
         toolbar = Adw.ToolbarView()
         header = Adw.HeaderBar()
