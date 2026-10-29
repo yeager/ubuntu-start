@@ -996,6 +996,18 @@ class UbuntuStart(Adw.Application):
             (_("Graphics adapters"), graphics),
             (_("Architecture"), platform.machine()),
         ]
+        usb_devices = hardware.get("usb_devices", [])
+        if usb_devices:
+            usb_summaries = []
+            for device in usb_devices:
+                name = device["name"] or _("Unknown USB device")
+                drivers = ", ".join(device["drivers"]) or _("no driver attached")
+                usb_summaries.append(
+                    _("{name} [{id}] (driver: {drivers})").format(
+                        name=name, id=device["id"], drivers=drivers,
+                    )
+                )
+            details.append((_("Connected USB devices"), "; ".join(usb_summaries)))
         for location, storage in storage_locations.items():
             label = _("System filesystem") if location == "system" else _("Home folder filesystem")
             percent = round(storage["used"] / storage["total"] * 100) if storage["total"] else 0

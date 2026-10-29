@@ -199,7 +199,7 @@ class SystemDetailsTests(unittest.TestCase):
     def test_system_details_include_separate_filesystem_capacity(self, _os_release, hardware, storage):
         hardware.return_value = {
             "system_model": "Test model", "processor": "Test CPU", "memory": "8 GiB",
-            "graphics": [], "architecture": "x86_64",
+            "graphics": [], "architecture": "x86_64", "usb_devices": [],
         }
         storage.return_value = {
             "system": {"total": 1000, "used": 500, "free": 500},
@@ -226,6 +226,24 @@ class SystemDetailsTests(unittest.TestCase):
 
         self.assertEqual(sum(label == "System filesystem" for label, _value in details), 1)
         self.assertFalse(any(label == "Home folder filesystem" for label, _value in details))
+
+    @patch("ubuntu_start.read_storage_locations", return_value={})
+    @patch("ubuntu_start.read_hardware_details", return_value={
+        "system_model": None, "processor": None, "memory": None,
+        "graphics": [], "architecture": "x86_64",
+        "usb_devices": [{
+            "id": "046d:c534", "name": "Logitech USB Receiver", "drivers": ["usbhid"],
+        }],
+    })
+    @patch("ubuntu_start.platform.freedesktop_os_release", return_value={"PRETTY_NAME": "Ubuntu Test"})
+    def test_system_details_include_usb_hardware_id_and_driver_without_serial(self, *_mocks):
+        details = dict(UbuntuStart.system_details(Mock()))
+
+        self.assertEqual(
+            details["Connected USB devices"],
+            "Logitech USB Receiver [046d:c534] (driver: usbhid)",
+        )
+        self.assertNotIn("serial", details["Connected USB devices"].casefold())
 
 
 class USBStatusTests(unittest.TestCase):

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ubuntu Start 0.3.1\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 02:13+0100\n"
+"POT-Creation-Date: 2026-10-29 02:18+0100\n"
 "PO-Revision-Date: 2026-10-28 15:18+0100\n"
 "Last-Translator: Ubuntu Start contributors\n"
 "Language-Team: Swedish\n"
@@ -543,7 +543,7 @@ msgstr "Anslut till wifi"
 msgid "Open Wi-Fi Settings"
 msgstr "Öppna wifi-inställningarna"
 
-#: src/ubuntu_start.py:100 src/ubuntu_start.py:1051
+#: src/ubuntu_start.py:100 src/ubuntu_start.py:1063
 msgid "Open Quick Settings"
 msgstr "Öppna snabbinställningarna"
 
@@ -1094,7 +1094,7 @@ msgstr ""
 msgid "Use the Terminal"
 msgstr "Använd terminalen"
 
-#: src/ubuntu_start.py:169 src/ubuntu_start.py:1062
+#: src/ubuntu_start.py:169 src/ubuntu_start.py:1074
 msgid "Open Terminal"
 msgstr "Öppna terminalen"
 
@@ -1225,7 +1225,7 @@ msgstr ""
 "Klistra inte in kommandon som du inte förstår, särskilt inte kommandon med "
 "sudo, rm, diskverktyg eller skript hämtade från internet."
 
-#: src/ubuntu_start.py:189 src/ubuntu_start.py:198 src/ubuntu_start.py:1093
+#: src/ubuntu_start.py:189 src/ubuntu_start.py:198 src/ubuntu_start.py:1105
 #: data/se.nylander.UbuntuStart.desktop:2
 msgid "Ubuntu Start"
 msgstr "Ubuntu Start"
@@ -1246,7 +1246,7 @@ msgstr "Välkommen"
 msgid "Get started"
 msgstr "Kom igång"
 
-#: src/ubuntu_start.py:227 src/ubuntu_start.py:1044
+#: src/ubuntu_start.py:227 src/ubuntu_start.py:1056
 msgid "Tips and tricks"
 msgstr "Tips och knep"
 
@@ -1268,7 +1268,7 @@ msgstr "Nätverk och maskinvara"
 msgid "Drivers"
 msgstr "Drivrutiner"
 
-#: src/ubuntu_start.py:232 src/ubuntu_start.py:1012
+#: src/ubuntu_start.py:232 src/ubuntu_start.py:1024
 msgid "Help and support"
 msgstr "Hjälp och support"
 
@@ -1375,7 +1375,7 @@ msgstr ""
 "uppgifterna i App Center och väljer själv om du vill installera appen."
 
 #: src/ubuntu_start.py:309 src/ubuntu_start.py:681 src/ubuntu_start.py:705
-#: src/ubuntu_start.py:759 src/ubuntu_start.py:1140
+#: src/ubuntu_start.py:759 src/ubuntu_start.py:1152
 msgid "Cancel"
 msgstr "Avbryt"
 
@@ -1605,15 +1605,15 @@ msgstr ""
 "Här visas utrymmet på det lokala filsystemet. Om hemkatalogen ligger på en "
 "egen monterad volym visas den separat."
 
-#: src/ubuntu_start.py:566 src/ubuntu_start.py:1000
+#: src/ubuntu_start.py:566 src/ubuntu_start.py:1012
 msgid "System filesystem"
 msgstr "Systemets filsystem"
 
-#: src/ubuntu_start.py:566 src/ubuntu_start.py:1000
+#: src/ubuntu_start.py:566 src/ubuntu_start.py:1012
 msgid "Home folder filesystem"
 msgstr "Hemkatalogens filsystem"
 
-#: src/ubuntu_start.py:568 src/ubuntu_start.py:1002
+#: src/ubuntu_start.py:568 src/ubuntu_start.py:1014
 #, python-brace-format
 msgid "{free} free of {total} ({percent}% used)"
 msgstr "{free} ledigt av {total} ({percent} % använt)"
@@ -1686,7 +1686,7 @@ msgstr "Processorarkitektur"
 msgid "Not available"
 msgstr "Inte tillgängligt"
 
-#: src/ubuntu_start.py:613
+#: src/ubuntu_start.py:613 src/ubuntu_start.py:1010
 msgid "Connected USB devices"
 msgstr "Anslutna USB-enheter"
 
@@ -2153,56 +2153,69 @@ msgstr "Skrivbordsmiljö"
 msgid "Kernel"
 msgstr "Linuxkärna"
 
-#: src/ubuntu_start.py:1013
+#: src/ubuntu_start.py:1003
+msgid "Unknown USB device"
+msgstr "Okänd USB-enhet"
+
+#: src/ubuntu_start.py:1004
+msgid "no driver attached"
+msgstr "ingen drivrutin ansluten"
+
+#: src/ubuntu_start.py:1006
+#, python-brace-format
+msgid "{name} [{id}] (driver: {drivers})"
+msgstr "{name} [{id}] (drivrutin: {drivers})"
+
+#: src/ubuntu_start.py:1025
 msgid ""
 "Find trusted instructions and prepare useful details when you ask others for "
 "help."
 msgstr ""
 "Läs Ubuntus guider och ta fram systemuppgifter att dela när du ber om hjälp."
 
-#: src/ubuntu_start.py:1015
+#: src/ubuntu_start.py:1027
 msgid "Ubuntu Desktop guide"
 msgstr "Ubuntu Desktop-handbok"
 
-#: src/ubuntu_start.py:1015
+#: src/ubuntu_start.py:1027
 msgid "Official help for settings, accessibility, networks and common tasks."
 msgstr ""
 "Officiell hjälp om inställningar, hjälpmedel, nätverk och vanliga uppgifter."
 
-#: src/ubuntu_start.py:1015
+#: src/ubuntu_start.py:1027
 msgid "Open guide"
 msgstr "Öppna handboken"
 
-#: src/ubuntu_start.py:1016
+#: src/ubuntu_start.py:1028
 msgid "Ask Ubuntu"
 msgstr "Ask Ubuntu"
 
-#: src/ubuntu_start.py:1016
+#: src/ubuntu_start.py:1028
 msgid "Search community answers or ask a focused question about Ubuntu."
 msgstr ""
 "Sök bland svar från andra användare eller ställ en tydlig fråga om Ubuntu."
 
-#: src/ubuntu_start.py:1016
+#: src/ubuntu_start.py:1028
 msgid "Open Ask Ubuntu"
 msgstr "Öppna Ask Ubuntu"
 
-#: src/ubuntu_start.py:1017
+#: src/ubuntu_start.py:1029
 msgid "Ubuntu community forum"
 msgstr "Ubuntus användarforum"
 
-#: src/ubuntu_start.py:1017
+#: src/ubuntu_start.py:1029
 msgid "Get help from Ubuntu users and community members."
 msgstr "Få hjälp av Ubuntu-användare och andra i gemenskapen."
 
-#: src/ubuntu_start.py:1017
+#: src/ubuntu_start.py:1029
 msgid "Open forum"
 msgstr "Öppna forumet"
 
-#: src/ubuntu_start.py:1020
+#: src/ubuntu_start.py:1032
 msgid "System details"
 msgstr "Systemuppgifter"
 
-#: src/ubuntu_start.py:1021
+#: src/ubuntu_start.py:1033
 msgid ""
 "These read-only details help explain a problem. They omit your username, "
 "computer name, serial numbers, network addresses, Wi-Fi names and installed "
@@ -2212,23 +2225,23 @@ msgstr ""
 "användarnamn, datornamn, serienummer, nätverksadresser, wifi-namn eller "
 "installerade program."
 
-#: src/ubuntu_start.py:1026
+#: src/ubuntu_start.py:1038
 msgid "Copy system details"
 msgstr "Kopiera systemuppgifter"
 
-#: src/ubuntu_start.py:1031
+#: src/ubuntu_start.py:1043
 msgid "Review and save support report"
 msgstr "Granska och spara supportrapport"
 
-#: src/ubuntu_start.py:1037
+#: src/ubuntu_start.py:1049
 msgid "When asking for help"
 msgstr "När du ber om hjälp"
 
-#: src/ubuntu_start.py:1038
+#: src/ubuntu_start.py:1050
 msgid "Describe what happened"
 msgstr "Beskriv vad som hände"
 
-#: src/ubuntu_start.py:1038
+#: src/ubuntu_start.py:1050
 msgid ""
 "Include your Ubuntu version, the device model, the exact error and what you "
 "already tried. Remove passwords and other personal details."
@@ -2236,7 +2249,7 @@ msgstr ""
 "Ange Ubuntu-version, enhetsmodell, exakt felmeddelande och vad du redan har "
 "provat. Ta bort lösenord och andra personuppgifter."
 
-#: src/ubuntu_start.py:1045
+#: src/ubuntu_start.py:1057
 msgid ""
 "These are Ubuntu’s default shortcuts. Open Keyboard Settings to review or "
 "change them; key labels can vary by device."
@@ -2244,28 +2257,28 @@ msgstr ""
 "Det här är Ubuntus standardgenvägar. Öppna tangentbordsinställningarna för "
 "att se eller ändra dem. Tangentnamn kan variera mellan olika enheter."
 
-#: src/ubuntu_start.py:1048
+#: src/ubuntu_start.py:1060
 msgid "Find apps and settings"
 msgstr "Hitta appar och inställningar"
 
-#: src/ubuntu_start.py:1048
+#: src/ubuntu_start.py:1060
 msgid "Press the Super key and start typing the name of an app or setting."
 msgstr ""
 "Tryck på Super-tangenten och börja skriva namnet på en app eller inställning."
 
-#: src/ubuntu_start.py:1049
+#: src/ubuntu_start.py:1061
 msgid "Switch between apps"
 msgstr "Växla mellan appar"
 
-#: src/ubuntu_start.py:1049
+#: src/ubuntu_start.py:1061
 msgid "Press Alt+Tab to move between open apps."
 msgstr "Tryck på Alt+Tab för att växla mellan öppna appar."
 
-#: src/ubuntu_start.py:1050
+#: src/ubuntu_start.py:1062
 msgid "Arrange windows side by side"
 msgstr "Placera fönster bredvid varandra"
 
-#: src/ubuntu_start.py:1050
+#: src/ubuntu_start.py:1062
 msgid ""
 "Press Super+Left or Super+Right to place the current window on one side of "
 "the screen."
@@ -2273,7 +2286,7 @@ msgstr ""
 "Tryck på Super+vänster eller Super+höger för att placera fönstret vid ena "
 "sidan av skärmen."
 
-#: src/ubuntu_start.py:1051
+#: src/ubuntu_start.py:1063
 msgid ""
 "Select the system menu at the top-right to reach Wi-Fi, Bluetooth, sound, "
 "brightness and power controls."
@@ -2281,11 +2294,11 @@ msgstr ""
 "Välj systemmenyn uppe till höger för att komma åt Wi-Fi, Bluetooth, ljud, "
 "ljusstyrka och strömreglage."
 
-#: src/ubuntu_start.py:1052
+#: src/ubuntu_start.py:1064
 msgid "Take a screenshot"
 msgstr "Ta en skärmbild"
 
-#: src/ubuntu_start.py:1052
+#: src/ubuntu_start.py:1064
 msgid ""
 "On Ubuntu GNOME, press Print to open the screenshot controls and choose a "
 "screen, window or area."
@@ -2293,11 +2306,11 @@ msgstr ""
 "I Ubuntu GNOME öppnar Print-tangenten skärmbildsverktyget, där du kan välja "
 "skärmen, ett fönster eller ett område."
 
-#: src/ubuntu_start.py:1053
+#: src/ubuntu_start.py:1065
 msgid "Show hidden files"
 msgstr "Visa dolda filer"
 
-#: src/ubuntu_start.py:1053
+#: src/ubuntu_start.py:1065
 msgid ""
 "In Files, press Ctrl+H to show or hide hidden files. Be careful when "
 "changing hidden configuration files."
@@ -2305,19 +2318,19 @@ msgstr ""
 "I Filer trycker du på Ctrl+H för att visa eller dölja dolda filer. Var "
 "försiktig när du ändrar dolda konfigurationsfiler."
 
-#: src/ubuntu_start.py:1054
+#: src/ubuntu_start.py:1066
 msgid "Create a folder in Files"
 msgstr "Skapa en mapp i Filer"
 
-#: src/ubuntu_start.py:1054
+#: src/ubuntu_start.py:1066
 msgid "Press Ctrl+Shift+N to create a folder in the current location."
 msgstr "Tryck på Ctrl+Skift+N för att skapa en mapp på den aktuella platsen."
 
-#: src/ubuntu_start.py:1055
+#: src/ubuntu_start.py:1067
 msgid "Open a location in Files"
 msgstr "Öppna en plats i Filer"
 
-#: src/ubuntu_start.py:1055
+#: src/ubuntu_start.py:1067
 msgid ""
 "Press Ctrl+L in Files to type a folder path or enter a network address. "
 "Press Enter to open it."
@@ -2325,11 +2338,11 @@ msgstr ""
 "Tryck på Ctrl+L i Filer för att skriva en mappsökväg eller nätverksadress. "
 "Tryck på Retur för att öppna den."
 
-#: src/ubuntu_start.py:1056
+#: src/ubuntu_start.py:1068
 msgid "Rename a file"
 msgstr "Byt namn på en fil"
 
-#: src/ubuntu_start.py:1056
+#: src/ubuntu_start.py:1068
 msgid ""
 "Select a file in Files and press F2 to rename it. Check the new name before "
 "pressing Enter."
@@ -2337,11 +2350,11 @@ msgstr ""
 "Markera en fil i Filer och tryck på F2 för att byta namn på den. Kontrollera "
 "det nya namnet innan du trycker på Retur."
 
-#: src/ubuntu_start.py:1057
+#: src/ubuntu_start.py:1069
 msgid "Undo a file action"
 msgstr "Ångra en filåtgärd"
 
-#: src/ubuntu_start.py:1057
+#: src/ubuntu_start.py:1069
 msgid ""
 "Press Ctrl+Z in Files to undo a recent file operation when available. Check "
 "the result before continuing."
@@ -2349,11 +2362,11 @@ msgstr ""
 "Tryck på Ctrl+Z i Filer för att ångra en nyligen utförd filåtgärd när det "
 "går. Kontrollera resultatet innan du fortsätter."
 
-#: src/ubuntu_start.py:1058
+#: src/ubuntu_start.py:1070
 msgid "Keep a backup copy"
 msgstr "Spara en säkerhetskopia"
 
-#: src/ubuntu_start.py:1058
+#: src/ubuntu_start.py:1070
 msgid ""
 "Copy important documents and photos to a separate drive or trusted backup "
 "service. Check occasionally that you can open a backed-up file."
@@ -2362,11 +2375,11 @@ msgstr ""
 "säkerhetskopieringstjänst. Kontrollera ibland att du kan öppna en "
 "säkerhetskopierad fil."
 
-#: src/ubuntu_start.py:1059
+#: src/ubuntu_start.py:1071
 msgid "Choose trusted app sources"
 msgstr "Välj betrodda appkällor"
 
-#: src/ubuntu_start.py:1059
+#: src/ubuntu_start.py:1071
 msgid ""
 "Prefer Ubuntu App Center or the software source recommended by your "
 "organization. Check the publisher before installing an app."
@@ -2374,11 +2387,11 @@ msgstr ""
 "Använd helst Ubuntus Appcenter eller programkällan som rekommenderas av din "
 "organisation. Kontrollera utgivaren innan du installerar en app."
 
-#: src/ubuntu_start.py:1060
+#: src/ubuntu_start.py:1072
 msgid "Switch keyboard layouts"
 msgstr "Växla tangentbordslayout"
 
-#: src/ubuntu_start.py:1060
+#: src/ubuntu_start.py:1072
 msgid ""
 "If you have added more than one layout, press Super+Space to switch between "
 "them."
@@ -2386,15 +2399,15 @@ msgstr ""
 "Om du har lagt till fler än en layout trycker du på Super+Blanksteg för att "
 "växla mellan dem."
 
-#: src/ubuntu_start.py:1061
+#: src/ubuntu_start.py:1073
 msgid "Lock the screen"
 msgstr "Lås skärmen"
 
-#: src/ubuntu_start.py:1061
+#: src/ubuntu_start.py:1073
 msgid "Press Super+L before leaving your computer to lock the screen."
 msgstr "Tryck på Super+L för att låsa skärmen när du lämnar datorn."
 
-#: src/ubuntu_start.py:1062
+#: src/ubuntu_start.py:1074
 msgid ""
 "Ctrl+Alt+T opens Terminal on Ubuntu by default. You can change this shortcut "
 "in Keyboard Settings."
@@ -2402,43 +2415,43 @@ msgstr ""
 "Ctrl+Alt+T öppnar terminalen som standard i Ubuntu. Du kan ändra "
 "kortkommandot i tangentbordsinställningarna."
 
-#: src/ubuntu_start.py:1068
+#: src/ubuntu_start.py:1080
 msgid "Keyboard shortcuts"
 msgstr "Tangentbordsgenvägar"
 
-#: src/ubuntu_start.py:1069
+#: src/ubuntu_start.py:1081
 msgid "Review or change the shortcuts used by your desktop."
 msgstr "Se över eller ändra skrivbordets kortkommandon."
 
-#: src/ubuntu_start.py:1070
+#: src/ubuntu_start.py:1082
 msgid "Open Keyboard Settings"
 msgstr "Öppna tangentbordsinställningarna"
 
-#: src/ubuntu_start.py:1078
+#: src/ubuntu_start.py:1090
 msgid "Clipboard is unavailable."
 msgstr "Urklipp är inte tillgängligt."
 
-#: src/ubuntu_start.py:1082
+#: src/ubuntu_start.py:1094
 msgid "System details copied."
 msgstr "Systemuppgifterna har kopierats."
 
-#: src/ubuntu_start.py:1100
+#: src/ubuntu_start.py:1112
 msgid "An Ubuntu Desktop guide for first-run setup and device troubleshooting."
 msgstr "En guide för att komma igång med Ubuntu Desktop och felsöka enheter."
 
-#: src/ubuntu_start.py:1102
+#: src/ubuntu_start.py:1114
 msgid "Daniel Nylander's website"
 msgstr "Daniel Nylanders webbplats"
 
-#: src/ubuntu_start.py:1103
+#: src/ubuntu_start.py:1115
 msgid "GitHub repository"
 msgstr "Projektet på GitHub"
 
-#: src/ubuntu_start.py:1110
+#: src/ubuntu_start.py:1122
 msgid "Review support report"
 msgstr "Granska supportrapport"
 
-#: src/ubuntu_start.py:1118
+#: src/ubuntu_start.py:1130
 msgid ""
 "Review or edit this report before saving. It stays on this computer unless "
 "you choose to share it. Network addresses, MAC addresses, host names and "
@@ -2448,27 +2461,27 @@ msgstr ""
 "om du inte själv väljer att dela den. Nätverksadresser, MAC-adresser, "
 "datornamn och serienummer utelämnas."
 
-#: src/ubuntu_start.py:1127 src/ubuntu_start.py:1179
+#: src/ubuntu_start.py:1139 src/ubuntu_start.py:1191
 msgid "Close"
 msgstr "Stäng"
 
-#: src/ubuntu_start.py:1128
+#: src/ubuntu_start.py:1140
 msgid "Save report"
 msgstr "Spara rapport"
 
-#: src/ubuntu_start.py:1139
+#: src/ubuntu_start.py:1151
 msgid "Save support report"
 msgstr "Spara supportrapport"
 
-#: src/ubuntu_start.py:1140
+#: src/ubuntu_start.py:1152
 msgid "Save"
 msgstr "Spara"
 
-#: src/ubuntu_start.py:1155
+#: src/ubuntu_start.py:1167
 msgid "Support report saved locally."
 msgstr "Supportrapporten har sparats lokalt."
 
-#: src/ubuntu_start.py:1178
+#: src/ubuntu_start.py:1190
 msgid "Could not open the requested tool"
 msgstr "Det gick inte att öppna verktyget"
 
