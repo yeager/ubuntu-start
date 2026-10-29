@@ -6,7 +6,7 @@ An Ubuntu Desktop guide for first-run setup and device troubleshooting.
 
 ![Ubuntu Start welcome screen in English](screenshots/welcome-en.png)
 
-[Swedish welcome screen](screenshots/welcome-sv.png) · [More screenshots](screenshots/)
+[Swedish welcome screen](screenshots/welcome-sv.png) · [More screenshots](screenshots/) · [benchmark guide (EN)](screenshots/benchmark-guide-en.png) · [benchmarkguiden (SV)](screenshots/benchmark-guide-sv.png)
 
 ![Search results for printer troubleshooting](screenshots/search-en.png)
 
