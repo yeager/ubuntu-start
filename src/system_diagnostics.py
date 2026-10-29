@@ -10,6 +10,7 @@ from importlib import metadata
 from pathlib import Path
 import re
 import shutil
+import statistics
 import subprocess
 import tempfile
 import time
@@ -1174,9 +1175,7 @@ def read_power_profile(timeout: float = 2.0) -> str:
     return profile if profile in {"power-saver", "balanced", "performance"} else "unavailable"
 
 
-def run_cpu_benchmark(duration_seconds: float = 1.0) -> dict[str, float | int]:
-    """Run a short, unprivileged integer workload; useful only for same-version comparisons."""
-    duration_seconds = max(0.1, min(float(duration_seconds), 5.0))
+def _run_cpu_benchmark_sample(duration_seconds: float) -> tuple[int, float]:
     deadline = time.perf_counter() + duration_seconds
     value = 1
     iterations = 0
@@ -1185,10 +1184,29 @@ def run_cpu_benchmark(duration_seconds: float = 1.0) -> dict[str, float | int]:
         value = (value * 1664525 + 1013904223) & 0xFFFFFFFF
         iterations += 1
     elapsed = time.perf_counter() - started
+    return iterations, elapsed
+
+
+def run_cpu_benchmark(duration_seconds: float = 1.0) -> dict[str, float | int]:
+    """Warm up, then use the median of three short integer-workload samples."""
+    duration_seconds = max(0.1, min(float(duration_seconds), 5.0))
+    _warmup_iterations, warmup_elapsed = _run_cpu_benchmark_sample(
+        min(0.2, duration_seconds),
+    )
+    sample_rates = []
+    iterations = 0
+    measured_elapsed = 0.0
+    for _ in range(3):
+        sample_iterations, sample_elapsed = _run_cpu_benchmark_sample(duration_seconds)
+        iterations += sample_iterations
+        measured_elapsed += sample_elapsed
+        if sample_elapsed > 0:
+            sample_rates.append(sample_iterations / sample_elapsed)
     return {
         "iterations": iterations,
-        "duration_seconds": round(elapsed, 3),
-        "iterations_per_second": round(iterations / elapsed) if elapsed else 0,
+        "duration_seconds": round(warmup_elapsed + measured_elapsed, 3),
+        "iterations_per_second": round(statistics.median(sample_rates)) if sample_rates else 0,
+        "samples": len(sample_rates),
     }
 
 
@@ -1200,7 +1218,7 @@ def benchmark_score_change_percent(current: float, previous: float) -> float | N
 
 
 _BENCHMARK_METHODS = {
-    "cpu": "python-integer-loop-v1",
+    "cpu": "python-integer-loop-v2-median3",
     "graphics": "glmark2-score-v1",
 }
 

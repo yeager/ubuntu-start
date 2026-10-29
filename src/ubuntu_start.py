@@ -1191,7 +1191,7 @@ class UbuntuStart(Adw.Application):
             return GLib.SOURCE_REMOVE
 
         def confirmed_cpu():
-            dialog = Adw.AlertDialog(heading=_("Run the CPU benchmark?"), body=_("This runs a one-second, single-threaded CPU workload. It can increase heat and battery use. Save work first; the result is a relative app-specific score, not a whole-system rating."))
+            dialog = Adw.AlertDialog(heading=_("Run the CPU benchmark?"), body=_("After a short warm-up, this runs three one-second, single-threaded CPU measurements and uses their median. It can increase heat and battery use. Save work first; the result is a relative app-specific score, not a whole-system rating."))
             dialog.add_response("cancel", _("Cancel"))
             dialog.add_response("run", _("Run benchmark"))
             dialog.set_default_response("run")
@@ -1203,7 +1203,7 @@ class UbuntuStart(Adw.Application):
             cpu_button.set_sensitive(False)
             graphics_button.set_sensitive(False)
             clear_benchmark_button.set_sensitive(False)
-            message = _("Running CPU benchmark…")
+            message = _("Warming up and measuring CPU…")
             benchmark_results.set_text(message)
             self.announce_to_screen_reader(benchmark_results, message)
             def work():
@@ -1218,9 +1218,9 @@ class UbuntuStart(Adw.Application):
             previous = previous_cpu_score["value"]
             change = benchmark_score_change_percent(score, previous) if previous else None
             if change is not None:
-                message = _("Single-thread CPU: {score} iterations/second; {change} % since the previous run. Keep power and temperature conditions similar when comparing.").format(score=score, change=f"{change:+.1f}")
+                message = _("Single-thread CPU: {score} iterations/second; {change} % since the previous run (median of three samples). Keep power and temperature conditions similar when comparing.").format(score=score, change=f"{change:+.1f}")
             else:
-                message = _("Single-thread CPU baseline: {score} iterations/second ({duration} seconds). Run again after a change to compare.").format(score=score, duration=result["duration_seconds"])
+                message = _("Single-thread CPU baseline: {score} iterations/second (median of three samples over {duration} seconds). Run again after a change to compare.").format(score=score, duration=result["duration_seconds"])
             previous_cpu_score["value"] = score
             saved = save_benchmark_baseline(
                 "cpu", score, result["duration_seconds"],

@@ -122,6 +122,17 @@ class BenchmarkTests(unittest.TestCase):
             self.assertFalse(save_benchmark_baseline("cpu", float("inf"), path=path))
             self.assertFalse(save_benchmark_baseline("unknown", 10, path=path))
 
+    def test_benchmark_baselines_ignore_scores_from_the_old_cpu_method(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "benchmarks.json"
+            path.write_text(
+                '{"schema_version":2,"baselines":{"cpu":'
+                '{"method":"python-integer-loop-v1","score":1000,'
+                f'"app_version":"{get_application_version()}"' + '}}}',
+                encoding="utf-8",
+            )
+            self.assertEqual(load_benchmark_baselines(path), {})
+
     def test_benchmark_baselines_ignore_unsupported_schema_versions(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "benchmarks.json"
@@ -171,6 +182,23 @@ class BenchmarkTests(unittest.TestCase):
         self.assertGreater(result["iterations"], 0)
         self.assertGreater(result["duration_seconds"], 0)
         self.assertGreater(result["iterations_per_second"], 0)
+        self.assertEqual(result["samples"], 3)
+
+    @patch("system_diagnostics._run_cpu_benchmark_sample")
+    def test_cpu_benchmark_uses_median_after_ignoring_warmup(self, run_sample):
+        run_sample.side_effect = [
+            (9999, 0.1),  # Warm-up is not included in the reported score.
+            (100, 0.1),
+            (500, 0.1),
+            (200, 0.1),
+        ]
+
+        result = run_cpu_benchmark(0.1)
+
+        self.assertEqual(result["iterations"], 800)
+        self.assertEqual(result["iterations_per_second"], 2000)
+        self.assertEqual(result["samples"], 3)
+        self.assertEqual(run_sample.call_count, 4)
 
     def test_score_change_compares_to_previous_run(self):
         self.assertEqual(benchmark_score_change_percent(110, 100), 10.0)
