@@ -148,6 +148,13 @@ def main() -> int:
         log.seek(0)
         details = log.read().strip()
         print(f"AT-SPI did not expose expected controls: {', '.join(missing)}", file=sys.stderr)
+        observed_controls = [
+            (role, name)
+            for role, name, _node in entries
+            if name in {"About", "Search all guides and steps"}
+        ]
+        if observed_controls:
+            print(f"Observed accessible roles and names: {observed_controls!r}", file=sys.stderr)
         if details:
             print(details, file=sys.stderr)
         return 1
