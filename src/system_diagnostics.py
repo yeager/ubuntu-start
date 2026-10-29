@@ -508,6 +508,39 @@ def read_memory_status(meminfo_path: str | Path = "/proc/meminfo") -> dict[str, 
     }
 
 
+def parse_pressure_status(output: str) -> dict[str, float] | None:
+    """Read PSI avg10 stall percentages for `some` and `full` categories."""
+    if not isinstance(output, str):
+        return None
+    result: dict[str, float] = {}
+    for line in output.splitlines():
+        fields = line.split()
+        if not fields or fields[0] not in {"some", "full"}:
+            continue
+        avg10 = next((field.partition("=")[2] for field in fields[1:] if field.startswith("avg10=")), None)
+        if avg10 is None:
+            continue
+        try:
+            percentage = float(avg10)
+        except ValueError:
+            continue
+        if math.isfinite(percentage) and 0 <= percentage <= 100:
+            result[fields[0]] = percentage
+    return result or None
+
+
+def read_resource_pressure(pressure_path: str | Path = "/proc/pressure") -> dict[str, dict[str, float]] | None:
+    """Read local Linux pressure-stall averages without recording process details."""
+    root = Path(pressure_path)
+    result = {}
+    for resource in ("cpu", "memory", "io"):
+        output = _read(root / resource)
+        parsed = parse_pressure_status(output) if output else None
+        if parsed:
+            result[resource] = parsed
+    return result or None
+
+
 def lookup_pci_device_name(
     vendor_id: str,
     device_id: str,

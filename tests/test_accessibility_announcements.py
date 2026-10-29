@@ -6,6 +6,32 @@ from guide_search import find_guide_matches
 
 
 class AccessibilityAnnouncementTests(unittest.TestCase):
+    def test_resource_pressure_refresh_announces_all_readings(self):
+        button = Mock()
+        status_label = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+        status = {
+            "cpu": {"some": 2.5},
+            "memory": {"some": 1.0},
+            "io": {"some": 0.0},
+        }
+
+        UbuntuStart.show_resource_pressure(
+            self.app, button, status_label, rows, status, announce=True,
+        )
+
+        self.app.row.assert_any_call(rows, "Tasks waiting on CPU", "2.5% in the last 10 seconds")
+        self.app.row.assert_any_call(rows, "Tasks waiting on memory", "1.0% in the last 10 seconds")
+        self.app.row.assert_any_call(rows, "Tasks waiting on storage I/O", "0.0% in the last 10 seconds")
+        message = (
+            "System pressure updated: Tasks waiting on CPU: 2.5% in the last 10 seconds; "
+            "Tasks waiting on memory: 1.0% in the last 10 seconds; "
+            "Tasks waiting on storage I/O: 0.0% in the last 10 seconds"
+        )
+        status_label.set_text.assert_called_once_with(message)
+        self.app.announce_to_screen_reader.assert_called_once_with(status_label, message)
+
     def test_slow_computer_memory_troubleshooting_is_searchable(self):
         entries = [
             ("device", index, guide_title, step_title, description)

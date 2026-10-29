@@ -32,6 +32,8 @@ from system_diagnostics import (
     read_apt_update_status,
     read_power_profile,
     read_memory_status,
+    parse_pressure_status,
+    read_resource_pressure,
     read_bluetooth_status,
     read_hardware_details,
     read_network_devices,
@@ -465,6 +467,25 @@ class AudioStatusTests(unittest.TestCase):
 
 
 class ParseHardwareTests(unittest.TestCase):
+    def test_parses_pressure_stall_average_percentages(self):
+        output = "some avg10=12.34 avg60=2.00 avg300=0.10 total=100\nfull avg10=1.5 avg60=0.2 avg300=0.0 total=10\n"
+        self.assertEqual(parse_pressure_status(output), {"some": 12.34, "full": 1.5})
+
+    def test_rejects_invalid_pressure_percentages(self):
+        self.assertIsNone(parse_pressure_status("some avg10=101.0 avg60=1 total=0\n"))
+        self.assertIsNone(parse_pressure_status("some avg60=1 total=0\n"))
+
+    def test_reads_available_system_resource_pressure_files(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "cpu").write_text("some avg10=1.0 avg60=1 total=0\nfull avg10=0 avg60=0 total=0\n", encoding="ascii")
+            (root / "memory").write_text("some avg10=2.0 avg60=1 total=0\nfull avg10=0.1 avg60=0 total=0\n", encoding="ascii")
+            result = read_resource_pressure(root)
+        self.assertEqual(result, {
+            "cpu": {"some": 1.0, "full": 0.0},
+            "memory": {"some": 2.0, "full": 0.1},
+        })
+
     def test_reads_ram_and_swap_status_from_meminfo(self):
         with tempfile.TemporaryDirectory() as temporary:
             meminfo = Path(temporary) / "meminfo"

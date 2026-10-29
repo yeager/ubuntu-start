@@ -12,7 +12,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_devices, read_power_profile, read_printer_status, read_storage_locations, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
+from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_devices, read_power_profile, read_printer_status, read_resource_pressure, read_storage_locations, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -95,6 +95,7 @@ GUIDES = [
     ]),
     (_("Computer feels slow"), "hardware", [
         (_("Check memory while it feels slow"), _("Open Network and hardware and refresh Memory use. Compare available RAM and swap while the slowdown is happening.")),
+        (_("Check CPU, memory and storage pressure"), _("Refresh System resource pressure during the slowdown. A higher percentage means tasks spent more time waiting on that resource; the reading is system-wide and does not identify a process.")),
         (_("Close applications you recognize"), _("Save your work, then close applications and browser tabs you are not using. Avoid stopping unfamiliar system processes.")),
         (_("Check free storage"), _("Review the system filesystem in Network and hardware. If it is almost full, follow the safe disk cleanup guide.")),
         (_("Review Ubuntu updates"), _("Check cached update status, then open Software Updater to refresh package information and review any changes.")),
@@ -779,6 +780,26 @@ class UbuntuStart(Adw.Application):
         box.append(memory_box)
         self.refresh_memory_status(memory_refresh, memory_status, memory_rows)
 
+        pressure_box, _pressure_rows = self.page(
+            _("System resource pressure"),
+            _("Linux reports how often at least one task was waiting for CPU time, memory or storage I/O during the last 10 seconds. These system-wide readings do not identify a process or prove the cause of a slowdown."),
+            include_rows=False,
+        )
+        pressure_status = Gtk.Label(label="", xalign=0, wrap=True)
+        pressure_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        pressure_refresh = Gtk.Button(label=_("Refresh system pressure"), halign=Gtk.Align.START)
+        pressure_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_resource_pressure(
+                pressure_refresh, pressure_status, pressure_rows, announce=True,
+            ),
+        )
+        pressure_box.append(pressure_refresh)
+        pressure_box.append(pressure_status)
+        pressure_box.append(pressure_rows)
+        box.append(pressure_box)
+        self.refresh_resource_pressure(pressure_refresh, pressure_status, pressure_rows)
+
         usb_box, _usb_rows = self.page(
             _("Connected USB devices"),
             _("This local list reads USB device names and bound kernel drivers. Serial numbers are not read."),
@@ -1248,6 +1269,48 @@ class UbuntuStart(Adw.Application):
                 available=GLib.format_size(status["available"]),
                 swap=swap_text,
             )
+
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
+
+    def refresh_resource_pressure(self, button, status_label, pressure_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking system pressure…"))
+
+        def read_status():
+            status = read_resource_pressure()
+            GLib.idle_add(
+                self.show_resource_pressure,
+                button, status_label, pressure_rows, status, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_resource_pressure(self, button, status_label, pressure_rows, status, announce=False):
+        button.set_sensitive(True)
+        while (child := pressure_rows.get_first_child()) is not None:
+            pressure_rows.remove(child)
+
+        resource_labels = {
+            "cpu": _("Tasks waiting on CPU"),
+            "memory": _("Tasks waiting on memory"),
+            "io": _("Tasks waiting on storage I/O"),
+        }
+        if not status:
+            message = _("System resource pressure is not available on this system.")
+        else:
+            details = []
+            for resource, label in resource_labels.items():
+                percentage = status.get(resource, {}).get("some")
+                value = (
+                    _("{percent:.1f}% in the last 10 seconds").format(percent=percentage)
+                    if percentage is not None else _("Not available")
+                )
+                self.row(pressure_rows, label, value)
+                details.append(f"{label}: {value}")
+            message = _("System pressure updated: {details}").format(details="; ".join(details))
 
         status_label.set_text(message)
         if announce:

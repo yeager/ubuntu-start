@@ -197,6 +197,22 @@ def main() -> int:
                         time.sleep(0.25)
                     if memory_refresh_button is None:
                         missing.append("button: Refresh memory status on Network and hardware")
+                    pressure_deadline = time.monotonic() + 5
+                    pressure_refresh_button = None
+                    while time.monotonic() < pressure_deadline:
+                        entries = accessible_tree(app)
+                        pressure_refresh_button = next(
+                            (
+                                node for role, name, node in entries
+                                if role in BUTTON_ROLES and name == "Refresh system pressure"
+                            ),
+                            None,
+                        )
+                        if pressure_refresh_button:
+                            break
+                        time.sleep(0.25)
+                    if pressure_refresh_button is None:
+                        missing.append("button: Refresh system pressure on Network and hardware")
                 if not select_page("Welcome"):
                     missing.append("selectable Welcome guide before Ctrl+F")
 
@@ -228,7 +244,7 @@ def main() -> int:
                 )
                 if search_entry and search_entry.get_state_set().contains(Atspi.StateType.FOCUSED):
                     print(
-                        "AT-SPI verified guide names, About, USB, video and memory controls, and the labeled search entry; "
+                        "AT-SPI verified guide names, About, USB, video, memory and system-pressure controls, and the labeled search entry; "
                         "Ctrl+F moved focus to search."
                     )
                     return 0
@@ -241,7 +257,7 @@ def main() -> int:
         observed_controls = [
             (role, name)
             for role, name, _node in entries
-            if name in {"About", "Refresh USB device list", "Refresh video device status", "Open camera guide", "Refresh memory status", "Search all guides and steps"}
+            if name in {"About", "Refresh USB device list", "Refresh video device status", "Open camera guide", "Refresh memory status", "Refresh system pressure", "Search all guides and steps"}
         ]
         if observed_controls:
             print(f"Observed accessible roles and names: {observed_controls!r}", file=sys.stderr)
