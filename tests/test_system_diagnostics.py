@@ -17,6 +17,7 @@ from system_diagnostics import (
     parse_nmcli_device_status,
     parse_pactl_mute,
     parse_pactl_volume,
+    parse_printer_status,
     parse_wpctl_endpoint_name,
     parse_wpctl_volume,
     lookup_oui_vendor,
@@ -26,6 +27,7 @@ from system_diagnostics import (
     read_bluetooth_status,
     read_hardware_details,
     read_network_devices,
+    read_printer_status,
     read_storage_status,
     read_storage_locations,
     read_usb_devices,
@@ -129,6 +131,44 @@ lo:loopback:unmanaged
     @patch("system_diagnostics.shutil.which", return_value="/usr/bin/nmcli")
     def test_reports_network_manager_timeout(self, _which, _run):
         self.assertEqual(read_network_devices(), ([], "timeout"))
+
+
+class PrinterStatusTests(unittest.TestCase):
+    def test_parses_queue_names_and_only_allowlisted_states(self):
+        output = """printer Office_Laser is idle. enabled since Wed Oct 29 10:00:00 2026
+printer Old_Printer disabled since Wed Oct 29 10:00:00 2026 - paused by administrator
+printer Label_Printer is printing. enabled since Wed Oct 29 10:00:00 2026
+printer Queue_Printer is processing job 12. enabled since Wed Oct 29 10:00:00 2026
+printer Stopped_Printer stopped since Wed Oct 29 10:00:00 2026 - stopped
+job user-secret is printing on Office_Laser
+"""
+        self.assertEqual(parse_printer_status(output), [
+            ("Office_Laser", "idle"),
+            ("Old_Printer", "disabled"),
+            ("Label_Printer", "printing"),
+            ("Queue_Printer", "processing"),
+            ("Stopped_Printer", "stopped"),
+        ])
+        self.assertNotIn("user-secret", repr(parse_printer_status(output)))
+
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/lpstat")
+    @patch("system_diagnostics.subprocess.run")
+    def test_queries_local_cups_only_with_stable_locale(self, run, _which):
+        run.return_value = subprocess.CompletedProcess(
+            [], 0, "printer Office_Laser is idle. enabled since now\n", "",
+        )
+        self.assertEqual(read_printer_status(), ([("Office_Laser", "idle")], None))
+        self.assertEqual(run.call_args.args[0], ["/usr/bin/lpstat", "-h", "localhost", "-p"])
+        self.assertEqual(run.call_args.kwargs["env"]["LC_ALL"], "C")
+
+    @patch("system_diagnostics.shutil.which", return_value=None)
+    def test_reports_missing_cups_tools(self, _which):
+        self.assertEqual(read_printer_status(), ([], "not-installed"))
+
+    @patch("system_diagnostics.subprocess.run", side_effect=subprocess.TimeoutExpired("lpstat", 3))
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/lpstat")
+    def test_reports_local_cups_timeout(self, _which, _run):
+        self.assertEqual(read_printer_status(), ([], "timeout"))
 
 
 class BluetoothStatusTests(unittest.TestCase):

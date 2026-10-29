@@ -12,7 +12,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import build_support_report, check_internet_connection, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_network_devices, read_storage_locations, read_usb_devices, read_wifi_link_status, run_network_diagnostics
+from system_diagnostics import build_support_report, check_internet_connection, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_network_devices, read_printer_status, read_storage_locations, read_usb_devices, read_wifi_link_status, run_network_diagnostics
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -111,6 +111,11 @@ SYSTEM_GUIDES = [
         (_("Connect the printer"), _("Turn it on and connect it to the same network as your computer, or connect it with USB.")),
         (_("Add the printer"), _("Open Printers in Settings, select Add Printer and choose the printer Ubuntu finds.")),
         (_("Print a test page"), _("Follow the prompts, then print a test page. Install a model-specific driver only when Ubuntu or the manufacturer recommends it.")),
+    ]),
+    (_("Check printer queue"), ("overview", "printer"), _("Open printer status"), [
+        (_("Refresh the local queue status"), _("Open Network and hardware and select Refresh printer status to read queues from the local CUPS service.")),
+        (_("Check a disabled queue"), _("If a queue is disabled or stopped, check the printer for paper, power or connection problems, then review its message in Printer Settings.")),
+        (_("Send a test page when ready"), _("Once the printer and queue are ready, send a test page from Printer Settings.")),
     ]),
     (_("Pair a Bluetooth device"), ("settings", "bluetooth"), _("Open Bluetooth Settings"), [
         (_("Prepare the device"), _("Charge the device, keep it nearby and follow its instructions to enable pairing mode.")),
@@ -308,6 +313,9 @@ class UbuntuStart(Adw.Application):
         elif kind == "overview" and value == "storage":
             self.main_stack.set_visible_child_name(_("Network and hardware"))
             GLib.timeout_add(50, self.scroll_to_storage_overview)
+        elif kind == "overview" and value == "printer":
+            self.main_stack.set_visible_child_name(_("Network and hardware"))
+            GLib.timeout_add(50, self.scroll_to_printer_status)
         else:
             self.open_app(value)
 
@@ -315,6 +323,15 @@ class UbuntuStart(Adw.Application):
         scroller = self.main_stack.get_visible_child()
         if scroller and self.storage_box.get_mapped():
             found, bounds = self.storage_box.compute_bounds(scroller.get_child())
+            if found:
+                adjustment = scroller.get_vadjustment()
+                adjustment.set_value(bounds.get_y())
+        return GLib.SOURCE_REMOVE
+
+    def scroll_to_printer_status(self):
+        scroller = self.main_stack.get_visible_child()
+        if scroller and self.printer_box.get_mapped():
+            found, bounds = self.printer_box.compute_bounds(scroller.get_child())
             if found:
                 adjustment = scroller.get_vadjustment()
                 adjustment.set_value(bounds.get_y())
@@ -550,6 +567,27 @@ class UbuntuStart(Adw.Application):
         audio_box.append(audio_refresh)
         box.append(audio_box)
         self.refresh_audio_status(output_status, input_status)
+
+        printer_box, _printer_rows = self.page(
+            _("Printer queue status"),
+            _("Read printer queues from the local printing service. This does not send a print job or contact a printer directly."),
+            include_rows=False,
+        )
+        self.printer_box = printer_box
+        printer_status = Gtk.Label(label="", xalign=0, wrap=True)
+        printer_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        printer_refresh = Gtk.Button(label=_("Refresh printer status"), halign=Gtk.Align.START)
+        printer_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_printer_status(
+                printer_refresh, printer_status, printer_rows, announce=True,
+            ),
+        )
+        printer_box.append(printer_refresh)
+        printer_box.append(printer_status)
+        printer_box.append(printer_rows)
+        box.append(printer_box)
+        self.refresh_printer_status(printer_refresh, printer_status, printer_rows)
 
         diagnostic_box, _diagnostic_rows = self.page(
             _("Connection quality"),
@@ -845,6 +883,48 @@ class UbuntuStart(Adw.Application):
             GLib.idle_add(self.show_audio_status, output_row, input_row, status, announce)
 
         threading.Thread(target=read_status, daemon=True).start()
+
+    def refresh_printer_status(self, button, status_label, printer_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking printer queues…"))
+        while (child := printer_rows.get_first_child()) is not None:
+            printer_rows.remove(child)
+
+        def read_status():
+            printers, error = read_printer_status()
+            GLib.idle_add(
+                self.show_printer_status, button, status_label, printer_rows,
+                printers, error, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_printer_status(self, button, status_label, printer_rows, printers, error, announce=False):
+        button.set_sensitive(True)
+        labels = {
+            "idle": _("Ready"),
+            "printing": _("Printing"),
+            "disabled": _("Disabled"),
+            "busy": _("Busy"),
+            "processing": _("Busy"),
+            "stopped": _("Stopped"),
+        }
+        if printers:
+            for name, state in printers:
+                self.row(printer_rows, name, labels.get(state, _("Status unknown")))
+            message = _("Printer status updated: {count} printer queues found.").format(count=len(printers))
+        else:
+            messages = {
+                "not-installed": _("CUPS printer tools are not installed."),
+                "timeout": _("The local printing service did not respond in time."),
+                "unavailable": _("Could not read printer queues from the local printing service."),
+                "no-printers": _("No printer queues were found in the local printing service."),
+            }
+            message = messages.get(error, messages["unavailable"])
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
 
     def refresh_battery_status(self, button, status_label, battery_rows, announce=False):
         button.set_sensitive(False)

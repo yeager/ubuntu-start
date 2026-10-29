@@ -351,6 +351,61 @@ class SystemGuideTests(unittest.TestCase):
         scroller.get_vadjustment().set_value.assert_called_once_with(420.0)
         self.assertEqual(result, GLib.SOURCE_REMOVE)
 
+    @patch("ubuntu_start.GLib.timeout_add")
+    def test_printer_guide_opens_and_schedules_the_local_printer_status(self, timeout_add):
+        app = Mock()
+        app.scroll_to_printer_status = UbuntuStart.scroll_to_printer_status.__get__(app)
+
+        UbuntuStart.open_target(app, ("overview", "printer"))
+
+        app.main_stack.set_visible_child_name.assert_called_once_with("Network and hardware")
+        callback = timeout_add.call_args.args[1]
+        self.assertIs(callback.__self__, app)
+        self.assertEqual(callback.__func__, UbuntuStart.scroll_to_printer_status)
+        self.assertEqual(timeout_add.call_args.args[0], 50)
+
+    def test_printer_status_navigation_scrolls_to_the_printer_card(self):
+        app = Mock()
+        scroller = Mock()
+        bounds = Mock()
+        bounds.get_y.return_value = 880.0
+        app.main_stack.get_visible_child.return_value = scroller
+        app.printer_box.get_mapped.return_value = True
+        app.printer_box.compute_bounds.return_value = (True, bounds)
+
+        result = UbuntuStart.scroll_to_printer_status(app)
+
+        app.printer_box.compute_bounds.assert_called_once_with(scroller.get_child.return_value)
+        scroller.get_vadjustment().set_value.assert_called_once_with(880.0)
+        self.assertEqual(result, GLib.SOURCE_REMOVE)
+
+
+class PrinterStatusAnnouncementTests(unittest.TestCase):
+    def test_printer_refresh_displays_only_queue_name_and_safe_state(self):
+        app = Mock()
+        button = Mock()
+        status_label = Mock()
+        rows = Mock()
+
+        UbuntuStart.show_printer_status(
+            app, button, status_label, rows,
+            [("Office_Laser", "idle")], None, announce=True,
+        )
+
+        button.set_sensitive.assert_called_once_with(True)
+        app.row.assert_called_once_with(rows, "Office_Laser", "Ready")
+        app.announce_to_screen_reader.assert_called_once_with(
+            status_label, "Printer status updated: 1 printer queues found.",
+        )
+
+    def test_no_printer_queues_reports_missing_cups_tools(self):
+        app = Mock()
+        status_label = Mock()
+
+        UbuntuStart.show_printer_status(app, Mock(), status_label, Mock(), [], "not-installed")
+
+        status_label.set_text.assert_called_once_with("CUPS printer tools are not installed.")
+
 
 if __name__ == "__main__":
     unittest.main()

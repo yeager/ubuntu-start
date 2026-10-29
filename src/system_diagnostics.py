@@ -201,6 +201,52 @@ def read_audio_status(timeout: float = 2.0) -> dict[str, tuple[int, bool] | None
     return result
 
 
+def parse_printer_status(output: str) -> list[tuple[str, str]]:
+    """Keep only local CUPS queue names and a small set of state labels."""
+    printers = []
+    for line in output.splitlines():
+        match = re.match(
+            r"^printer\s+(.+?)\s+(?:is\s+)?(idle|printing|disabled|busy|processing|stopped)\b",
+            line.strip(),
+            re.IGNORECASE,
+        )
+        if not match:
+            continue
+        name = " ".join(
+            "".join(character if character.isprintable() else " " for character in match.group(1)).split()
+        )[:100]
+        if name:
+            printers.append((name, match.group(2).casefold()))
+    return printers
+
+
+def read_printer_status(timeout: float = 3.0) -> tuple[list[tuple[str, str]], str | None]:
+    """Read printer queue states from the local CUPS scheduler; never submit a job."""
+    lpstat = shutil.which("lpstat")
+    if not lpstat:
+        return [], "not-installed"
+    env = os.environ.copy()
+    env.update({"LANG": "C", "LC_ALL": "C"})
+    env.pop("LANGUAGE", None)
+    try:
+        result = subprocess.run(
+            [lpstat, "-h", "localhost", "-p"],
+            capture_output=True,
+            check=False,
+            text=True,
+            timeout=timeout,
+            env=env,
+        )
+    except subprocess.TimeoutExpired:
+        return [], "timeout"
+    except OSError:
+        return [], "unavailable"
+    if result.returncode != 0:
+        return [], "unavailable"
+    printers = parse_printer_status(result.stdout)
+    return printers, None if printers else "no-printers"
+
+
 def parse_cpu_model(cpuinfo: str) -> str | None:
     """Return a useful CPU model from Linux procfs content."""
     for line in cpuinfo.splitlines():
