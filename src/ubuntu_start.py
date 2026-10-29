@@ -155,6 +155,13 @@ SYSTEM_GUIDES = [
         (_("Choose and test a flash style"), _("Select the whole screen or focused window if those choices are available. Try a sound alert to check that the flash is noticeable.")),
         (_("Turn off alerts if they distract you"), _("Return to the same section to change the flash style or turn Visual Alerts off.")),
     ]),
+    (_("Free up disk space safely"), ("overview", "storage"), _("Open storage overview"), [
+        (_("Check which filesystem is low"), _("Open Network and hardware and review the available space for the system and home filesystems.")),
+        (_("Review large personal files"), _("In Files, check Downloads, Videos and other folders you recognize. Sort by size when that option is available.")),
+        (_("Remove only files you recognize"), _("Move important files to a separate drive or trusted backup before deleting them. Empty the Trash only after checking its contents.")),
+        (_("Leave system files alone"), _("Do not delete files from system folders or paste cleanup commands that use sudo. Ask for help if you are unsure what a file does.")),
+        (_("Check storage again"), _("Return to the storage overview after cleaning up. If you need space for Ubuntu updates, run Software Updater again when enough space is available.")),
+    ]),
     (_("Install Ubuntu updates"), ("app", "update-manager"), _("Open Software Updater"), [
         (_("Open Software Updater"), _("Ubuntu checks for updates when Software Updater opens. Select Check if it does not start checking.")),
         (_("Review available updates"), _("Read the update summary. Save your work before installing system updates.")),
@@ -298,8 +305,20 @@ class UbuntuStart(Adw.Application):
             self.open_terminal()
         elif kind == "app-center":
             self.confirm_app_center()
+        elif kind == "overview" and value == "storage":
+            self.main_stack.set_visible_child_name(_("Network and hardware"))
+            GLib.timeout_add(50, self.scroll_to_storage_overview)
         else:
             self.open_app(value)
+
+    def scroll_to_storage_overview(self):
+        scroller = self.main_stack.get_visible_child()
+        if scroller and self.storage_box.get_mapped():
+            found, bounds = self.storage_box.compute_bounds(scroller.get_child())
+            if found:
+                adjustment = scroller.get_vadjustment()
+                adjustment.set_value(bounds.get_y())
+        return GLib.SOURCE_REMOVE
 
     def confirm_app_center(self):
         dialog = Adw.AlertDialog(
@@ -562,6 +581,8 @@ class UbuntuStart(Adw.Application):
             _("Storage"),
             _("Local filesystem capacity. A separate home filesystem is shown when your personal files use a different mounted volume."),
         )
+        self.storage_box = storage_box
+        self.storage_rows = storage_rows
         for location, storage in storage_locations.items():
             title = _("System filesystem") if location == "system" else _("Home folder filesystem")
             storage_percent = round(storage["used"] / storage["total"] * 100) if storage["total"] else 0

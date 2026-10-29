@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import Mock, call, patch
 
-from ubuntu_start import Adw, Gdk, Gtk, UbuntuStart
+from ubuntu_start import Adw, Gdk, GLib, Gtk, UbuntuStart
 
 
 class AccessibilityAnnouncementTests(unittest.TestCase):
@@ -319,6 +319,37 @@ class DriverGuideTests(unittest.TestCase):
         self.assertEqual(calls[0].args[3], "Open hardware overview")
         calls[0].args[4]()
         app.main_stack.set_visible_child_name.assert_called_once_with("Network and hardware")
+
+
+class SystemGuideTests(unittest.TestCase):
+    @patch("ubuntu_start.GLib.timeout_add")
+    def test_storage_guide_opens_and_schedules_the_storage_overview(self, timeout_add):
+        app = Mock()
+        app.scroll_to_storage_overview = UbuntuStart.scroll_to_storage_overview.__get__(app)
+
+        UbuntuStart.open_target(app, ("overview", "storage"))
+
+        app.main_stack.set_visible_child_name.assert_called_once_with("Network and hardware")
+        callback = timeout_add.call_args.args[1]
+        self.assertIs(callback.__self__, app)
+        self.assertEqual(callback.__func__, UbuntuStart.scroll_to_storage_overview)
+        self.assertEqual(timeout_add.call_args.args[0], 50)
+        app.open_app.assert_not_called()
+
+    def test_storage_overview_scrolls_to_the_storage_card(self):
+        app = Mock()
+        scroller = Mock()
+        bounds = Mock()
+        bounds.get_y.return_value = 420.0
+        app.main_stack.get_visible_child.return_value = scroller
+        app.storage_box.get_mapped.return_value = True
+        app.storage_box.compute_bounds.return_value = (True, bounds)
+
+        result = UbuntuStart.scroll_to_storage_overview(app)
+
+        app.storage_box.compute_bounds.assert_called_once_with(scroller.get_child.return_value)
+        scroller.get_vadjustment().set_value.assert_called_once_with(420.0)
+        self.assertEqual(result, GLib.SOURCE_REMOVE)
 
 
 if __name__ == "__main__":
