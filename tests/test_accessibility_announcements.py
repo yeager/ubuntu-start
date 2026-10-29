@@ -446,16 +446,17 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
 
         UbuntuStart.show_battery_status(
             self.app, button, status, rows,
-            [{"capacity": 82, "status": "Charging", "design_capacity_percent": 91}],
+            [{"capacity": 82, "status": "Charging", "design_capacity_percent": 91, "cycle_count": 348}],
             announce=True,
         )
 
         button.set_sensitive.assert_called_once_with(True)
         self.app.row.assert_any_call(rows, "Battery 1", "Charge: 82% · Charging")
         self.app.row.assert_any_call(rows, "Estimated capacity vs. design", "91% of original design capacity")
-        status.set_text.assert_called_once_with("Battery status updated: 82% · Charging")
+        self.app.row.assert_any_call(rows, "Reported charge cycles", "348")
+        status.set_text.assert_called_once_with("Battery status updated: 82% · Charging · Charge cycles: 348")
         self.app.announce_to_screen_reader.assert_called_once_with(
-            status, "Battery status updated: 82% · Charging",
+            status, "Battery status updated: 82% · Charging · Charge cycles: 348",
         )
 
     def test_background_battery_refresh_does_not_announce(self):

@@ -920,7 +920,7 @@ def read_storage_locations(
 
 
 def read_battery_status(power_supply_path: str | Path = "/sys/class/power_supply") -> list[dict[str, str | int]]:
-    """Read charge and optional full-charge capacity estimate without device identifiers."""
+    """Read charge, optional cycle count and capacity estimate without device identifiers."""
     batteries = []
     for battery in sorted(Path(power_supply_path).glob("*") if Path(power_supply_path).exists() else []):
         if _read(battery / "type") != "Battery":
@@ -932,6 +932,12 @@ def read_battery_status(power_supply_path: str | Path = "/sys/class/power_supply
         status = _read(battery / "status")
         if 0 <= capacity <= 100:
             details: dict[str, str | int] = {"capacity": capacity, "status": status or "Unknown"}
+            try:
+                cycle_count = int(_read(battery / "cycle_count") or "")
+            except ValueError:
+                cycle_count = -1
+            if cycle_count >= 0:
+                details["cycle_count"] = cycle_count
             for full_name, design_name in (("energy_full", "energy_full_design"), ("charge_full", "charge_full_design")):
                 try:
                     full = int(_read(battery / full_name) or "")
