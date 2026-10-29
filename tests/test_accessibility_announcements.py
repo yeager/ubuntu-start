@@ -173,6 +173,18 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.assertTrue(matches)
         self.assertTrue(all(match[2] == "PCI device is missing or not working" for match in matches))
 
+    def test_package_installation_help_is_searchable(self):
+        entries = [
+            ("system", index, guide_title, step_title, description)
+            for index, (guide_title, _target, _action, steps) in enumerate(SYSTEM_GUIDES)
+            for step_title, description in steps
+        ]
+
+        matches = find_guide_matches("dpkg incomplete package", entries)
+
+        self.assertTrue(matches)
+        self.assertTrue(all(match[2] == "Install Ubuntu updates" for match in matches))
+
     def test_manual_memory_refresh_announces_ram_and_swap_status(self):
         button = Mock()
         status_label = Mock()

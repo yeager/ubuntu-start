@@ -211,6 +211,7 @@ SYSTEM_GUIDES = [
         (_("Verify and repeat"), _("Check that the first backup finishes and restore or open a non-critical file. Repeat backups regularly, especially after important changes.")),
     ]),
     (_("Install Ubuntu updates"), ("app", "update-manager"), _("Open Software Updater"), [
+        (_("Check for incomplete package installations"), _("On the Network and hardware page, run the package health check to review the local dpkg audit. It lists entries but does not repair them. Review any proposed changes in Software Updater, or ask your administrator. Do not remove packages based only on this report.")),
         (_("Open Software Updater"), _("Ubuntu checks for updates when Software Updater opens. Select Check if it does not start checking.")),
         (_("Review available updates"), _("Read the update summary. Save your work before installing system updates.")),
         (_("Install and restart if asked"), _("Select Install Now and enter your password if prompted. Restart only when Ubuntu asks you to.")),
