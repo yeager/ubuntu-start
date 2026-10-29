@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.5" date="2026-10-29">
+      <description>
+        <p>Add a searchable guide for safe, fair comparisons of CPU, graphics and disk benchmarks. Explain how power profile, temperature, background activity, display and drivers can affect results.</p>
+        <p xml:lang="sv">Lägg till en sökbar guide för säkra och rättvisa jämförelser av processor-, grafik- och disktester. Förklara hur strömläge, temperatur, bakgrundsarbete, skärm och drivrutiner påverkar resultaten.</p>
+      </description>
+    </release>
     <release version="0.3.4" date="2026-10-29">
       <description>
         <p>Add an on-demand local Wi-Fi connection check with practical next-step guidance. Add performance readiness checks and cancellable graphics benchmarks, explain network diagnostic results with a searchable guide, and improve hardware label handling and Swedish localization.</p>

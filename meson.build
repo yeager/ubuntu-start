@@ -1,4 +1,4 @@
-project('ubuntu-start', version: '0.3.4', meson_version: '>= 1.0.0')
+project('ubuntu-start', version: '0.3.5', meson_version: '>= 1.0.0')
 
 
 install_data('src/ubuntu_start.py', 'src/system_diagnostics.py', 'src/guide_search.py', install_dir: get_option('prefix') / 'libexec' / 'ubuntu-start')
