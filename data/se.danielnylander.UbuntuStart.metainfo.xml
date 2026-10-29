@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.34" date="2026-10-30">
+      <description>
+        <p>Match gateway manufacturers using the most specific local IEEE assignment available, including MA-M, MA-S and IAB ranges.</p>
+        <p xml:lang="sv">Matcha gatewaytillverkare med den mest specifika lokala IEEE-tilldelning som finns, inklusive MA-M-, MA-S- och IAB-intervall.</p>
+      </description>
+    </release>
     <release version="0.3.33" date="2026-10-29">
       <description>
         <p>Validate gateway MAC addresses before looking up a manufacturer, and skip locally administered addresses that do not identify an OUI.</p>

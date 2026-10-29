@@ -1740,27 +1740,77 @@ def parse_neighbor_mac(output: str) -> str | None:
 
 
 def lookup_oui_vendor(mac: str | None, databases: tuple[str, ...] = (
-    "/usr/share/ieee-data/oui.txt", "/usr/share/hwdata/oui.txt", "/usr/share/misc/oui.txt",
+    "/usr/share/ieee-data/oui36.txt", "/usr/share/ieee-data/mam.txt",
+    "/usr/share/ieee-data/iab.txt", "/usr/share/ieee-data/oui.txt",
+    "/usr/share/hwdata/oui.txt", "/usr/share/misc/oui.txt",
 )) -> str | None:
-    """Match a MAC prefix against an installed IEEE OUI database; never use a web lookup."""
+    """Match the most specific installed IEEE assignment; never use a web lookup."""
     normalized = _normalize_unicast_mac(mac)
     if not normalized:
         return None
     # Locally administered addresses do not identify a manufacturer OUI.
     if int(normalized[:2], 16) & 2:
         return None
-    prefix = normalized.upper().replace(":", "-")[:8]
-    for database in databases:
+    address = normalized.replace(":", "")
+    prefix = address[:6]
+    suffix = int(address[6:], 16)
+    # MA-M, MA-S and IAB registries describe ranges within a 24-bit OUI. Their
+    # range is more specific than the broad OUI entry and must take precedence.
+    range_registries = {"mam.txt", "oui36.txt", "iab.txt"}
+    best_match = None
+    hex_entry = re.compile(
+        r"^([0-9A-Fa-f]{2}(?:-[0-9A-Fa-f]{2}){2})\s+\(hex\)\s+(.+?)\s*$"
+    )
+    base_entry = re.compile(
+        r"^([0-9A-Fa-f]{6})(?:-([0-9A-Fa-f]{6}))?\s+\(base 16\)\s+(.+?)\s*$"
+    )
+
+    def usable_vendor(value: str) -> str | None:
+        vendor = value.strip()
+        return vendor if vendor and vendor.casefold() != "private" else None
+
+    for database_index, database in enumerate(databases):
         try:
             lines = Path(database).read_text(encoding="utf-8", errors="replace").splitlines()
         except OSError:
             continue
-        for line in lines:
-            match = re.match(r"^([0-9A-Fa-f-]{8})\s+\(hex\)\s+(.+?)\s*$", line)
-            if match and match.group(1).upper() == prefix:
-                vendor = match.group(2).strip()
-                return vendor or None
-    return None
+        is_range_registry = Path(database).name.casefold() in range_registries
+        current_prefix = None
+        for line_number, line in enumerate(lines):
+            match = hex_entry.match(line)
+            if match:
+                current_prefix = match.group(1).replace("-", "").upper()
+                if not is_range_registry and current_prefix == prefix:
+                    candidate = (
+                        1 << 24, database_index, line_number,
+                        usable_vendor(match.group(2)),
+                    )
+                    if best_match is None or candidate[:3] < best_match[:3]:
+                        best_match = candidate
+                continue
+
+            match = base_entry.match(line)
+            if not match or current_prefix != prefix:
+                continue
+            first = int(match.group(1), 16)
+            if match.group(2) is None:
+                # A single six-digit OUI in `(base 16)` form is still a broad
+                # 24-bit assignment, not a single 48-bit MAC address.
+                if match.group(1).upper() != prefix:
+                    continue
+                assignment_size = 1 << 24
+            else:
+                last = int(match.group(2), 16)
+                if not first <= suffix <= last:
+                    continue
+                assignment_size = last - first + 1
+            candidate = (
+                assignment_size, database_index, line_number,
+                usable_vendor(match.group(3)),
+            )
+            if best_match is None or candidate[:3] < best_match[:3]:
+                best_match = candidate
+    return best_match[3] if best_match else None
 
 
 def _run_local(

@@ -1708,6 +1708,66 @@ Inst package-two [2.0] (2.1 repo [amd64])
             self.assertIsNone(lookup_oui_vendor("02:11:22:33:44:55", (str(database),)))
             self.assertIsNone(lookup_oui_vendor("01:11:22:33:44:55", (str(database),)))
 
+    def test_matches_specific_ieee_mac_assignment_ranges(self):
+        fixtures = (
+            ("mam.txt", "700000-7FFFFF", "00:11:22:70:01:23"),
+            ("oui36.txt", "AFA000-AFAFFF", "00:11:22:AF:A1:23"),
+            ("iab.txt", "0D7000-0D7FFF", "00:11:22:0D:70:23"),
+        )
+        with tempfile.TemporaryDirectory() as temporary:
+            for filename, assignment_range, address in fixtures:
+                with self.subTest(registry=filename):
+                    registry = Path(temporary) / filename
+                    registry.write_text(
+                        "00-11-22 (hex)\tBroad OUI Vendor\n"
+                        f"{assignment_range} (base 16)\tSpecific Range Vendor\n",
+                        encoding="utf-8",
+                    )
+                    self.assertEqual(
+                        lookup_oui_vendor(address, (str(registry),)),
+                        "Specific Range Vendor",
+                    )
+
+    def test_specific_ieee_assignment_overrides_broad_oui(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            oui = Path(temporary) / "oui.txt"
+            mam = Path(temporary) / "mam.txt"
+            oui.write_text(
+                "00-11-22 (hex)\tBroad OUI Vendor\n"
+                "001122 (base 16)\tBroad OUI Vendor\n",
+                encoding="utf-8",
+            )
+            mam.write_text(
+                "00-11-22 (hex)\tMA-M allocation\n"
+                "000000-00FFFF (base 16)\tSpecific Low MA-M Vendor\n"
+                "700000-7FFFFF (base 16)\tSpecific MA-M Vendor\n",
+                encoding="utf-8",
+            )
+            self.assertEqual(
+                lookup_oui_vendor("00:11:22:70:01:23", (str(oui), str(mam))),
+                "Specific MA-M Vendor",
+            )
+            self.assertEqual(
+                lookup_oui_vendor("00:11:22:00:11:22", (str(oui), str(mam))),
+                "Specific Low MA-M Vendor",
+            )
+            self.assertEqual(
+                lookup_oui_vendor("00:11:22:80:01:23", (str(oui), str(mam))),
+                "Broad OUI Vendor",
+            )
+
+    def test_private_specific_assignment_does_not_fall_back_to_broad_oui(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            oui = Path(temporary) / "oui.txt"
+            mam = Path(temporary) / "mam.txt"
+            oui.write_text("00-11-22 (hex)\tBroad OUI Vendor\n", encoding="utf-8")
+            mam.write_text(
+                "00-11-22 (hex)\tMA-M allocation\n"
+                "700000-7FFFFF (base 16)\tPrivate\n",
+                encoding="utf-8",
+            )
+            self.assertIsNone(lookup_oui_vendor("00:11:22:70:01:23", (str(oui), str(mam))))
+
     @patch("system_diagnostics.shutil.which", side_effect=lambda command: f"/usr/bin/{command}")
     @patch("system_diagnostics.lookup_oui_vendor", return_value="Example Router Co.")
     @patch("system_diagnostics._run_local")
