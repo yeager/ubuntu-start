@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ubuntu Start 0.3.1\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 05:27+0100\n"
+"POT-Creation-Date: 2026-10-29 05:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1273,10 +1273,10 @@ msgstr ""
 
 #: src/ubuntu_start.py:214
 msgid ""
-"On the Network and hardware page, run the package health check to review "
-"the local dpkg audit. It lists entries but does not repair them. Review "
-"any proposed changes in Software Updater, or ask your administrator. Do "
-"not remove packages based only on this report."
+"On the Network and hardware page, run the package health check to review the "
+"local dpkg audit. It lists entries but does not repair them. Review any "
+"proposed changes in Software Updater, or ask your administrator. Do not "
+"remove packages based only on this report."
 msgstr ""
 
 #: src/ubuntu_start.py:215
@@ -3341,6 +3341,64 @@ msgstr ""
 
 #: src/ubuntu_start.py:2130
 msgid "Could not open the requested tool"
+msgstr ""
+
+#: src/ubuntu_start.py:2136
+msgid "Wi-Fi is slow or keeps disconnecting"
+msgstr ""
+
+#: src/ubuntu_start.py:2137
+msgid "Compare the connection near the router"
+msgstr ""
+
+#: src/ubuntu_start.py:2137
+msgid ""
+"Move closer to the router and try the same task again. If it works better "
+"nearby, distance or obstacles may be weakening the signal."
+msgstr ""
+
+#: src/ubuntu_start.py:2138
+msgid "Check the active Wi-Fi link"
+msgstr ""
+
+#: src/ubuntu_start.py:2138
+msgid ""
+"Refresh Network status on the Network and hardware page. When available, "
+"signal values closer to 0 dBm are stronger. Receive and transmit rates "
+"describe the Wi-Fi link, not your measured internet speed."
+msgstr ""
+
+#: src/ubuntu_start.py:2139
+msgid "Compare another device or service"
+msgstr ""
+
+#: src/ubuntu_start.py:2139
+msgid ""
+"Try another device on the same Wi-Fi and another app or website. If several "
+"devices have trouble, check the router or ask your internet provider. If "
+"only this computer is affected, check its adapter and Ubuntu updates."
+msgstr ""
+
+#: src/ubuntu_start.py:2140
+msgid "Look for nearby channel overlap"
+msgstr ""
+
+#: src/ubuntu_start.py:2140
+msgid ""
+"The WiFi Analyzer recommendation on the Network and hardware page can help "
+"you review nearby signal levels and channel use. It opens an external "
+"project page after confirmation; ask the network owner before changing "
+"router settings."
+msgstr ""
+
+#: src/ubuntu_start.py:2141
+msgid "Keep private details out of support requests"
+msgstr ""
+
+#: src/ubuntu_start.py:2141
+msgid ""
+"Share the adapter model, hardware ID and driver if you need help. Do not "
+"share the Wi-Fi password or private network details."
 msgstr ""
 
 #: data/se.nylander.UbuntuStart.desktop:3

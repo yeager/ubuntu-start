@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ubuntu Start 0.3.1\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 05:27+0100\n"
+"POT-Creation-Date: 2026-10-29 05:45+0100\n"
 "PO-Revision-Date: 2026-10-28 15:18+0100\n"
 "Last-Translator: Ubuntu Start contributors\n"
 "Language-Team: Swedish\n"
@@ -1493,10 +1493,10 @@ msgstr "Kontrollera om paketinstallationerna är ofullständiga"
 
 #: src/ubuntu_start.py:214
 msgid ""
-"On the Network and hardware page, run the package health check to review "
-"the local dpkg audit. It lists entries but does not repair them. Review "
-"any proposed changes in Software Updater, or ask your administrator. Do "
-"not remove packages based only on this report."
+"On the Network and hardware page, run the package health check to review the "
+"local dpkg audit. It lists entries but does not repair them. Review any "
+"proposed changes in Software Updater, or ask your administrator. Do not "
+"remove packages based only on this report."
 msgstr ""
 "På sidan Nätverk och maskinvara kör du paketkontrollen för att granska den "
 "lokala dpkg-kontrollen. Den listar poster men reparerar inget. Granska "
@@ -2197,7 +2197,12 @@ msgid ""
 "installations. This read-only check does not use the network or change "
 "system files. If entries appear, review them in Software Updater or ask your "
 "administrator before running repair commands."
-msgstr "Kontrollera om den lokala dpkg-databasen innehåller avbrutna eller ofullständiga paketinstallationer. Kontrollen är skrivskyddad. Den använder inte nätverket och ändrar inga systemfiler. Granska eventuella förslag i Programuppdateraren eller fråga systemadministratören innan du kör reparationskommandon."
+msgstr ""
+"Kontrollera om den lokala dpkg-databasen innehåller avbrutna eller "
+"ofullständiga paketinstallationer. Kontrollen är skrivskyddad. Den använder "
+"inte nätverket och ändrar inga systemfiler. Granska eventuella förslag i "
+"Programuppdateraren eller fråga systemadministratören innan du kör "
+"reparationskommandon."
 
 #: src/ubuntu_start.py:738
 msgid "Package health has not been checked yet."
@@ -3783,6 +3788,80 @@ msgstr "Supportrapporten har sparats lokalt."
 #: src/ubuntu_start.py:2130
 msgid "Could not open the requested tool"
 msgstr "Det gick inte att öppna verktyget"
+
+#: src/ubuntu_start.py:2136
+msgid "Wi-Fi is slow or keeps disconnecting"
+msgstr "Wi-Fi är långsamt eller kopplar från"
+
+#: src/ubuntu_start.py:2137
+msgid "Compare the connection near the router"
+msgstr "Jämför anslutningen nära routern"
+
+#: src/ubuntu_start.py:2137
+msgid ""
+"Move closer to the router and try the same task again. If it works better "
+"nearby, distance or obstacles may be weakening the signal."
+msgstr ""
+"Gå närmare routern och prova samma sak igen. Fungerar det bättre där kan "
+"avstånd eller hinder försvaga signalen."
+
+#: src/ubuntu_start.py:2138
+msgid "Check the active Wi-Fi link"
+msgstr "Kontrollera den aktiva Wi-Fi-länken"
+
+#: src/ubuntu_start.py:2138
+msgid ""
+"Refresh Network status on the Network and hardware page. When available, "
+"signal values closer to 0 dBm are stronger. Receive and transmit rates "
+"describe the Wi-Fi link, not your measured internet speed."
+msgstr ""
+"Uppdatera nätverksstatus på sidan Nätverk och maskinvara. När signalvärden "
+"visas är de starkare ju närmare 0 dBm de ligger. Mottagnings- och "
+"sändningshastigheten gäller Wi-Fi-länken, inte den uppmätta "
+"internethastigheten."
+
+#: src/ubuntu_start.py:2139
+msgid "Compare another device or service"
+msgstr "Jämför med en annan enhet eller tjänst"
+
+#: src/ubuntu_start.py:2139
+msgid ""
+"Try another device on the same Wi-Fi and another app or website. If several "
+"devices have trouble, check the router or ask your internet provider. If "
+"only this computer is affected, check its adapter and Ubuntu updates."
+msgstr ""
+"Prova samma Wi-Fi med en annan enhet och testa en annan app eller webbplats. "
+"Om flera enheter har problem bör du kontrollera routern eller kontakta "
+"internetleverantören. Om bara den här datorn berörs kan du kontrollera "
+"nätverkskortet och leta efter Ubuntu-uppdateringar."
+
+#: src/ubuntu_start.py:2140
+msgid "Look for nearby channel overlap"
+msgstr "Undersök störningar från närliggande kanaler"
+
+#: src/ubuntu_start.py:2140
+msgid ""
+"The WiFi Analyzer recommendation on the Network and hardware page can help "
+"you review nearby signal levels and channel use. It opens an external "
+"project page after confirmation; ask the network owner before changing "
+"router settings."
+msgstr ""
+"WiFi Analyzer-tipset på sidan Nätverk och maskinvara kan hjälpa dig att "
+"undersöka signalstyrka och kanalval i närheten. Efter en bekräftelse öppnas "
+"projektets externa webbsida. Fråga den som ansvarar för nätverket innan du "
+"ändrar routerinställningarna."
+
+#: src/ubuntu_start.py:2141
+msgid "Keep private details out of support requests"
+msgstr "Skydda privata uppgifter när du ber om hjälp"
+
+#: src/ubuntu_start.py:2141
+msgid ""
+"Share the adapter model, hardware ID and driver if you need help. Do not "
+"share the Wi-Fi password or private network details."
+msgstr ""
+"Om du ber om hjälp kan du ange nätverkskortets modell, maskinvaru-ID och "
+"drivrutin. Dela inte Wi-Fi-lösenordet eller privata nätverksuppgifter."
 
 #: data/se.nylander.UbuntuStart.desktop:3
 msgid "Get started with Ubuntu and troubleshoot devices"

@@ -161,6 +161,18 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.assertTrue(matches)
         self.assertTrue(all(match[2] == "Computer gets hot or the fan is loud" for match in matches))
 
+    def test_slow_or_unstable_wifi_help_is_searchable(self):
+        entries = [
+            ("device", index, guide_title, step_title, description)
+            for index, (guide_title, _panel, steps) in enumerate(GUIDES)
+            for step_title, description in steps
+        ]
+
+        matches = find_guide_matches("slow Wi-Fi disconnecting signal channel", entries)
+
+        self.assertTrue(matches)
+        self.assertTrue(all(match[2] == "Wi-Fi is slow or keeps disconnecting" for match in matches))
+
     def test_pci_device_help_is_searchable(self):
         entries = [
             ("device", index, guide_title, step_title, description)
