@@ -107,6 +107,8 @@ NetworkManager, Bluetooth, audio, storage, battery and hardware summaries use lo
 
 ## Validation
 
+Version `0.3.39` includes filesystem-reported file-entry availability in support details and checks every temperature sensor with a reported critical limit for benchmark thermal warnings.
+
 Version `0.3.38` shows filesystem-reported available file entries, which can help explain why files cannot be created despite free byte space.
 
 Version `0.3.37` lists supported resolutions reported by Linux for connected displays, without suggesting which resolution or refresh rate is active.
