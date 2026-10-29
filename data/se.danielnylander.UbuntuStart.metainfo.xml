@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.21" date="2026-10-29">
+      <description>
+        <p>Add a guided file-restoration walkthrough with advice to restore to a separate folder and verify files before replacing current copies.</p>
+        <p xml:lang="sv">Lägg till en guide för att återställa filer, med råd om att först återställa till en separat mapp och kontrollera filerna innan aktuella kopior ersätts.</p>
+      </description>
+    </release>
     <release version="0.3.20" date="2026-10-29">
       <description>
         <p>Show whether Ubuntu’s Déjà Dup Backups app is installed and provide safe next steps without inspecting backup contents or history.</p>

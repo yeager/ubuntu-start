@@ -243,6 +243,13 @@ SYSTEM_GUIDES = [
         (_("Store the backup separately"), _("Choose a separate external drive or trusted online service with enough free space. If you encrypt it, keep the recovery password safe so you can restore your files.")),
         (_("Verify and repeat"), _("Check that the first backup finishes and restore or open a non-critical file. Repeat backups regularly, especially after important changes.")),
     ]),
+    (_("Restore files from a backup"), ("app", "deja-dup"), _("Open Backups"), [
+        (_("Connect the backup location"), _("Connect the separate drive or make the trusted network location used for your backup available. Do not format or initialize a drive just because Ubuntu asks about it.")),
+        (_("Open Backups and choose Restore"), _("Open the Backups app and choose Restore. Select the backup location if asked. If the backup is encrypted, enter its password only in the trusted Backups app; never share it in a support request.")),
+        (_("Choose a backup date and files"), _("Select a date from before the files were lost or changed, then choose the files or folders you need. If you are unsure, restore a single non-critical file first.")),
+        (_("Restore to a separate folder first"), _("When the app offers a destination, choose a new or temporary folder so restored files do not overwrite current files. Compare the restored copy before moving anything into its original location.")),
+        (_("Check the restored files"), _("Open a few restored files and confirm that they contain what you need. Keep the backup until you have checked the restored data and made a fresh backup.")),
+    ]),
     (_("Install Ubuntu updates"), ("app", "update-manager"), _("Open Software Updater"), [
         (_("Check for incomplete package installations"), _("On the Network and hardware page, run the package health check to review the local dpkg audit. It lists entries but does not repair them. Review any proposed changes in Software Updater, or ask your administrator. Do not remove packages based only on this report.")),
         (_("Open Software Updater"), _("Ubuntu checks for updates when Software Updater opens. Select Check if it does not start checking.")),

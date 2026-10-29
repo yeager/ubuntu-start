@@ -1442,6 +1442,29 @@ class SystemGuideTests(unittest.TestCase):
         )
         app.open_uri.assert_not_called()
 
+    def test_backup_restore_guide_is_searchable_and_avoids_overwriting_files(self):
+        guide = next(
+            guide for guide in SYSTEM_GUIDES if guide[0] == "Restore files from a backup"
+        )
+        title, target, action, steps = guide
+        entries = [
+            ("system", index, title, step_title, description)
+            for index, (step_title, description) in enumerate(steps)
+        ]
+        matches = find_guide_matches("restore backup date", entries)
+        step_text = " ".join(f"{step} {description}" for step, description in steps)
+
+        self.assertEqual(target, ("app", "deja-dup"))
+        self.assertEqual(action, "Open Backups")
+        self.assertTrue(matches)
+        self.assertIn("temporary folder", step_text)
+        self.assertIn("never share it", step_text)
+        self.assertIn("fresh backup", step_text)
+
+        app = Mock()
+        UbuntuStart.open_target(app, target)
+        app.open_app.assert_called_once_with("deja-dup")
+
     def test_release_upgrade_guide_requires_confirmation_before_opening_documentation(self):
         app = Mock()
         guide = next(guide for guide in SYSTEM_GUIDES if guide[0] == "Plan an Ubuntu version upgrade")
