@@ -6,6 +6,36 @@ from guide_search import find_guide_matches
 
 
 class AccessibilityAnnouncementTests(unittest.TestCase):
+    def test_temperature_status_lists_sensor_values_and_announces_count(self):
+        button = Mock()
+        status_label = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+
+        UbuntuStart.show_temperature_status(
+            self.app, button, status_label, rows,
+            [{"name": "CPU Package", "temperature_c": 48.6, "critical_c": 100.0}],
+            announce=True,
+        )
+
+        self.app.row.assert_called_once_with(
+            rows, "CPU Package", "48.6 °C · critical threshold 100.0 °C",
+        )
+        message = "Temperature status updated: 1 sensors found."
+        status_label.set_text.assert_called_once_with(message)
+        self.app.announce_to_screen_reader.assert_called_once_with(status_label, message)
+
+    def test_temperature_status_explains_when_no_sensors_are_available(self):
+        status_label = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+
+        UbuntuStart.show_temperature_status(self.app, Mock(), status_label, rows, [])
+
+        status_label.set_text.assert_called_once_with(
+            "No temperature sensors are exposed by Linux on this system.",
+        )
+
     def test_failed_services_are_shown_and_summary_is_announced(self):
         button = Mock()
         status_label = Mock()
@@ -82,6 +112,18 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
 
         self.assertTrue(matches)
         self.assertTrue(all(match[2] == "A system service is marked failed" for match in matches))
+
+    def test_hot_computer_temperature_help_is_searchable(self):
+        entries = [
+            ("device", index, guide_title, step_title, description)
+            for index, (guide_title, _panel, steps) in enumerate(GUIDES)
+            for step_title, description in steps
+        ]
+
+        matches = find_guide_matches("hot fan sensor", entries)
+
+        self.assertTrue(matches)
+        self.assertTrue(all(match[2] == "Computer gets hot or the fan is loud" for match in matches))
 
     def test_manual_memory_refresh_announces_ram_and_swap_status(self):
         button = Mock()

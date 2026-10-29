@@ -37,6 +37,7 @@ from system_diagnostics import (
     read_bluetooth_status,
     parse_failed_services,
     read_failed_services,
+    read_temperature_sensors,
     read_hardware_details,
     read_network_devices,
     read_interface_ip_status,
@@ -500,6 +501,33 @@ class AudioStatusTests(unittest.TestCase):
 
 
 class ParseHardwareTests(unittest.TestCase):
+    def test_reads_hwmon_temperature_and_critical_threshold(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            hwmon = root / "hwmon/hwmon0"
+            hwmon.mkdir(parents=True)
+            (hwmon / "name").write_text("coretemp\n", encoding="ascii")
+            (hwmon / "temp1_label").write_text("Package id 0\n", encoding="ascii")
+            (hwmon / "temp1_input").write_text("48625\n", encoding="ascii")
+            (hwmon / "temp1_crit").write_text("100000\n", encoding="ascii")
+            (hwmon / "temp2_input").write_text("invalid\n", encoding="ascii")
+            result = read_temperature_sensors(root / "hwmon", root / "thermal")
+        self.assertEqual(result, [{
+            "name": "coretemp · Package id 0",
+            "temperature_c": 48.6,
+            "critical_c": 100.0,
+        }])
+
+    def test_falls_back_to_thermal_zones_when_hwmon_has_no_temperatures(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            zone = root / "thermal/thermal_zone0"
+            zone.mkdir(parents=True)
+            (zone / "type").write_text("acpitz\n", encoding="ascii")
+            (zone / "temp").write_text("42000\n", encoding="ascii")
+            result = read_temperature_sensors(root / "hwmon", root / "thermal")
+        self.assertEqual(result, [{"name": "acpitz", "temperature_c": 42.0}])
+
     @patch("system_diagnostics.platform.release", return_value="6.14.0-test")
     @patch("system_diagnostics.platform.freedesktop_os_release", return_value={"PRETTY_NAME": "Ubuntu test"})
     def test_hardware_overview_includes_os_and_kernel_versions(self, _os_release, _release):

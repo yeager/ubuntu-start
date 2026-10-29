@@ -780,6 +780,73 @@ def read_battery_status(power_supply_path: str | Path = "/sys/class/power_supply
     return batteries
 
 
+def read_temperature_sensors(
+    hwmon_path: str | Path = "/sys/class/hwmon",
+    thermal_path: str | Path = "/sys/class/thermal",
+) -> list[dict[str, str | float]]:
+    """Read available local temperature sensors without probing or changing hardware."""
+    sensors = []
+    hwmon_root = Path(hwmon_path)
+    try:
+        hwmon_devices = sorted(hwmon_root.glob("hwmon*"))
+    except OSError:
+        hwmon_devices = []
+
+    for device in hwmon_devices:
+        chip = _read(device / "name") or ""
+        try:
+            inputs = sorted(device.glob("temp*_input"))
+        except OSError:
+            inputs = []
+        for input_path in inputs:
+            raw = _read(input_path)
+            try:
+                millidegrees = int(raw or "")
+            except ValueError:
+                continue
+            if not -40_000 <= millidegrees <= 200_000:
+                continue
+            stem = input_path.name.removesuffix("_input")
+            label = _read(device / f"{stem}_label")
+            name_parts = [part for part in (chip, label) if part]
+            name = " · ".join(name_parts) or stem
+            sensor: dict[str, str | float] = {
+                "name": " ".join("".join(c if c.isprintable() else " " for c in name).split())[:100],
+                "temperature_c": round(millidegrees / 1000, 1),
+            }
+            critical = _read(device / f"{stem}_crit")
+            try:
+                critical_millidegrees = int(critical or "")
+            except ValueError:
+                critical_millidegrees = 0
+            if -40_000 <= critical_millidegrees <= 200_000 and critical_millidegrees > 0:
+                sensor["critical_c"] = round(critical_millidegrees / 1000, 1)
+            sensors.append(sensor)
+
+    if sensors:
+        return sensors
+
+    thermal_root = Path(thermal_path)
+    try:
+        zones = sorted(thermal_root.glob("thermal_zone*"))
+    except OSError:
+        zones = []
+    for zone in zones:
+        raw = _read(zone / "temp")
+        try:
+            millidegrees = int(raw or "")
+        except ValueError:
+            continue
+        if not -40_000 <= millidegrees <= 200_000:
+            continue
+        name = _read(zone / "type") or zone.name
+        sensors.append({
+            "name": " ".join("".join(c if c.isprintable() else " " for c in name).split())[:100],
+            "temperature_c": round(millidegrees / 1000, 1),
+        })
+    return sensors
+
+
 def read_power_profile(timeout: float = 2.0) -> str:
     """Read the active power profile when power-profiles-daemon is available."""
     powerprofilesctl = shutil.which("powerprofilesctl")

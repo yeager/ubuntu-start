@@ -12,7 +12,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_devices, read_power_profile, read_printer_status, read_resource_pressure, read_storage_locations, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
+from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_devices, read_power_profile, read_printer_status, read_resource_pressure, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -104,6 +104,12 @@ GUIDES = [
         (_("Check whether a feature is affected"), _("A failed service does not always mean something is broken. First check whether a device or feature related to the service is actually not working.")),
         (_("Read the service name and description"), _("Refresh System service status in systemd and compare the name with the feature that has a problem. The list does not show why the service failed.")),
         (_("Get help before changing services"), _("Check Ubuntu documentation or ask your system administrator before stopping, restarting or disabling a service. Some failures are temporary or expected.")),
+    ]),
+    (_("Computer gets hot or the fan is loud"), "hardware", [
+        (_("Keep vents clear"), _("Place the computer on a firm surface and keep air vents clear of fabric, dust and other obstructions.")),
+        (_("Check available temperature sensors"), _("Open Network and hardware and refresh Temperature sensor status. Some computers, docks and virtual machines do not expose temperature sensors to Linux.")),
+        (_("Compare readings with device guidance"), _("Sensor labels and normal temperatures vary by model. Check the computer manufacturer’s guidance instead of relying on a universal temperature limit.")),
+        (_("Stop if the computer becomes unusually hot"), _("Save your work and shut down if the computer becomes unusually hot, smells burnt or behaves unpredictably. Contact the manufacturer or support service.")),
     ]),
 ]
 
@@ -827,6 +833,26 @@ class UbuntuStart(Adw.Application):
         box.append(services_box)
         self.refresh_failed_services(services_refresh, services_status, service_rows)
 
+        temperature_box, _temperature_rows = self.page(
+            _("Temperature sensor status"),
+            _("Read temperature values that Linux already exposes. Sensor coverage and normal temperatures vary by model. This check does not stress-test hardware or change fan or power settings."),
+            include_rows=False,
+        )
+        temperature_status = Gtk.Label(label="", xalign=0, wrap=True)
+        temperature_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        temperature_refresh = Gtk.Button(label=_("Refresh temperature status"), halign=Gtk.Align.START)
+        temperature_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_temperature_status(
+                temperature_refresh, temperature_status, temperature_rows, announce=True,
+            ),
+        )
+        temperature_box.append(temperature_refresh)
+        temperature_box.append(temperature_status)
+        temperature_box.append(temperature_rows)
+        box.append(temperature_box)
+        self.refresh_temperature_status(temperature_refresh, temperature_status, temperature_rows)
+
         usb_box, _usb_rows = self.page(
             _("Connected USB devices"),
             _("This local list reads USB device names and bound kernel drivers. Serial numbers are not read."),
@@ -1375,6 +1401,42 @@ class UbuntuStart(Adw.Application):
             message = _("{count} service units are marked as failed.").format(count=len(services))
         else:
             message = _("No failed system services are reported.")
+
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
+
+    def refresh_temperature_status(self, button, status_label, temperature_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking temperature sensors…"))
+
+        def read_status():
+            sensors = read_temperature_sensors()
+            GLib.idle_add(
+                self.show_temperature_status,
+                button, status_label, temperature_rows, sensors, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_temperature_status(self, button, status_label, temperature_rows, sensors, announce=False):
+        button.set_sensitive(True)
+        while (child := temperature_rows.get_first_child()) is not None:
+            temperature_rows.remove(child)
+
+        if sensors:
+            for sensor in sensors:
+                temperature = sensor["temperature_c"]
+                value = _("{temperature:.1f} °C").format(temperature=temperature)
+                if "critical_c" in sensor:
+                    value = _("{temperature:.1f} °C · critical threshold {critical:.1f} °C").format(
+                        temperature=temperature, critical=sensor["critical_c"],
+                    )
+                self.row(temperature_rows, sensor["name"], value)
+            message = _("Temperature status updated: {count} sensors found.").format(count=len(sensors))
+        else:
+            message = _("No temperature sensors are exposed by Linux on this system.")
 
         status_label.set_text(message)
         if announce:
