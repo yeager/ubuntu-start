@@ -1811,3 +1811,17 @@ def build_support_report(
             "gateway_reachable": True if diagnostics.get("gateway_latency_ms") is not None else None,
         }
     return json.dumps(report, ensure_ascii=False, indent=2) + "\n"
+
+
+def is_valid_support_report(report_text: str) -> bool:
+    """Accept only editable JSON documents that retain the support-report schema."""
+    try:
+        report = json.loads(report_text)
+    except (TypeError, json.JSONDecodeError):
+        return False
+    return (
+        isinstance(report, dict)
+        and type(report.get("report_version")) is int
+        and report.get("report_version") == 1
+        and isinstance(report.get("system"), dict)
+    )

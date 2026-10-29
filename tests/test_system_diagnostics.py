@@ -11,6 +11,7 @@ from system_diagnostics import (
     ACCESSIBILITY_SETTINGS,
     parse_accessibility_settings,
     build_support_report,
+    is_valid_support_report,
     parse_cpu_model,
     parse_bluetooth_controller_status,
     parse_default_route,
@@ -346,6 +347,21 @@ class RemoteSessionTests(unittest.TestCase):
 
 
 class SupportReportTests(unittest.TestCase):
+    def test_report_editor_accepts_valid_report_json(self):
+        report = build_support_report([("Architecture", "x86_64")])
+        self.assertTrue(is_valid_support_report(report))
+
+    def test_report_editor_rejects_invalid_json_and_wrong_schema(self):
+        for report in (
+            "not JSON",
+            "[]",
+            '{"report_version": 2, "system": {}}',
+            '{"report_version": true, "system": {}}',
+            '{"report_version": 1, "system": []}',
+        ):
+            with self.subTest(report=report):
+                self.assertFalse(is_valid_support_report(report))
+
     def test_report_contains_only_reviewable_system_details_and_latency(self):
         report = build_support_report(
             [("Ubuntu version", "Ubuntu 24.04"), ("Architecture", "x86_64")],
