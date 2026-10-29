@@ -506,7 +506,7 @@ class AboutDialogTests(unittest.TestCase):
         self.assertTrue(hasattr(Gtk.License, "GPL_3_0_ONLY"))
 
     @patch("ubuntu_start.Adw.AboutDialog")
-    def test_lists_developer_and_both_project_and_personal_sites(self, about_dialog):
+    def test_lists_developer_and_links_to_personal_site_and_project(self, about_dialog):
         app = Mock()
         dialog = about_dialog.return_value
 
@@ -515,7 +515,7 @@ class AboutDialogTests(unittest.TestCase):
         properties = about_dialog.call_args.kwargs
         self.assertEqual(properties["developer_name"], "Daniel Nylander")
         self.assertEqual(properties["developers"], ["Daniel Nylander"])
-        self.assertEqual(properties["website"], "https://www.danielnylander.se")
+        self.assertNotIn("website", properties)
         self.assertEqual(dialog.add_link.call_args_list, [
             call("Daniel Nylander's website", "https://www.danielnylander.se"),
             call("GitHub repository", "https://github.com/yeager/ubuntu-start"),

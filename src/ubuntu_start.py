@@ -1961,7 +1961,6 @@ class UbuntuStart(Adw.Application):
             application_icon=APP_ID,
             developer_name="Daniel Nylander",
             developers=["Daniel Nylander"],
-            website="https://www.danielnylander.se",
             issue_url="https://github.com/yeager/ubuntu-start/issues",
             license_type=Gtk.License.GPL_3_0_ONLY,
             comments=_("An Ubuntu Desktop guide for first-run setup and device troubleshooting."),
