@@ -575,6 +575,19 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.app.system_guide_chooser.set_selected.assert_called_once_with(expected_index)
         self.app.main_stack.set_visible_child_name.assert_called_once_with("System guides")
 
+    def test_open_startup_time_guide_selects_startup_instructions(self):
+        self.app.system_guide_chooser = Mock()
+        self.app.main_stack = Mock()
+
+        UbuntuStart.open_startup_time_guide(self.app)
+
+        expected_index = next(
+            index for index, (title, _target, _action, _steps) in enumerate(SYSTEM_GUIDES)
+            if title == "Understand system startup time"
+        )
+        self.app.system_guide_chooser.set_selected.assert_called_once_with(expected_index)
+        self.app.main_stack.set_visible_child_name.assert_called_once_with("System guides")
+
     def test_open_bluetooth_guide_selects_pairing_instructions(self):
         self.app.system_guide_chooser = Mock()
         self.app.main_stack = Mock()
@@ -1408,6 +1421,53 @@ class DriverGuideTests(unittest.TestCase):
 
 
 class SystemGuideTests(unittest.TestCase):
+    def test_startup_time_guide_explains_scope_and_is_searchable(self):
+        guide = next(
+            guide for guide in SYSTEM_GUIDES
+            if guide[0] == "Understand system startup time"
+        )
+        title, target, action, steps = guide
+        entries = [
+            ("system", index, title, step_title, description)
+            for index, (step_title, description) in enumerate(steps)
+        ]
+        matches = find_guide_matches("slow boot startup time", entries)
+        step_text = " ".join(f"{step} {description}" for step, description in steps)
+
+        self.assertEqual(target, ("overview", "startup-time"))
+        self.assertEqual(action, "Open startup time check")
+        self.assertTrue(matches)
+        self.assertIn("does not measure every app", step_text)
+        self.assertIn("Do not disable or mask system services", step_text)
+
+    @patch("ubuntu_start.GLib.timeout_add")
+    def test_startup_time_guide_opens_the_matching_diagnostic_card(self, timeout_add):
+        app = Mock()
+        app.scroll_to_startup_time = UbuntuStart.scroll_to_startup_time.__get__(app)
+
+        UbuntuStart.open_target(app, ("overview", "startup-time"))
+
+        app.main_stack.set_visible_child_name.assert_called_once_with("Network and hardware")
+        callback = timeout_add.call_args.args[1]
+        self.assertIs(callback.__self__, app)
+        self.assertEqual(callback.__func__, UbuntuStart.scroll_to_startup_time)
+        self.assertEqual(timeout_add.call_args.args[0], 50)
+
+    def test_startup_time_card_scrolls_into_view(self):
+        app = Mock()
+        scroller = Mock()
+        bounds = Mock()
+        bounds.get_y.return_value = 770.0
+        app.main_stack.get_visible_child.return_value = scroller
+        app.startup_time_box.get_mapped.return_value = True
+        app.startup_time_box.compute_bounds.return_value = (True, bounds)
+
+        result = UbuntuStart.scroll_to_startup_time(app)
+
+        app.startup_time_box.compute_bounds.assert_called_once_with(scroller.get_child.return_value)
+        scroller.get_vadjustment().set_value.assert_called_once_with(770.0)
+        self.assertEqual(result, GLib.SOURCE_REMOVE)
+
     def test_bluetooth_audio_guide_is_searchable_and_explains_call_profile_tradeoff(self):
         guide = next(guide for guide in SYSTEM_GUIDES if guide[0] == "Fix Bluetooth audio")
         title, target, action, steps = guide
@@ -1635,6 +1695,37 @@ class SystemGuideTests(unittest.TestCase):
         app.printer_box.compute_bounds.assert_called_once_with(scroller.get_child.return_value)
         scroller.get_vadjustment().set_value.assert_called_once_with(880.0)
         self.assertEqual(result, GLib.SOURCE_REMOVE)
+
+
+class StartupTimingStatusAnnouncementTests(unittest.TestCase):
+    def test_reported_boot_timing_is_shown_and_announced(self):
+        app = Mock()
+        status = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+        timing = "Startup finished in 2.1s (kernel) + 4.3s (userspace) = 6.4s"
+
+        UbuntuStart.show_startup_timing(app, Mock(), status, rows, timing, None, announce=True)
+
+        app.row.assert_called_once_with(rows, "Reported boot timing", timing)
+        message = (
+            "Systemd reported the startup timing above. It does not include every app started after sign-in."
+        )
+        status.set_text.assert_called_once_with(message)
+        app.announce_to_screen_reader.assert_called_once_with(status, message)
+
+    def test_missing_systemd_analyze_is_explained(self):
+        status = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+        button = Mock()
+
+        UbuntuStart.show_startup_timing(
+            Mock(), button, status, rows, None, "not-installed",
+        )
+
+        button.set_sensitive.assert_called_once_with(True)
+        status.set_text.assert_called_once_with("systemd-analyze is not installed.")
 
 
 class PrinterStatusAnnouncementTests(unittest.TestCase):

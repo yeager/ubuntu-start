@@ -13,7 +13,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import battery_is_discharging, battery_power_status_unknown, benchmark_score_change_percent, build_support_report, check_internet_connection, clear_benchmark_baselines, find_benchmark_tool, find_graphics_benchmark_tool, load_benchmark_baselines, normalize_desktop_name, normalize_session_type, parse_glmark2_score, pressure_threshold_exceeded, read_accessibility_settings, read_apt_update_status, read_audio_status, read_backup_tool_status, read_battery_status, read_bluetooth_status, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_remote_session, read_reboot_required, read_resource_pressure, read_rfkill_status, read_secure_boot_status, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_cpu_benchmark, run_network_diagnostics, save_benchmark_baseline, sensor_near_critical_limit
+from system_diagnostics import battery_is_discharging, battery_power_status_unknown, benchmark_score_change_percent, build_support_report, check_internet_connection, clear_benchmark_baselines, find_benchmark_tool, find_graphics_benchmark_tool, load_benchmark_baselines, normalize_desktop_name, normalize_session_type, parse_glmark2_score, pressure_threshold_exceeded, read_accessibility_settings, read_apt_update_status, read_audio_status, read_backup_tool_status, read_battery_status, read_bluetooth_status, read_boot_timing, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_remote_session, read_reboot_required, read_resource_pressure, read_rfkill_status, read_secure_boot_status, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_cpu_benchmark, run_network_diagnostics, save_benchmark_baseline, sensor_near_critical_limit
 from guide_search import find_guide_matches
 from first_run_state import TASK_IDS as FIRST_RUN_TASK_IDS, load_completed_tasks, save_completed_tasks
 
@@ -168,6 +168,12 @@ SYSTEM_GUIDES = [
         (_("Read the gateway response"), _("The gateway time measures one ping between this computer and the local router. A Wi-Fi signal, router load and local network conditions can affect it. Some gateways ignore ping, so no reply alone does not prove that the network is down.")),
         (_("Compare the two checks"), _("If the gateway responds but DNS fails, review DNS settings and check for a network sign-in page. If gateway replies are slow on Wi-Fi, move closer to the access point and compare again. These checks suggest where to look; they do not diagnose the cause.")),
         (_("Understand the manufacturer match"), _("The gateway manufacturer is matched locally from its MAC address. The database may be missing or outdated, and a randomized or reassigned address may not identify the router maker.")),
+    ]),
+    (_("Understand system startup time"), ("overview", "startup-time"), _("Open startup time check"), [
+        (_("Read the reported boot timing"), _("Open Network and hardware and select Check startup time. The check reads the timing summary reported by systemd and makes no system changes.")),
+        (_("Understand the timing parts"), _("The summary can include firmware, boot loader, kernel and userspace time. Firmware and boot loader values appear only when the system reports them.")),
+        (_("Know what the timing leaves out"), _("Systemd's boot timing does not measure every app that starts after you sign in. If the desktop becomes slow only after login, the reported boot time may not explain it.")),
+        (_("Avoid changing services based on one reading"), _("Boot time varies with updates and background work. Do not disable or mask system services based on one timing result; ask for help before changing them.")),
     ]),
     (_("Check date and time"), ("settings", ("system", "datetime")), _("Open Date & Time Settings"), [
         (_("Check the time zone"), _("Make sure the selected time zone matches your location. A wrong time zone changes the displayed local time.")),
@@ -611,6 +617,9 @@ class UbuntuStart(Adw.Application):
         elif kind == "overview" and value == "network-diagnostics":
             self.main_stack.set_visible_child_name(_("Network and hardware"))
             GLib.timeout_add(50, self.scroll_to_network_diagnostics)
+        elif kind == "overview" and value == "startup-time":
+            self.main_stack.set_visible_child_name(_("Network and hardware"))
+            GLib.timeout_add(50, self.scroll_to_startup_time)
         else:
             self.open_app(value)
 
@@ -638,6 +647,15 @@ class UbuntuStart(Adw.Application):
             found, bounds = self.network_diagnostics_box.compute_bounds(scroller.get_child())
             if found:
                 scroller.get_vadjustment().set_value(bounds.get_y())
+        return GLib.SOURCE_REMOVE
+
+    def scroll_to_startup_time(self):
+        scroller = self.main_stack.get_visible_child()
+        if scroller and self.startup_time_box.get_mapped():
+            found, bounds = self.startup_time_box.compute_bounds(scroller.get_child())
+            if found:
+                adjustment = scroller.get_vadjustment()
+                adjustment.set_value(bounds.get_y())
         return GLib.SOURCE_REMOVE
 
     def confirm_app_center(self):
@@ -1505,6 +1523,29 @@ class UbuntuStart(Adw.Application):
         box.append(services_box)
         self.refresh_failed_services(services_refresh, services_status, service_rows)
 
+        startup_box, _startup_rows = self.page(
+            _("System startup time"),
+            _("Read systemd's local boot-time summary. This check makes no system changes, does not identify a slow service and does not measure every app that starts after sign-in."),
+            include_rows=False,
+        )
+        self.startup_time_box = startup_box
+        startup_status = Gtk.Label(label=_("Startup time has not been checked yet."), xalign=0, wrap=True)
+        startup_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        startup_refresh = Gtk.Button(label=_("Check startup time"), halign=Gtk.Align.START)
+        startup_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_startup_timing(
+                startup_refresh, startup_status, startup_rows, announce=True,
+            ),
+        )
+        startup_guide = Gtk.Button(label=_("Open startup time guide"), halign=Gtk.Align.START)
+        startup_guide.connect("clicked", lambda *_: self.open_startup_time_guide())
+        startup_box.append(startup_refresh)
+        startup_box.append(startup_guide)
+        startup_box.append(startup_status)
+        startup_box.append(startup_rows)
+        box.append(startup_box)
+
         temperature_box, _temperature_rows = self.page(
             _("Temperature sensor status"),
             _("Read temperature values that Linux already exposes. Sensor coverage and normal temperatures vary by model. This check does not stress-test hardware or change fan or power settings."),
@@ -1657,6 +1698,14 @@ class UbuntuStart(Adw.Application):
         guide_index = next(
             index for index, (title, _target, _action, _steps) in enumerate(SYSTEM_GUIDES)
             if title == _("Check date and time")
+        )
+        self.system_guide_chooser.set_selected(guide_index)
+        self.main_stack.set_visible_child_name(_("System guides"))
+
+    def open_startup_time_guide(self):
+        guide_index = next(
+            index for index, (title, _target, _action, _steps) in enumerate(SYSTEM_GUIDES)
+            if title == _("Understand system startup time")
         )
         self.system_guide_chooser.set_selected(guide_index)
         self.main_stack.set_visible_child_name(_("System guides"))
@@ -2414,6 +2463,41 @@ class UbuntuStart(Adw.Application):
                     details.append(f"{full_label}: {full_value}")
             message = _("System pressure updated: {details}").format(details="; ".join(details))
 
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
+
+    def refresh_startup_timing(self, button, status_label, timing_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking system startup time…"))
+        while (child := timing_rows.get_first_child()) is not None:
+            timing_rows.remove(child)
+
+        def read_status():
+            timing, error = read_boot_timing()
+            GLib.idle_add(
+                self.show_startup_timing,
+                button, status_label, timing_rows, timing, error, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_startup_timing(self, button, status_label, timing_rows, timing, error, announce=False):
+        button.set_sensitive(True)
+        while (child := timing_rows.get_first_child()) is not None:
+            timing_rows.remove(child)
+        error_messages = {
+            "not-installed": _("systemd-analyze is not installed."),
+            "unavailable": _("Could not read system startup time."),
+        }
+        if error:
+            message = error_messages.get(error, error_messages["unavailable"])
+        elif timing:
+            self.row(timing_rows, _("Reported boot timing"), timing)
+            message = _("Systemd reported the startup timing above. It does not include every app started after sign-in.")
+        else:
+            message = error_messages["unavailable"]
         status_label.set_text(message)
         if announce:
             self.announce_to_screen_reader(status_label, message)

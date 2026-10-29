@@ -642,6 +642,7 @@ def main() -> int:
                         "Refresh radio status", "Open battery and charging guide",
                         "Open Wi-Fi troubleshooting guide", "Open sound and microphone guide",
                         "Open Sound Settings", "Open Bluetooth audio guide",
+                        "Check startup time", "Open startup time guide",
                         "Refresh display status", "Open external display guide",
                         "Check backup app", "Open Backups", "Open Ubuntu App Center",
                     ):
@@ -650,6 +651,41 @@ def main() -> int:
                             for role, name, _node in entries
                         ):
                             missing.append(f"button: {control} on Network and hardware")
+                    startup_button = next(
+                        (
+                            node for role, name, node in entries
+                            if role in BUTTON_ROLES and name == "Check startup time"
+                        ),
+                        None,
+                    )
+                    try:
+                        startup_activated = bool(
+                            startup_button
+                            and startup_button.get_n_actions() > 0
+                            and startup_button.do_action(0)
+                        )
+                    except Exception:
+                        startup_activated = False
+                    if not startup_activated:
+                        missing.append("startup time check could not be activated")
+                    else:
+                        startup_deadline = time.monotonic() + 5
+                        startup_status_updated = False
+                        while time.monotonic() < startup_deadline:
+                            entries = accessible_tree(app)
+                            startup_status_updated = any(
+                                role == "label" and name.startswith((
+                                    "Systemd reported the startup timing above.",
+                                    "systemd-analyze is not installed.",
+                                    "Could not read system startup time.",
+                                ))
+                                for role, name, _node in entries
+                            )
+                            if startup_status_updated:
+                                break
+                            time.sleep(0.25)
+                        if not startup_status_updated:
+                            missing.append("startup time result was not exposed to AT-SPI")
                 if not select_page("Drivers"):
                     missing.append("selectable Drivers page")
                 else:
@@ -700,7 +736,7 @@ def main() -> int:
                 )
                 if search_entry and search_entry.get_state_set().contains(Atspi.StateType.FOCUSED):
                     print(
-                        "AT-SPI verified guide names, About, Mouse Keys, Accessibility Settings, USB, PCI, Bluetooth pairing and audio, wireless-radio, Wi-Fi, sound, battery, backup-app controls, date/time, video, displays, printer queue guide, memory, benchmark readiness, graphics benchmark result and cancellation, system-pressure, service-status, temperature, package-health and Secure Boot controls, and the labeled search entry; "
+                        "AT-SPI verified guide names, About, Mouse Keys, Accessibility Settings, USB, PCI, Bluetooth pairing and audio, wireless-radio, Wi-Fi, sound, startup-time, battery, backup-app controls, date/time, video, displays, printer queue guide, memory, benchmark readiness, graphics benchmark result and cancellation, system-pressure, service-status, temperature, package-health and Secure Boot controls, and the labeled search entry; "
                         "Ctrl+F moved focus to search."
                     )
                     return 0
@@ -713,7 +749,7 @@ def main() -> int:
         observed_controls = [
             (role, name)
             for role, name, _node in entries
-            if name in {"About", "Mouse Keys", "Open Accessibility Settings", "Refresh USB device list", "Refresh PCI device list", "Open Bluetooth pairing guide", "Open Bluetooth audio guide", "Open date and time guide", "Refresh radio status", "Open Wi-Fi troubleshooting guide", "Open sound and microphone guide", "Open battery and charging guide", "Refresh video device status", "Open camera guide", "Refresh display status", "Open external display guide", "Refresh printer status", "Open print queue guide", "Refresh memory status", "Check benchmark readiness", "Run CPU benchmark", "Run graphics benchmark", "Cancel graphics benchmark", "Open disk read benchmark", "Open GNOME disk benchmark guide", "Open optional disk write benchmark…", "Refresh system pressure", "Refresh system service status", "Refresh temperature status", "Check package health", "Check backup app", "Open Backups", "Open Ubuntu App Center", "Check Secure Boot status", "Search all guides and steps"}
+            if name in {"About", "Mouse Keys", "Open Accessibility Settings", "Refresh USB device list", "Refresh PCI device list", "Open Bluetooth pairing guide", "Open Bluetooth audio guide", "Open date and time guide", "Refresh radio status", "Open Wi-Fi troubleshooting guide", "Open sound and microphone guide", "Check startup time", "Open startup time guide", "Open battery and charging guide", "Refresh video device status", "Open camera guide", "Refresh display status", "Open external display guide", "Refresh printer status", "Open print queue guide", "Refresh memory status", "Check benchmark readiness", "Run CPU benchmark", "Run graphics benchmark", "Cancel graphics benchmark", "Open disk read benchmark", "Open GNOME disk benchmark guide", "Open optional disk write benchmark…", "Refresh system pressure", "Refresh system service status", "Refresh temperature status", "Check package health", "Check backup app", "Open Backups", "Open Ubuntu App Center", "Check Secure Boot status", "Search all guides and steps"}
         ]
         if observed_controls:
             print(f"Observed accessible roles and names: {observed_controls!r}", file=sys.stderr)

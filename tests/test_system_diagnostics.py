@@ -29,6 +29,7 @@ from system_diagnostics import (
     read_pci_devices,
     read_audio_status,
     read_backup_tool_status,
+    read_boot_timing,
     read_accessibility_settings,
     parse_apt_upgrade_simulation,
     parse_dpkg_audit,
@@ -799,6 +800,38 @@ bad@device\\x20name.service loaded failed failed Device service description
     @patch("system_diagnostics.shutil.which", return_value=None)
     def test_handles_missing_systemctl(self, _which):
         self.assertEqual(read_failed_services(), ([], "not-installed"))
+
+
+class BootTimingTests(unittest.TestCase):
+    @patch("system_diagnostics._run_local")
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/systemd-analyze")
+    def test_reads_only_the_local_systemd_timing_summary(self, _which, run_local):
+        run_local.return_value = subprocess.CompletedProcess(
+            [], 0,
+            "Startup finished in 2.1s (kernel) + 4.3s (userspace) = 6.4s\n"
+            "graphical.target reached after 4.2s in userspace.\n",
+            "",
+        )
+
+        timing, error = read_boot_timing()
+
+        self.assertEqual(error, None)
+        self.assertEqual(
+            timing,
+            "Startup finished in 2.1s (kernel) + 4.3s (userspace) = 6.4s\n"
+            "graphical.target reached after 4.2s in userspace.",
+        )
+        self.assertEqual(run_local.call_args.args[0], ["/usr/bin/systemd-analyze", "time"])
+        self.assertEqual(run_local.call_args.kwargs["env"]["LC_ALL"], "C")
+
+    @patch("system_diagnostics.shutil.which", return_value=None)
+    def test_reports_when_systemd_analyze_is_missing(self, _which):
+        self.assertEqual(read_boot_timing(), (None, "not-installed"))
+
+    @patch("system_diagnostics._run_local", return_value=None)
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/systemd-analyze")
+    def test_reports_when_timing_cannot_be_read(self, _which, _run_local):
+        self.assertEqual(read_boot_timing(), (None, "unavailable"))
 
 
 class BluetoothStatusTests(unittest.TestCase):

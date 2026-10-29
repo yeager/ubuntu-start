@@ -707,6 +707,30 @@ def read_failed_services(timeout: float = 3.0) -> tuple[list[tuple[str, str]], s
     return parse_failed_services(result.stdout), None
 
 
+def read_boot_timing(timeout: float = 3.0) -> tuple[str | None, str | None]:
+    """Read systemd's local boot timing summary without changing system state."""
+    systemd_analyze = shutil.which("systemd-analyze")
+    if not systemd_analyze:
+        return None, "not-installed"
+    result = _run_local(
+        [systemd_analyze, "time"],
+        timeout,
+        env={**os.environ, "LANG": "C", "LC_ALL": "C"},
+    )
+    if result is None or result.returncode != 0:
+        return None, "unavailable"
+    lines = []
+    for line in result.stdout.splitlines()[:2]:
+        cleaned = " ".join(
+            "".join(character if character.isprintable() else " " for character in line).split()
+        )
+        if cleaned:
+            lines.append(cleaned[:240])
+    if not lines:
+        return None, "unavailable"
+    return "\n".join(lines), None
+
+
 def lookup_pci_device_name(
     vendor_id: str,
     device_id: str,
