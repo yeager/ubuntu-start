@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ubuntu Start 0.3.1\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 06:07+0100\n"
+"POT-Creation-Date: 2026-10-29 06:17+0100\n"
 "PO-Revision-Date: 2026-10-28 15:18+0100\n"
 "Last-Translator: Ubuntu Start contributors\n"
 "Language-Team: Swedish\n"
@@ -1143,7 +1143,7 @@ msgstr "Gör texten lättare att läsa"
 
 #: src/ubuntu_start.py:168 src/ubuntu_start.py:173 src/ubuntu_start.py:178
 #: src/ubuntu_start.py:183 src/ubuntu_start.py:188 src/ubuntu_start.py:193
-#: src/ubuntu_start.py:2267
+#: src/ubuntu_start.py:2282
 msgid "Open Accessibility Settings"
 msgstr "Öppna hjälpmedelsinställningarna"
 
@@ -1529,11 +1529,10 @@ msgstr "Installera och starta om vid behov"
 
 #: src/ubuntu_start.py:217
 msgid ""
-"Select Install Now and enter your password if prompted. Restart only when "
-"Ubuntu asks you to."
-msgstr ""
-"Välj Installera nu och ange lösenordet om du blir ombedd. Starta bara om när "
-"Ubuntu ber dig om det."
+"Save your work first. Select Install Now and enter your password if "
+"prompted. Restart from Ubuntu’s system menu when an update asks you to; this "
+"app never restarts the computer."
+msgstr "Spara arbetet först. Välj Installera nu och ange lösenord om du blir tillfrågad. Starta om från Ubuntus systemmeny när en uppdatering ber dig om det. Appen startar aldrig om datorn."
 
 #: src/ubuntu_start.py:219
 msgid "Install a desktop application"
@@ -1754,7 +1753,7 @@ msgstr "Tips och knep"
 
 #: src/ubuntu_start.py:284 src/ubuntu_start.py:303 src/ubuntu_start.py:461
 #: src/ubuntu_start.py:606 src/ubuntu_start.py:1042 src/ubuntu_start.py:2220
-#: src/ubuntu_start.py:2248
+#: src/ubuntu_start.py:2263
 msgid "Fix a device"
 msgstr "Felsök en enhet"
 
@@ -2177,13 +2176,10 @@ msgstr "Ubuntu-uppdateringar"
 
 #: src/ubuntu_start.py:712
 msgid ""
-"Simulate an upgrade using local APT package lists only. This check does not "
-"contact a network, refresh package lists, install packages or make system "
-"changes."
-msgstr ""
-"Simulera en uppgradering med enbart lokala APT-paketlistor. Kontrollen "
-"ansluter inte till nätverket, uppdaterar inte paketlistorna, installerar "
-"inga paket och gör inga systemändringar."
+"Simulate an upgrade using local APT package lists only and read Ubuntu’s "
+"local restart-required marker. This check does not contact a network, "
+"refresh package lists, install packages or make system changes."
+msgstr "Simulera en uppgradering med enbart lokala APT-paketlistor och läs av Ubuntus lokala omstartsmarkör. Kontrollen ansluter inte till nätverket, uppdaterar inte paketlistorna, installerar inga paket och ändrar inte systemet."
 
 #: src/ubuntu_start.py:717
 msgid "Check cached update status"
@@ -2342,7 +2338,7 @@ msgstr "Processorarkitektur"
 #: src/ubuntu_start.py:1341 src/ubuntu_start.py:1347 src/ubuntu_start.py:1392
 #: src/ubuntu_start.py:1396 src/ubuntu_start.py:1402 src/ubuntu_start.py:1590
 #: src/ubuntu_start.py:1699 src/ubuntu_start.py:1920 src/ubuntu_start.py:1926
-#: src/ubuntu_start.py:1927 src/ubuntu_start.py:1928
+#: src/ubuntu_start.py:1927 src/ubuntu_start.py:1928 src/ubuntu_start.py:2240
 msgid "Not available"
 msgstr "Inte tillgängligt"
 
@@ -3857,30 +3853,42 @@ msgstr ""
 msgid "Open print queue guide"
 msgstr "Öppna guiden om skrivarkön"
 
-#: src/ubuntu_start.py:2230
+#: src/ubuntu_start.py:2238
+msgid "Required"
+msgstr "Krävs"
+
+#: src/ubuntu_start.py:2239
+msgid "Not required"
+msgstr "Krävs inte"
+
+#: src/ubuntu_start.py:2242
+msgid "Restart required"
+msgstr "Omstart krävs"
+
+#: src/ubuntu_start.py:2245
 msgid "Status unknown"
 msgstr "Okänd status"
 
-#: src/ubuntu_start.py:2232
+#: src/ubuntu_start.py:2247
 msgid "Unfinished job count unavailable"
 msgstr "Antalet väntande utskrifter är inte tillgängligt"
 
-#: src/ubuntu_start.py:2235
+#: src/ubuntu_start.py:2250
 #, python-brace-format
 msgid "{count} unfinished print job"
 msgid_plural "{count} unfinished print jobs"
 msgstr[0] "{count} utskrift väntar"
 msgstr[1] "{count} utskrifter väntar"
 
-#: src/ubuntu_start.py:2244 src/ubuntu_start.py:2252
+#: src/ubuntu_start.py:2259 src/ubuntu_start.py:2267
 msgid "Print job is stuck or the queue is paused"
 msgstr "Utskriften har fastnat eller kön är pausad"
 
-#: src/ubuntu_start.py:2253
+#: src/ubuntu_start.py:2268
 msgid "Check the printer itself"
 msgstr "Kontrollera själva skrivaren"
 
-#: src/ubuntu_start.py:2253
+#: src/ubuntu_start.py:2268
 msgid ""
 "Check its display or status lights, power, paper, open covers, and ink or "
 "toner before sending the job again."
@@ -3888,11 +3896,11 @@ msgstr ""
 "Kontrollera skrivarens skärm eller statuslampor, ström, papper, öppna luckor "
 "och bläck eller toner innan du skickar utskriften igen."
 
-#: src/ubuntu_start.py:2254
+#: src/ubuntu_start.py:2269
 msgid "Refresh the local queue"
 msgstr "Uppdatera den lokala kön"
 
-#: src/ubuntu_start.py:2254
+#: src/ubuntu_start.py:2269
 msgid ""
 "Open Network and hardware and refresh Printer queue status. The queue state "
 "and unfinished-job count can show whether work is waiting or the queue is "
@@ -3901,11 +3909,11 @@ msgstr ""
 "Öppna Nätverk och maskinvara och uppdatera skrivarstatusen. Köstatusen och "
 "antalet väntande utskrifter kan visa om jobb väntar eller om kön är pausad."
 
-#: src/ubuntu_start.py:2255
+#: src/ubuntu_start.py:2270
 msgid "Review the queue in Printer Settings"
 msgstr "Granska kön i Skrivarinställningar"
 
-#: src/ubuntu_start.py:2255
+#: src/ubuntu_start.py:2270
 msgid ""
 "Open Printer Settings and inspect the queue. Cancel only a job you own and "
 "are ready to discard. On a shared printer, ask its owner or administrator "
@@ -3915,11 +3923,11 @@ msgstr ""
 "själv äger och är beredd att ta bort. Be ägaren eller administratören om lov "
 "innan du ändrar andra jobb i en delad skrivare."
 
-#: src/ubuntu_start.py:2256
+#: src/ubuntu_start.py:2271
 msgid "Send one test page"
 msgstr "Skriv ut en testsida"
 
-#: src/ubuntu_start.py:2256
+#: src/ubuntu_start.py:2271
 msgid ""
 "After fixing the cause, send one test page. Avoid resending the same "
 "document repeatedly if it does not print."
@@ -3927,15 +3935,15 @@ msgstr ""
 "När du har åtgärdat problemet kan du skriva ut en testsida. Skicka inte "
 "samma dokument upprepade gånger om det inte skrivs ut."
 
-#: src/ubuntu_start.py:2258
+#: src/ubuntu_start.py:2273
 msgid "Wi-Fi is slow or keeps disconnecting"
 msgstr "Wi-Fi är långsamt eller kopplar från"
 
-#: src/ubuntu_start.py:2259
+#: src/ubuntu_start.py:2274
 msgid "Compare the connection near the router"
 msgstr "Jämför anslutningen nära routern"
 
-#: src/ubuntu_start.py:2259
+#: src/ubuntu_start.py:2274
 msgid ""
 "Move closer to the router and try the same task again. If it works better "
 "nearby, distance or obstacles may be weakening the signal."
@@ -3943,11 +3951,11 @@ msgstr ""
 "Gå närmare routern och prova samma sak igen. Fungerar det bättre där kan "
 "avstånd eller hinder försvaga signalen."
 
-#: src/ubuntu_start.py:2260
+#: src/ubuntu_start.py:2275
 msgid "Check the active Wi-Fi link"
 msgstr "Kontrollera den aktiva Wi-Fi-länken"
 
-#: src/ubuntu_start.py:2260
+#: src/ubuntu_start.py:2275
 msgid ""
 "Refresh Network status on the Network and hardware page. When available, "
 "signal values closer to 0 dBm are stronger. Receive and transmit rates "
@@ -3958,11 +3966,11 @@ msgstr ""
 "sändningshastigheten gäller Wi-Fi-länken, inte den uppmätta "
 "internethastigheten."
 
-#: src/ubuntu_start.py:2261
+#: src/ubuntu_start.py:2276
 msgid "Compare another device or service"
 msgstr "Jämför med en annan enhet eller tjänst"
 
-#: src/ubuntu_start.py:2261
+#: src/ubuntu_start.py:2276
 msgid ""
 "Try another device on the same Wi-Fi and another app or website. If several "
 "devices have trouble, check the router or ask your internet provider. If "
@@ -3973,11 +3981,11 @@ msgstr ""
 "internetleverantören. Om bara den här datorn berörs kan du kontrollera "
 "nätverkskortet och leta efter Ubuntu-uppdateringar."
 
-#: src/ubuntu_start.py:2262
+#: src/ubuntu_start.py:2277
 msgid "Look for nearby channel overlap"
 msgstr "Undersök störningar från närliggande kanaler"
 
-#: src/ubuntu_start.py:2262
+#: src/ubuntu_start.py:2277
 msgid ""
 "The WiFi Analyzer recommendation on the Network and hardware page can help "
 "you review nearby signal levels and channel use. It opens an external "
@@ -3989,11 +3997,11 @@ msgstr ""
 "projektets externa webbsida. Fråga den som ansvarar för nätverket innan du "
 "ändrar routerinställningarna."
 
-#: src/ubuntu_start.py:2263
+#: src/ubuntu_start.py:2278
 msgid "Keep private details out of support requests"
 msgstr "Skydda privata uppgifter när du ber om hjälp"
 
-#: src/ubuntu_start.py:2263
+#: src/ubuntu_start.py:2278
 msgid ""
 "Share the adapter model, hardware ID and driver if you need help. Do not "
 "share the Wi-Fi password or private network details."
@@ -4001,23 +4009,23 @@ msgstr ""
 "Om du ber om hjälp kan du ange nätverkskortets modell, maskinvaru-ID och "
 "drivrutin. Dela inte Wi-Fi-lösenordet eller privata nätverksuppgifter."
 
-#: src/ubuntu_start.py:2267
+#: src/ubuntu_start.py:2282
 msgid "Use Mouse Keys"
 msgstr "Använd Mustangenter"
 
-#: src/ubuntu_start.py:2268
+#: src/ubuntu_start.py:2283
 msgid "Open Pointing & Clicking"
 msgstr "Öppna Peka och klicka"
 
-#: src/ubuntu_start.py:2268
+#: src/ubuntu_start.py:2283
 msgid "In Accessibility Settings, open the Pointing & Clicking section."
 msgstr "Öppna avsnittet Peka och klicka i hjälpmedelsinställningarna."
 
-#: src/ubuntu_start.py:2269
+#: src/ubuntu_start.py:2284
 msgid "Turn on Mouse Keys"
 msgstr "Aktivera Mustangenter"
 
-#: src/ubuntu_start.py:2269
+#: src/ubuntu_start.py:2284
 msgid ""
 "Mouse Keys lets you control the pointer with the numeric keypad. Turn Num "
 "Lock off to use the keypad for pointer movement."
@@ -4025,11 +4033,11 @@ msgstr ""
 "Med Mustangenter styr du pekaren med det numeriska tangentbordet. Stäng av "
 "Num Lock om du vill använda siffertangenterna för att flytta pekaren."
 
-#: src/ubuntu_start.py:2270
+#: src/ubuntu_start.py:2285
 msgid "Test it and turn it off if needed"
 msgstr "Prova funktionen och stäng av den vid behov"
 
-#: src/ubuntu_start.py:2270
+#: src/ubuntu_start.py:2285
 msgid ""
 "Try moving the pointer and clicking a simple target. Return to Pointing & "
 "Clicking to turn Mouse Keys off when you are finished."
@@ -4040,6 +4048,22 @@ msgstr ""
 #: data/se.nylander.UbuntuStart.desktop:3
 msgid "Get started with Ubuntu and troubleshoot devices"
 msgstr "Kom igång med Ubuntu och felsök anslutna enheter"
+
+#~ msgid ""
+#~ "Select Install Now and enter your password if prompted. Restart only when "
+#~ "Ubuntu asks you to."
+#~ msgstr ""
+#~ "Välj Installera nu och ange lösenordet om du blir ombedd. Starta bara om "
+#~ "när Ubuntu ber dig om det."
+
+#~ msgid ""
+#~ "Simulate an upgrade using local APT package lists only. This check does "
+#~ "not contact a network, refresh package lists, install packages or make "
+#~ "system changes."
+#~ msgstr ""
+#~ "Simulera en uppgradering med enbart lokala APT-paketlistor. Kontrollen "
+#~ "ansluter inte till nätverket, uppdaterar inte paketlistorna, installerar "
+#~ "inga paket och gör inga systemändringar."
 
 #~ msgid "Open Ubuntu backup help?"
 #~ msgstr "Öppna Ubuntus hjälp om säkerhetskopiering?"

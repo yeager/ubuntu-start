@@ -256,10 +256,14 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         status_label = Mock()
         rows = Mock()
         rows.get_first_child.return_value = None
+        self.app.reset_update_status.side_effect = lambda button, update_rows, required: (
+            UbuntuStart.reset_update_status(self.app, button, update_rows, required)
+        )
 
         UbuntuStart.show_apt_update_status(
             self.app, button, status_label, rows,
             {"upgradeable": 4, "held_back": 2, "last_updated": None}, None,
+            reboot_required=True,
             announce=True,
         )
 
@@ -267,6 +271,7 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.app.row.assert_any_call(rows, "Packages ready to upgrade", "4")
         self.app.row.assert_any_call(rows, "Packages kept back", "2")
         self.app.row.assert_any_call(rows, "Package lists last updated", "Not available")
+        self.app.row.assert_any_call(rows, "Restart required", "Required")
         status_label.set_text.assert_called_once_with(
             "Local package update check complete. No packages were changed.",
         )

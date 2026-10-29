@@ -13,7 +13,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_resource_pressure, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
+from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_reboot_required, read_resource_pressure, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -214,7 +214,7 @@ SYSTEM_GUIDES = [
         (_("Check for incomplete package installations"), _("On the Network and hardware page, run the package health check to review the local dpkg audit. It lists entries but does not repair them. Review any proposed changes in Software Updater, or ask your administrator. Do not remove packages based only on this report.")),
         (_("Open Software Updater"), _("Ubuntu checks for updates when Software Updater opens. Select Check if it does not start checking.")),
         (_("Review available updates"), _("Read the update summary. Save your work before installing system updates.")),
-        (_("Install and restart if asked"), _("Select Install Now and enter your password if prompted. Restart only when Ubuntu asks you to.")),
+        (_("Install and restart if asked"), _("Save your work first. Select Install Now and enter your password if prompted. Restart from Ubuntu’s system menu when an update asks you to; this app never restarts the computer.")),
     ]),
     (_("Install a desktop application"), ("app-center", ""), _("Open Ubuntu App Center"), [
         (_("Search for the app name"), _("Enter the app’s exact name in the App Center search box. Check that the result is the app you intended.")),
@@ -709,7 +709,7 @@ class UbuntuStart(Adw.Application):
 
         updates_box, _updates_rows = self.page(
             _("Ubuntu update status"),
-            _("Simulate an upgrade using local APT package lists only. This check does not contact a network, refresh package lists, install packages or make system changes."),
+            _("Simulate an upgrade using local APT package lists only and read Ubuntu’s local restart-required marker. This check does not contact a network, refresh package lists, install packages or make system changes."),
             include_rows=False,
         )
         updates_status = Gtk.Label(label="", xalign=0, wrap=True)
@@ -1460,10 +1460,10 @@ class UbuntuStart(Adw.Application):
         status_label.set_text(_("Checking cached package update status…"))
 
         def read_status():
-            status, error = read_apt_update_status()
+            status, error, reboot_required = self.read_update_status()
             GLib.idle_add(
                 self.show_apt_update_status, button, status_label, update_rows,
-                status, error, announce,
+                status, error, reboot_required, announce,
             )
 
         threading.Thread(target=read_status, daemon=True).start()
@@ -1671,10 +1671,10 @@ class UbuntuStart(Adw.Application):
             self.announce_to_screen_reader(status_label, message)
         return GLib.SOURCE_REMOVE
 
-    def show_apt_update_status(self, button, status_label, update_rows, status, error, announce=False):
-        button.set_sensitive(True)
-        while (child := update_rows.get_first_child()) is not None:
-            update_rows.remove(child)
+    def show_apt_update_status(self, button, status_label, update_rows, status, error, reboot_required=None, announce=False):
+        self.reset_update_status(
+            button, update_rows, reboot_required
+        )
 
         error_messages = {
             "not-installed": _("APT package tools are not available."),
@@ -2225,6 +2225,21 @@ class UbuntuStart(Adw.Application):
         guide_button.connect("clicked", lambda *_: self.open_printer_guide())
         parent.append(guide_button)
         parent.append(status_label)
+
+    def read_update_status(self):
+        status, error = read_apt_update_status()
+        return status, error, read_reboot_required()
+
+    def reset_update_status(self, button, update_rows, reboot_required):
+        button.set_sensitive(True)
+        while (child := update_rows.get_first_child()) is not None:
+            update_rows.remove(child)
+        reboot_state = (
+            _("Required") if reboot_required is True
+            else _("Not required") if reboot_required is False
+            else _("Not available")
+        )
+        self.row(update_rows, _("Restart required"), reboot_state)
 
     def printer_queue_status(self, state, pending_jobs, labels):
         status = labels.get(state, _("Status unknown"))

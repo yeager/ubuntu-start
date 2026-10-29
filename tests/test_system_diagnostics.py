@@ -34,6 +34,7 @@ from system_diagnostics import (
     read_package_health,
     read_battery_status,
     read_apt_update_status,
+    read_reboot_required,
     read_power_profile,
     read_memory_status,
     parse_pressure_status,
@@ -985,6 +986,17 @@ Inst package-two [2.0] (2.1 repo [amd64])
 
     def test_apt_simulation_parser_rejects_unexpected_output(self):
         self.assertIsNone(parse_apt_upgrade_simulation("Listing...\n"))
+
+    def test_reads_local_reboot_required_marker(self):
+        with tempfile.TemporaryDirectory() as directory:
+            marker = Path(directory) / "reboot-required"
+            self.assertFalse(read_reboot_required(marker))
+            marker.touch()
+            self.assertTrue(read_reboot_required(marker))
+
+    @patch("system_diagnostics.Path.stat", side_effect=PermissionError)
+    def test_reports_unknown_when_reboot_marker_cannot_be_read(self, _stat):
+        self.assertIsNone(read_reboot_required("/restricted/reboot-required"))
 
     @patch("system_diagnostics.Path.stat")
     @patch("system_diagnostics._run_local")

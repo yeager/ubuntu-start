@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ubuntu Start 0.3.1\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 06:07+0100\n"
+"POT-Creation-Date: 2026-10-29 06:17+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -969,7 +969,7 @@ msgstr ""
 
 #: src/ubuntu_start.py:168 src/ubuntu_start.py:173 src/ubuntu_start.py:178
 #: src/ubuntu_start.py:183 src/ubuntu_start.py:188 src/ubuntu_start.py:193
-#: src/ubuntu_start.py:2267
+#: src/ubuntu_start.py:2282
 msgid "Open Accessibility Settings"
 msgstr ""
 
@@ -1302,8 +1302,9 @@ msgstr ""
 
 #: src/ubuntu_start.py:217
 msgid ""
-"Select Install Now and enter your password if prompted. Restart only when "
-"Ubuntu asks you to."
+"Save your work first. Select Install Now and enter your password if "
+"prompted. Restart from Ubuntu’s system menu when an update asks you to; this "
+"app never restarts the computer."
 msgstr ""
 
 #: src/ubuntu_start.py:219
@@ -1492,7 +1493,7 @@ msgstr ""
 
 #: src/ubuntu_start.py:284 src/ubuntu_start.py:303 src/ubuntu_start.py:461
 #: src/ubuntu_start.py:606 src/ubuntu_start.py:1042 src/ubuntu_start.py:2220
-#: src/ubuntu_start.py:2248
+#: src/ubuntu_start.py:2263
 msgid "Fix a device"
 msgstr ""
 
@@ -1870,9 +1871,9 @@ msgstr ""
 
 #: src/ubuntu_start.py:712
 msgid ""
-"Simulate an upgrade using local APT package lists only. This check does not "
-"contact a network, refresh package lists, install packages or make system "
-"changes."
+"Simulate an upgrade using local APT package lists only and read Ubuntu’s "
+"local restart-required marker. This check does not contact a network, "
+"refresh package lists, install packages or make system changes."
 msgstr ""
 
 #: src/ubuntu_start.py:717
@@ -2014,7 +2015,7 @@ msgstr ""
 #: src/ubuntu_start.py:1341 src/ubuntu_start.py:1347 src/ubuntu_start.py:1392
 #: src/ubuntu_start.py:1396 src/ubuntu_start.py:1402 src/ubuntu_start.py:1590
 #: src/ubuntu_start.py:1699 src/ubuntu_start.py:1920 src/ubuntu_start.py:1926
-#: src/ubuntu_start.py:1927 src/ubuntu_start.py:1928
+#: src/ubuntu_start.py:1927 src/ubuntu_start.py:1928 src/ubuntu_start.py:2240
 msgid "Not available"
 msgstr ""
 
@@ -3405,108 +3406,120 @@ msgstr ""
 msgid "Open print queue guide"
 msgstr ""
 
-#: src/ubuntu_start.py:2230
+#: src/ubuntu_start.py:2238
+msgid "Required"
+msgstr ""
+
+#: src/ubuntu_start.py:2239
+msgid "Not required"
+msgstr ""
+
+#: src/ubuntu_start.py:2242
+msgid "Restart required"
+msgstr ""
+
+#: src/ubuntu_start.py:2245
 msgid "Status unknown"
 msgstr ""
 
-#: src/ubuntu_start.py:2232
+#: src/ubuntu_start.py:2247
 msgid "Unfinished job count unavailable"
 msgstr ""
 
-#: src/ubuntu_start.py:2235
+#: src/ubuntu_start.py:2250
 #, python-brace-format
 msgid "{count} unfinished print job"
 msgid_plural "{count} unfinished print jobs"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ubuntu_start.py:2244 src/ubuntu_start.py:2252
+#: src/ubuntu_start.py:2259 src/ubuntu_start.py:2267
 msgid "Print job is stuck or the queue is paused"
 msgstr ""
 
-#: src/ubuntu_start.py:2253
+#: src/ubuntu_start.py:2268
 msgid "Check the printer itself"
 msgstr ""
 
-#: src/ubuntu_start.py:2253
+#: src/ubuntu_start.py:2268
 msgid ""
 "Check its display or status lights, power, paper, open covers, and ink or "
 "toner before sending the job again."
 msgstr ""
 
-#: src/ubuntu_start.py:2254
+#: src/ubuntu_start.py:2269
 msgid "Refresh the local queue"
 msgstr ""
 
-#: src/ubuntu_start.py:2254
+#: src/ubuntu_start.py:2269
 msgid ""
 "Open Network and hardware and refresh Printer queue status. The queue state "
 "and unfinished-job count can show whether work is waiting or the queue is "
 "paused."
 msgstr ""
 
-#: src/ubuntu_start.py:2255
+#: src/ubuntu_start.py:2270
 msgid "Review the queue in Printer Settings"
 msgstr ""
 
-#: src/ubuntu_start.py:2255
+#: src/ubuntu_start.py:2270
 msgid ""
 "Open Printer Settings and inspect the queue. Cancel only a job you own and "
 "are ready to discard. On a shared printer, ask its owner or administrator "
 "before changing other jobs."
 msgstr ""
 
-#: src/ubuntu_start.py:2256
+#: src/ubuntu_start.py:2271
 msgid "Send one test page"
 msgstr ""
 
-#: src/ubuntu_start.py:2256
+#: src/ubuntu_start.py:2271
 msgid ""
 "After fixing the cause, send one test page. Avoid resending the same "
 "document repeatedly if it does not print."
 msgstr ""
 
-#: src/ubuntu_start.py:2258
+#: src/ubuntu_start.py:2273
 msgid "Wi-Fi is slow or keeps disconnecting"
 msgstr ""
 
-#: src/ubuntu_start.py:2259
+#: src/ubuntu_start.py:2274
 msgid "Compare the connection near the router"
 msgstr ""
 
-#: src/ubuntu_start.py:2259
+#: src/ubuntu_start.py:2274
 msgid ""
 "Move closer to the router and try the same task again. If it works better "
 "nearby, distance or obstacles may be weakening the signal."
 msgstr ""
 
-#: src/ubuntu_start.py:2260
+#: src/ubuntu_start.py:2275
 msgid "Check the active Wi-Fi link"
 msgstr ""
 
-#: src/ubuntu_start.py:2260
+#: src/ubuntu_start.py:2275
 msgid ""
 "Refresh Network status on the Network and hardware page. When available, "
 "signal values closer to 0 dBm are stronger. Receive and transmit rates "
 "describe the Wi-Fi link, not your measured internet speed."
 msgstr ""
 
-#: src/ubuntu_start.py:2261
+#: src/ubuntu_start.py:2276
 msgid "Compare another device or service"
 msgstr ""
 
-#: src/ubuntu_start.py:2261
+#: src/ubuntu_start.py:2276
 msgid ""
 "Try another device on the same Wi-Fi and another app or website. If several "
 "devices have trouble, check the router or ask your internet provider. If "
 "only this computer is affected, check its adapter and Ubuntu updates."
 msgstr ""
 
-#: src/ubuntu_start.py:2262
+#: src/ubuntu_start.py:2277
 msgid "Look for nearby channel overlap"
 msgstr ""
 
-#: src/ubuntu_start.py:2262
+#: src/ubuntu_start.py:2277
 msgid ""
 "The WiFi Analyzer recommendation on the Network and hardware page can help "
 "you review nearby signal levels and channel use. It opens an external "
@@ -3514,43 +3527,43 @@ msgid ""
 "router settings."
 msgstr ""
 
-#: src/ubuntu_start.py:2263
+#: src/ubuntu_start.py:2278
 msgid "Keep private details out of support requests"
 msgstr ""
 
-#: src/ubuntu_start.py:2263
+#: src/ubuntu_start.py:2278
 msgid ""
 "Share the adapter model, hardware ID and driver if you need help. Do not "
 "share the Wi-Fi password or private network details."
 msgstr ""
 
-#: src/ubuntu_start.py:2267
+#: src/ubuntu_start.py:2282
 msgid "Use Mouse Keys"
 msgstr ""
 
-#: src/ubuntu_start.py:2268
+#: src/ubuntu_start.py:2283
 msgid "Open Pointing & Clicking"
 msgstr ""
 
-#: src/ubuntu_start.py:2268
+#: src/ubuntu_start.py:2283
 msgid "In Accessibility Settings, open the Pointing & Clicking section."
 msgstr ""
 
-#: src/ubuntu_start.py:2269
+#: src/ubuntu_start.py:2284
 msgid "Turn on Mouse Keys"
 msgstr ""
 
-#: src/ubuntu_start.py:2269
+#: src/ubuntu_start.py:2284
 msgid ""
 "Mouse Keys lets you control the pointer with the numeric keypad. Turn Num "
 "Lock off to use the keypad for pointer movement."
 msgstr ""
 
-#: src/ubuntu_start.py:2270
+#: src/ubuntu_start.py:2285
 msgid "Test it and turn it off if needed"
 msgstr ""
 
-#: src/ubuntu_start.py:2270
+#: src/ubuntu_start.py:2285
 msgid ""
 "Try moving the pointer and clicking a simple target. Return to Pointing & "
 "Clicking to turn Mouse Keys off when you are finished."

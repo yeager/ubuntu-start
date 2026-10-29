@@ -1124,6 +1124,17 @@ def read_apt_update_status(
     return {"upgradeable": counts[0], "held_back": counts[1], "last_updated": last_updated}, None
 
 
+def read_reboot_required(path: str | Path = "/run/reboot-required") -> bool | None:
+    """Read Ubuntu's local reboot-required marker without changing system state."""
+    try:
+        Path(path).stat()
+    except FileNotFoundError:
+        return False
+    except OSError:
+        return None
+    return True
+
+
 def parse_dpkg_audit(output: str) -> list[str] | None:
     """Extract package names reported by dpkg --audit; None means unknown output."""
     if not isinstance(output, str):
