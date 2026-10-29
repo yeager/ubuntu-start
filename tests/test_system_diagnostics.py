@@ -1,6 +1,7 @@
 import subprocess
 import tempfile
 import unittest
+from types import SimpleNamespace
 from io import BytesIO
 import urllib.error
 from pathlib import Path
@@ -25,6 +26,7 @@ from system_diagnostics import (
     read_hardware_details,
     read_network_devices,
     read_storage_status,
+    read_storage_locations,
     read_wifi_link_status,
     parse_iw_link_status,
     run_network_diagnostics,
@@ -307,6 +309,34 @@ class LocalDiagnosticsTests(unittest.TestCase):
         self.assertGreater(result["total"], 0)
         self.assertGreaterEqual(result["free"], 0)
         self.assertGreaterEqual(result["used"], 0)
+
+    @patch("system_diagnostics.shutil.disk_usage")
+    @patch("system_diagnostics.os.stat")
+    def test_reads_separate_home_filesystem_only_when_mount_differs(self, stat, disk_usage):
+        stat.side_effect = [SimpleNamespace(st_dev=1), SimpleNamespace(st_dev=2)]
+        disk_usage.side_effect = [
+            SimpleNamespace(total=1000, used=700, free=300),
+            SimpleNamespace(total=2000, used=1900, free=100),
+        ]
+
+        locations = read_storage_locations("/system", "/home/user")
+
+        self.assertEqual(locations, {
+            "system": {"total": 1000, "used": 700, "free": 300},
+            "home": {"total": 2000, "used": 1900, "free": 100},
+        })
+        self.assertEqual(disk_usage.call_args_list[1].args, (Path("/home/user"),))
+
+    @patch("system_diagnostics.shutil.disk_usage")
+    @patch("system_diagnostics.os.stat")
+    def test_does_not_duplicate_home_when_it_shares_system_filesystem(self, stat, disk_usage):
+        stat.side_effect = [SimpleNamespace(st_dev=1), SimpleNamespace(st_dev=1)]
+        disk_usage.return_value = SimpleNamespace(total=1000, used=700, free=300)
+
+        locations = read_storage_locations("/system", "/home/user")
+
+        self.assertEqual(locations, {"system": {"total": 1000, "used": 700, "free": 300}})
+        self.assertEqual(disk_usage.call_count, 1)
 
     def test_reads_battery_capacity_without_device_name(self):
         with tempfile.TemporaryDirectory() as temporary:

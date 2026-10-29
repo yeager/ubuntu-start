@@ -308,6 +308,21 @@ def read_storage_status(path: str | Path = "/") -> dict[str, int]:
     return {"total": usage.total, "used": usage.used, "free": usage.free}
 
 
+def read_storage_locations(
+    root_path: str | Path = "/", home_path: str | Path | None = None,
+) -> dict[str, dict[str, int]]:
+    """Read root storage and a separate home filesystem when one is mounted."""
+    home_path = Path.home() if home_path is None else Path(home_path)
+    locations = {"system": read_storage_status(root_path)}
+    try:
+        if os.stat(home_path).st_dev != os.stat(root_path).st_dev:
+            locations["home"] = read_storage_status(home_path)
+    except OSError:
+        # Keep the system result useful when the home mount is unavailable.
+        pass
+    return locations
+
+
 def read_battery_status(power_supply_path: str | Path = "/sys/class/power_supply") -> list[dict[str, str | int]]:
     """Read charge and optional full-charge capacity estimate without device identifiers."""
     batteries = []

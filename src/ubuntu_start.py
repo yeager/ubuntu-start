@@ -12,7 +12,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import build_support_report, check_internet_connection, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_network_devices, read_storage_status, read_wifi_link_status, run_network_diagnostics
+from system_diagnostics import build_support_report, check_internet_connection, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_network_devices, read_storage_locations, read_wifi_link_status, run_network_diagnostics
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -537,17 +537,20 @@ class UbuntuStart(Adw.Application):
         internet_box.append(internet_status)
         box.append(internet_box)
 
-        storage = read_storage_status()
-        storage_percent = round(storage["used"] / storage["total"] * 100) if storage["total"] else 0
+        storage_locations = read_storage_locations()
         storage_box, storage_rows = self.page(
             _("Storage"),
-            _("Local filesystem capacity. Ubuntu may need free space to install updates and save files."),
+            _("Local filesystem capacity. A separate home filesystem is shown when your personal files use a different mounted volume."),
         )
-        self.row(storage_rows, _("Available space"), _("{free} free of {total} ({percent}% used)").format(
-            free=GLib.format_size(storage["free"]), total=GLib.format_size(storage["total"]), percent=storage_percent,
-        ))
-        if storage_percent >= 95:
-            self.row(storage_rows, _("Storage is almost full"), _("Remove files you no longer need or review large downloads. Avoid deleting system files."))
+        for location, storage in storage_locations.items():
+            title = _("System filesystem") if location == "system" else _("Home folder filesystem")
+            storage_percent = round(storage["used"] / storage["total"] * 100) if storage["total"] else 0
+            self.row(storage_rows, title, _("{free} free of {total} ({percent}% used)").format(
+                free=GLib.format_size(storage["free"]), total=GLib.format_size(storage["total"]), percent=storage_percent,
+            ))
+            if storage_percent >= 95:
+                warning_title = _("System filesystem is almost full") if location == "system" else _("Home folder filesystem is almost full")
+                self.row(storage_rows, warning_title, _("Remove files you no longer need or review large downloads. Ubuntu may need free space for updates. Avoid deleting system files."))
         box.append(storage_box)
 
         battery_box, _battery_rows = self.page(
