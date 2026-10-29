@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.20" date="2026-10-29">
+      <description>
+        <p>Show whether Ubuntu’s Déjà Dup Backups app is installed and provide safe next steps without inspecting backup contents or history.</p>
+        <p xml:lang="sv">Visa om Ubuntus säkerhetskopieringsapp Déjà Dup är installerad och ge säkra nästa steg utan att granska säkerhetskopiornas innehåll eller historik.</p>
+      </description>
+    </release>
     <release version="0.3.19" date="2026-10-29">
       <description>
         <p>Add guided fingerprint-reader enrollment and troubleshooting with password fallback.</p>

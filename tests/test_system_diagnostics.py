@@ -28,6 +28,7 @@ from system_diagnostics import (
     lookup_pci_device_name,
     read_pci_devices,
     read_audio_status,
+    read_backup_tool_status,
     read_accessibility_settings,
     parse_apt_upgrade_simulation,
     parse_dpkg_audit,
@@ -87,6 +88,34 @@ class BenchmarkTests(unittest.TestCase):
             project_file = Path(directory) / "pyproject.toml"
             project_file.write_text('[project]\nversion = "4.2.1"\n', encoding="utf-8")
             self.assertEqual(get_application_version(project_file), "4.2.1")
+
+
+class BackupToolTests(unittest.TestCase):
+    def test_reports_installed_backup_application_without_claiming_backup_state(self):
+        result = SimpleNamespace(returncode=0, stdout="install ok installed")
+        with patch("system_diagnostics.shutil.which", side_effect=lambda name: {
+            "deja-dup": "/usr/bin/deja-dup", "dpkg-query": "/usr/bin/dpkg-query",
+        }.get(name)), patch("system_diagnostics._run_local", return_value=result) as run:
+            status = read_backup_tool_status()
+
+        self.assertEqual(status, {"installed": True, "launcher": "/usr/bin/deja-dup"})
+        run.assert_called_once_with(
+            ["/usr/bin/dpkg-query", "-W", "-f=${Status}", "deja-dup"], 2.0,
+        )
+
+    def test_reports_missing_backup_application_when_package_query_fails(self):
+        result = SimpleNamespace(returncode=1, stdout="")
+        with patch("system_diagnostics.shutil.which", side_effect=lambda name: {
+            "deja-dup": None, "dpkg-query": "/usr/bin/dpkg-query",
+        }.get(name)), patch("system_diagnostics._run_local", return_value=result):
+            self.assertEqual(read_backup_tool_status(), {"installed": False, "launcher": ""})
+
+    def test_handles_system_without_dpkg_query(self):
+        with patch("system_diagnostics.shutil.which", return_value=None), patch(
+            "system_diagnostics._run_local",
+        ) as run:
+            self.assertEqual(read_backup_tool_status(), {"installed": False, "launcher": ""})
+        run.assert_not_called()
 
 
     def test_benchmark_baselines_persist_scores_with_private_file_permissions(self):

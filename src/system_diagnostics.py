@@ -376,6 +376,20 @@ def parse_printer_job_counts(output: str, printer_names: list[str]) -> dict[str,
     return counts
 
 
+def read_backup_tool_status() -> dict[str, str | bool]:
+    """Check locally whether Ubuntu's Déjà Dup backup app is installed and launchable."""
+    desktop = shutil.which("deja-dup")
+    package = shutil.which("dpkg-query")
+    installed = False
+    if package:
+        result = _run_local([package, "-W", "-f=${Status}", "deja-dup"], 2.0)
+        installed = bool(
+            result and result.returncode == 0
+            and result.stdout.strip() == "install ok installed"
+        )
+    return {"installed": installed, "launcher": desktop or ""}
+
+
 def read_printer_status(timeout: float = 3.0) -> tuple[list[tuple[str, str, int | None]], str | None]:
     """Read local CUPS queue state and unfinished job counts; never submit or cancel jobs."""
     lpstat = shutil.which("lpstat")

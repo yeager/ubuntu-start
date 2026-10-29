@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Ubuntu Start 0.3.19\n"
+"Project-Id-Version: Ubuntu Start 0.3.20\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
 "POT-Creation-Date: 2026-10-29 20:30+0000\n"
 "PO-Revision-Date: 2026-10-28 15:18+0100\n"
@@ -6048,3 +6048,37 @@ msgstr "Kom igång med Ubuntu och felsök anslutna enheter"
 #~ msgstr ""
 #~ "Uppgifterna kan hjälpa andra att förstå ett problem. De innehåller inte "
 #~ "ditt användarnamn, datornamn, nätverksadress eller installerade program."
+
+
+#: src/ubuntu_start.py
+msgid "Backup app availability"
+msgstr "Tillgång till säkerhetskopieringsappen"
+
+#: src/ubuntu_start.py
+msgid "Check locally whether Ubuntu’s Déjà Dup Backups app is installed. This does not inspect your files, backup destinations or backup history."
+msgstr "Kontrollera lokalt om Ubuntus säkerhetskopieringsapp Déjà Dup är installerad. Kontrollen granskar inte dina filer, säkerhetskopiornas mål eller historik."
+
+#: src/ubuntu_start.py
+msgid "Check backup app"
+msgstr "Kontrollera säkerhetskopieringsappen"
+
+#: src/ubuntu_start.py
+msgid "Open Backups"
+msgstr "Öppna Säkerhetskopior"
+
+#: src/ubuntu_start.py
+msgid "Checking whether Backups is installed…"
+msgstr "Kontrollerar om Säkerhetskopior är installerat …"
+
+#: src/ubuntu_start.py
+msgid "Déjà Dup Backups is installed. This does not confirm that backups are configured or recent."
+msgstr "Déjà Dup Säkerhetskopior är installerat. Det bekräftar inte att säkerhetskopiering är konfigurerad eller nyligen genomförd."
+
+#: src/ubuntu_start.py
+msgid "Déjà Dup Backups is not installed. You can look for Backups in Ubuntu App Center or use Files to copy important files to a separate drive."
+msgstr "Déjà Dup Säkerhetskopior är inte installerat. Du kan söka efter Säkerhetskopior i Ubuntu App Center eller använda Filer för att kopiera viktiga filer till en separat disk."
+
+
+#: src/ubuntu_start.py
+msgid "Déjà Dup Backups is installed, but its launcher was not found. Open Ubuntu App Center or ask your administrator for help."
+msgstr "Déjà Dup Säkerhetskopior är installerat, men dess startprogram hittades inte. Öppna Ubuntu App Center eller be administratören om hjälp."

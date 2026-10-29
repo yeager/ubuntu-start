@@ -8,6 +8,53 @@ from ubuntu_start import (
 from guide_search import find_guide_matches
 
 
+class BackupAppAnnouncementTests(unittest.TestCase):
+    def test_installed_backup_app_status_does_not_claim_backup_is_configured(self):
+        app = Mock()
+        status = Mock()
+        open_button = Mock()
+
+        UbuntuStart.show_backup_tool_status(
+            app, status, {"installed": True, "launcher": "/usr/bin/deja-dup"},
+            open_button, announce=True,
+        )
+
+        message = "Déjà Dup Backups is installed. This does not confirm that backups are configured or recent."
+        status.set_text.assert_called_once_with(message)
+        open_button.set_sensitive.assert_called_once_with(True)
+        app.announce_to_screen_reader.assert_called_once_with(status, message)
+
+    def test_installed_backup_without_launcher_disables_open_button(self):
+        app = Mock()
+        status = Mock()
+        open_button = Mock()
+
+        UbuntuStart.show_backup_tool_status(
+            app, status, {"installed": True, "launcher": ""}, open_button,
+        )
+
+        open_button.set_sensitive.assert_called_once_with(False)
+        status.set_text.assert_called_once_with(
+            "Déjà Dup Backups is installed, but its launcher was not found. "
+            "Open Ubuntu App Center or ask your administrator for help."
+        )
+
+    def test_missing_backup_app_suggests_safe_next_steps(self):
+        app = Mock()
+        status = Mock()
+
+        UbuntuStart.show_backup_tool_status(
+            app, status, {"installed": False, "launcher": ""}, announce=True,
+        )
+
+        message = (
+            "Déjà Dup Backups is not installed. You can look for Backups in Ubuntu App Center "
+            "or use Files to copy important files to a separate drive."
+        )
+        status.set_text.assert_called_once_with(message)
+        app.announce_to_screen_reader.assert_called_once_with(status, message)
+
+
 class AccessibilityAnnouncementTests(unittest.TestCase):
     def test_failed_service_guide_explains_read_only_status_and_log_commands(self):
         guide = next(guide for guide in GUIDES if guide[0] == "A system service is marked failed")
