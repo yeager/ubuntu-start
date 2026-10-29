@@ -75,7 +75,7 @@ meson compile -C build
 sudo meson install -C build
 ```
 
-To build an installable Debian package after installing the dependencies, run `scripts/build-deb.sh`. It creates `build/packages/ubuntu-start_0.3.4-1_all.deb`. Install it with `sudo apt install ./build/packages/ubuntu-start_0.3.4-1_all.deb`; APT resolves the declared GTK and Python runtime dependencies.
+To build an installable Debian package after installing the dependencies, run `scripts/build-deb.sh`. It creates `build/packages/ubuntu-start_0.3.5-1_all.deb`. Install it with `sudo apt install ./build/packages/ubuntu-start_0.3.5-1_all.deb`; APT resolves the declared GTK and Python runtime dependencies.
 
 The wheel and source distribution are published on [PyPI](https://pypi.org/project/ubuntu-start/). Install the GTK platform dependencies with APT first, then install the package in an isolated environment that can access system PyGObject bindings:
 
