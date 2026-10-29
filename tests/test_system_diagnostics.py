@@ -1694,6 +1694,9 @@ Inst package-two [2.0] (2.1 repo [amd64])
         )
         self.assertIsNone(parse_neighbor_mac("192.168.1.1 dev wlp2s0 FAILED"))
         self.assertIsNone(parse_neighbor_mac("lladdr invalid"))
+        self.assertIsNone(parse_neighbor_mac("lladdr 01:11:22:33:44:55"))
+        self.assertIsNone(parse_neighbor_mac("lladdr 00:00:00:00:00:00"))
+        self.assertIsNone(parse_neighbor_mac("lladdr ff:ff:ff:ff:ff:ff"))
 
     def test_matches_vendor_from_local_database(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -1701,6 +1704,9 @@ Inst package-two [2.0] (2.1 repo [amd64])
             database.write_text("00-11-22   (hex)\tExample Network Devices\n", encoding="utf-8")
             self.assertEqual(lookup_oui_vendor("00:11:22:33:44:55", (str(database),)), "Example Network Devices")
             self.assertIsNone(lookup_oui_vendor("AA:BB:CC:DD:EE:FF", (str(database),)))
+            database.write_text("02-11-22   (hex)\tExample Network Devices\n", encoding="utf-8")
+            self.assertIsNone(lookup_oui_vendor("02:11:22:33:44:55", (str(database),)))
+            self.assertIsNone(lookup_oui_vendor("01:11:22:33:44:55", (str(database),)))
 
     @patch("system_diagnostics.shutil.which", side_effect=lambda command: f"/usr/bin/{command}")
     @patch("system_diagnostics.lookup_oui_vendor", return_value="Example Router Co.")

@@ -1711,26 +1711,45 @@ def parse_default_route(output: str) -> tuple[str, str] | None:
     return None
 
 
+def _normalize_unicast_mac(value: str | None) -> str | None:
+    """Return a canonical unicast MAC address, or None for invalid addresses."""
+    if not isinstance(value, str):
+        return None
+    mac = value.upper().replace("-", ":")
+    parts = mac.split(":")
+    if len(parts) != 6 or not all(
+        len(part) == 2 and all(char in "0123456789ABCDEF" for char in part)
+        for part in parts
+    ):
+        return None
+    octets = [int(part, 16) for part in parts]
+    if octets[0] & 1 or not any(octets):
+        return None
+    return ":".join(parts)
+
+
 def parse_neighbor_mac(output: str) -> str | None:
-    """Return a valid MAC address from `ip neigh` output."""
+    """Return a valid unicast MAC address from `ip neigh` output."""
     fields = output.split()
     if "lladdr" not in fields:
         return None
     try:
-        mac = fields[fields.index("lladdr") + 1].upper().replace("-", ":")
+        return _normalize_unicast_mac(fields[fields.index("lladdr") + 1])
     except IndexError:
         return None
-    parts = mac.split(":")
-    return mac if len(parts) == 6 and all(len(part) == 2 and all(c in "0123456789ABCDEF" for c in part) for part in parts) else None
 
 
 def lookup_oui_vendor(mac: str | None, databases: tuple[str, ...] = (
     "/usr/share/ieee-data/oui.txt", "/usr/share/hwdata/oui.txt", "/usr/share/misc/oui.txt",
 )) -> str | None:
     """Match a MAC prefix against an installed IEEE OUI database; never use a web lookup."""
-    if not mac:
+    normalized = _normalize_unicast_mac(mac)
+    if not normalized:
         return None
-    prefix = mac.upper().replace(":", "-")[:8]
+    # Locally administered addresses do not identify a manufacturer OUI.
+    if int(normalized[:2], 16) & 2:
+        return None
+    prefix = normalized.upper().replace(":", "-")[:8]
     for database in databases:
         try:
             lines = Path(database).read_text(encoding="utf-8", errors="replace").splitlines()

@@ -107,6 +107,10 @@ NetworkManager, Bluetooth, audio, storage, battery and hardware summaries use lo
 
 ## Validation
 
+Version `0.3.33` rejects invalid and multicast gateway MAC addresses and skips manufacturer lookup for locally administered MAC addresses, which do not identify an IEEE OUI.
+
+Version `0.3.32` rejects malformed default-route output when identifying the local network gateway.
+
 Version `0.3.31` shows the installed Ubuntu Start version in About and local system details, including for Debian package installations.
 
 Version `0.3.30` reuses the existing application window on activation, avoiding duplicate Ubuntu Start windows.

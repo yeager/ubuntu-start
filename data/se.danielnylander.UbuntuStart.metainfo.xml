@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.33" date="2026-10-29">
+      <description>
+        <p>Validate gateway MAC addresses before looking up a manufacturer, and skip locally administered addresses that do not identify an OUI.</p>
+        <p xml:lang="sv">Validera gatewayens MAC-adress före tillverkarsökningen och hoppa över lokalt administrerade adresser som inte identifierar ett OUI.</p>
+      </description>
+    </release>
     <release version="0.3.32" date="2026-10-29">
       <description>
         <p>Reject malformed default-route output when identifying the local network gateway.</p>

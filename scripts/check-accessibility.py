@@ -773,7 +773,10 @@ def main() -> int:
                                 role in {"label", "text"} and "graphical.target @" in name
                                 for role, name, _node in entries
                             )
-                            if chain_status:
+                            if chain_status and (
+                                not chain_status.startswith("Systemd's critical chain")
+                                or chain_output_visible
+                            ):
                                 break
                             time.sleep(0.25)
                         if not chain_status:
