@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Install build dependencies
-        run: sudo apt-get update && sudo apt-get install -y appstream at-spi2-core gettext gir1.2-atspi-2.0 gir1.2-adw-1 gir1.2-gtk-4.0 libadwaita-1-dev meson ninja-build python3-gi xvfb
+        run: sudo apt-get update && sudo apt-get install -y appstream at-spi2-core gettext gir1.2-atspi-2.0 gir1.2-adw-1 gir1.2-gtk-4.0 libadwaita-1-dev meson ninja-build python3-gi xdotool xvfb
       - name: Check Python syntax and GTK imports
         run: |
           python3 -m compileall -q src tests scripts
@@ -39,7 +39,7 @@ jobs:
         run: appstreamcli validate data/se.nylander.UbuntuStart.metainfo.xml
       - name: Run unit tests
         run: PYTHONPATH=src python3 -m unittest discover -s tests -v
-      - name: Check the running app's AT-SPI navigation
+      - name: Check app accessibility and keyboard focus
         run: xvfb-run -a dbus-run-session -- python3 scripts/check-accessibility.py
       - name: Build with Meson
         run: |

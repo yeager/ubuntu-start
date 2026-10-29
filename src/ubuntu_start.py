@@ -1003,6 +1003,7 @@ class UbuntuStart(Adw.Application):
             license_type=Gtk.License.GPL_3_0_ONLY,
             comments=_("An Ubuntu Desktop guide for first-run setup and device troubleshooting."),
         )
+        about.add_link(_("Daniel Nylander's website"), "https://www.danielnylander.se")
         about.add_link(_("GitHub repository"), "https://github.com/yeager/ubuntu-start")
         about.present(self.get_active_window())
 

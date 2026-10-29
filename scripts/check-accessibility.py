@@ -27,6 +27,7 @@ EXPECTED_PAGES = {
     "Help and support",
 }
 BUTTON_ROLES = {"button", "push button"}
+ENTRY_ROLES = {"entry", "text"}
 
 
 def accessible_tree(
@@ -123,31 +124,51 @@ def main() -> int:
                 missing.append("sidebar")
             else:
                 selection = sidebar.get_selection_iface()
-                fix_index = next(
+                welcome_index = next(
                     (
                         index for index in range(sidebar.get_child_count())
                         if (item := sidebar.get_child_at_index(index))
-                        and item.get_name() == "Fix a device"
+                        and item.get_name() == "Welcome"
                     ),
                     None,
                 )
-                if selection is None or fix_index is None or not selection.select_child(fix_index):
-                    missing.append("selectable Fix a device guide")
+                if selection is None or welcome_index is None or not selection.select_child(welcome_index):
+                    missing.append("selectable Welcome guide before Ctrl+F")
 
         if not missing:
-            search_deadline = time.monotonic() + 5
-            while time.monotonic() < search_deadline:
+            try:
+                window_search = subprocess.run(
+                    ["xdotool", "search", "--onlyvisible", "--name", "^Ubuntu Start$"],
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                    timeout=3,
+                )
+                window_id = window_search.stdout.splitlines()[0]
+                subprocess.run(["xdotool", "windowfocus", window_id], check=True, timeout=3)
+                subprocess.run(["xdotool", "key", "ctrl+f"], check=True, timeout=3)
+            except (OSError, subprocess.SubprocessError, IndexError) as error:
+                missing.append(f"Ctrl+F could not be sent to the application window: {error}")
+
+        if not missing:
+            focus_deadline = time.monotonic() + 5
+            while time.monotonic() < focus_deadline:
                 entries = accessible_tree(app)
-                if ("entry", "Search all guides and steps") in {
-                    (role, name) for role, name, _node in entries
-                }:
+                search_entry = next(
+                    (
+                        node for role, name, node in entries
+                        if role in ENTRY_ROLES and name == "Search all guides and steps"
+                    ),
+                    None,
+                )
+                if search_entry and search_entry.get_state_set().contains(Atspi.StateType.FOCUSED):
                     print(
-                        "AT-SPI exposed all guide names, the About button, "
-                        "and the labeled guide-search entry."
+                        "AT-SPI verified the guide names, About button and labeled search entry; "
+                        "Ctrl+F moved focus to search."
                     )
                     return 0
                 time.sleep(0.25)
-            missing.append("entry: Search all guides and steps")
+            missing.append("focused search entry after Ctrl+F")
 
         log.seek(0)
         details = log.read().strip()

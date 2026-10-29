@@ -186,6 +186,7 @@ class AboutDialogTests(unittest.TestCase):
         self.assertEqual(properties["developers"], ["Daniel Nylander"])
         self.assertEqual(properties["website"], "https://www.danielnylander.se")
         self.assertEqual(dialog.add_link.call_args_list, [
+            call("Daniel Nylander's website", "https://www.danielnylander.se"),
             call("GitHub repository", "https://github.com/yeager/ubuntu-start"),
         ])
         dialog.present.assert_called_once_with(app.get_active_window.return_value)
