@@ -6,6 +6,7 @@ import ipaddress
 import json
 import math
 import platform
+from functools import lru_cache
 from importlib import metadata
 from pathlib import Path
 import re
@@ -1739,6 +1740,59 @@ def parse_neighbor_mac(output: str) -> str | None:
         return None
 
 
+@lru_cache(maxsize=12)
+def _load_ieee_assignments(
+    database: str, modified_ns: int, size: int, inode: int,
+) -> dict[str, tuple[tuple[int, int, str | None, int], ...]]:
+    """Parse one installed IEEE text file, caching it until its file identity changes."""
+    try:
+        lines = Path(database).read_text(encoding="utf-8", errors="replace").splitlines()
+    except OSError:
+        return {}
+
+    range_registries = {"mam.txt", "oui36.txt", "iab.txt"}
+    is_range_registry = Path(database).name.casefold() in range_registries
+    hex_entry = re.compile(
+        r"^([0-9A-Fa-f]{2}(?:-[0-9A-Fa-f]{2}){2})\s+\(hex\)\s+(.+?)\s*$"
+    )
+    base_entry = re.compile(
+        r"^([0-9A-Fa-f]{6})(?:-([0-9A-Fa-f]{6}))?\s+\(base 16\)\s+(.+?)\s*$"
+    )
+
+    def usable_vendor(value: str) -> str | None:
+        vendor = value.strip()
+        return vendor if vendor and vendor.casefold() != "private" else None
+
+    assignments: dict[str, list[tuple[int, int, str | None, int]]] = {}
+    current_prefix = None
+    for line_number, line in enumerate(lines):
+        match = hex_entry.match(line)
+        if match:
+            current_prefix = match.group(1).replace("-", "").upper()
+            if not is_range_registry:
+                assignments.setdefault(current_prefix, []).append(
+                    (0, (1 << 24) - 1, usable_vendor(match.group(2)), line_number)
+                )
+            continue
+
+        match = base_entry.match(line)
+        if not match or not current_prefix:
+            continue
+        first = int(match.group(1), 16)
+        if match.group(2) is None:
+            # A single six-digit OUI in `(base 16)` form is still a broad
+            # 24-bit assignment, not a single 48-bit MAC address.
+            if match.group(1).upper() != current_prefix:
+                continue
+            first, last = 0, (1 << 24) - 1
+        else:
+            last = int(match.group(2), 16)
+        assignments.setdefault(current_prefix, []).append(
+            (first, last, usable_vendor(match.group(3)), line_number)
+        )
+    return {prefix: tuple(entries) for prefix, entries in assignments.items()}
+
+
 def lookup_oui_vendor(mac: str | None, databases: tuple[str, ...] = (
     "/usr/share/ieee-data/oui36.txt", "/usr/share/ieee-data/mam.txt",
     "/usr/share/ieee-data/iab.txt", "/usr/share/ieee-data/oui.txt",
@@ -1754,60 +1808,19 @@ def lookup_oui_vendor(mac: str | None, databases: tuple[str, ...] = (
     address = normalized.replace(":", "")
     prefix = address[:6]
     suffix = int(address[6:], 16)
-    # MA-M, MA-S and IAB registries describe ranges within a 24-bit OUI. Their
-    # range is more specific than the broad OUI entry and must take precedence.
-    range_registries = {"mam.txt", "oui36.txt", "iab.txt"}
     best_match = None
-    hex_entry = re.compile(
-        r"^([0-9A-Fa-f]{2}(?:-[0-9A-Fa-f]{2}){2})\s+\(hex\)\s+(.+?)\s*$"
-    )
-    base_entry = re.compile(
-        r"^([0-9A-Fa-f]{6})(?:-([0-9A-Fa-f]{6}))?\s+\(base 16\)\s+(.+?)\s*$"
-    )
-
-    def usable_vendor(value: str) -> str | None:
-        vendor = value.strip()
-        return vendor if vendor and vendor.casefold() != "private" else None
-
     for database_index, database in enumerate(databases):
         try:
-            lines = Path(database).read_text(encoding="utf-8", errors="replace").splitlines()
+            file_stat = Path(database).stat()
         except OSError:
             continue
-        is_range_registry = Path(database).name.casefold() in range_registries
-        current_prefix = None
-        for line_number, line in enumerate(lines):
-            match = hex_entry.match(line)
-            if match:
-                current_prefix = match.group(1).replace("-", "").upper()
-                if not is_range_registry and current_prefix == prefix:
-                    candidate = (
-                        1 << 24, database_index, line_number,
-                        usable_vendor(match.group(2)),
-                    )
-                    if best_match is None or candidate[:3] < best_match[:3]:
-                        best_match = candidate
+        assignments = _load_ieee_assignments(
+            str(database), file_stat.st_mtime_ns, file_stat.st_size, file_stat.st_ino,
+        )
+        for first, last, vendor, line_number in assignments.get(prefix, ()):
+            if not first <= suffix <= last:
                 continue
-
-            match = base_entry.match(line)
-            if not match or current_prefix != prefix:
-                continue
-            first = int(match.group(1), 16)
-            if match.group(2) is None:
-                # A single six-digit OUI in `(base 16)` form is still a broad
-                # 24-bit assignment, not a single 48-bit MAC address.
-                if match.group(1).upper() != prefix:
-                    continue
-                assignment_size = 1 << 24
-            else:
-                last = int(match.group(2), 16)
-                if not first <= suffix <= last:
-                    continue
-                assignment_size = last - first + 1
-            candidate = (
-                assignment_size, database_index, line_number,
-                usable_vendor(match.group(3)),
-            )
+            candidate = (last - first + 1, database_index, line_number, vendor)
             if best_match is None or candidate[:3] < best_match[:3]:
                 best_match = candidate
     return best_match[3] if best_match else None

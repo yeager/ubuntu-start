@@ -1768,6 +1768,20 @@ Inst package-two [2.0] (2.1 repo [amd64])
             )
             self.assertIsNone(lookup_oui_vendor("00:11:22:70:01:23", (str(oui), str(mam))))
 
+    def test_refreshes_cached_database_after_file_changes(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            database = Path(temporary) / "oui.txt"
+            database.write_text("00-11-22 (hex)\tFirst Example Vendor\n", encoding="utf-8")
+            self.assertEqual(
+                lookup_oui_vendor("00:11:22:33:44:55", (str(database),)),
+                "First Example Vendor",
+            )
+            database.write_text("00-11-22 (hex)\tReplacement Vendor Name\n", encoding="utf-8")
+            self.assertEqual(
+                lookup_oui_vendor("00:11:22:33:44:55", (str(database),)),
+                "Replacement Vendor Name",
+            )
+
     @patch("system_diagnostics.shutil.which", side_effect=lambda command: f"/usr/bin/{command}")
     @patch("system_diagnostics.lookup_oui_vendor", return_value="Example Router Co.")
     @patch("system_diagnostics._run_local")

@@ -107,6 +107,8 @@ NetworkManager, Bluetooth, audio, storage, battery and hardware summaries use lo
 
 ## Validation
 
+Version `0.3.35` caches parsed local IEEE assignments for fast repeated gateway vendor checks and reloads the cache when a database file changes.
+
 Version `0.3.34` matches gateway vendors against local IEEE MA-M, MA-S and IAB assignment ranges, preferring the most specific match over a broad OUI entry.
 
 Version `0.3.33` rejects invalid and multicast gateway MAC addresses and skips manufacturer lookup for locally administered MAC addresses, which do not identify an IEEE OUI.
