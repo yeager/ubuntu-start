@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.8" date="2026-10-29">
+      <description>
+        <p>Improve CPU benchmark stability with a short warm-up and the median of three measurements. Discard comparison baselines created with the previous scoring method.</p>
+        <p xml:lang="sv">Gör processortestets resultat stabilare med en kort uppvärmning och medianvärdet av tre mätningar. Tidigare jämförelsevärden från en annan mätmetod används inte.</p>
+      </description>
+    </release>
     <release version="0.3.7" date="2026-10-29">
       <description>
         <p>Distinguish DNS lookup failures from timeouts and missing system tools in the network diagnostics, with clear next steps. Make the accessibility smoke test independent of previously saved benchmark results.</p>
