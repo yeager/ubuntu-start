@@ -137,6 +137,26 @@ def main() -> int:
                         selection and page_index is not None and selection.select_child(page_index)
                     )
 
+                if not select_page("Get started"):
+                    missing.append("selectable Get started page")
+                else:
+                    time_guide_deadline = time.monotonic() + 5
+                    time_guide_button = None
+                    while time.monotonic() < time_guide_deadline:
+                        entries = accessible_tree(app)
+                        time_guide_button = next(
+                            (
+                                node for role, name, node in entries
+                                if role in BUTTON_ROLES and name == "Open date and time guide"
+                            ),
+                            None,
+                        )
+                        if time_guide_button:
+                            break
+                        time.sleep(0.25)
+                    if time_guide_button is None:
+                        missing.append("button: Open date and time guide on Get started")
+
                 if not select_page("Network and hardware"):
                     missing.append("selectable Network and hardware guide")
                 else:
@@ -292,7 +312,7 @@ def main() -> int:
                 )
                 if search_entry and search_entry.get_state_set().contains(Atspi.StateType.FOCUSED):
                     print(
-                        "AT-SPI verified guide names, About, USB, PCI, video, memory, system-pressure, service-status and temperature controls, and the labeled search entry; "
+                        "AT-SPI verified guide names, About, USB, PCI, date/time, video, memory, system-pressure, service-status and temperature controls, and the labeled search entry; "
                         "Ctrl+F moved focus to search."
                     )
                     return 0
@@ -305,7 +325,7 @@ def main() -> int:
         observed_controls = [
             (role, name)
             for role, name, _node in entries
-            if name in {"About", "Refresh USB device list", "Refresh PCI device list", "Refresh video device status", "Open camera guide", "Refresh memory status", "Refresh system pressure", "Refresh system service status", "Refresh temperature status", "Search all guides and steps"}
+            if name in {"About", "Refresh USB device list", "Refresh PCI device list", "Open date and time guide", "Refresh video device status", "Open camera guide", "Refresh memory status", "Refresh system pressure", "Refresh system service status", "Refresh temperature status", "Search all guides and steps"}
         ]
         if observed_controls:
             print(f"Observed accessible roles and names: {observed_controls!r}", file=sys.stderr)

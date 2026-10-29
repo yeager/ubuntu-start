@@ -357,11 +357,14 @@ class UbuntuStart(Adw.Application):
         time_status = Gtk.Label(label="", xalign=0, wrap=True)
         time_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
         time_refresh = Gtk.Button(label=_("Refresh date and time status"), halign=Gtk.Align.START)
+        time_guide_button = Gtk.Button(label=_("Open date and time guide"), halign=Gtk.Align.START)
         time_refresh.connect(
             "clicked",
             lambda *_: self.refresh_time_status(time_refresh, time_status, time_rows, announce=True),
         )
+        time_guide_button.connect("clicked", lambda *_: self.open_time_guide())
         time_box.append(time_refresh)
+        time_box.append(time_guide_button)
         time_box.append(time_status)
         time_box.append(time_rows)
         box.append(time_box)
@@ -991,6 +994,14 @@ class UbuntuStart(Adw.Application):
         self.device_search.set_text("")
         self.device_chooser.set_selected(camera_index)
         self.main_stack.set_visible_child_name(_("Fix a device"))
+
+    def open_time_guide(self):
+        guide_index = next(
+            index for index, (title, _target, _action, _steps) in enumerate(SYSTEM_GUIDES)
+            if title == _("Check date and time")
+        )
+        self.system_guide_chooser.set_selected(guide_index)
+        self.main_stack.set_visible_child_name(_("System guides"))
 
     def show_usb_status(self, button, status_label, device_rows, devices, announce=False):
         button.set_sensitive(True)

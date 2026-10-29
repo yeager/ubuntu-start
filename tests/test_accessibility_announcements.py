@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import Mock, call, patch
 
-from ubuntu_start import Adw, Gdk, GLib, Gtk, GUIDES, UbuntuStart
+from ubuntu_start import Adw, Gdk, GLib, Gtk, GUIDES, SYSTEM_GUIDES, UbuntuStart
 from guide_search import find_guide_matches
 
 
@@ -265,6 +265,19 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.assertTrue(handled)
         self.app.main_stack.set_visible_child_name.assert_called_once_with("Fix a device")
         self.app.device_search.grab_focus.assert_called_once_with()
+
+    def test_open_time_guide_selects_date_and_time_instructions(self):
+        self.app.system_guide_chooser = Mock()
+        self.app.main_stack = Mock()
+
+        UbuntuStart.open_time_guide(self.app)
+
+        expected_index = next(
+            index for index, (title, _target, _action, _steps) in enumerate(SYSTEM_GUIDES)
+            if title == "Check date and time"
+        )
+        self.app.system_guide_chooser.set_selected.assert_called_once_with(expected_index)
+        self.app.main_stack.set_visible_child_name.assert_called_once_with("System guides")
 
     def test_unrelated_key_is_not_consumed(self):
         self.app.main_stack = Mock()
