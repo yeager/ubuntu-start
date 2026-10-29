@@ -63,3 +63,48 @@ jobs:
           build/package-venv/bin/pip install --disable-pip-version-check build setuptools wheel twine
           build/package-venv/bin/python -m build --no-isolation --outdir build/python-distributions
           build/package-venv/bin/python -m twine check build/python-distributions/*
+
+  validate-ubuntu-26-10:
+    name: Validate on Ubuntu 26.10
+    runs-on: ubuntu-24.04
+    container: ubuntu:26.10
+    steps:
+      - name: Install build dependencies
+        run: |
+          apt-get update
+          DEBIAN_FRONTEND=noninteractive apt-get install -y \
+            appstream at-spi2-core ca-certificates dbus-x11 gettext git gir1.2-atspi-2.0 \
+            gir1.2-adw-1 gir1.2-gtk-4.0 libadwaita-1-dev meson ninja-build \
+            python3-gi xdotool xvfb
+      - uses: actions/checkout@v7
+      - name: Check Python syntax and GTK imports
+        run: |
+          python3 -m compileall -q src tests scripts
+          PYTHONPATH=src python3 -c "import ubuntu_start"
+      - name: Check translations and AppStream metadata
+        run: |
+          python3 scripts/check-translations.py
+          while IFS= read -r language || [ -n "$language" ]; do
+            case "$language" in ''|'#'*) continue ;; esac
+            catalog="po/$language.po"
+            test -z "$(msgattrib --untranslated --no-obsolete "$catalog")"
+            test -z "$(msgattrib --only-fuzzy --no-obsolete "$catalog")"
+            msgfmt --check --check-format --statistics "$catalog" -o "/tmp/ubuntu-start-$language.mo"
+          done < po/LINGUAS
+          appstreamcli validate data/se.nylander.UbuntuStart.metainfo.xml
+      - name: Run unit tests
+        run: PYTHONPATH=src python3 -m unittest discover -s tests -v
+      - name: Check app accessibility and keyboard focus
+        run: xvfb-run -a dbus-run-session -- python3 scripts/check-accessibility.py
+      - name: Build and inspect Debian package
+        run: |
+          meson setup build --prefix=/usr
+          meson compile -C build
+          DESTDIR="$PWD/stage" meson install -C build
+          sh scripts/check-staged-install.sh "$PWD/stage"
+          scripts/build-deb.sh "$PWD/build/packages"
+          set -- "$PWD"/build/packages/*.deb
+          test "$#" -eq 1
+          test "$(dpkg-deb --field "$1" Architecture)" = all
+          dpkg-deb --contents "$1" | grep -Fq './usr/share/applications/se.nylander.UbuntuStart.desktop'
+          dpkg-deb --contents "$1" | grep -Fq './usr/share/icons/hicolor/512x512/apps/se.nylander.UbuntuStart.png'
