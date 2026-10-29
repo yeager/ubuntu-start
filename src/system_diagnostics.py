@@ -1081,7 +1081,7 @@ def parse_dpkg_audit(output: str) -> list[str] | None:
     packages = set()
     for line in output.splitlines():
         match = re.match(
-            r"^\s*([a-z0-9][a-z0-9+.-]*(?::[a-z0-9][a-z0-9-]*)?)(?:\s|$)",
+            r"^\s+([a-z0-9][a-z0-9+.-]*(?::[a-z0-9][a-z0-9-]*)?)(?:\s|$)",
             line,
         )
         if match:

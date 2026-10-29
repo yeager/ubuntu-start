@@ -1213,14 +1213,21 @@ class DpkgAuditTests(unittest.TestCase):
     def test_audit_extracts_package_names_without_heading_text(self):
         output = (
             "The following packages have been unpacked but not yet configured:\n"
-            "  browser:amd64\n"
-            "  broken-app\n"
-            "  browser:amd64\n"
+            " browser:amd64      A web browser\n"
+            " broken-app          An example package\n"
+            " browser:amd64      A web browser\n"
         )
         self.assertEqual(parse_dpkg_audit(output), ["broken-app", "browser:amd64"])
 
     def test_unrecognized_nonempty_audit_output_is_unknown(self):
         self.assertIsNone(parse_dpkg_audit("dpkg: error: database unavailable\n"))
+
+    def test_wrapped_database_lock_notice_is_not_a_package_name(self):
+        output = (
+            "Another process has locked the database for writing, and might currently be\n"
+            "modifying it; some reported problems might be due to that.\n"
+        )
+        self.assertIsNone(parse_dpkg_audit(output))
 
     @patch("system_diagnostics.shutil.which", return_value="/usr/bin/dpkg")
     @patch("system_diagnostics._run_local")
