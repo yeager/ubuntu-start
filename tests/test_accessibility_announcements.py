@@ -987,6 +987,35 @@ class AboutDialogTests(unittest.TestCase):
         dialog.present.assert_called_once_with(app.get_active_window.return_value)
 
 
+class SupportReportDialogTests(unittest.TestCase):
+    @patch("ubuntu_start.Gtk.FileChooserNative.new")
+    def test_invalid_json_error_stays_in_report_dialog_and_is_announced(self, new_chooser):
+        app = Mock()
+        chooser = new_chooser.return_value
+        parent = Mock()
+        editor = Mock()
+        editor.get_buffer.return_value.get_text.return_value = "not JSON"
+        summary_status = Mock()
+        editor_status = Mock()
+
+        UbuntuStart.choose_report_destination(
+            app, parent, editor, summary_status, editor_status,
+        )
+
+        callback = chooser.connect.call_args.args[1]
+        callback(chooser, Gtk.ResponseType.ACCEPT)
+
+        message = (
+            "The report must be valid JSON and keep its report version and system details. "
+            "Restore those fields, then save again."
+        )
+        editor_status.set_text.assert_called_once_with(message)
+        app.announce_to_screen_reader.assert_called_once_with(editor_status, message)
+        summary_status.set_text.assert_not_called()
+        parent.close.assert_not_called()
+        chooser.destroy.assert_called_once_with()
+
+
 class SystemDetailsTests(unittest.TestCase):
     def test_desktop_connection_label_preserves_unknown_state(self):
         self.assertEqual(desktop_connection_label(True), "Remote desktop")

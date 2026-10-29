@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.29" date="2026-10-29">
+      <description>
+        <p>Show support-report validation errors in the report editor so the user can correct the content without losing the dialog.</p>
+        <p xml:lang="sv">Visa valideringsfel direkt i rapportredigeraren så att innehållet kan rättas utan att dialogrutan stängs.</p>
+      </description>
+    </release>
     <release version="0.3.28" date="2026-10-29">
       <description>
         <p>Validate edited support reports before saving so invalid JSON is not saved with a .json extension.</p>

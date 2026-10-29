@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Ubuntu Start 0.3.28\n"
+"Project-Id-Version: Ubuntu Start 0.3.29\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
 "POT-Creation-Date: 2026-10-29 21:19+0000\n"
 "PO-Revision-Date: 2026-10-28 15:18+0100\n"
@@ -5600,7 +5600,7 @@ msgstr "Spara"
 msgid "Support report saved locally."
 msgstr "Supportrapporten har sparats lokalt."
 
-#: src/ubuntu_start.py:3135
+#: src/ubuntu_start.py:3141
 msgid "The report must be valid JSON and keep its report version and system details. Restore those fields, then save again."
 msgstr "Rapporten måste vara giltig JSON och innehålla versionsfältet och systemuppgifterna. Återställ fälten och spara igen."
 

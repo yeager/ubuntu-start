@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Ubuntu Start 0.3.28\n"
+"Project-Id-Version: Ubuntu Start 0.3.29\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
 "POT-Creation-Date: 2026-10-29 21:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -4884,7 +4884,7 @@ msgstr ""
 msgid "Support report saved locally."
 msgstr ""
 
-#: src/ubuntu_start.py:3135
+#: src/ubuntu_start.py:3141
 msgid "The report must be valid JSON and keep its report version and system details. Restore those fields, then save again."
 msgstr ""
 

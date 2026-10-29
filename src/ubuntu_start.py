@@ -3107,18 +3107,23 @@ class UbuntuStart(Adw.Application):
         scroller = Gtk.ScrolledWindow(vexpand=True, hexpand=True)
         scroller.set_child(editor)
         content.append(scroller)
+        report_status = Gtk.Label(label="", xalign=0, wrap=True)
+        content.append(report_status)
         buttons = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8, halign=Gtk.Align.END)
         close_button = Gtk.Button(label=_("Close"))
         save_button = Gtk.Button(label=_("Save report"), css_classes=["suggested-action"])
         close_button.connect("clicked", lambda *_: window.close())
-        save_button.connect("clicked", lambda *_: self.choose_report_destination(window, editor, status_label))
+        save_button.connect(
+            "clicked",
+            lambda *_: self.choose_report_destination(window, editor, status_label, report_status),
+        )
         buttons.append(close_button)
         buttons.append(save_button)
         content.append(buttons)
         window.set_content(content)
         window.present()
 
-    def choose_report_destination(self, parent, editor, status_label):
+    def choose_report_destination(self, parent, editor, status_label, editor_status_label=None):
         chooser = Gtk.FileChooserNative.new(
             _("Save support report"), parent, Gtk.FileChooserAction.SAVE,
             _("Save"), _("Cancel"),
@@ -3132,8 +3137,9 @@ class UbuntuStart(Adw.Application):
                     editor.get_buffer().get_start_iter(), editor.get_buffer().get_end_iter(), True,
                 )
                 if not is_valid_support_report(text):
-                    status_label.set_text(_("The report must be valid JSON and keep its report version and system details. Restore those fields, then save again."))
-                    self.announce_to_screen_reader(status_label, status_label.get_text())
+                    error_label = editor_status_label or status_label
+                    error_label.set_text(_("The report must be valid JSON and keep its report version and system details. Restore those fields, then save again."))
+                    self.announce_to_screen_reader(error_label, error_label.get_text())
                     dialog.destroy()
                     return
                 try:
