@@ -118,6 +118,14 @@ GUIDES = [
         (_("Compare readings with device guidance"), _("Sensor labels and normal temperatures vary by model. Check the computer manufacturer’s guidance instead of relying on a universal temperature limit.")),
         (_("Stop if the computer becomes unusually hot"), _("Save your work and shut down if the computer becomes unusually hot, smells burnt or behaves unpredictably. Contact the manufacturer or support service.")),
     ]),
+    (_("Improve benchmark results"), "performance", [
+        (_("Prepare a fair comparison"), _("Connect the computer to power, save your work, close demanding apps you recognize, and wait for updates, backups and file copies to finish. Repeat each test under similar conditions.")),
+        (_("Use an available performance power profile"), _("If Ubuntu offers the Performance profile, choose it in Settings > Power while connected to AC. It can increase fan noise, heat and power use. Switch back to Balanced or Power Saver when finished.")),
+        (_("Keep the computer cool"), _("Place the computer on a firm, flat surface and keep its air vents clear. Let it cool before repeating a test. Stop if it becomes unusually hot or smells burnt.")),
+        (_("Keep graphics test conditions the same"), _("Use the same display, resolution and desktop session for each run. In Software & Updates > Additional Drivers, use only a driver Ubuntu recommends for this computer; avoid drivers from unfamiliar websites.")),
+        (_("Start with a read-only disk test"), _("Use the read-only benchmark in GNOME Disks first, and wait for file copies or updates to finish. A write benchmark changes data on the selected drive; run it only when you have a current backup.")),
+        (_("Understand what each score measures"), _("The CPU score measures Ubuntu Start's own workload, not overall computer speed. Graphics scores depend on the driver, display and desktop session; disk results depend on the selected drive and current activity. Compare the same computer and settings. Do not overclock or disable security features to chase a higher score.")),
+    ]),
 ]
 
 SYSTEM_GUIDES = [
