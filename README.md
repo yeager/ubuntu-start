@@ -31,6 +31,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contributor guidance and the maintain
 
 - First steps for language, networking, updates, sound, display and privacy.
 - Everyday tips for search, window management and Files, plus guidance on backups and choosing trusted app sources.
+- A first-run checklist for language and keyboard, network, updates, sound and display, privacy and accessibility. Users mark steps complete themselves; progress is saved locally in a private file and can be reset at any time.
 - Search device checks and step-by-step system guides together, then open a matching guide directly. Topics include sound, Bluetooth, batteries, USB devices, printers, displays/graphics, keyboards, touchpads, Wi-Fi, Ethernet, VPNs, cameras, storage, accessibility and Terminal basics.
 - A searchable PCI troubleshooting guide and local PCI device list show hardware IDs and attached kernel drivers; PCI bridges are omitted and a missing driver is not presented as a confirmed fault.
 - An on-demand Wi-Fi quick check combines local NetworkManager, radio-block and IP-address status to suggest next steps; it does not contact the internet or scan nearby networks.

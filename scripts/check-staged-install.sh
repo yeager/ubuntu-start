@@ -7,6 +7,7 @@ required_files="
 usr/libexec/ubuntu-start/ubuntu_start.py
 usr/libexec/ubuntu-start/system_diagnostics.py
 usr/libexec/ubuntu-start/guide_search.py
+usr/libexec/ubuntu-start/first_run_state.py
 usr/share/applications/se.nylander.UbuntuStart.desktop
 usr/share/metainfo/se.nylander.UbuntuStart.metainfo.xml
 usr/share/icons/hicolor/512x512/apps/se.nylander.UbuntuStart.png

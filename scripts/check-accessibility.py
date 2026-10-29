@@ -27,6 +27,7 @@ EXPECTED_PAGES = {
     "Help and support",
 }
 BUTTON_ROLES = {"button", "push button"}
+CHECKBOX_ROLES = {"check box", "checkbutton"}
 ENTRY_ROLES = {"entry", "text"}
 
 
@@ -156,6 +157,38 @@ def main() -> int:
                 if not select_page("Get started"):
                     missing.append("selectable Get started page")
                 else:
+                    checklist_deadline = time.monotonic() + 5
+                    checklist_tasks = {
+                        "Language and keyboard",
+                        "Internet connection",
+                        "Updates",
+                        "Sound and display",
+                        "Privacy and screen lock",
+                        "Accessibility",
+                    }
+                    checklist_controls = set()
+                    while time.monotonic() < checklist_deadline:
+                        entries = accessible_tree(app)
+                        checklist_controls = {
+                            name for role, name, _node in entries
+                            if role in CHECKBOX_ROLES and name in checklist_tasks
+                        }
+                        if checklist_controls == checklist_tasks:
+                            break
+                        time.sleep(0.25)
+                    for task in sorted(checklist_tasks - checklist_controls):
+                        missing.append(f"accessible checklist checkbox: {task}")
+
+                    reset_checklist = next(
+                        (
+                            node for role, name, node in entries
+                            if role in BUTTON_ROLES and name == "Reset checklist"
+                        ),
+                        None,
+                    )
+                    if reset_checklist is None:
+                        missing.append("button: Reset checklist on Get started")
+
                     accessibility_deadline = time.monotonic() + 5
                     mouse_keys_status = None
                     while time.monotonic() < accessibility_deadline:

@@ -15,6 +15,7 @@ gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
 from system_diagnostics import battery_is_discharging, battery_power_status_unknown, benchmark_score_change_percent, build_support_report, check_internet_connection, clear_benchmark_baselines, find_benchmark_tool, find_graphics_benchmark_tool, load_benchmark_baselines, parse_glmark2_score, pressure_threshold_exceeded, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_reboot_required, read_resource_pressure, read_rfkill_status, read_secure_boot_status, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_cpu_benchmark, run_network_diagnostics, save_benchmark_baseline, sensor_near_critical_limit
 from guide_search import find_guide_matches
+from first_run_state import TASK_IDS as FIRST_RUN_TASK_IDS, load_completed_tasks, save_completed_tasks
 
 APP_ID = "se.nylander.UbuntuStart"
 DOMAIN = "ubuntu-start"
@@ -370,16 +371,68 @@ class UbuntuStart(Adw.Application):
         return box
 
     def make_get_started(self):
-        box, rows = self.page(_("Get started"), _("A few useful places to begin. Ubuntu may ask for your password when you change system settings."))
-        for title, subtitle, target in [
-            (_("Language and keyboard"), _("Choose your display language, region and keyboard layout."), ("settings", "keyboard")),
-            (_("Internet connection"), _("Connect to Wi-Fi or a wired network."), ("settings", "wifi")),
-            (_("Updates"), _("Check for system updates and restart if Ubuntu asks you to."), ("app", "update-manager")),
-            (_("Sound and display"), _("Choose speakers, microphone and monitor settings."), ("settings", "sound")),
-            (_("Privacy and screen lock"), _("Review app permissions and automatic screen locking."), ("settings", "privacy")),
-            (_("Accessibility"), _("Adjust text size, magnification, screen reader and keyboard access."), ("settings", "universal-access")),
-        ]:
-            self.row(rows, title, subtitle, _("Open Settings"), lambda t=target: self.open_target(t))
+        box, _rows = self.page(
+            _("Get started"),
+            _("Work through these steps at your own pace. Your checklist is saved privately on this computer."),
+            include_rows=False,
+        )
+        tasks = [
+            (
+                "language-keyboard", _("Language and keyboard"),
+                _("Choose your display language, region and keyboard layout."),
+                ("settings", "keyboard"),
+            ),
+            (
+                "network", _("Internet connection"),
+                _("Connect to Wi-Fi or a wired network."), ("settings", "wifi"),
+            ),
+            (
+                "updates", _("Updates"),
+                _("Check for system updates and restart if Ubuntu asks you to."),
+                ("app", "update-manager"),
+            ),
+            (
+                "sound-display", _("Sound and display"),
+                _("Choose speakers, microphone and monitor settings."),
+                ("settings", "sound"),
+            ),
+            (
+                "privacy", _("Privacy and screen lock"),
+                _("Review app permissions and automatic screen locking."),
+                ("settings", "privacy"),
+            ),
+            (
+                "accessibility", _("Accessibility"),
+                _("Adjust text size, magnification, screen reader and keyboard access."),
+                ("settings", "universal-access"),
+            ),
+        ]
+        self.first_run_completed = load_completed_tasks() & FIRST_RUN_TASK_IDS
+        self.first_run_tasks = tasks
+        self.first_run_checks = {}
+        self.first_run_progress = Gtk.Label(xalign=0, wrap=True)
+        self.first_run_save_status = Gtk.Label(xalign=0, wrap=True)
+        checklist_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        box.append(self.first_run_progress)
+        box.append(checklist_rows)
+        for task_id, title, subtitle, target in tasks:
+            row = Adw.ActionRow(title=title, subtitle=subtitle)
+            check = Gtk.CheckButton(active=task_id in self.first_run_completed, valign=Gtk.Align.CENTER)
+            check.update_property([Gtk.AccessibleProperty.LABEL], [title])
+            check.update_property([Gtk.AccessibleProperty.DESCRIPTION], [_("Mark this setup step as complete")])
+            handler_id = check.connect("toggled", self.on_first_run_task_toggled, task_id)
+            self.first_run_checks[task_id] = (check, handler_id)
+            row.add_suffix(check)
+            button = Gtk.Button(label=_("Open Settings"), valign=Gtk.Align.CENTER)
+            button.connect("clicked", lambda *_args, selected=target: self.open_target(selected))
+            row.add_suffix(button)
+            row.set_activatable_widget(check)
+            checklist_rows.append(row)
+        self.update_first_run_progress()
+        box.append(self.first_run_save_status)
+        reset_checklist = Gtk.Button(label=_("Reset checklist"), halign=Gtk.Align.START)
+        reset_checklist.connect("clicked", self.reset_first_run_checklist)
+        box.append(reset_checklist)
         accessibility_box, _accessibility_rows = self.page(
             _("Accessibility status"),
             _("Read selected GNOME accessibility settings. Ubuntu Start does not change them."),
@@ -426,6 +479,43 @@ class UbuntuStart(Adw.Application):
         box.append(time_box)
         self.refresh_time_status(time_refresh, time_status, time_rows)
         return box
+
+    def update_first_run_progress(self, announce=False):
+        completed = len(self.first_run_completed)
+        total = len(self.first_run_tasks)
+        message = _("Setup progress: {completed} of {total} steps complete.").format(
+            completed=completed, total=total,
+        )
+        self.first_run_progress.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(self.first_run_progress, message)
+
+    def on_first_run_task_toggled(self, check, task_id):
+        if check.get_active():
+            self.first_run_completed.add(task_id)
+        else:
+            self.first_run_completed.discard(task_id)
+        if save_completed_tasks(self.first_run_completed):
+            self.first_run_save_status.set_text(_("Progress saved on this computer."))
+        else:
+            self.first_run_save_status.set_text(
+                _("Progress could not be saved. It will remain until you close the app."),
+            )
+        self.update_first_run_progress(announce=True)
+
+    def reset_first_run_checklist(self, _button=None):
+        if not save_completed_tasks(set()):
+            self.first_run_save_status.set_text(
+                _("Progress could not be saved. It will remain until you close the app."),
+            )
+            return
+        self.first_run_completed.clear()
+        for check, handler_id in self.first_run_checks.values():
+            check.handler_block(handler_id)
+            check.set_active(False)
+            check.handler_unblock(handler_id)
+        self.first_run_save_status.set_text(_("Checklist reset. Progress is saved on this computer."))
+        self.update_first_run_progress(announce=True)
 
     def open_target(self, target):
         kind, value = target
