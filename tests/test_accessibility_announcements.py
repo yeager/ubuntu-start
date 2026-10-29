@@ -884,12 +884,46 @@ class InternetTestResultTests(unittest.TestCase):
 
 
 class DriverGuideTests(unittest.TestCase):
+    def test_secure_boot_status_explains_enabled_state_and_announces(self):
+        app = Mock()
+        button = Mock()
+        row = Mock()
+
+        UbuntuStart.show_secure_boot_status(app, button, row, "enabled", None, announce=True)
+
+        subtitle = (
+            "Enabled. Some third-party drivers may require a one-time key "
+            "confirmation during restart."
+        )
+        row.set_subtitle.assert_called_once_with(subtitle)
+        button.set_sensitive.assert_called_once_with(True)
+        app.announce_to_screen_reader.assert_called_once_with(
+            row, f"Secure Boot status: {subtitle}",
+        )
+
+    def test_secure_boot_unavailable_explains_that_no_change_was_made(self):
+        app = Mock()
+        row = Mock()
+
+        UbuntuStart.show_secure_boot_status(
+            app, Mock(), row, None, "not-installed",
+        )
+
+        row.set_subtitle.assert_called_once_with(
+            "mokutil is not installed, so Secure Boot status cannot be read.",
+        )
+
     def test_unknown_adapter_help_links_to_hardware_overview(self):
         app = Mock()
         app.page.return_value = (Mock(), Mock())
         app.main_stack = Mock()
 
-        UbuntuStart.make_drivers(app)
+        with (
+            patch("ubuntu_start.Adw.ActionRow"),
+            patch("ubuntu_start.Gtk.Button"),
+            patch("ubuntu_start.Gtk.Label"),
+        ):
+            UbuntuStart.make_drivers(app)
 
         calls = [call_args for call_args in app.row.call_args_list
                  if call_args.args[1] == "If the graphics adapter has no name"]

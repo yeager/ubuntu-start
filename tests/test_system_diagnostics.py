@@ -36,6 +36,8 @@ from system_diagnostics import (
     read_apt_update_status,
     read_reboot_required,
     read_power_profile,
+    parse_secure_boot_status,
+    read_secure_boot_status,
     read_memory_status,
     parse_pressure_status,
     read_resource_pressure,
@@ -1117,6 +1119,44 @@ Inst package-two [2.0] (2.1 repo [amd64])
     def test_rejects_unexpected_power_profile_output(self, _which, run_local):
         run_local.return_value = SimpleNamespace(returncode=0, stdout="unexpected text\n")
         self.assertEqual(read_power_profile(), "unavailable")
+
+    def test_parses_secure_boot_states_and_setup_mode(self):
+        self.assertEqual(parse_secure_boot_status("SecureBoot enabled\n"), "enabled")
+        self.assertEqual(parse_secure_boot_status("SecureBoot disabled\n"), "disabled")
+        self.assertEqual(parse_secure_boot_status("Platform is in Setup Mode\n"), "setup-mode")
+        self.assertEqual(
+            parse_secure_boot_status("EFI variables are not supported on this system\n"),
+            "unsupported",
+        )
+        self.assertIsNone(parse_secure_boot_status("unrecognized output\n"))
+
+    @patch("system_diagnostics._run_local")
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/mokutil")
+    def test_reads_secure_boot_state_without_changing_firmware(self, _which, run_local):
+        run_local.return_value = SimpleNamespace(
+            returncode=0, stdout="SecureBoot enabled\n", stderr="",
+        )
+        self.assertEqual(read_secure_boot_status(), ("enabled", None))
+        run_local.assert_called_once()
+        self.assertEqual(run_local.call_args.args[0], ["/usr/bin/mokutil", "--sb-state"])
+        self.assertEqual(run_local.call_args.kwargs["env"]["LC_ALL"], "C")
+
+    @patch("system_diagnostics._run_local")
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/mokutil")
+    def test_reads_efi_unsupported_state_written_to_stderr(self, _which, run_local):
+        run_local.return_value = SimpleNamespace(
+            returncode=1, stdout="", stderr="EFI variables are not supported on this system\n",
+        )
+        self.assertEqual(read_secure_boot_status(), ("unsupported", None))
+
+    @patch("system_diagnostics.shutil.which", return_value=None)
+    def test_reports_missing_mokutil(self, _which):
+        self.assertEqual(read_secure_boot_status(), (None, "not-installed"))
+
+    @patch("system_diagnostics._run_local", return_value=None)
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/mokutil")
+    def test_reports_secure_boot_timeout(self, _which, _run_local):
+        self.assertEqual(read_secure_boot_status(), (None, "timeout-or-unavailable"))
 
     @patch("system_diagnostics.shutil.which", return_value=None)
     def test_handles_missing_power_profile_tool(self, _which):

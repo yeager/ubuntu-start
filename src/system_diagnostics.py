@@ -1090,6 +1090,37 @@ def read_power_profile(timeout: float = 2.0) -> str:
     return profile if profile in {"power-saver", "balanced", "performance"} else "unavailable"
 
 
+def parse_secure_boot_status(output: str) -> str | None:
+    """Parse the small set of Secure Boot states reported by mokutil."""
+    if not isinstance(output, str):
+        return None
+    for line in output.splitlines():
+        normalized = " ".join(line.casefold().split())
+        if normalized == "secureboot enabled":
+            return "enabled"
+        if normalized == "secureboot disabled":
+            return "disabled"
+        if normalized == "platform is in setup mode":
+            return "setup-mode"
+        if normalized == "efi variables are not supported on this system":
+            return "unsupported"
+    return None
+
+
+def read_secure_boot_status(timeout: float = 3.0) -> tuple[str | None, str | None]:
+    """Read Secure Boot state with mokutil; never change firmware settings."""
+    mokutil = shutil.which("mokutil")
+    if not mokutil:
+        return None, "not-installed"
+    result = _run_local([mokutil, "--sb-state"], timeout, env={**os.environ, "LC_ALL": "C"})
+    if result is None:
+        return None, "timeout-or-unavailable"
+    state = parse_secure_boot_status(f"{result.stdout}\n{result.stderr}")
+    if state:
+        return state, None
+    return None, "unavailable"
+
+
 def parse_apt_upgrade_simulation(output: str) -> tuple[int, int] | None:
     """Return upgradeable and held-back package counts from `apt-get -s upgrade`."""
     if not isinstance(output, str) or not output.strip():

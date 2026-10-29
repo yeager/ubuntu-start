@@ -322,6 +322,25 @@ def main() -> int:
                             for role, name, _node in entries
                         ):
                             missing.append(f"button: {control} on Network and hardware")
+                if not select_page("Drivers"):
+                    missing.append("selectable Drivers page")
+                else:
+                    secure_boot_deadline = time.monotonic() + 5
+                    secure_boot_button = None
+                    while time.monotonic() < secure_boot_deadline:
+                        entries = accessible_tree(app)
+                        secure_boot_button = next(
+                            (
+                                node for role, name, node in entries
+                                if role in BUTTON_ROLES and name == "Check Secure Boot status"
+                            ),
+                            None,
+                        )
+                        if secure_boot_button:
+                            break
+                        time.sleep(0.25)
+                    if secure_boot_button is None:
+                        missing.append("button: Check Secure Boot status on Drivers")
                 if not select_page("Welcome"):
                     missing.append("selectable Welcome guide before Ctrl+F")
 
@@ -353,7 +372,7 @@ def main() -> int:
                 )
                 if search_entry and search_entry.get_state_set().contains(Atspi.StateType.FOCUSED):
                     print(
-                        "AT-SPI verified guide names, About, Mouse Keys, USB, PCI, Bluetooth, date/time, video, displays, printer queue guide, memory, system-pressure, service-status, temperature and package-health controls, and the labeled search entry; "
+                        "AT-SPI verified guide names, About, Mouse Keys, USB, PCI, Bluetooth, date/time, video, displays, printer queue guide, memory, system-pressure, service-status, temperature, package-health and Secure Boot controls, and the labeled search entry; "
                         "Ctrl+F moved focus to search."
                     )
                     return 0
@@ -366,7 +385,7 @@ def main() -> int:
         observed_controls = [
             (role, name)
             for role, name, _node in entries
-            if name in {"About", "Mouse Keys", "Refresh USB device list", "Refresh PCI device list", "Open Bluetooth pairing guide", "Open date and time guide", "Refresh video device status", "Open camera guide", "Refresh display status", "Open external display guide", "Refresh printer status", "Open print queue guide", "Refresh memory status", "Refresh system pressure", "Refresh system service status", "Refresh temperature status", "Check package health", "Search all guides and steps"}
+            if name in {"About", "Mouse Keys", "Refresh USB device list", "Refresh PCI device list", "Open Bluetooth pairing guide", "Open date and time guide", "Refresh video device status", "Open camera guide", "Refresh display status", "Open external display guide", "Refresh printer status", "Open print queue guide", "Refresh memory status", "Refresh system pressure", "Refresh system service status", "Refresh temperature status", "Check package health", "Check Secure Boot status", "Search all guides and steps"}
         ]
         if observed_controls:
             print(f"Observed accessible roles and names: {observed_controls!r}", file=sys.stderr)

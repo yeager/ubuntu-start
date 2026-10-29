@@ -13,7 +13,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_reboot_required, read_resource_pressure, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
+from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_reboot_required, read_resource_pressure, read_secure_boot_status, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -1899,6 +1899,27 @@ class UbuntuStart(Adw.Application):
         box, rows = self.page(_("Graphics drivers"), _("Ubuntu can offer compatible drivers for some graphics hardware. Review the available choices in Ubuntu’s Additional Drivers tool before installing anything."))
         self.row(rows, _("Review available drivers"), _("This opens Ubuntu’s driver tool. Read the recommendation and confirm any changes there."), _("Open Drivers"), lambda: self.open_app("software-properties-gtk", "--open-tab=4"))
         self.row(rows, _("Secure Boot"), _("Some drivers need a one-time confirmation during restart when Secure Boot is enabled. Follow Ubuntu’s on-screen instructions."))
+        self.secure_boot_status_row = Adw.ActionRow(
+            title=_("Secure Boot status"), subtitle=_("Not checked yet."),
+        )
+        rows.append(self.secure_boot_status_row)
+        self.secure_boot_refresh_button = Gtk.Button(
+            label=_("Check Secure Boot status"), halign=Gtk.Align.START,
+        )
+        self.secure_boot_refresh_button.connect(
+            "clicked",
+            lambda *_: self.refresh_secure_boot_status(
+                self.secure_boot_refresh_button, self.secure_boot_status_row, announce=True,
+            ),
+        )
+        box.append(self.secure_boot_refresh_button)
+        box.append(Gtk.Label(
+            label=_("This read-only check uses mokutil when available. It does not change firmware settings or enroll keys."),
+            xalign=0, wrap=True, css_classes=["body"],
+        ))
+        self.refresh_secure_boot_status(
+            self.secure_boot_refresh_button, self.secure_boot_status_row,
+        )
         self.row(
             rows,
             _("If the graphics adapter has no name"),
@@ -1908,6 +1929,37 @@ class UbuntuStart(Adw.Application):
         )
         self.row(rows, _("Need more detail?"), _("Ubuntu’s driver guidance explains the supported installation route."), _("Open Ubuntu help"), lambda: self.open_uri("https://ubuntu.com/desktop/docs/en/latest/how-to/graphics/install-nvidia-drivers/"))
         return box
+
+    def refresh_secure_boot_status(self, button, status_row, announce=False):
+        button.set_sensitive(False)
+        status_row.set_subtitle(_("Checking Secure Boot status…"))
+
+        def read_status():
+            state, error = read_secure_boot_status()
+            GLib.idle_add(
+                self.show_secure_boot_status, button, status_row, state, error, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_secure_boot_status(self, button, status_row, state, error, announce=False):
+        button.set_sensitive(True)
+        messages = {
+            "enabled": _("Enabled. Some third-party drivers may require a one-time key confirmation during restart."),
+            "disabled": _("Disabled. Review Ubuntu’s driver recommendation before installing a driver."),
+            "setup-mode": _("The computer is in firmware Setup Mode. Check the manufacturer’s instructions before changing firmware settings."),
+            "unsupported": _("Secure Boot status is not available in this boot mode."),
+        }
+        errors = {
+            "not-installed": _("mokutil is not installed, so Secure Boot status cannot be read."),
+            "timeout-or-unavailable": _("The Secure Boot status check could not finish. Try again later."),
+            "unavailable": _("Could not read Secure Boot status from firmware."),
+        }
+        message = messages.get(state, errors.get(error, errors["unavailable"]))
+        status_row.set_subtitle(message)
+        if announce:
+            self.announce_to_screen_reader(status_row, _("Secure Boot status: {status}").format(status=message))
+        return GLib.SOURCE_REMOVE
 
     def system_details(self):
         try:
