@@ -1209,9 +1209,7 @@ def build_support_report(
         report["network_checks"] = {
             "dns_latency_ms": diagnostics.get("dns_latency_ms"),
             "gateway_latency_ms": diagnostics.get("gateway_latency_ms"),
-            "gateway_reachable": (
-                None if diagnostics.get("gateway_error") == "ping-not-installed"
-                else diagnostics.get("gateway_latency_ms") is not None
-            ),
+            # A missed ping may mean ICMP is filtered, not that the gateway is down.
+            "gateway_reachable": True if diagnostics.get("gateway_latency_ms") is not None else None,
         }
     return json.dumps(report, ensure_ascii=False, indent=2) + "\n"

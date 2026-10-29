@@ -81,12 +81,14 @@ class SupportReportTests(unittest.TestCase):
         self.assertIn("system", report)
         self.assertNotIn("network_checks", report)
 
-    def test_report_marks_gateway_reachability_unknown_when_ping_is_missing(self):
-        report = build_support_report(
-            [("Architecture", "x86_64")],
-            {"gateway_error": "ping-not-installed", "gateway_latency_ms": None},
-        )
-        self.assertIn('"gateway_reachable": null', report)
+    def test_report_marks_gateway_reachability_unknown_without_a_ping_reply(self):
+        for error in ("ping-not-installed", "timeout", "no-response", "no-default-route"):
+            with self.subTest(error=error):
+                report = build_support_report(
+                    [("Architecture", "x86_64")],
+                    {"gateway_error": error, "gateway_latency_ms": None},
+                )
+                self.assertIn('"gateway_reachable": null', report)
 
 
 class AccessibilitySettingsTests(unittest.TestCase):
