@@ -997,6 +997,11 @@ class SupportReportDialogTests(unittest.TestCase):
         editor.get_buffer.return_value.get_text.return_value = "not JSON"
         summary_status = Mock()
         editor_status = Mock()
+        message = (
+            "The report must be valid JSON and keep its report version and system details. "
+            "Restore those fields, then save again."
+        )
+        editor_status.get_text.return_value = message
 
         UbuntuStart.choose_report_destination(
             app, parent, editor, summary_status, editor_status,
@@ -1005,11 +1010,6 @@ class SupportReportDialogTests(unittest.TestCase):
         callback = chooser.connect.call_args.args[1]
         callback(chooser, Gtk.ResponseType.ACCEPT)
 
-        message = (
-            "The report must be valid JSON and keep its report version and system details. "
-            "Restore those fields, then save again."
-        )
-        editor_status.get_text.return_value = message
         editor_status.set_text.assert_called_once_with(message)
         app.announce_to_screen_reader.assert_called_once_with(editor_status, message)
         summary_status.set_text.assert_not_called()
