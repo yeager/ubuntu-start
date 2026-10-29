@@ -17,6 +17,7 @@ from system_diagnostics import (
     parse_nmcli_device_status,
     parse_pactl_mute,
     parse_pactl_volume,
+    parse_wpctl_endpoint_name,
     parse_wpctl_volume,
     lookup_oui_vendor,
     lookup_pci_device_name,
@@ -169,6 +170,15 @@ class AudioStatusTests(unittest.TestCase):
         self.assertEqual(parse_wpctl_volume("Volume: 1.20\n"), (120, False))
         self.assertIsNone(parse_wpctl_volume("No default node"))
 
+    def test_parses_only_sanitized_human_facing_wpctl_endpoint_name(self):
+        output = '''id 47, type PipeWire:Interface:Node
+  * node.description = "USB headphones\\\" Left"
+    device.serial = "DO-NOT-INCLUDE"
+'''
+
+        self.assertEqual(parse_wpctl_endpoint_name(output), 'USB headphones" Left')
+        self.assertIsNone(parse_wpctl_endpoint_name('node.name = "alsa_output.card"'))
+
     def test_parses_pactl_volume_and_mute_state(self):
         self.assertEqual(parse_pactl_volume("Volume: front-left: 65536 / 75% / -7.50 dB"), 75)
         self.assertEqual(parse_pactl_mute("Mute: yes\n"), True)
@@ -180,14 +190,21 @@ class AudioStatusTests(unittest.TestCase):
     def test_reads_wpctl_defaults_without_playing_audio(self, run, _which):
         run.side_effect = [
             subprocess.CompletedProcess([], 0, "Volume: 0.60\n", ""),
+            subprocess.CompletedProcess([], 0, '  * node.description = "USB speakers"\n', ""),
             subprocess.CompletedProcess([], 0, "Volume: 0.25 [MUTED]\n", ""),
+            subprocess.CompletedProcess([], 0, '  * node.description = "Built-in microphone"\n', ""),
         ]
         self.assertEqual(
             read_audio_status(),
-            {"output": (60, False), "input": (25, True), "error": None},
+            {
+                "output": (60, False), "input": (25, True),
+                "output_name": "USB speakers", "input_name": "Built-in microphone",
+                "error": None,
+            },
         )
         self.assertEqual(run.call_args_list[0].args[0], ["/usr/bin/wpctl", "get-volume", "@DEFAULT_AUDIO_SINK@"])
-        self.assertEqual(run.call_args_list[1].args[0], ["/usr/bin/wpctl", "get-volume", "@DEFAULT_AUDIO_SOURCE@"])
+        self.assertEqual(run.call_args_list[1].args[0], ["/usr/bin/wpctl", "inspect", "@DEFAULT_AUDIO_SINK@"])
+        self.assertEqual(run.call_args_list[2].args[0], ["/usr/bin/wpctl", "get-volume", "@DEFAULT_AUDIO_SOURCE@"])
 
     @patch("system_diagnostics.shutil.which", side_effect=lambda name: "/usr/bin/pactl" if name == "pactl" else None)
     @patch("system_diagnostics._run_local")
@@ -200,7 +217,10 @@ class AudioStatusTests(unittest.TestCase):
         ]
         self.assertEqual(
             read_audio_status(),
-            {"output": (80, False), "input": (40, True), "error": None},
+            {
+                "output": (80, False), "input": (40, True),
+                "output_name": None, "input_name": None, "error": None,
+            },
         )
 
     @patch(
@@ -211,23 +231,30 @@ class AudioStatusTests(unittest.TestCase):
     def test_falls_back_per_endpoint_when_wpctl_has_no_default_source(self, run, _which):
         run.side_effect = [
             subprocess.CompletedProcess([], 0, "Volume: 0.60\n", ""),
+            subprocess.CompletedProcess([], 0, 'node.description = "USB speakers"\n', ""),
             subprocess.CompletedProcess([], 1, "", "No default source"),
             subprocess.CompletedProcess([], 0, "Volume: front-left: 65536 / 35%", ""),
             subprocess.CompletedProcess([], 0, "Mute: no", ""),
         ]
         self.assertEqual(
             read_audio_status(),
-            {"output": (60, False), "input": (35, False), "error": None},
+            {
+                "output": (60, False), "input": (35, False),
+                "output_name": "USB speakers", "input_name": None, "error": None,
+            },
         )
-        self.assertEqual(len(run.call_args_list), 4)
+        self.assertEqual(len(run.call_args_list), 5)
         self.assertEqual(
-            run.call_args_list[2].args[0],
+            run.call_args_list[3].args[0],
             ["/usr/bin/pactl", "get-source-volume", "@DEFAULT_SOURCE@"],
         )
 
     @patch("system_diagnostics.shutil.which", return_value=None)
     def test_reports_missing_audio_tools(self, _which):
-        self.assertEqual(read_audio_status(), {"output": None, "input": None, "error": "not-installed"})
+        self.assertEqual(read_audio_status(), {
+            "output": None, "input": None, "output_name": None,
+            "input_name": None, "error": "not-installed",
+        })
 
 
 class ParseHardwareTests(unittest.TestCase):

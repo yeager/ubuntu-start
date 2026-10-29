@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ubuntu Start 0.3.1\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 02:18+0100\n"
+"POT-Creation-Date: 2026-10-29 02:25+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -298,7 +298,7 @@ msgid ""
 "consult the laptop support information before changing drivers."
 msgstr ""
 
-#: src/ubuntu_start.py:73 src/ubuntu_start.py:928
+#: src/ubuntu_start.py:73 src/ubuntu_start.py:930
 msgid "Wi-Fi"
 msgstr ""
 
@@ -465,7 +465,7 @@ msgstr ""
 msgid "Open Wi-Fi Settings"
 msgstr ""
 
-#: src/ubuntu_start.py:100 src/ubuntu_start.py:1063
+#: src/ubuntu_start.py:100 src/ubuntu_start.py:1065
 msgid "Open Quick Settings"
 msgstr ""
 
@@ -943,7 +943,7 @@ msgstr ""
 msgid "Use the Terminal"
 msgstr ""
 
-#: src/ubuntu_start.py:169 src/ubuntu_start.py:1074
+#: src/ubuntu_start.py:169 src/ubuntu_start.py:1076
 msgid "Open Terminal"
 msgstr ""
 
@@ -1050,7 +1050,7 @@ msgid ""
 "rm, disk tools or scripts downloaded from the internet."
 msgstr ""
 
-#: src/ubuntu_start.py:189 src/ubuntu_start.py:198 src/ubuntu_start.py:1105
+#: src/ubuntu_start.py:189 src/ubuntu_start.py:198 src/ubuntu_start.py:1107
 #: data/se.nylander.UbuntuStart.desktop:2
 msgid "Ubuntu Start"
 msgstr ""
@@ -1071,7 +1071,7 @@ msgstr ""
 msgid "Get started"
 msgstr ""
 
-#: src/ubuntu_start.py:227 src/ubuntu_start.py:1056
+#: src/ubuntu_start.py:227 src/ubuntu_start.py:1058
 msgid "Tips and tricks"
 msgstr ""
 
@@ -1085,7 +1085,7 @@ msgid "System guides"
 msgstr ""
 
 #: src/ubuntu_start.py:230 src/ubuntu_start.py:442 src/ubuntu_start.py:489
-#: src/ubuntu_start.py:974
+#: src/ubuntu_start.py:976
 msgid "Network and hardware"
 msgstr ""
 
@@ -1093,7 +1093,7 @@ msgstr ""
 msgid "Drivers"
 msgstr ""
 
-#: src/ubuntu_start.py:232 src/ubuntu_start.py:1024
+#: src/ubuntu_start.py:232 src/ubuntu_start.py:1026
 msgid "Help and support"
 msgstr ""
 
@@ -1193,7 +1193,7 @@ msgid ""
 msgstr ""
 
 #: src/ubuntu_start.py:309 src/ubuntu_start.py:681 src/ubuntu_start.py:705
-#: src/ubuntu_start.py:759 src/ubuntu_start.py:1152
+#: src/ubuntu_start.py:759 src/ubuntu_start.py:1154
 msgid "Cancel"
 msgstr ""
 
@@ -1263,7 +1263,7 @@ msgstr ""
 msgid "Open related Settings"
 msgstr ""
 
-#: src/ubuntu_start.py:406 src/ubuntu_start.py:973
+#: src/ubuntu_start.py:406 src/ubuntu_start.py:975
 msgid "Open hardware overview"
 msgstr ""
 
@@ -1337,8 +1337,8 @@ msgstr ""
 
 #: src/ubuntu_start.py:523
 msgid ""
-"Read the default speaker and microphone volume and mute state. This check "
-"does not play sound or change settings."
+"Read the default speaker and microphone names, volume and mute state when "
+"available. This check does not play sound or change settings."
 msgstr ""
 
 #: src/ubuntu_start.py:525
@@ -1394,15 +1394,15 @@ msgid ""
 "personal files use a different mounted volume."
 msgstr ""
 
-#: src/ubuntu_start.py:566 src/ubuntu_start.py:1012
+#: src/ubuntu_start.py:566 src/ubuntu_start.py:1014
 msgid "System filesystem"
 msgstr ""
 
-#: src/ubuntu_start.py:566 src/ubuntu_start.py:1012
+#: src/ubuntu_start.py:566 src/ubuntu_start.py:1014
 msgid "Home folder filesystem"
 msgstr ""
 
-#: src/ubuntu_start.py:568 src/ubuntu_start.py:1014
+#: src/ubuntu_start.py:568 src/ubuntu_start.py:1016
 #, python-brace-format
 msgid "{free} free of {total} ({percent}% used)"
 msgstr ""
@@ -1445,32 +1445,32 @@ msgid ""
 "This summary reads local system files. Serial numbers are never collected."
 msgstr ""
 
-#: src/ubuntu_start.py:602 src/ubuntu_start.py:993
+#: src/ubuntu_start.py:602 src/ubuntu_start.py:995
 msgid "System model"
 msgstr ""
 
-#: src/ubuntu_start.py:603 src/ubuntu_start.py:994
+#: src/ubuntu_start.py:603 src/ubuntu_start.py:996
 msgid "Processor"
 msgstr ""
 
-#: src/ubuntu_start.py:604 src/ubuntu_start.py:995
+#: src/ubuntu_start.py:604 src/ubuntu_start.py:997
 msgid "Memory"
 msgstr ""
 
-#: src/ubuntu_start.py:605 src/ubuntu_start.py:996
+#: src/ubuntu_start.py:605 src/ubuntu_start.py:998
 msgid "Graphics adapters"
 msgstr ""
 
-#: src/ubuntu_start.py:606 src/ubuntu_start.py:997
+#: src/ubuntu_start.py:606 src/ubuntu_start.py:999
 msgid "Architecture"
 msgstr ""
 
-#: src/ubuntu_start.py:609 src/ubuntu_start.py:987 src/ubuntu_start.py:993
-#: src/ubuntu_start.py:994 src/ubuntu_start.py:995
+#: src/ubuntu_start.py:609 src/ubuntu_start.py:989 src/ubuntu_start.py:995
+#: src/ubuntu_start.py:996 src/ubuntu_start.py:997
 msgid "Not available"
 msgstr ""
 
-#: src/ubuntu_start.py:613 src/ubuntu_start.py:1010
+#: src/ubuntu_start.py:613 src/ubuntu_start.py:1012
 msgid "Connected USB devices"
 msgstr ""
 
@@ -1744,457 +1744,457 @@ msgstr ""
 msgid "Not muted"
 msgstr ""
 
-#: src/ubuntu_start.py:899
+#: src/ubuntu_start.py:900
 #, python-brace-format
 msgid "{percent}% · {state}"
 msgstr ""
 
-#: src/ubuntu_start.py:908
+#: src/ubuntu_start.py:910
 msgid "NetworkManager command-line tools are not installed."
 msgstr ""
 
-#: src/ubuntu_start.py:909
+#: src/ubuntu_start.py:911
 msgid "NetworkManager did not respond in time. Try refreshing again."
 msgstr ""
 
-#: src/ubuntu_start.py:910
+#: src/ubuntu_start.py:912
 msgid "Could not read device status from NetworkManager."
 msgstr ""
 
-#: src/ubuntu_start.py:919
+#: src/ubuntu_start.py:921
 msgid "NetworkManager reported no network devices."
 msgstr ""
 
-#: src/ubuntu_start.py:925
+#: src/ubuntu_start.py:927
 msgid "This is local device status; internet access has not been tested."
 msgstr ""
 
-#: src/ubuntu_start.py:929
+#: src/ubuntu_start.py:931
 msgid "Wired"
 msgstr ""
 
-#: src/ubuntu_start.py:930
+#: src/ubuntu_start.py:932
 msgid "Mobile broadband"
 msgstr ""
 
-#: src/ubuntu_start.py:931
+#: src/ubuntu_start.py:933
 msgid "Bridge"
 msgstr ""
 
-#: src/ubuntu_start.py:932
+#: src/ubuntu_start.py:934
 msgid "VPN"
 msgstr ""
 
-#: src/ubuntu_start.py:935
+#: src/ubuntu_start.py:937
 msgid "Connected"
 msgstr ""
 
-#: src/ubuntu_start.py:936
+#: src/ubuntu_start.py:938
 msgid "Disconnected"
 msgstr ""
 
-#: src/ubuntu_start.py:937
+#: src/ubuntu_start.py:939
 msgid "Connecting"
 msgstr ""
 
-#: src/ubuntu_start.py:938
+#: src/ubuntu_start.py:940
 msgid "Unavailable"
 msgstr ""
 
-#: src/ubuntu_start.py:939
+#: src/ubuntu_start.py:941
 msgid "Not managed by NetworkManager"
 msgstr ""
 
-#: src/ubuntu_start.py:940
+#: src/ubuntu_start.py:942
 msgid "Unavailable (missing firmware)"
-msgstr ""
-
-#: src/ubuntu_start.py:949
-#, python-brace-format
-msgid "Signal: {dbm} dBm"
 msgstr ""
 
 #: src/ubuntu_start.py:951
 #, python-brace-format
-msgid "Receive rate: {rate} Mbit/s"
+msgid "Signal: {dbm} dBm"
 msgstr ""
 
 #: src/ubuntu_start.py:953
 #, python-brace-format
+msgid "Receive rate: {rate} Mbit/s"
+msgstr ""
+
+#: src/ubuntu_start.py:955
+#, python-brace-format
 msgid "Transmit rate: {rate} Mbit/s"
 msgstr ""
 
-#: src/ubuntu_start.py:959
+#: src/ubuntu_start.py:961
 #, python-brace-format
 msgid "Network status updated: {details}"
 msgstr ""
 
-#: src/ubuntu_start.py:966
+#: src/ubuntu_start.py:968
 msgid "Graphics drivers"
 msgstr ""
 
-#: src/ubuntu_start.py:966
+#: src/ubuntu_start.py:968
 msgid ""
 "Ubuntu can offer compatible drivers for some graphics hardware. Review the "
 "available choices in Ubuntu’s Additional Drivers tool before installing "
 "anything."
 msgstr ""
 
-#: src/ubuntu_start.py:967
+#: src/ubuntu_start.py:969
 msgid "Review available drivers"
 msgstr ""
 
-#: src/ubuntu_start.py:967
+#: src/ubuntu_start.py:969
 msgid ""
 "This opens Ubuntu’s driver tool. Read the recommendation and confirm any "
 "changes there."
 msgstr ""
 
-#: src/ubuntu_start.py:967
+#: src/ubuntu_start.py:969
 msgid "Open Drivers"
 msgstr ""
 
-#: src/ubuntu_start.py:968
+#: src/ubuntu_start.py:970
 msgid "Secure Boot"
 msgstr ""
 
-#: src/ubuntu_start.py:968
+#: src/ubuntu_start.py:970
 msgid ""
 "Some drivers need a one-time confirmation during restart when Secure Boot is "
 "enabled. Follow Ubuntu’s on-screen instructions."
 msgstr ""
 
-#: src/ubuntu_start.py:971
+#: src/ubuntu_start.py:973
 msgid "If the graphics adapter has no name"
 msgstr ""
 
-#: src/ubuntu_start.py:972
+#: src/ubuntu_start.py:974
 msgid ""
 "Adapter names come from a local PCI database. If only a PCI ID is shown, "
 "keep that ID and the driver name to identify the hardware. Choose drivers "
 "through Ubuntu’s Additional Drivers tool."
 msgstr ""
 
-#: src/ubuntu_start.py:976
+#: src/ubuntu_start.py:978
 msgid "Need more detail?"
 msgstr ""
 
-#: src/ubuntu_start.py:976
+#: src/ubuntu_start.py:978
 msgid "Ubuntu’s driver guidance explains the supported installation route."
 msgstr ""
 
-#: src/ubuntu_start.py:976
+#: src/ubuntu_start.py:978
 msgid "Open Ubuntu help"
 msgstr ""
 
-#: src/ubuntu_start.py:982 src/ubuntu_start.py:984
+#: src/ubuntu_start.py:984 src/ubuntu_start.py:986
 msgid "Unknown Ubuntu version"
 msgstr ""
 
-#: src/ubuntu_start.py:990
+#: src/ubuntu_start.py:992
 msgid "Ubuntu version"
 msgstr ""
 
-#: src/ubuntu_start.py:991
+#: src/ubuntu_start.py:993
 msgid "Desktop"
 msgstr ""
 
-#: src/ubuntu_start.py:992
+#: src/ubuntu_start.py:994
 msgid "Kernel"
 msgstr ""
 
-#: src/ubuntu_start.py:1003
+#: src/ubuntu_start.py:1005
 msgid "Unknown USB device"
 msgstr ""
 
-#: src/ubuntu_start.py:1004
+#: src/ubuntu_start.py:1006
 msgid "no driver attached"
 msgstr ""
 
-#: src/ubuntu_start.py:1006
+#: src/ubuntu_start.py:1008
 #, python-brace-format
 msgid "{name} [{id}] (driver: {drivers})"
 msgstr ""
 
-#: src/ubuntu_start.py:1025
+#: src/ubuntu_start.py:1027
 msgid ""
 "Find trusted instructions and prepare useful details when you ask others for "
 "help."
 msgstr ""
 
-#: src/ubuntu_start.py:1027
+#: src/ubuntu_start.py:1029
 msgid "Ubuntu Desktop guide"
 msgstr ""
 
-#: src/ubuntu_start.py:1027
+#: src/ubuntu_start.py:1029
 msgid "Official help for settings, accessibility, networks and common tasks."
 msgstr ""
 
-#: src/ubuntu_start.py:1027
+#: src/ubuntu_start.py:1029
 msgid "Open guide"
 msgstr ""
 
-#: src/ubuntu_start.py:1028
+#: src/ubuntu_start.py:1030
 msgid "Ask Ubuntu"
 msgstr ""
 
-#: src/ubuntu_start.py:1028
+#: src/ubuntu_start.py:1030
 msgid "Search community answers or ask a focused question about Ubuntu."
 msgstr ""
 
-#: src/ubuntu_start.py:1028
+#: src/ubuntu_start.py:1030
 msgid "Open Ask Ubuntu"
 msgstr ""
 
-#: src/ubuntu_start.py:1029
+#: src/ubuntu_start.py:1031
 msgid "Ubuntu community forum"
 msgstr ""
 
-#: src/ubuntu_start.py:1029
+#: src/ubuntu_start.py:1031
 msgid "Get help from Ubuntu users and community members."
 msgstr ""
 
-#: src/ubuntu_start.py:1029
+#: src/ubuntu_start.py:1031
 msgid "Open forum"
 msgstr ""
 
-#: src/ubuntu_start.py:1032
+#: src/ubuntu_start.py:1034
 msgid "System details"
 msgstr ""
 
-#: src/ubuntu_start.py:1033
+#: src/ubuntu_start.py:1035
 msgid ""
 "These read-only details help explain a problem. They omit your username, "
 "computer name, serial numbers, network addresses, Wi-Fi names and installed "
 "applications."
 msgstr ""
 
-#: src/ubuntu_start.py:1038
+#: src/ubuntu_start.py:1040
 msgid "Copy system details"
 msgstr ""
 
-#: src/ubuntu_start.py:1043
+#: src/ubuntu_start.py:1045
 msgid "Review and save support report"
 msgstr ""
 
-#: src/ubuntu_start.py:1049
+#: src/ubuntu_start.py:1051
 msgid "When asking for help"
 msgstr ""
 
-#: src/ubuntu_start.py:1050
+#: src/ubuntu_start.py:1052
 msgid "Describe what happened"
 msgstr ""
 
-#: src/ubuntu_start.py:1050
+#: src/ubuntu_start.py:1052
 msgid ""
 "Include your Ubuntu version, the device model, the exact error and what you "
 "already tried. Remove passwords and other personal details."
 msgstr ""
 
-#: src/ubuntu_start.py:1057
+#: src/ubuntu_start.py:1059
 msgid ""
 "These are Ubuntu’s default shortcuts. Open Keyboard Settings to review or "
 "change them; key labels can vary by device."
 msgstr ""
 
-#: src/ubuntu_start.py:1060
+#: src/ubuntu_start.py:1062
 msgid "Find apps and settings"
 msgstr ""
 
-#: src/ubuntu_start.py:1060
+#: src/ubuntu_start.py:1062
 msgid "Press the Super key and start typing the name of an app or setting."
 msgstr ""
 
-#: src/ubuntu_start.py:1061
+#: src/ubuntu_start.py:1063
 msgid "Switch between apps"
 msgstr ""
 
-#: src/ubuntu_start.py:1061
+#: src/ubuntu_start.py:1063
 msgid "Press Alt+Tab to move between open apps."
 msgstr ""
 
-#: src/ubuntu_start.py:1062
+#: src/ubuntu_start.py:1064
 msgid "Arrange windows side by side"
 msgstr ""
 
-#: src/ubuntu_start.py:1062
+#: src/ubuntu_start.py:1064
 msgid ""
 "Press Super+Left or Super+Right to place the current window on one side of "
 "the screen."
 msgstr ""
 
-#: src/ubuntu_start.py:1063
+#: src/ubuntu_start.py:1065
 msgid ""
 "Select the system menu at the top-right to reach Wi-Fi, Bluetooth, sound, "
 "brightness and power controls."
 msgstr ""
 
-#: src/ubuntu_start.py:1064
+#: src/ubuntu_start.py:1066
 msgid "Take a screenshot"
 msgstr ""
 
-#: src/ubuntu_start.py:1064
+#: src/ubuntu_start.py:1066
 msgid ""
 "On Ubuntu GNOME, press Print to open the screenshot controls and choose a "
 "screen, window or area."
 msgstr ""
 
-#: src/ubuntu_start.py:1065
+#: src/ubuntu_start.py:1067
 msgid "Show hidden files"
 msgstr ""
 
-#: src/ubuntu_start.py:1065
+#: src/ubuntu_start.py:1067
 msgid ""
 "In Files, press Ctrl+H to show or hide hidden files. Be careful when "
 "changing hidden configuration files."
 msgstr ""
 
-#: src/ubuntu_start.py:1066
+#: src/ubuntu_start.py:1068
 msgid "Create a folder in Files"
 msgstr ""
 
-#: src/ubuntu_start.py:1066
+#: src/ubuntu_start.py:1068
 msgid "Press Ctrl+Shift+N to create a folder in the current location."
 msgstr ""
 
-#: src/ubuntu_start.py:1067
+#: src/ubuntu_start.py:1069
 msgid "Open a location in Files"
 msgstr ""
 
-#: src/ubuntu_start.py:1067
+#: src/ubuntu_start.py:1069
 msgid ""
 "Press Ctrl+L in Files to type a folder path or enter a network address. "
 "Press Enter to open it."
 msgstr ""
 
-#: src/ubuntu_start.py:1068
+#: src/ubuntu_start.py:1070
 msgid "Rename a file"
 msgstr ""
 
-#: src/ubuntu_start.py:1068
+#: src/ubuntu_start.py:1070
 msgid ""
 "Select a file in Files and press F2 to rename it. Check the new name before "
 "pressing Enter."
 msgstr ""
 
-#: src/ubuntu_start.py:1069
+#: src/ubuntu_start.py:1071
 msgid "Undo a file action"
 msgstr ""
 
-#: src/ubuntu_start.py:1069
+#: src/ubuntu_start.py:1071
 msgid ""
 "Press Ctrl+Z in Files to undo a recent file operation when available. Check "
 "the result before continuing."
 msgstr ""
 
-#: src/ubuntu_start.py:1070
+#: src/ubuntu_start.py:1072
 msgid "Keep a backup copy"
 msgstr ""
 
-#: src/ubuntu_start.py:1070
+#: src/ubuntu_start.py:1072
 msgid ""
 "Copy important documents and photos to a separate drive or trusted backup "
 "service. Check occasionally that you can open a backed-up file."
 msgstr ""
 
-#: src/ubuntu_start.py:1071
+#: src/ubuntu_start.py:1073
 msgid "Choose trusted app sources"
 msgstr ""
 
-#: src/ubuntu_start.py:1071
+#: src/ubuntu_start.py:1073
 msgid ""
 "Prefer Ubuntu App Center or the software source recommended by your "
 "organization. Check the publisher before installing an app."
 msgstr ""
 
-#: src/ubuntu_start.py:1072
+#: src/ubuntu_start.py:1074
 msgid "Switch keyboard layouts"
 msgstr ""
 
-#: src/ubuntu_start.py:1072
+#: src/ubuntu_start.py:1074
 msgid ""
 "If you have added more than one layout, press Super+Space to switch between "
 "them."
 msgstr ""
 
-#: src/ubuntu_start.py:1073
+#: src/ubuntu_start.py:1075
 msgid "Lock the screen"
 msgstr ""
 
-#: src/ubuntu_start.py:1073
+#: src/ubuntu_start.py:1075
 msgid "Press Super+L before leaving your computer to lock the screen."
 msgstr ""
 
-#: src/ubuntu_start.py:1074
+#: src/ubuntu_start.py:1076
 msgid ""
 "Ctrl+Alt+T opens Terminal on Ubuntu by default. You can change this shortcut "
 "in Keyboard Settings."
 msgstr ""
 
-#: src/ubuntu_start.py:1080
+#: src/ubuntu_start.py:1082
 msgid "Keyboard shortcuts"
 msgstr ""
 
-#: src/ubuntu_start.py:1081
+#: src/ubuntu_start.py:1083
 msgid "Review or change the shortcuts used by your desktop."
 msgstr ""
 
-#: src/ubuntu_start.py:1082
+#: src/ubuntu_start.py:1084
 msgid "Open Keyboard Settings"
 msgstr ""
 
-#: src/ubuntu_start.py:1090
+#: src/ubuntu_start.py:1092
 msgid "Clipboard is unavailable."
 msgstr ""
 
-#: src/ubuntu_start.py:1094
+#: src/ubuntu_start.py:1096
 msgid "System details copied."
 msgstr ""
 
-#: src/ubuntu_start.py:1112
+#: src/ubuntu_start.py:1114
 msgid "An Ubuntu Desktop guide for first-run setup and device troubleshooting."
 msgstr ""
 
-#: src/ubuntu_start.py:1114
+#: src/ubuntu_start.py:1116
 msgid "Daniel Nylander's website"
 msgstr ""
 
-#: src/ubuntu_start.py:1115
+#: src/ubuntu_start.py:1117
 msgid "GitHub repository"
 msgstr ""
 
-#: src/ubuntu_start.py:1122
+#: src/ubuntu_start.py:1124
 msgid "Review support report"
 msgstr ""
 
-#: src/ubuntu_start.py:1130
+#: src/ubuntu_start.py:1132
 msgid ""
 "Review or edit this report before saving. It stays on this computer unless "
 "you choose to share it. Network addresses, MAC addresses, host names and "
 "serial numbers are omitted."
 msgstr ""
 
-#: src/ubuntu_start.py:1139 src/ubuntu_start.py:1191
+#: src/ubuntu_start.py:1141 src/ubuntu_start.py:1193
 msgid "Close"
 msgstr ""
 
-#: src/ubuntu_start.py:1140
+#: src/ubuntu_start.py:1142
 msgid "Save report"
 msgstr ""
 
-#: src/ubuntu_start.py:1151
+#: src/ubuntu_start.py:1153
 msgid "Save support report"
 msgstr ""
 
-#: src/ubuntu_start.py:1152
+#: src/ubuntu_start.py:1154
 msgid "Save"
 msgstr ""
 
-#: src/ubuntu_start.py:1167
+#: src/ubuntu_start.py:1169
 msgid "Support report saved locally."
 msgstr ""
 
-#: src/ubuntu_start.py:1190
+#: src/ubuntu_start.py:1192
 msgid "Could not open the requested tool"
 msgstr ""
 

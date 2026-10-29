@@ -137,6 +137,22 @@ def parse_wpctl_volume(output: str) -> tuple[int, bool] | None:
     return percent, muted
 
 
+def parse_wpctl_endpoint_name(output: str) -> str | None:
+    """Read only the human-facing PipeWire endpoint description."""
+    match = re.search(
+        r'^\s*(?:\*\s*)?node\.description\s*=\s*"((?:\\.|[^"\\])*)"\s*$',
+        output,
+        re.MULTILINE,
+    )
+    if not match:
+        return None
+    value = re.sub(r"\\([\\\"])", r"\1", match.group(1))
+    cleaned = " ".join(
+        "".join(character if character.isprintable() else " " for character in value).split()
+    )[:120]
+    return cleaned or None
+
+
 def parse_pactl_volume(output: str) -> int | None:
     """Parse the first channel percentage from `pactl get-*-volume`."""
     match = re.search(r"\b([0-9]{1,3})%", output)
@@ -149,17 +165,21 @@ def parse_pactl_mute(output: str) -> bool | None:
 
 
 def read_audio_status(timeout: float = 2.0) -> dict[str, tuple[int, bool] | None | str]:
-    """Read default speaker and microphone volume/mute state without changing it."""
+    """Read default speaker and microphone names, volume and mute state."""
     wpctl = shutil.which("wpctl")
     pactl = shutil.which("pactl")
     result: dict[str, tuple[int, bool] | None | str] = {
-        "output": None, "input": None, "error": None,
+        "output": None, "input": None,
+        "output_name": None, "input_name": None, "error": None,
     }
     if wpctl:
         for key, endpoint in (("output", "@DEFAULT_AUDIO_SINK@"), ("input", "@DEFAULT_AUDIO_SOURCE@")):
             response = _run_local([wpctl, "get-volume", endpoint], timeout)
             if response and response.returncode == 0:
                 result[key] = parse_wpctl_volume(response.stdout)
+                details = _run_local([wpctl, "inspect", endpoint], timeout)
+                if details and details.returncode == 0:
+                    result[f"{key}_name"] = parse_wpctl_endpoint_name(details.stdout)
     if pactl:
         for key, kind, endpoint in (
             ("output", "sink", "@DEFAULT_SINK@"),

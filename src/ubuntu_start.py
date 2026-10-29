@@ -520,7 +520,7 @@ class UbuntuStart(Adw.Application):
 
         audio_box, audio_rows = self.page(
             _("Audio status"),
-            _("Read the default speaker and microphone volume and mute state. This check does not play sound or change settings."),
+            _("Read the default speaker and microphone names, volume and mute state when available. This check does not play sound or change settings."),
         )
         output_status = Adw.ActionRow(title=_("Speaker output"), subtitle=_("Checking status…"))
         input_status = Adw.ActionRow(title=_("Microphone input"), subtitle=_("Checking status…"))
@@ -896,7 +896,9 @@ class UbuntuStart(Adw.Application):
                 continue
             percent, muted = reading
             state = _("Muted") if muted else _("Not muted")
-            message = _("{percent}% · {state}").format(percent=percent, state=state)
+            name = status.get(f"{key}_name")
+            volume_state = _("{percent}% · {state}").format(percent=percent, state=state)
+            message = f"{name} · {volume_state}" if isinstance(name, str) and name else volume_state
             row.set_subtitle(message)
             announcements.append(f"{row.get_title()}: {message}")
         if announce:

@@ -117,15 +117,19 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
             self.app,
             output,
             input_device,
-            {"output": (65, False), "input": (20, True), "error": None},
+            {
+                "output": (65, False), "input": (20, True),
+                "output_name": "USB speakers", "input_name": "Built-in microphone",
+                "error": None,
+            },
             announce=True,
         )
 
-        output.set_subtitle.assert_called_once_with("65% · Not muted")
-        input_device.set_subtitle.assert_called_once_with("20% · Muted")
+        output.set_subtitle.assert_called_once_with("USB speakers · 65% · Not muted")
+        input_device.set_subtitle.assert_called_once_with("Built-in microphone · 20% · Muted")
         self.app.announce_to_screen_reader.assert_called_once_with(
             output,
-            "Speaker output: 65% · Not muted Microphone input: 20% · Muted",
+            "Speaker output: USB speakers · 65% · Not muted Microphone input: Built-in microphone · 20% · Muted",
         )
 
     def test_manual_battery_refresh_announces_charge_and_state(self):
