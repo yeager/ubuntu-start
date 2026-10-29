@@ -1,7 +1,9 @@
 import unittest
 from unittest.mock import Mock, call, patch
 
-from ubuntu_start import Adw, Gdk, GLib, Gtk, GUIDES, SYSTEM_GUIDES, UbuntuStart
+from ubuntu_start import (
+    Adw, Gdk, GLib, Gtk, GUIDES, SYSTEM_GUIDES, UbuntuStart, format_milliseconds,
+)
 from guide_search import find_guide_matches
 
 
@@ -640,6 +642,30 @@ class USBStatusTests(unittest.TestCase):
 
 
 class InternetTestResultTests(unittest.TestCase):
+    def test_formats_milliseconds_with_the_active_decimal_separator(self):
+        with patch("ubuntu_start.locale.localeconv", return_value={"decimal_point": ","}):
+            self.assertEqual(format_milliseconds(123.4), "123,4")
+            self.assertEqual(format_milliseconds(5000.0), "5000")
+
+    def test_network_diagnostic_timings_use_localized_decimal_separator(self):
+        app = Mock()
+        button = Mock()
+        status = Mock()
+        result = {
+            "dns_latency_ms": 12.3,
+            "gateway": "192.168.1.1",
+            "gateway_latency_ms": 1.2,
+            "gateway_mac": None,
+            "gateway_vendor": None,
+        }
+
+        with patch("ubuntu_start.locale.localeconv", return_value={"decimal_point": ","}):
+            UbuntuStart.show_network_diagnostic_result(app, button, status, result)
+
+        message = status.set_text.call_args.args[0]
+        self.assertIn("DNS lookup: 12,3 ms", message)
+        self.assertIn("Gateway response: 1,2 ms", message)
+
     def test_confirmed_internet_check_passes_elapsed_https_time(self):
         app = Mock()
         button = Mock()
@@ -682,6 +708,18 @@ class InternetTestResultTests(unittest.TestCase):
             status, "ubuntu.com responded in 123.4 ms. Internet access is available.",
         )
 
+    def test_internet_result_uses_localized_decimal_separator(self):
+        app = Mock()
+        button = Mock()
+        status = Mock()
+
+        with patch("ubuntu_start.locale.localeconv", return_value={"decimal_point": ","}):
+            UbuntuStart.show_internet_result(app, button, status, "reachable:204", 123.4)
+
+        status.set_text.assert_called_once_with(
+            "ubuntu.com responded in 123,4 ms. Internet access is available.",
+        )
+
     def test_failed_result_includes_elapsed_time_and_next_steps(self):
         app = Mock()
         button = Mock()
@@ -690,7 +728,7 @@ class InternetTestResultTests(unittest.TestCase):
         UbuntuStart.show_internet_result(app, button, status, "unreachable:TimeoutError", 5000.0)
 
         status.set_text.assert_called_once_with(
-            "Could not reach ubuntu.com after 5000.0 ms. Check the router, "
+            "Could not reach ubuntu.com after 5000 ms. Check the router, "
             "network sign-in page, DNS settings or firewall.",
         )
 

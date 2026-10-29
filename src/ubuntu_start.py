@@ -1116,14 +1116,14 @@ class UbuntuStart(Adw.Application):
         self.last_network_diagnostics = result
         lines = []
         if result.get("dns_latency_ms") is not None:
-            lines.append(_("DNS lookup: {ms} ms").format(ms=result["dns_latency_ms"]))
+            lines.append(_("DNS lookup: {ms} ms").format(ms=format_milliseconds(result["dns_latency_ms"])))
         else:
             lines.append(_("DNS lookup failed. Check DNS settings or the network connection."))
         gateway = result.get("gateway")
         if gateway:
             lines.append(_("Gateway: {address}").format(address=gateway))
             if result.get("gateway_latency_ms") is not None:
-                lines.append(_("Gateway response: {ms} ms").format(ms=result["gateway_latency_ms"]))
+                lines.append(_("Gateway response: {ms} ms").format(ms=format_milliseconds(result["gateway_latency_ms"])))
             else:
                 lines.append(_("Gateway did not answer the ping. Some routers block ping requests."))
             mac = result.get("gateway_mac")
@@ -1158,12 +1158,12 @@ class UbuntuStart(Adw.Application):
         if result.startswith("reachable:"):
             message = _(
                 "ubuntu.com responded in {ms} ms. Internet access is available."
-            ).format(ms=elapsed_ms)
+            ).format(ms=format_milliseconds(elapsed_ms))
         else:
             message = _(
                 "Could not reach ubuntu.com after {ms} ms. Check the router, "
                 "network sign-in page, DNS settings or firewall."
-            ).format(ms=elapsed_ms)
+            ).format(ms=format_milliseconds(elapsed_ms))
         status_label.set_text(message)
         self.announce_to_screen_reader(status_label, message)
         return GLib.SOURCE_REMOVE
@@ -2054,6 +2054,15 @@ class UbuntuStart(Adw.Application):
         dialog = Adw.AlertDialog(heading=_("Could not open the requested tool"), body=detail)
         dialog.add_response("close", _("Close"))
         dialog.present(self.get_active_window())
+
+
+def format_milliseconds(value: int | float) -> str:
+    """Format a latency value with the active locale's decimal separator."""
+    value = float(value)
+    precision = 0 if value.is_integer() else 1
+    formatted = f"{value:.{precision}f}"
+    decimal_point = locale.localeconv().get("decimal_point") or "."
+    return formatted.replace(".", decimal_point, 1)
 
 
 def main():
