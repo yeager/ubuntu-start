@@ -1004,7 +1004,6 @@ class UbuntuStart(Adw.Application):
             comments=_("An Ubuntu Desktop guide for first-run setup and device troubleshooting."),
         )
         about.add_link(_("GitHub repository"), "https://github.com/yeager/ubuntu-start")
-        about.add_link(_("Daniel Nylander's website"), "https://www.danielnylander.se")
         about.present(self.get_active_window())
 
     def review_support_report(self, status_label):

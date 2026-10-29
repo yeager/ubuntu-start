@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ubuntu Start 0.3.1\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 00:59+0100\n"
+"POT-Creation-Date: 2026-10-29 01:14+0100\n"
 "PO-Revision-Date: 2026-10-28 15:18+0100\n"
 "Last-Translator: Ubuntu Start contributors\n"
 "Language-Team: Swedish\n"
@@ -1326,7 +1326,7 @@ msgstr ""
 "uppgifterna i App Center och väljer själv om du vill installera appen."
 
 #: src/ubuntu_start.py:303 src/ubuntu_start.py:595 src/ubuntu_start.py:619
-#: src/ubuntu_start.py:673 src/ubuntu_start.py:1044
+#: src/ubuntu_start.py:673 src/ubuntu_start.py:1043
 msgid "Cancel"
 msgstr "Avbryt"
 
@@ -2012,8 +2012,8 @@ msgid ""
 "through Ubuntu’s Additional Drivers tool."
 msgstr ""
 "Namnen hämtas från en lokal PCI-databas. Om bara ett PCI-ID visas kan du "
-"använda det tillsammans med drivrutinsnamnet för att identifiera "
-"hårdvaran. Välj drivrutin i Ubuntus verktyg Ytterligare drivrutiner."
+"använda det tillsammans med drivrutinsnamnet för att identifiera hårdvaran. "
+"Välj drivrutin i Ubuntus verktyg Ytterligare drivrutiner."
 
 #: src/ubuntu_start.py:887
 msgid "Open hardware overview"
@@ -2326,15 +2326,11 @@ msgstr "En guide för att komma igång med Ubuntu Desktop och felsöka enheter."
 msgid "GitHub repository"
 msgstr "Projektet på GitHub"
 
-#: src/ubuntu_start.py:1007
-msgid "Daniel Nylander's website"
-msgstr "Daniel Nylanders webbplats"
-
-#: src/ubuntu_start.py:1014
+#: src/ubuntu_start.py:1013
 msgid "Review support report"
 msgstr "Granska supportrapport"
 
-#: src/ubuntu_start.py:1022
+#: src/ubuntu_start.py:1021
 msgid ""
 "Review or edit this report before saving. It stays on this computer unless "
 "you choose to share it. Network addresses, MAC addresses, host names and "
@@ -2344,33 +2340,36 @@ msgstr ""
 "om du inte själv väljer att dela den. Nätverksadresser, MAC-adresser, "
 "datornamn och serienummer utelämnas."
 
-#: src/ubuntu_start.py:1031 src/ubuntu_start.py:1083
+#: src/ubuntu_start.py:1030 src/ubuntu_start.py:1082
 msgid "Close"
 msgstr "Stäng"
 
-#: src/ubuntu_start.py:1032
+#: src/ubuntu_start.py:1031
 msgid "Save report"
 msgstr "Spara rapport"
 
-#: src/ubuntu_start.py:1043
+#: src/ubuntu_start.py:1042
 msgid "Save support report"
 msgstr "Spara supportrapport"
 
-#: src/ubuntu_start.py:1044
+#: src/ubuntu_start.py:1043
 msgid "Save"
 msgstr "Spara"
 
-#: src/ubuntu_start.py:1059
+#: src/ubuntu_start.py:1058
 msgid "Support report saved locally."
 msgstr "Supportrapporten har sparats lokalt."
 
-#: src/ubuntu_start.py:1082
+#: src/ubuntu_start.py:1081
 msgid "Could not open the requested tool"
 msgstr "Det gick inte att öppna verktyget"
 
 #: data/se.nylander.UbuntuStart.desktop:3
 msgid "Get started with Ubuntu and troubleshoot devices"
 msgstr "Kom igång med Ubuntu och felsök anslutna enheter"
+
+#~ msgid "Daniel Nylander's website"
+#~ msgstr "Daniel Nylanders webbplats"
 
 #~ msgid ""
 #~ "NetworkManager device states help show whether Ubuntu sees a wired or "

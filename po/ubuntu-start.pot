@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ubuntu Start 0.3.1\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 00:59+0100\n"
+"POT-Creation-Date: 2026-10-29 01:14+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1152,7 +1152,7 @@ msgid ""
 msgstr ""
 
 #: src/ubuntu_start.py:303 src/ubuntu_start.py:595 src/ubuntu_start.py:619
-#: src/ubuntu_start.py:673 src/ubuntu_start.py:1044
+#: src/ubuntu_start.py:673 src/ubuntu_start.py:1043
 msgid "Cancel"
 msgstr ""
 
@@ -2052,42 +2052,38 @@ msgstr ""
 msgid "GitHub repository"
 msgstr ""
 
-#: src/ubuntu_start.py:1007
-msgid "Daniel Nylander's website"
-msgstr ""
-
-#: src/ubuntu_start.py:1014
+#: src/ubuntu_start.py:1013
 msgid "Review support report"
 msgstr ""
 
-#: src/ubuntu_start.py:1022
+#: src/ubuntu_start.py:1021
 msgid ""
 "Review or edit this report before saving. It stays on this computer unless "
 "you choose to share it. Network addresses, MAC addresses, host names and "
 "serial numbers are omitted."
 msgstr ""
 
-#: src/ubuntu_start.py:1031 src/ubuntu_start.py:1083
+#: src/ubuntu_start.py:1030 src/ubuntu_start.py:1082
 msgid "Close"
 msgstr ""
 
-#: src/ubuntu_start.py:1032
+#: src/ubuntu_start.py:1031
 msgid "Save report"
 msgstr ""
 
-#: src/ubuntu_start.py:1043
+#: src/ubuntu_start.py:1042
 msgid "Save support report"
 msgstr ""
 
-#: src/ubuntu_start.py:1044
+#: src/ubuntu_start.py:1043
 msgid "Save"
 msgstr ""
 
-#: src/ubuntu_start.py:1059
+#: src/ubuntu_start.py:1058
 msgid "Support report saved locally."
 msgstr ""
 
-#: src/ubuntu_start.py:1082
+#: src/ubuntu_start.py:1081
 msgid "Could not open the requested tool"
 msgstr ""
 
