@@ -180,11 +180,27 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
             self.app, button, status, rows, [],
         )
 
-        self.app.row.assert_called_once_with(
+        self.app.row.assert_any_call(
             rows, "No battery information",
             "No battery information found. This computer may not have a battery, or the system does not expose battery data.",
         )
+        self.app.row.assert_any_call(
+            rows, "Active power profile",
+            "Power profile information is not available on this system.",
+        )
         self.app.announce_to_screen_reader.assert_not_called()
+
+    def test_battery_status_shows_active_power_profile(self):
+        button = Mock()
+        status = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+
+        UbuntuStart.show_battery_status(
+            self.app, button, status, rows, [], power_profile="balanced",
+        )
+
+        self.app.row.assert_any_call(rows, "Active power profile", "Balanced")
 
 class AboutDialogTests(unittest.TestCase):
     def test_about_dialog_api_is_available_on_supported_platforms(self):

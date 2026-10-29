@@ -28,6 +28,7 @@ from system_diagnostics import (
     read_audio_status,
     read_accessibility_settings,
     read_battery_status,
+    read_power_profile,
     read_bluetooth_status,
     read_hardware_details,
     read_network_devices,
@@ -659,6 +660,23 @@ class LocalDiagnosticsTests(unittest.TestCase):
             (battery / "status").write_text("Discharging\n", encoding="utf-8")
             result = read_battery_status(root)
         self.assertEqual(result, [{"capacity": 72, "status": "Discharging"}])
+
+    @patch("system_diagnostics._run_local")
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/powerprofilesctl")
+    def test_reads_allowlisted_power_profile(self, _which, run_local):
+        run_local.return_value = SimpleNamespace(returncode=0, stdout="balanced\n")
+        self.assertEqual(read_power_profile(), "balanced")
+        run_local.assert_called_once_with(["/usr/bin/powerprofilesctl", "get"], 2.0)
+
+    @patch("system_diagnostics._run_local")
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/powerprofilesctl")
+    def test_rejects_unexpected_power_profile_output(self, _which, run_local):
+        run_local.return_value = SimpleNamespace(returncode=0, stdout="unexpected text\n")
+        self.assertEqual(read_power_profile(), "unavailable")
+
+    @patch("system_diagnostics.shutil.which", return_value=None)
+    def test_handles_missing_power_profile_tool(self, _which):
+        self.assertEqual(read_power_profile(), "unavailable")
 
     def test_estimates_battery_capacity_against_design_when_available(self):
         with tempfile.TemporaryDirectory() as temporary:

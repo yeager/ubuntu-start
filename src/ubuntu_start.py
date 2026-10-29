@@ -12,7 +12,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_interface_ip_status, read_network_devices, read_printer_status, read_storage_locations, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
+from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_interface_ip_status, read_network_devices, read_power_profile, read_printer_status, read_storage_locations, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -677,7 +677,7 @@ class UbuntuStart(Adw.Application):
 
         battery_box, _battery_rows = self.page(
             _("Battery"),
-            _("Charge level and charging state come from local system information. An estimated capacity compared with the original design is shown only if the battery exposes both values."),
+            _("Charge level, charging state and the active power profile are read from local system information. An estimated capacity compared with the original design is shown only if the battery exposes both values. The power profile is shown for information and is not changed here."),
             include_rows=False,
         )
         battery_refresh = Gtk.Button(label=_("Refresh battery status"), halign=Gtk.Align.START)
@@ -1138,14 +1138,15 @@ class UbuntuStart(Adw.Application):
 
         def read_status():
             batteries = read_battery_status()
+            power_profile = read_power_profile()
             GLib.idle_add(
                 self.show_battery_status, button, status_label, battery_rows,
-                batteries, announce,
+                batteries, announce, power_profile,
             )
 
         threading.Thread(target=read_status, daemon=True).start()
 
-    def show_battery_status(self, button, status_label, battery_rows, batteries, announce=False):
+    def show_battery_status(self, button, status_label, battery_rows, batteries, announce=False, power_profile="unavailable"):
         button.set_sensitive(True)
         while (child := battery_rows.get_first_child()) is not None:
             battery_rows.remove(child)
@@ -1157,6 +1158,23 @@ class UbuntuStart(Adw.Application):
             "Not charging": _("Not charging"),
             "Unknown": _("Unknown"),
         }
+        profiles = {
+            "power-saver": _("Power saver"),
+            "balanced": _("Balanced"),
+            "performance": _("Performance"),
+        }
+        if power_profile in profiles:
+            self.row(
+                battery_rows,
+                _("Active power profile"),
+                profiles[power_profile],
+            )
+        else:
+            self.row(
+                battery_rows,
+                _("Active power profile"),
+                _("Power profile information is not available on this system."),
+            )
         if batteries:
             summaries = []
             for index, battery in enumerate(batteries, start=1):

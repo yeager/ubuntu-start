@@ -678,6 +678,20 @@ def read_battery_status(power_supply_path: str | Path = "/sys/class/power_supply
     return batteries
 
 
+def read_power_profile(timeout: float = 2.0) -> str:
+    """Read the active power profile when power-profiles-daemon is available."""
+    powerprofilesctl = shutil.which("powerprofilesctl")
+    if not powerprofilesctl:
+        return "unavailable"
+    result = _run_local([powerprofilesctl, "get"], timeout)
+    if result is None:
+        return "unavailable"
+    if result.returncode != 0:
+        return "unavailable"
+    profile = result.stdout.strip().casefold()
+    return profile if profile in {"power-saver", "balanced", "performance"} else "unavailable"
+
+
 def check_internet_connection(timeout: float = 5.0) -> str:
     """Make a small HTTPS request to Ubuntu; call only after explicit user consent."""
     request = urllib.request.Request("https://ubuntu.com/", method="HEAD", headers={"User-Agent": "Ubuntu-Start-connectivity-check"})
