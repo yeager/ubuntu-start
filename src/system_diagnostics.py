@@ -480,6 +480,34 @@ def _read(path: Path) -> str | None:
         return None
 
 
+def read_memory_status(meminfo_path: str | Path = "/proc/meminfo") -> dict[str, int] | None:
+    """Read total and available RAM plus swap use from local Linux procfs."""
+    meminfo = _read(Path(meminfo_path))
+    if not meminfo:
+        return None
+    values: dict[str, int] = {}
+    for line in meminfo.splitlines():
+        key, separator, value = line.partition(":")
+        if not separator:
+            continue
+        parts = value.split()
+        if key in {"MemTotal", "MemAvailable", "SwapTotal", "SwapFree"} and parts and parts[0].isdigit():
+            values[key] = int(parts[0]) * 1024
+    total = values.get("MemTotal", 0)
+    available = values.get("MemAvailable", -1)
+    swap_total = values.get("SwapTotal", 0)
+    swap_free = values.get("SwapFree", 0)
+    if total <= 0 or not 0 <= available <= total or not 0 <= swap_free <= swap_total:
+        return None
+    return {
+        "total": total,
+        "available": available,
+        "used": total - available,
+        "swap_total": swap_total,
+        "swap_used": swap_total - swap_free,
+    }
+
+
 def lookup_pci_device_name(
     vendor_id: str,
     device_id: str,

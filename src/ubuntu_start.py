@@ -12,7 +12,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_interface_ip_status, read_network_devices, read_power_profile, read_printer_status, read_storage_locations, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
+from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_devices, read_power_profile, read_printer_status, read_storage_locations, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -92,6 +92,12 @@ GUIDES = [
         (_("Wait for a connection"), _("Ubuntu normally configures a wired connection automatically. Give it a few seconds and check the network menu.")),
         (_("Check Network Settings"), _("Open Network Settings and confirm that the wired connection is enabled.")),
         (_("Try another port or cable"), _("If there is still no link, try a different cable or router port. Ask your network administrator before entering manual IP settings.")),
+    ]),
+    (_("Computer feels slow"), "hardware", [
+        (_("Check memory while it feels slow"), _("Open Network and hardware and refresh Memory use. Compare available RAM and swap while the slowdown is happening.")),
+        (_("Close applications you recognize"), _("Save your work, then close applications and browser tabs you are not using. Avoid stopping unfamiliar system processes.")),
+        (_("Check free storage"), _("Review the system filesystem in Network and hardware. If it is almost full, follow the safe disk cleanup guide.")),
+        (_("Review Ubuntu updates"), _("Check cached update status, then open Software Updater to refresh package information and review any changes.")),
     ]),
 ]
 
@@ -755,6 +761,24 @@ class UbuntuStart(Adw.Application):
             self.row(hardware_rows, label, value or _("Not available"))
         box.append(hardware_box)
 
+        memory_box, _memory_rows = self.page(
+            _("Memory use"),
+            _("Read available RAM and swap from Linux. Compare the values while the computer feels slow. If little memory is available, save your work and close applications you recognize and are not using."),
+            include_rows=False,
+        )
+        memory_status = Gtk.Label(label="", xalign=0, wrap=True)
+        memory_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        memory_refresh = Gtk.Button(label=_("Refresh memory status"), halign=Gtk.Align.START)
+        memory_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_memory_status(memory_refresh, memory_status, memory_rows, announce=True),
+        )
+        memory_box.append(memory_refresh)
+        memory_box.append(memory_status)
+        memory_box.append(memory_rows)
+        box.append(memory_box)
+        self.refresh_memory_status(memory_refresh, memory_status, memory_rows)
+
         usb_box, _usb_rows = self.page(
             _("Connected USB devices"),
             _("This local list reads USB device names and bound kernel drivers. Serial numbers are not read."),
@@ -1181,6 +1205,54 @@ class UbuntuStart(Adw.Application):
             )
 
         threading.Thread(target=read_status, daemon=True).start()
+
+    def refresh_memory_status(self, button, status_label, memory_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking memory status…"))
+
+        def read_status():
+            status = read_memory_status()
+            GLib.idle_add(self.show_memory_status, button, status_label, memory_rows, status, announce)
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_memory_status(self, button, status_label, memory_rows, status, announce=False):
+        button.set_sensitive(True)
+        while (child := memory_rows.get_first_child()) is not None:
+            memory_rows.remove(child)
+
+        if not status:
+            message = _("Memory status is not available from this system.")
+        else:
+            used_percent = round(status["used"] / status["total"] * 100)
+            self.row(memory_rows, _("Total RAM"), GLib.format_size(status["total"]))
+            self.row(memory_rows, _("Available RAM"), GLib.format_size(status["available"]))
+            self.row(
+                memory_rows,
+                _("Estimated RAM in use"),
+                _("{size} ({percent}%)").format(
+                    size=GLib.format_size(status["used"]), percent=used_percent,
+                ),
+            )
+            if status["swap_total"]:
+                swap_percent = round(status["swap_used"] / status["swap_total"] * 100)
+                swap_text = _("{used} of {total} ({percent}%)").format(
+                    used=GLib.format_size(status["swap_used"]),
+                    total=GLib.format_size(status["swap_total"]),
+                    percent=swap_percent,
+                )
+            else:
+                swap_text = _("No swap space is configured")
+            self.row(memory_rows, _("Swap in use"), swap_text)
+            message = _("Memory status updated. Available RAM: {available}. Swap: {swap}.").format(
+                available=GLib.format_size(status["available"]),
+                swap=swap_text,
+            )
+
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
 
     def show_apt_update_status(self, button, status_label, update_rows, status, error, announce=False):
         button.set_sensitive(True)

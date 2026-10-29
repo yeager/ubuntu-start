@@ -31,6 +31,7 @@ from system_diagnostics import (
     read_battery_status,
     read_apt_update_status,
     read_power_profile,
+    read_memory_status,
     read_bluetooth_status,
     read_hardware_details,
     read_network_devices,
@@ -464,6 +465,28 @@ class AudioStatusTests(unittest.TestCase):
 
 
 class ParseHardwareTests(unittest.TestCase):
+    def test_reads_ram_and_swap_status_from_meminfo(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            meminfo = Path(temporary) / "meminfo"
+            meminfo.write_text(
+                "MemTotal: 1024 kB\nMemAvailable: 256 kB\nSwapTotal: 512 kB\nSwapFree: 128 kB\n",
+                encoding="ascii",
+            )
+            result = read_memory_status(meminfo)
+        self.assertEqual(result, {
+            "total": 1_048_576,
+            "available": 262_144,
+            "used": 786_432,
+            "swap_total": 524_288,
+            "swap_used": 393_216,
+        })
+
+    def test_rejects_inconsistent_memory_values(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            meminfo = Path(temporary) / "meminfo"
+            meminfo.write_text("MemTotal: 100 kB\nMemAvailable: 101 kB\n", encoding="ascii")
+            self.assertIsNone(read_memory_status(meminfo))
+
     def test_resolves_graphics_name_from_local_pci_database(self):
         with tempfile.TemporaryDirectory() as temporary:
             database = Path(temporary) / "pci.ids"

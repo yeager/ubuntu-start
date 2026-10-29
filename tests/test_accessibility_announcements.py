@@ -2,9 +2,64 @@ import unittest
 from unittest.mock import Mock, call, patch
 
 from ubuntu_start import Adw, Gdk, GLib, Gtk, GUIDES, UbuntuStart
+from guide_search import find_guide_matches
 
 
 class AccessibilityAnnouncementTests(unittest.TestCase):
+    def test_slow_computer_memory_troubleshooting_is_searchable(self):
+        entries = [
+            ("device", index, guide_title, step_title, description)
+            for index, (guide_title, _panel, steps) in enumerate(GUIDES)
+            for step_title, description in steps
+        ]
+
+        matches = find_guide_matches("slow computer RAM", entries)
+
+        self.assertTrue(matches)
+        self.assertTrue(all(match[2] == "Computer feels slow" for match in matches))
+
+    def test_manual_memory_refresh_announces_ram_and_swap_status(self):
+        button = Mock()
+        status_label = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+        status = {
+            "total": 1024,
+            "available": 512,
+            "used": 512,
+            "swap_total": 0,
+            "swap_used": 0,
+        }
+
+        UbuntuStart.show_memory_status(
+            self.app, button, status_label, rows, status, announce=True,
+        )
+
+        self.app.row.assert_any_call(rows, "Total RAM", GLib.format_size(1024))
+        self.app.row.assert_any_call(rows, "Available RAM", GLib.format_size(512))
+        self.app.row.assert_any_call(
+            rows,
+            "Estimated RAM in use",
+            "{size} (50%)".format(size=GLib.format_size(512)),
+        )
+        self.app.row.assert_any_call(rows, "Swap in use", "No swap space is configured")
+        self.app.announce_to_screen_reader.assert_called_once_with(
+            status_label,
+            "Memory status updated. Available RAM: {available}. Swap: No swap space is configured.".format(
+                available=GLib.format_size(512),
+            ),
+        )
+
+    def test_memory_status_reports_unavailable_procfs(self):
+        status_label = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+
+        UbuntuStart.show_memory_status(self.app, Mock(), status_label, rows, None)
+
+        status_label.set_text.assert_called_once_with("Memory status is not available from this system.")
+        self.app.announce_to_screen_reader.assert_not_called()
+
     def test_manual_apt_update_check_announces_cached_results(self):
         button = Mock()
         status_label = Mock()
