@@ -2767,13 +2767,13 @@ msgstr ""
 
 #: src/ubuntu_start.py:1111
 msgid ""
-"Charge level, charging state, reported battery health, cycle count and the "
-"active power profile are read from local system information when available. "
-"An estimated capacity compared with the original design is shown only if the "
-"battery exposes both values. Battery health algorithms vary by manufacturer, "
-"so reported values are not directly comparable. These readings are "
-"informational, not universal service thresholds. The power profile is shown "
-"for information and is not changed here."
+"Charge level, charging state, reported battery health, cycle count, any "
+"charge limit exposed by the battery, and the active power profile are read "
+"from local system information when available. An estimated capacity compared "
+"with the original design is shown only if the battery exposes both values. "
+"Battery health algorithms vary by manufacturer, so reported values are not "
+"directly comparable. These readings are informational, not universal service "
+"thresholds. Ubuntu Start does not change charge limits or power settings."
 msgstr ""
 
 #: src/ubuntu_start.py:1114
@@ -5192,4 +5192,31 @@ msgstr ""
 
 #: data/se.danielnylander.UbuntuStart.desktop:3
 msgid "Get started with Ubuntu and troubleshoot devices"
+msgstr ""
+
+
+#: src/ubuntu_start.py:41
+msgid "Check for a charging limit"
+msgstr ""
+
+#: src/ubuntu_start.py:41
+msgid ""
+"Some computers intentionally pause charging below 100% to reduce battery "
+"wear. If Network and hardware reports a charge limit, check your computer "
+"manufacturer's instructions or power settings. Ubuntu Start only reads this "
+"value and does not change it."
+msgstr ""
+
+#: src/ubuntu_start.py:2718
+#, python-brace-format
+msgid "Charging resumes below {start}% and stops at {end}%."
+msgstr ""
+
+#: src/ubuntu_start.py:2721
+#, python-brace-format
+msgid "Charging stops at {end}%."
+msgstr ""
+
+#: src/ubuntu_start.py:2722
+msgid "Charge limit"
 msgstr ""

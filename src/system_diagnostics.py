@@ -1156,7 +1156,7 @@ def read_storage_locations(
 
 
 def read_battery_status(power_supply_path: str | Path = "/sys/class/power_supply") -> list[dict[str, str | int]]:
-    """Read charge, optional cycle count and capacity estimate without device identifiers."""
+    """Read local charge, health estimates and optional charging thresholds."""
     batteries = []
     for battery in sorted(Path(power_supply_path).glob("*") if Path(power_supply_path).exists() else []):
         if _read(battery / "type") != "Battery":
@@ -1180,6 +1180,18 @@ def read_battery_status(power_supply_path: str | Path = "/sys/class/power_supply
                 state_of_health = -1
             if 0 <= state_of_health <= 100:
                 details["state_of_health_percent"] = state_of_health
+            try:
+                charge_end_threshold = int(_read(battery / "charge_control_end_threshold") or "")
+            except ValueError:
+                charge_end_threshold = -1
+            if 1 <= charge_end_threshold <= 99:
+                details["charge_end_threshold"] = charge_end_threshold
+                try:
+                    charge_start_threshold = int(_read(battery / "charge_control_start_threshold") or "")
+                except ValueError:
+                    charge_start_threshold = -1
+                if 1 < charge_start_threshold < charge_end_threshold:
+                    details["charge_start_threshold"] = charge_start_threshold
             for full_name, design_name in (("energy_full", "energy_full_design"), ("charge_full", "charge_full_design")):
                 try:
                     full = int(_read(battery / full_name) or "")

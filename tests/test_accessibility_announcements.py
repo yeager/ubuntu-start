@@ -940,6 +940,26 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
             "Battery status updated: 82% · Charging · Charge cycles: 348 · Battery-reported health: 87%",
         )
 
+    def test_battery_refresh_shows_and_announces_charge_limit(self):
+        button = Mock()
+        status = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+
+        UbuntuStart.show_battery_status(
+            self.app, button, status, rows,
+            [{"capacity": 80, "status": "Not charging", "charge_start_threshold": 50, "charge_end_threshold": 80}],
+            announce=True,
+        )
+
+        self.app.row.assert_any_call(
+            rows, "Charge limit", "Charging resumes below 50% and stops at 80%.",
+        )
+        self.app.announce_to_screen_reader.assert_called_once_with(
+            status,
+            "Battery status updated: 80% · Not charging · Charging resumes below 50% and stops at 80%.",
+        )
+
     def test_background_battery_refresh_does_not_announce(self):
         button = Mock()
         status = Mock()

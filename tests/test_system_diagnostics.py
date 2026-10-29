@@ -1571,6 +1571,45 @@ Inst package-two [2.0] (2.1 repo [amd64])
 
         self.assertEqual(result[0]["state_of_health_percent"], 87)
 
+    def test_reads_optional_battery_charge_thresholds(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            battery = Path(temporary) / "BAT0"
+            battery.mkdir()
+            (battery / "type").write_text("Battery\n", encoding="utf-8")
+            (battery / "capacity").write_text("72\n", encoding="utf-8")
+            (battery / "charge_control_start_threshold").write_text("50\n", encoding="utf-8")
+            (battery / "charge_control_end_threshold").write_text("80\n", encoding="utf-8")
+            result = read_battery_status(temporary)
+
+        self.assertEqual(result[0]["charge_start_threshold"], 50)
+        self.assertEqual(result[0]["charge_end_threshold"], 80)
+
+    def test_reads_end_threshold_without_invalid_start_threshold(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            battery = Path(temporary) / "BAT0"
+            battery.mkdir()
+            (battery / "type").write_text("Battery\n", encoding="utf-8")
+            (battery / "capacity").write_text("72\n", encoding="utf-8")
+            (battery / "charge_control_start_threshold").write_text("90\n", encoding="utf-8")
+            (battery / "charge_control_end_threshold").write_text("80\n", encoding="utf-8")
+            result = read_battery_status(temporary)
+
+        self.assertEqual(result[0]["charge_end_threshold"], 80)
+        self.assertNotIn("charge_start_threshold", result[0])
+
+    def test_ignores_unbounded_battery_charge_thresholds(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            battery = Path(temporary) / "BAT0"
+            battery.mkdir()
+            (battery / "type").write_text("Battery\n", encoding="utf-8")
+            (battery / "capacity").write_text("72\n", encoding="utf-8")
+            (battery / "charge_control_start_threshold").write_text("0\n", encoding="utf-8")
+            (battery / "charge_control_end_threshold").write_text("100\n", encoding="utf-8")
+            result = read_battery_status(temporary)
+
+        self.assertNotIn("charge_end_threshold", result[0])
+        self.assertNotIn("charge_start_threshold", result[0])
+
     def test_ignores_out_of_range_vendor_reported_battery_health(self):
         with tempfile.TemporaryDirectory() as temporary:
             battery = Path(temporary) / "BAT0"

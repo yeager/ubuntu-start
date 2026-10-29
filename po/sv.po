@@ -3296,13 +3296,13 @@ msgstr "Batteri"
 
 #: src/ubuntu_start.py:1111
 msgid ""
-"Charge level, charging state, reported battery health, cycle count and the "
-"active power profile are read from local system information when available. "
-"An estimated capacity compared with the original design is shown only if the "
-"battery exposes both values. Battery health algorithms vary by manufacturer, "
-"so reported values are not directly comparable. These readings are "
-"informational, not universal service thresholds. The power profile is shown "
-"for information and is not changed here."
+"Charge level, charging state, reported battery health, cycle count, any "
+"charge limit exposed by the battery, and the active power profile are read "
+"from local system information when available. An estimated capacity compared "
+"with the original design is shown only if the battery exposes both values. "
+"Battery health algorithms vary by manufacturer, so reported values are not "
+"directly comparable. These readings are informational, not universal service "
+"thresholds. Ubuntu Start does not change charge limits or power settings."
 msgstr ""
 "Laddningsnivå, laddningstillstånd, rapporterad batterihälsa, antal "
 "laddningscykler och aktiv energiprofil läses från lokal systeminformation "
@@ -3310,7 +3310,8 @@ msgstr ""
 "ursprungsvärdet visas bara om batteriet rapporterar båda värdena. Metoderna "
 "för att beräkna batterihälsa varierar mellan tillverkare, så värdena kan "
 "inte jämföras direkt. Uppgifterna är endast vägledande, inte allmänna "
-"servicegränser. Energiprofilen visas som information och ändras inte här."
+"servicegränser. Ubuntu Start ändrar inte laddningsgränser eller "
+"ströminställningar."
 
 #: src/ubuntu_start.py:1114
 msgid "Refresh battery status"
@@ -6505,3 +6506,34 @@ msgstr "Kom igång med Ubuntu och felsök anslutna enheter"
 #~ msgstr ""
 #~ "Uppgifterna kan hjälpa andra att förstå ett problem. De innehåller inte "
 #~ "ditt användarnamn, datornamn, nätverksadress eller installerade program."
+
+
+#: src/ubuntu_start.py:41
+msgid "Check for a charging limit"
+msgstr "Kontrollera laddningsgränsen"
+
+#: src/ubuntu_start.py:41
+msgid ""
+"Some computers intentionally pause charging below 100% to reduce battery "
+"wear. If Network and hardware reports a charge limit, check your computer "
+"manufacturer's instructions or power settings. Ubuntu Start only reads this "
+"value and does not change it."
+msgstr ""
+"Vissa datorer pausar avsiktligt laddningen innan batteriet når 100 procent "
+"för att minska slitaget. Om Nätverk och maskinvara visar en laddningsgräns "
+"bör du läsa datortillverkarens anvisningar eller kontrollera "
+"ströminställningarna. Ubuntu Start läser bara av värdet och ändrar det inte."
+
+#: src/ubuntu_start.py:2718
+#, python-brace-format
+msgid "Charging resumes below {start}% and stops at {end}%."
+msgstr "Laddningen återupptas under {start} % och stoppas vid {end} %."
+
+#: src/ubuntu_start.py:2721
+#, python-brace-format
+msgid "Charging stops at {end}%."
+msgstr "Laddningen stoppas vid {end} %."
+
+#: src/ubuntu_start.py:2722
+msgid "Charge limit"
+msgstr "Laddningsgräns"

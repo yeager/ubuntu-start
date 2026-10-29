@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.36" date="2026-10-30">
+      <description>
+        <p>Show battery charge thresholds when Linux exposes them, and explain how a configured limit can affect charging. Ubuntu Start reads these settings without changing them.</p>
+        <p xml:lang="sv">Visa batteriets laddningsgränser när Linux tillhandahåller dem och förklara hur en inställd gräns kan påverka laddningen. Ubuntu Start läser av värdena utan att ändra dem.</p>
+      </description>
+    </release>
     <release version="0.3.35" date="2026-10-30">
       <description>
         <p>Cache parsed local IEEE assignments for faster repeated gateway vendor checks, and refresh the cache when a database file changes.</p>

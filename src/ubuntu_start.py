@@ -38,6 +38,7 @@ GUIDES = [
     (_("Battery and charging"), "power", [
         (_("Check the power adapter"), _("Connect the adapter securely at both ends and try a working outlet. Stop using a cable or adapter that is damaged or unusually hot.")),
         (_("Check the charging status"), _("Review the charge level and charging state on the Network and hardware page. If it is not charging, check the power connection and Power Settings.")),
+        (_("Check for a charging limit"), _("Some computers intentionally pause charging below 100% to reduce battery wear. If Network and hardware reports a charge limit, check your computer manufacturer's instructions or power settings. Ubuntu Start only reads this value and does not change it.")),
         (_("Check for battery wear"), _("Use capacity estimates, reported battery health and cycle count as context, not as a universal replacement threshold. If capacity is much lower than design, consult the laptop manufacturer’s battery service information.")),
     ]),
     (_("Bluetooth"), "bluetooth", [
@@ -1108,7 +1109,7 @@ class UbuntuStart(Adw.Application):
 
         battery_box, _battery_rows = self.page(
             _("Battery"),
-            _("Charge level, charging state, reported battery health, cycle count and the active power profile are read from local system information when available. An estimated capacity compared with the original design is shown only if the battery exposes both values. Battery health algorithms vary by manufacturer, so reported values are not directly comparable. These readings are informational, not universal service thresholds. The power profile is shown for information and is not changed here."),
+            _("Charge level, charging state, reported battery health, cycle count, any charge limit exposed by the battery, and the active power profile are read from local system information when available. An estimated capacity compared with the original design is shown only if the battery exposes both values. Battery health algorithms vary by manufacturer, so reported values are not directly comparable. These readings are informational, not universal service thresholds. Ubuntu Start does not change charge limits or power settings."),
             include_rows=False,
         )
         battery_refresh = Gtk.Button(label=_("Refresh battery status"), halign=Gtk.Align.START)
@@ -2709,6 +2710,17 @@ class UbuntuStart(Adw.Application):
                 summary_parts = [_("{capacity}% · {status}").format(
                     capacity=battery["capacity"], status=state,
                 )]
+                charge_end = battery.get("charge_end_threshold")
+                if isinstance(charge_end, int):
+                    charge_start = battery.get("charge_start_threshold")
+                    if isinstance(charge_start, int):
+                        charge_limit = _(
+                            "Charging resumes below {start}% and stops at {end}%."
+                        ).format(start=charge_start, end=charge_end)
+                    else:
+                        charge_limit = _("Charging stops at {end}%.").format(end=charge_end)
+                    self.row(battery_rows, _("Charge limit"), charge_limit)
+                    summary_parts.append(charge_limit)
                 if "design_capacity_percent" in battery:
                     self.row(
                         battery_rows,
