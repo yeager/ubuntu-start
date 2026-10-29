@@ -1124,6 +1124,10 @@ class UbuntuStart(Adw.Application):
             lines.append(_("Gateway: {address}").format(address=gateway))
             if result.get("gateway_latency_ms") is not None:
                 lines.append(_("Gateway response: {ms} ms").format(ms=format_milliseconds(result["gateway_latency_ms"])))
+            elif result.get("gateway_error") == "ping-not-installed":
+                lines.append(_("The ping tool is not installed. Check that the iputils-ping package is installed or ask your administrator."))
+            elif result.get("gateway_error") == "timeout":
+                lines.append(_("The gateway ping timed out. Some routers block ping requests."))
             else:
                 lines.append(_("Gateway did not answer the ping. Some routers block ping requests."))
             mac = result.get("gateway_mac")
@@ -1138,7 +1142,8 @@ class UbuntuStart(Adw.Application):
             lines.append(_("Next step: check Wi-Fi or wired connection in Settings. On a managed network, ask the administrator before changing route settings."))
         if result.get("dns_latency_ms") is None:
             lines.append(_("Next step: check that the network is connected and review its DNS settings."))
-        if result.get("gateway") and result.get("gateway_latency_ms") is None:
+        if (result.get("gateway") and result.get("gateway_latency_ms") is None
+                and result.get("gateway_error") != "ping-not-installed"):
             lines.append(_("Next step: check the local connection. Some gateways block ping, so this alone does not prove that the network is down."))
         status_label.set_text("\n".join(lines))
         self.announce_to_screen_reader(status_label, "\n".join(lines))

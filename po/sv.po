@@ -2560,30 +2560,42 @@ msgstr "Gateway: {address}"
 msgid "Gateway response: {ms} ms"
 msgstr "Svar från gateway: {ms} ms"
 
-#: src/ubuntu_start.py:1123
+#: src/ubuntu_start.py:1128
+msgid ""
+"The ping tool is not installed. Check that the iputils-ping package is "
+"installed or ask your administrator."
+msgstr ""
+"Pingverktyget är inte installerat. Kontrollera att paketet iputils-ping är "
+"installerat eller fråga systemadministratören."
+
+#: src/ubuntu_start.py:1130
+msgid "The gateway ping timed out. Some routers block ping requests."
+msgstr "Gatewayens pingtest tog för lång tid. Vissa routrar blockerar pingförfrågningar."
+
+#: src/ubuntu_start.py:1132
 msgid "Gateway did not answer the ping. Some routers block ping requests."
 msgstr ""
 "Gatewayen svarade inte på ping. Vissa routrar blockerar pingförfrågningar."
 
-#: src/ubuntu_start.py:1126
+#: src/ubuntu_start.py:1135
 #, python-brace-format
 msgid "Gateway MAC address: {mac}"
 msgstr "Gatewayens MAC-adress: {mac}"
 
-#: src/ubuntu_start.py:1128
+#: src/ubuntu_start.py:1137
 #, python-brace-format
 msgid "Manufacturer: {vendor}"
 msgstr "Tillverkare: {vendor}"
 
-#: src/ubuntu_start.py:1128
+#: src/ubuntu_start.py:1137
 msgid "Manufacturer not found in the local vendor database."
 msgstr "Tillverkaren hittades inte i den lokala tillverkardatabasen."
 
-#: src/ubuntu_start.py:1130
+#: src/ubuntu_start.py:1139
 msgid "Gateway MAC address is not available in the local neighbor table."
 msgstr "Gatewayens MAC-adress finns inte i den lokala grannlistan."
 
-#: src/ubuntu_start.py:1132
+#: src/ubuntu_start.py:1141
 msgid "No default gateway was found."
 msgstr "Hittade ingen standardgateway."
 

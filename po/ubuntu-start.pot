@@ -2219,29 +2219,39 @@ msgstr ""
 msgid "Gateway response: {ms} ms"
 msgstr ""
 
-#: src/ubuntu_start.py:1123
+#: src/ubuntu_start.py:1128
+msgid ""
+"The ping tool is not installed. Check that the iputils-ping package is "
+"installed or ask your administrator."
+msgstr ""
+
+#: src/ubuntu_start.py:1130
+msgid "The gateway ping timed out. Some routers block ping requests."
+msgstr ""
+
+#: src/ubuntu_start.py:1132
 msgid "Gateway did not answer the ping. Some routers block ping requests."
 msgstr ""
 
-#: src/ubuntu_start.py:1126
+#: src/ubuntu_start.py:1135
 #, python-brace-format
 msgid "Gateway MAC address: {mac}"
 msgstr ""
 
-#: src/ubuntu_start.py:1128
+#: src/ubuntu_start.py:1137
 #, python-brace-format
 msgid "Manufacturer: {vendor}"
 msgstr ""
 
-#: src/ubuntu_start.py:1128
+#: src/ubuntu_start.py:1137
 msgid "Manufacturer not found in the local vendor database."
 msgstr ""
 
-#: src/ubuntu_start.py:1130
+#: src/ubuntu_start.py:1139
 msgid "Gateway MAC address is not available in the local neighbor table."
 msgstr ""
 
-#: src/ubuntu_start.py:1132
+#: src/ubuntu_start.py:1141
 msgid "No default gateway was found."
 msgstr ""
 

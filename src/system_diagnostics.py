@@ -1153,7 +1153,8 @@ def run_network_diagnostics(timeout: float = 3.0) -> dict[str, str | float | Non
     result: dict[str, str | float | None] = {
         "dns_latency_ms": None, "dns_error": None,
         "gateway": None, "gateway_interface": None,
-        "gateway_latency_ms": None, "gateway_mac": None, "gateway_vendor": None,
+        "gateway_latency_ms": None, "gateway_error": None,
+        "gateway_mac": None, "gateway_vendor": None,
     }
     route = _run_local(["ip", "route", "show", "default"], timeout)
     default = parse_default_route(route.stdout) if route and route.returncode == 0 else None
@@ -1165,11 +1166,19 @@ def run_network_diagnostics(timeout: float = 3.0) -> dict[str, str | float | Non
         family = "-6" if ipaddress.ip_address(gateway).version == 6 else "-4"
         result["gateway"] = gateway
         result["gateway_interface"] = interface
-        start = time.monotonic()
-        ping = _run_local(["ping", family, "-I", interface, "-n", "-c", "1", "-W", str(max(1, int(timeout))), gateway], timeout + 1)
-        if ping and ping.returncode == 0:
-            timing = re.search(r"time[=<]([0-9.]+)\s*ms", ping.stdout)
-            result["gateway_latency_ms"] = float(timing.group(1)) if timing else round((time.monotonic() - start) * 1000, 1)
+        ping_command = shutil.which("ping")
+        if not ping_command:
+            result["gateway_error"] = "ping-not-installed"
+        else:
+            start = time.monotonic()
+            ping = _run_local([ping_command, family, "-I", interface, "-n", "-c", "1", "-W", str(max(1, int(timeout))), gateway], timeout + 1)
+            if ping is None:
+                result["gateway_error"] = "timeout"
+            elif ping.returncode == 0:
+                timing = re.search(r"time[=<]([0-9.]+)\s*ms", ping.stdout)
+                result["gateway_latency_ms"] = float(timing.group(1)) if timing else round((time.monotonic() - start) * 1000, 1)
+            else:
+                result["gateway_error"] = "no-response"
         neighbor = _run_local(["ip", family, "neigh", "show", "to", gateway, "dev", interface], timeout)
         mac = parse_neighbor_mac(neighbor.stdout) if neighbor and neighbor.returncode == 0 else None
         result["gateway_mac"] = mac
@@ -1200,6 +1209,9 @@ def build_support_report(
         report["network_checks"] = {
             "dns_latency_ms": diagnostics.get("dns_latency_ms"),
             "gateway_latency_ms": diagnostics.get("gateway_latency_ms"),
-            "gateway_reachable": diagnostics.get("gateway_latency_ms") is not None,
+            "gateway_reachable": (
+                None if diagnostics.get("gateway_error") == "ping-not-installed"
+                else diagnostics.get("gateway_latency_ms") is not None
+            ),
         }
     return json.dumps(report, ensure_ascii=False, indent=2) + "\n"

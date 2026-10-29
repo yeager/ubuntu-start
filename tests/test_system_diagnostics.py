@@ -81,6 +81,13 @@ class SupportReportTests(unittest.TestCase):
         self.assertIn("system", report)
         self.assertNotIn("network_checks", report)
 
+    def test_report_marks_gateway_reachability_unknown_when_ping_is_missing(self):
+        report = build_support_report(
+            [("Architecture", "x86_64")],
+            {"gateway_error": "ping-not-installed", "gateway_latency_ms": None},
+        )
+        self.assertIn('"gateway_reachable": null', report)
+
 
 class AccessibilitySettingsTests(unittest.TestCase):
     def test_parses_only_allowlisted_gnome_accessibility_values(self):
@@ -1099,10 +1106,11 @@ Inst package-two [2.0] (2.1 repo [amd64])
             self.assertEqual(lookup_oui_vendor("00:11:22:33:44:55", (str(database),)), "Example Network Devices")
             self.assertIsNone(lookup_oui_vendor("AA:BB:CC:DD:EE:FF", (str(database),)))
 
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/ping")
     @patch("system_diagnostics.lookup_oui_vendor", return_value="Example Router Co.")
     @patch("system_diagnostics._run_local")
     @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 2.0, 2.03])
-    def test_network_diagnostics_use_default_gateway_and_report_latency(self, _clock, run, _vendor):
+    def test_network_diagnostics_use_default_gateway_and_report_latency(self, _clock, run, _vendor, _which):
         run.side_effect = [
             subprocess.CompletedProcess([], 0, "default via 192.168.1.1 dev wlp2s0\n", ""),
             subprocess.CompletedProcess([], 0, "64 bytes from 192.168.1.1: time=0.42 ms\n", ""),
@@ -1119,10 +1127,11 @@ Inst package-two [2.0] (2.1 repo [amd64])
         self.assertEqual(run.call_args_list[2].args[0], ["ip", "-4", "neigh", "show", "to", "192.168.1.1", "dev", "wlp2s0"])
         self.assertEqual(run.call_args_list[3].args[0], ["getent", "ahosts", "ubuntu.com"])
 
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/ping")
     @patch("system_diagnostics.lookup_oui_vendor", return_value=None)
     @patch("system_diagnostics._run_local")
     @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 2.0, 2.03])
-    def test_uses_ipv6_gateway_when_ipv4_default_is_missing(self, _clock, run, _vendor):
+    def test_uses_ipv6_gateway_when_ipv4_default_is_missing(self, _clock, run, _vendor, _which):
         run.side_effect = [
             subprocess.CompletedProcess([], 0, "", ""),
             subprocess.CompletedProcess([], 0, "default via fe80::1 dev enp1s0 proto ra\n", ""),
@@ -1133,10 +1142,61 @@ Inst package-two [2.0] (2.1 repo [amd64])
         result = run_network_diagnostics()
         self.assertEqual(result["gateway"], "fe80::1")
         self.assertEqual(result["gateway_latency_ms"], 1.2)
-        self.assertEqual(run.call_args_list[2].args[0][:2], ["ping", "-6"])
+        self.assertEqual(run.call_args_list[2].args[0][:2], ["/usr/bin/ping", "-6"])
         self.assertEqual(run.call_args_list[2].args[0][2:4], ["-I", "enp1s0"])
         self.assertEqual(run.call_args_list[3].args[0][:3], ["ip", "-6", "neigh"])
         self.assertEqual(run.call_args_list[4].args[0], ["getent", "ahosts", "ubuntu.com"])
+
+    @patch("system_diagnostics.shutil.which", return_value=None)
+    @patch("system_diagnostics.lookup_oui_vendor", return_value=None)
+    @patch("system_diagnostics._run_local")
+    @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 1.03])
+    def test_reports_missing_ping_without_claiming_gateway_failure(self, _clock, run, _vendor, _which):
+        run.side_effect = [
+            subprocess.CompletedProcess([], 0, "default via 192.168.1.1 dev eth0\n", ""),
+            subprocess.CompletedProcess([], 0, "192.168.1.1 dev eth0 lladdr 00:11:22:33:44:55 REACHABLE\n", ""),
+            subprocess.CompletedProcess([], 0, "93.184.216.34 STREAM ubuntu.com\n", ""),
+        ]
+
+        result = run_network_diagnostics()
+
+        self.assertEqual(result["gateway_error"], "ping-not-installed")
+        self.assertIsNone(result["gateway_latency_ms"])
+        self.assertEqual(run.call_args_list[1].args[0], ["ip", "-4", "neigh", "show", "to", "192.168.1.1", "dev", "eth0"])
+
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/ping")
+    @patch("system_diagnostics.lookup_oui_vendor", return_value=None)
+    @patch("system_diagnostics._run_local")
+    @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 2.0, 2.03])
+    def test_reports_ping_timeout_separately(self, _clock, run, _vendor, _which):
+        run.side_effect = [
+            subprocess.CompletedProcess([], 0, "default via 192.168.1.1 dev eth0\n", ""),
+            None,
+            subprocess.CompletedProcess([], 0, "192.168.1.1 dev eth0 lladdr 00:11:22:33:44:55 REACHABLE\n", ""),
+            subprocess.CompletedProcess([], 0, "93.184.216.34 STREAM ubuntu.com\n", ""),
+        ]
+
+        result = run_network_diagnostics()
+
+        self.assertEqual(result["gateway_error"], "timeout")
+        self.assertIsNone(result["gateway_latency_ms"])
+
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/ping")
+    @patch("system_diagnostics.lookup_oui_vendor", return_value=None)
+    @patch("system_diagnostics._run_local")
+    @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 2.0, 2.03])
+    def test_reports_nonzero_ping_result_as_no_response(self, _clock, run, _vendor, _which):
+        run.side_effect = [
+            subprocess.CompletedProcess([], 0, "default via 192.168.1.1 dev eth0\n", ""),
+            subprocess.CompletedProcess([], 1, "", "100% packet loss\n"),
+            subprocess.CompletedProcess([], 0, "192.168.1.1 dev eth0 lladdr 00:11:22:33:44:55 REACHABLE\n", ""),
+            subprocess.CompletedProcess([], 0, "93.184.216.34 STREAM ubuntu.com\n", ""),
+        ]
+
+        result = run_network_diagnostics()
+
+        self.assertEqual(result["gateway_error"], "no-response")
+        self.assertIsNone(result["gateway_latency_ms"])
 
 
 def read_internet_check():
