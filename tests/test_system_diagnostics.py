@@ -48,6 +48,7 @@ from system_diagnostics import (
     parse_time_status,
     read_time_status,
     read_usb_devices,
+    lookup_usb_device_name,
     read_wifi_link_status,
     parse_iw_link_status,
     run_network_diagnostics,
@@ -677,7 +678,7 @@ ABCD  Another Vendor
             (root_hub / "bDeviceClass").write_text("09\n", encoding="ascii")
             (root_hub / "serial").write_text("ROOT-HUB-SERIAL\n", encoding="ascii")
 
-            result = read_usb_devices(devices_root)
+            result = read_usb_devices(devices_root, usb_databases=())
 
         self.assertEqual(result, [{
             "id": "046d:c534",
@@ -705,9 +706,43 @@ ABCD  Another Vendor
             (device / "manufacturer").write_text("QEMU\n", encoding="utf-8")
             (device / "product").write_text("QEMU USB Tablet\n", encoding="utf-8")
 
-            result = read_usb_devices(temporary)
+            result = read_usb_devices(temporary, usb_databases=())
 
         self.assertEqual(result[0]["name"], "QEMU USB Tablet")
+
+    def test_matches_usb_vendor_and_product_in_local_database(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            database = Path(temporary) / "usb.ids"
+            database.write_text(
+                """0627  Adomax Technology Co., Ltd
+\t0001  QEMU Tablet
+0628  Another Vendor
+\t0001  Different Device
+""",
+                encoding="ascii",
+            )
+            self.assertEqual(
+                lookup_usb_device_name("0627", "0001", (str(database),)),
+                ("Adomax Technology Co., Ltd", "QEMU Tablet"),
+            )
+            self.assertIsNone(lookup_usb_device_name("invalid", "0001", (str(database),)))
+
+    def test_enriches_usb_device_with_vendor_from_local_database(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            device = root / "1-1"
+            device.mkdir()
+            (device / "idVendor").write_text("0627\n", encoding="ascii")
+            (device / "idProduct").write_text("0001\n", encoding="ascii")
+            (device / "manufacturer").write_text("QEMU\n", encoding="ascii")
+            (device / "product").write_text("QEMU USB Tablet\n", encoding="ascii")
+            database = root / "usb.ids"
+            database.write_text("0627  Adomax Technology Co., Ltd\n\t0001  QEMU Tablet\n", encoding="ascii")
+            result = read_usb_devices(root, usb_databases=(str(database),))
+        self.assertEqual(
+            result[0]["name"],
+            "Adomax Technology Co., Ltd · QEMU USB Tablet",
+        )
 
 
 class VideoDeviceTests(unittest.TestCase):

@@ -639,8 +639,46 @@ def _graphics_adapters(
     return adapters
 
 
+def lookup_usb_device_name(
+    vendor_id: str,
+    product_id: str,
+    databases: tuple[str, ...] = (
+        "/usr/share/hwdata/usb.ids", "/usr/share/misc/usb.ids", "/var/lib/usbutils/usb.ids",
+    ),
+) -> tuple[str | None, str | None] | None:
+    """Match USB vendor and product IDs against an installed local usb.ids file."""
+    if not re.fullmatch(r"[0-9a-fA-F]{4}", vendor_id) or not re.fullmatch(r"[0-9a-fA-F]{4}", product_id):
+        return None
+    wanted_vendor = vendor_id.upper()
+    wanted_product = product_id.upper()
+    for database in databases:
+        try:
+            lines = Path(database).read_text(encoding="ascii", errors="replace").splitlines()
+        except OSError:
+            continue
+        vendor_name = None
+        for line in lines:
+            vendor_match = re.match(r"^([0-9A-Fa-f]{4})\s{2,}(.+?)\s*$", line)
+            if vendor_match:
+                if vendor_name:
+                    break
+                if vendor_match.group(1).upper() == wanted_vendor:
+                    vendor_name = vendor_match.group(2).strip()
+                continue
+            if vendor_name and line.startswith("\t") and not line.startswith("\t\t"):
+                product_match = re.match(r"^\t([0-9A-Fa-f]{4})\s{2,}(.+?)\s*$", line)
+                if product_match and product_match.group(1).upper() == wanted_product:
+                    return vendor_name, product_match.group(2).strip()
+        if vendor_name:
+            return vendor_name, None
+    return None
+
+
 def read_usb_devices(
     devices_path: str | Path = "/sys/bus/usb/devices",
+    usb_databases: tuple[str, ...] = (
+        "/usr/share/hwdata/usb.ids", "/usr/share/misc/usb.ids", "/var/lib/usbutils/usb.ids",
+    ),
 ) -> list[dict[str, str | list[str] | None]]:
     """Read connected USB descriptors and bound interface drivers, never serials."""
     devices_root = Path(devices_path)
@@ -691,9 +729,28 @@ def read_usb_devices(
         ):
             descriptors.pop(0)
 
+        database_name = lookup_usb_device_name(vendor_id, product_id, usb_databases)
+        database_vendor, database_product = database_name or (None, None)
+        display_name = " ".join(descriptors) or None
+        if database_vendor and display_name:
+            sysfs_vendor = descriptors[0] if descriptors else ""
+            vendor_matches = (
+                database_vendor.casefold() in display_name.casefold()
+                or bool(sysfs_vendor) and (
+                    sysfs_vendor.casefold() in database_vendor.casefold()
+                    or database_vendor.casefold() in sysfs_vendor.casefold()
+                )
+            )
+            if not vendor_matches:
+                display_name = f"{database_vendor} · {display_name}"
+        elif database_vendor:
+            display_name = " ".join(part for part in (database_vendor, database_product) if part)
+        elif database_product:
+            display_name = database_product
+
         devices.append({
             "id": f"{vendor_id.lower()}:{product_id.lower()}",
-            "name": " ".join(descriptors) or None,
+            "name": display_name,
             "drivers": sorted(drivers_by_device.get(device_path.name, set())),
         })
     return devices

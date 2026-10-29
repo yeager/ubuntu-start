@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ubuntu Start 0.3.1\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 03:56+0100\n"
+"POT-Creation-Date: 2026-10-29 04:00+0100\n"
 "PO-Revision-Date: 2026-10-28 15:18+0100\n"
 "Last-Translator: Ubuntu Start contributors\n"
 "Language-Team: Swedish\n"
@@ -684,7 +684,8 @@ msgid ""
 "manufacturer’s guidance instead of relying on a universal temperature limit."
 msgstr ""
 "Sensorernas namn och normala temperaturer varierar mellan modeller. Läs "
-"tillverkarens information i stället för att utgå från en gemensam temperaturgräns."
+"tillverkarens information i stället för att utgå från en gemensam "
+"temperaturgräns."
 
 #: src/ubuntu_start.py:112
 msgid "Stop if the computer becomes unusually hot"
@@ -2198,11 +2199,13 @@ msgstr "Anslutna USB-enheter"
 
 #: src/ubuntu_start.py:858
 msgid ""
-"This local list reads USB device names and bound kernel drivers. Serial "
-"numbers are not read."
+"This local list reads USB device names and bound kernel drivers. It may "
+"match vendor and product names from an installed local USB ID database; "
+"hardware IDs remain visible for reference. Serial numbers are not read."
 msgstr ""
-"Listan visar enheternas namn och drivrutiner som är kopplade till dem. "
-"Serienummer läses inte."
+"Den här lokala listan läser USB-enheternas namn och kopplade kärndrivrutiner. "
+"Tillverkar- och produktnamn kan matchas mot en lokalt installerad USB-ID-databas. "
+"Maskinvaru-ID:n visas också. Serienummer läses inte."
 
 #: src/ubuntu_start.py:863
 msgid "Refresh USB device list"
@@ -3377,6 +3380,13 @@ msgstr "Det gick inte att öppna verktyget"
 #: data/se.nylander.UbuntuStart.desktop:3
 msgid "Get started with Ubuntu and troubleshoot devices"
 msgstr "Kom igång med Ubuntu och felsök anslutna enheter"
+
+#~ msgid ""
+#~ "This local list reads USB device names and bound kernel drivers. Serial "
+#~ "numbers are not read."
+#~ msgstr ""
+#~ "Listan visar enheternas namn och drivrutiner som är kopplade till dem. "
+#~ "Serienummer läses inte."
 
 #, python-brace-format
 #~ msgid "{count} failed service entries reported."

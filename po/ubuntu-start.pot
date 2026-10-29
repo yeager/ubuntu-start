@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ubuntu Start 0.3.1\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 03:56+0100\n"
+"POT-Creation-Date: 2026-10-29 04:00+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1901,8 +1901,9 @@ msgstr ""
 
 #: src/ubuntu_start.py:858
 msgid ""
-"This local list reads USB device names and bound kernel drivers. Serial "
-"numbers are not read."
+"This local list reads USB device names and bound kernel drivers. It may "
+"match vendor and product names from an installed local USB ID database; "
+"hardware IDs remain visible for reference. Serial numbers are not read."
 msgstr ""
 
 #: src/ubuntu_start.py:863

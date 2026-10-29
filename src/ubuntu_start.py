@@ -855,7 +855,7 @@ class UbuntuStart(Adw.Application):
 
         usb_box, _usb_rows = self.page(
             _("Connected USB devices"),
-            _("This local list reads USB device names and bound kernel drivers. Serial numbers are not read."),
+            _("This local list reads USB device names and bound kernel drivers. It may match vendor and product names from an installed local USB ID database; hardware IDs remain visible for reference. Serial numbers are not read."),
             include_rows=False,
         )
         usb_status = Gtk.Label(label="", xalign=0, wrap=True)
