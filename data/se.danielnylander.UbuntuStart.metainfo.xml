@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.30" date="2026-10-29">
+      <description>
+        <p>Reuse the existing Ubuntu Start window when the app is activated again, instead of opening duplicate windows.</p>
+        <p xml:lang="sv">Återanvänd Ubuntu Starts befintliga fönster när appen aktiveras igen i stället för att öppna flera fönster.</p>
+      </description>
+    </release>
     <release version="0.3.29" date="2026-10-29">
       <description>
         <p>Show support-report validation errors in the report editor so the user can correct the content without losing the dialog.</p>

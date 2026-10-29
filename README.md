@@ -107,6 +107,8 @@ NetworkManager, Bluetooth, audio, storage, battery and hardware summaries use lo
 
 ## Validation
 
+Version `0.3.30` reuses the existing application window on activation, avoiding duplicate Ubuntu Start windows.
+
 Version `0.3.29` keeps support-report JSON errors inside the editor and announces them to screen readers, so users can correct the report without losing the dialog.
 
 Version `0.3.28` validates edited support reports before saving so invalid JSON is not stored with a `.json` extension.
