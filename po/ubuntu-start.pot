@@ -2230,7 +2230,17 @@ msgid "The gateway ping timed out. Some routers block ping requests."
 msgstr ""
 
 #: src/ubuntu_start.py:1132
+#, python-brace-format
+msgid "The gateway ping timed out after {ms} ms. Some routers block ping requests."
+msgstr ""
+
+#: src/ubuntu_start.py:1132
 msgid "Gateway did not answer the ping. Some routers block ping requests."
+msgstr ""
+
+#: src/ubuntu_start.py:1138
+#, python-brace-format
+msgid "The gateway did not answer the ping after {ms} ms. Some routers block ping requests."
 msgstr ""
 
 #: src/ubuntu_start.py:1135

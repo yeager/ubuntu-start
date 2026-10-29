@@ -1153,7 +1153,8 @@ def run_network_diagnostics(timeout: float = 3.0) -> dict[str, str | float | Non
     result: dict[str, str | float | None] = {
         "dns_latency_ms": None, "dns_error": None,
         "gateway": None, "gateway_interface": None,
-        "gateway_latency_ms": None, "gateway_error": None,
+        "gateway_latency_ms": None, "gateway_test_duration_ms": None,
+        "gateway_error": None,
         "gateway_mac": None, "gateway_vendor": None,
     }
     route = _run_local(["ip", "route", "show", "default"], timeout)
@@ -1174,11 +1175,13 @@ def run_network_diagnostics(timeout: float = 3.0) -> dict[str, str | float | Non
             ping = _run_local([ping_command, family, "-I", interface, "-n", "-c", "1", "-W", str(max(1, int(timeout))), gateway], timeout + 1)
             if ping is None:
                 result["gateway_error"] = "timeout"
+                result["gateway_test_duration_ms"] = round((time.monotonic() - start) * 1000, 1)
             elif ping.returncode == 0:
                 timing = re.search(r"time[=<]([0-9.]+)\s*ms", ping.stdout)
                 result["gateway_latency_ms"] = float(timing.group(1)) if timing else round((time.monotonic() - start) * 1000, 1)
             else:
                 result["gateway_error"] = "no-response"
+                result["gateway_test_duration_ms"] = round((time.monotonic() - start) * 1000, 1)
         neighbor = _run_local(["ip", family, "neigh", "show", "to", gateway, "dev", interface], timeout)
         mac = parse_neighbor_mac(neighbor.stdout) if neighbor and neighbor.returncode == 0 else None
         result["gateway_mac"] = mac

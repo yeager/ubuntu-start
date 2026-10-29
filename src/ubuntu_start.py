@@ -1127,9 +1127,17 @@ class UbuntuStart(Adw.Application):
             elif result.get("gateway_error") == "ping-not-installed":
                 lines.append(_("The ping tool is not installed. Check that the iputils-ping package is installed or ask your administrator."))
             elif result.get("gateway_error") == "timeout":
-                lines.append(_("The gateway ping timed out. Some routers block ping requests."))
+                elapsed = result.get("gateway_test_duration_ms")
+                if elapsed is not None:
+                    lines.append(_("The gateway ping timed out after {ms} ms. Some routers block ping requests.").format(ms=format_milliseconds(elapsed)))
+                else:
+                    lines.append(_("The gateway ping timed out. Some routers block ping requests."))
             else:
-                lines.append(_("Gateway did not answer the ping. Some routers block ping requests."))
+                elapsed = result.get("gateway_test_duration_ms")
+                if elapsed is not None:
+                    lines.append(_("The gateway did not answer the ping after {ms} ms. Some routers block ping requests.").format(ms=format_milliseconds(elapsed)))
+                else:
+                    lines.append(_("Gateway did not answer the ping. Some routers block ping requests."))
             mac = result.get("gateway_mac")
             if mac:
                 lines.append(_("Gateway MAC address: {mac}").format(mac=mac))

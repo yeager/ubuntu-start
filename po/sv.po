@@ -2573,9 +2573,19 @@ msgid "The gateway ping timed out. Some routers block ping requests."
 msgstr "Gatewayens pingtest tog för lång tid. Vissa routrar blockerar pingförfrågningar."
 
 #: src/ubuntu_start.py:1132
+#, python-brace-format
+msgid "The gateway ping timed out after {ms} ms. Some routers block ping requests."
+msgstr "Pingtestet mot gatewayen nådde tidsgränsen efter {ms} ms. Vissa routrar blockerar pingförfrågningar."
+
+#: src/ubuntu_start.py:1132
 msgid "Gateway did not answer the ping. Some routers block ping requests."
 msgstr ""
 "Gatewayen svarade inte på ping. Vissa routrar blockerar pingförfrågningar."
+
+#: src/ubuntu_start.py:1138
+#, python-brace-format
+msgid "The gateway did not answer the ping after {ms} ms. Some routers block ping requests."
+msgstr "Gatewayen svarade inte på ping efter {ms} ms. Vissa routrar blockerar pingförfrågningar."
 
 #: src/ubuntu_start.py:1135
 #, python-brace-format

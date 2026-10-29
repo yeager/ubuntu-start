@@ -1169,7 +1169,7 @@ Inst package-two [2.0] (2.1 repo [amd64])
     @patch("system_diagnostics.shutil.which", return_value="/usr/bin/ping")
     @patch("system_diagnostics.lookup_oui_vendor", return_value=None)
     @patch("system_diagnostics._run_local")
-    @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 2.0, 2.03])
+    @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 2.5, 4.0, 4.03])
     def test_reports_ping_timeout_separately(self, _clock, run, _vendor, _which):
         run.side_effect = [
             subprocess.CompletedProcess([], 0, "default via 192.168.1.1 dev eth0\n", ""),
@@ -1182,11 +1182,12 @@ Inst package-two [2.0] (2.1 repo [amd64])
 
         self.assertEqual(result["gateway_error"], "timeout")
         self.assertIsNone(result["gateway_latency_ms"])
+        self.assertEqual(result["gateway_test_duration_ms"], 1500.0)
 
     @patch("system_diagnostics.shutil.which", return_value="/usr/bin/ping")
     @patch("system_diagnostics.lookup_oui_vendor", return_value=None)
     @patch("system_diagnostics._run_local")
-    @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 2.0, 2.03])
+    @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 2.5, 4.0, 4.03])
     def test_reports_nonzero_ping_result_as_no_response(self, _clock, run, _vendor, _which):
         run.side_effect = [
             subprocess.CompletedProcess([], 0, "default via 192.168.1.1 dev eth0\n", ""),
@@ -1199,6 +1200,7 @@ Inst package-two [2.0] (2.1 repo [amd64])
 
         self.assertEqual(result["gateway_error"], "no-response")
         self.assertIsNone(result["gateway_latency_ms"])
+        self.assertEqual(result["gateway_test_duration_ms"], 1500.0)
 
 
 def read_internet_check():

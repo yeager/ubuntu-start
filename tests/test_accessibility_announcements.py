@@ -695,6 +695,7 @@ class InternetTestResultTests(unittest.TestCase):
             "dns_latency_ms": 12.3,
             "gateway": "192.168.1.1",
             "gateway_latency_ms": None,
+            "gateway_test_duration_ms": 1500.0,
             "gateway_error": "timeout",
             "gateway_mac": None,
             "gateway_vendor": None,
@@ -703,8 +704,29 @@ class InternetTestResultTests(unittest.TestCase):
         UbuntuStart.show_network_diagnostic_result(app, button, status, result)
 
         message = status.set_text.call_args.args[0]
-        self.assertIn("The gateway ping timed out.", message)
+        self.assertIn("The gateway ping timed out after 1500 ms.", message)
         self.assertIn("Some gateways block ping", message)
+
+    def test_unanswered_ping_includes_elapsed_time(self):
+        app = Mock()
+        button = Mock()
+        status = Mock()
+        result = {
+            "dns_latency_ms": 12.3,
+            "gateway": "192.168.1.1",
+            "gateway_latency_ms": None,
+            "gateway_test_duration_ms": 14.6,
+            "gateway_error": "no-response",
+            "gateway_mac": None,
+            "gateway_vendor": None,
+        }
+
+        with patch("ubuntu_start.locale.localeconv", return_value={"decimal_point": ","}):
+            UbuntuStart.show_network_diagnostic_result(app, button, status, result)
+
+        message = status.set_text.call_args.args[0]
+        self.assertIn("The gateway did not answer the ping after 14,6 ms.", message)
+        self.assertIn("Some routers block ping requests.", message)
 
     def test_confirmed_internet_check_passes_elapsed_https_time(self):
         app = Mock()
