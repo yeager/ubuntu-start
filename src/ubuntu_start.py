@@ -45,6 +45,13 @@ GUIDES = [
         (_("Turn on pairing mode"), _("Keep the device nearby and follow its instructions for pairing mode.")),
         (_("Try pairing again"), _("If an old pairing is listed, remove it in Settings, then pair the device again.")),
     ]),
+    (_("Fingerprint reader"), "system", [
+        (_("Keep your account password available"), _("Fingerprint sign-in is an alternative to your account password, not a replacement. Keep password sign-in available in case the reader does not work or Ubuntu asks for your password.")),
+        (_("Open fingerprint settings"), _("Open Settings, choose System, then Users. Look for Fingerprint Login and select Disabled to add a fingerprint. Unlock the panel if you are setting up another user.")),
+        (_("Enroll a finger"), _("Choose a finger and follow the on-screen prompts. Lift and reposition your finger each time the reader asks. A clean, dry finger can make enrollment easier.")),
+        (_("Test fingerprint sign-in"), _("Save your work before signing out. At the sign-in screen, select your account and try the enrolled finger. If it is not accepted, choose password sign-in.")),
+        (_("If fingerprint settings are missing"), _("Fingerprint readers need hardware and software supported by Ubuntu. Check the device model or hardware ID in Network and hardware and use Ubuntu or manufacturer support information. Do not paste unreviewed PAM commands or install drivers from untrusted websites.")),
+    ]),
     (_("Printers"), "printers", [
         (_("Check the printer"), _("Make sure it is powered on and has paper, ink or toner, and no paper jam.")),
         (_("Check the connection"), _("For a network printer, confirm it is on the same network as this computer. For USB, reconnect the cable.")),
@@ -718,6 +725,8 @@ class UbuntuStart(Adw.Application):
                     label = _("Open hardware overview")
                 elif target == "disks":
                     label = _("Open Disks")
+                elif target == "system":
+                    label = _("Open System Settings")
                 else:
                     label = _("Open related Settings")
                 open_button.set_label(label)

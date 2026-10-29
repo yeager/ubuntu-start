@@ -200,6 +200,20 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.assertTrue(matches)
         self.assertTrue(all(match[2] == "Computer gets hot or the fan is loud" for match in matches))
 
+    def test_fingerprint_reader_guide_is_searchable_and_preserves_password_fallback(self):
+        guide = next(guide for guide in GUIDES if guide[0] == "Fingerprint reader")
+        entries = [
+            ("device", index, guide[0], title, description)
+            for index, (title, description) in enumerate(guide[2])
+        ]
+        matches = find_guide_matches("fingerprint password", entries)
+        text = " ".join(" ".join(step) for step in guide[2])
+
+        self.assertTrue(matches)
+        self.assertIn("not a replacement", text)
+        self.assertIn("choose password sign-in", text)
+        self.assertIn("untrusted websites", text)
+
     def test_storage_drive_health_guide_is_searchable_and_cautious(self):
         guide = next(guide for guide in GUIDES if guide[0] == "Check whether a storage drive is healthy")
         entries = [
@@ -1688,6 +1702,13 @@ class VideoStatusAnnouncementTests(unittest.TestCase):
             next(index for index, (title, _target, _steps) in enumerate(GUIDES) if title == "Camera")
         )
         app.main_stack.set_visible_child_name.assert_called_once_with("Fix a device")
+
+    def test_open_fingerprint_reader_guide_launches_system_settings(self):
+        app = Mock()
+
+        UbuntuStart.open_device_target(app, "system")
+
+        app.open_app.assert_called_once_with("gnome-control-center", "system")
 
     def test_open_storage_drive_guide_launches_gnome_disks(self):
         app = Mock()
