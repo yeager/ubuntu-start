@@ -16,9 +16,9 @@ An Ubuntu Desktop guide for first-run setup and device troubleshooting.
 
 ![Read-only network and hardware overview](screenshots/network-hardware-en.png)
 
-[More screenshots: network diagnostics (EN)](screenshots/network-diagnostics-en.png) · [audio status (EN)](screenshots/audio-status-en.png) · [Terminal guide (EN)](screenshots/terminal-guide-en.png) · [WiFi Analyzer recommendation (EN)](screenshots/wifi-analyzer-en.png) · [help page (EN)](screenshots/help-en.png) · [hardware summary (EN)](screenshots/help-hardware-en.png)
+[More screenshots: network diagnostics (EN)](screenshots/network-diagnostics-en.png) · [audio status (EN)](screenshots/audio-status-en.png) · [storage and battery (EN)](screenshots/storage-en.png) · [Terminal guide (EN)](screenshots/terminal-guide-en.png) · [WiFi Analyzer recommendation (EN)](screenshots/wifi-analyzer-en.png) · [help page (EN)](screenshots/help-en.png) · [hardware summary (EN)](screenshots/help-hardware-en.png)
 
-[Swedish system guides](screenshots/system-guides-sv.png) · [network and hardware overview](screenshots/network-hardware-sv.png) · [network diagnostics](screenshots/network-diagnostics-sv.png) · [audio status](screenshots/audio-status-sv.png) · [Terminal guide](screenshots/terminal-guide-sv.png) · [WiFi Analyzer recommendation](screenshots/wifi-analyzer-sv.png) · [help page](screenshots/help-sv.png) · [hardware summary](screenshots/help-hardware-sv.png) · [accessibility settings](screenshots/accessibility-panel-en.png)
+[Swedish system guides](screenshots/system-guides-sv.png) · [network and hardware overview](screenshots/network-hardware-sv.png) · [network diagnostics](screenshots/network-diagnostics-sv.png) · [audio status](screenshots/audio-status-sv.png) · [storage and battery](screenshots/storage-sv.png) · [Terminal guide](screenshots/terminal-guide-sv.png) · [WiFi Analyzer recommendation](screenshots/wifi-analyzer-sv.png) · [help page](screenshots/help-sv.png) · [hardware summary](screenshots/help-hardware-sv.png) · [accessibility settings](screenshots/accessibility-panel-en.png)
 
 
 Ubuntu Start combines a first-run guide with practical device troubleshooting for Ubuntu Desktop. It is a GTK 4/libadwaita application intended for Ubuntu GNOME.
@@ -111,7 +111,7 @@ Tagged versions (`v*`) are built by GitHub Actions. Releases include a source ar
 
 ## Screenshots
 
-The screenshots show the welcome page, matching printer troubleshooting steps, a Wi-Fi how-to guide, accessibility instructions and local network and hardware status.
+The screenshots show the welcome page, printer troubleshooting, Wi-Fi setup, accessibility instructions and network status. Additional English and Swedish screenshots include the storage and battery summary.
 
 
 ## License
