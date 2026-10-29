@@ -639,6 +639,62 @@ class USBStatusTests(unittest.TestCase):
         app.open_app.assert_called_once_with("gnome-control-center", "wifi")
 
 
+class InternetTestResultTests(unittest.TestCase):
+    def test_confirmed_internet_check_passes_elapsed_https_time(self):
+        app = Mock()
+        button = Mock()
+        status = Mock()
+        dialog = Mock()
+
+        with patch("ubuntu_start.Adw.AlertDialog", return_value=dialog), \
+                patch("ubuntu_start.threading.Thread") as thread, \
+                patch("ubuntu_start.check_internet_connection", return_value="reachable:204"), \
+                patch("ubuntu_start.time.monotonic", side_effect=[1.0, 1.1234]), \
+                patch("ubuntu_start.GLib.idle_add") as idle_add:
+            UbuntuStart.confirm_internet_test(app, button, status)
+            on_response = dialog.connect.call_args.args[1]
+
+            on_response(dialog, "cancel")
+            thread.assert_not_called()
+
+            on_response(dialog, "test")
+            button.set_sensitive.assert_called_once_with(False)
+            status.set_text.assert_called_once_with("Checking connection to ubuntu.com…")
+            thread.return_value.start.assert_called_once_with()
+            thread.call_args.kwargs["target"]()
+
+        idle_add.assert_called_once_with(
+            app.show_internet_result, button, status, "reachable:204", 123.4,
+        )
+
+    def test_reachable_result_includes_https_response_time(self):
+        app = Mock()
+        button = Mock()
+        status = Mock()
+
+        UbuntuStart.show_internet_result(app, button, status, "reachable:204", 123.4)
+
+        button.set_sensitive.assert_called_once_with(True)
+        status.set_text.assert_called_once_with(
+            "ubuntu.com responded in 123.4 ms. Internet access is available.",
+        )
+        app.announce_to_screen_reader.assert_called_once_with(
+            status, "ubuntu.com responded in 123.4 ms. Internet access is available.",
+        )
+
+    def test_failed_result_includes_elapsed_time_and_next_steps(self):
+        app = Mock()
+        button = Mock()
+        status = Mock()
+
+        UbuntuStart.show_internet_result(app, button, status, "unreachable:TimeoutError", 5000.0)
+
+        status.set_text.assert_called_once_with(
+            "Could not reach ubuntu.com after 5000.0 ms. Check the router, "
+            "network sign-in page, DNS settings or firewall.",
+        )
+
+
 class DriverGuideTests(unittest.TestCase):
     def test_unknown_adapter_help_links_to_hardware_overview(self):
         app = Mock()

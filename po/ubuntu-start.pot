@@ -2266,14 +2266,16 @@ msgstr ""
 msgid "Open link"
 msgstr ""
 
-#: src/ubuntu_start.py:1154
-msgid "ubuntu.com responded. Internet access is available."
+#: src/ubuntu_start.py:1159
+#, python-brace-format
+msgid "ubuntu.com responded in {ms} ms. Internet access is available."
 msgstr ""
 
-#: src/ubuntu_start.py:1156
+#: src/ubuntu_start.py:1163
+#, python-brace-format
 msgid ""
-"Could not reach ubuntu.com. Check the router, network sign-in page, DNS "
-"settings or firewall."
+"Could not reach ubuntu.com after {ms} ms. Check the router, network sign-in "
+"page, DNS settings or firewall."
 msgstr ""
 
 #: src/ubuntu_start.py:1162

@@ -7,6 +7,7 @@ import platform
 import shutil
 import sys
 import threading
+import time
 import gi
 
 gi.require_version("Adw", "1")
@@ -1074,8 +1075,12 @@ class UbuntuStart(Adw.Application):
                 status_label.set_text(_("Checking connection to ubuntu.com…"))
 
                 def check():
+                    started = time.monotonic()
                     result = check_internet_connection()
-                    GLib.idle_add(self.show_internet_result, button, status_label, result)
+                    elapsed_ms = round((time.monotonic() - started) * 1000, 1)
+                    GLib.idle_add(
+                        self.show_internet_result, button, status_label, result, elapsed_ms,
+                    )
 
                 threading.Thread(target=check, daemon=True).start()
 
@@ -1148,12 +1153,17 @@ class UbuntuStart(Adw.Application):
         dialog.connect("response", lambda _dialog, response: self.open_uri(uri) if response == "open" else None)
         dialog.present(self.get_active_window())
 
-    def show_internet_result(self, button, status_label, result):
+    def show_internet_result(self, button, status_label, result, elapsed_ms):
         button.set_sensitive(True)
         if result.startswith("reachable:"):
-            message = _("ubuntu.com responded. Internet access is available.")
+            message = _(
+                "ubuntu.com responded in {ms} ms. Internet access is available."
+            ).format(ms=elapsed_ms)
         else:
-            message = _("Could not reach ubuntu.com. Check the router, network sign-in page, DNS settings or firewall.")
+            message = _(
+                "Could not reach ubuntu.com after {ms} ms. Check the router, "
+                "network sign-in page, DNS settings or firewall."
+            ).format(ms=elapsed_ms)
         status_label.set_text(message)
         self.announce_to_screen_reader(status_label, message)
         return GLib.SOURCE_REMOVE
