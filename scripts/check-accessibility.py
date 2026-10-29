@@ -38,7 +38,7 @@ def accessible_tree(
     """Collect accessible roles and names while bounding tree traversal."""
     if remaining is None:
         remaining = [4096]
-    if depth > 16 or remaining[0] <= 0:
+    if depth > 24 or remaining[0] <= 0:
         return []
     remaining[0] -= 1
 
