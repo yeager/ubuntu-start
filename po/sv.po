@@ -5693,14 +5693,18 @@ msgstr "Anslutningsstatus för bildskärm"
 
 #: src/ubuntu_start.py:3186
 msgid ""
-"Read connection and active states reported for display connectors by Linux. "
-"The check does not read monitor identifiers or change display settings. Some "
-"graphics drivers and virtual machines expose limited connector data."
+"Read connection state and resolutions reported by Linux for display "
+"connectors. Resolution lists do not show the currently selected resolution "
+"or refresh rate. The check does not read monitor identifiers or change "
+"display settings. Some graphics drivers and virtual machines expose limited "
+"connector data."
 msgstr ""
-"Läs anslutningsstatus och aktivt läge för bildskärmsutgångar enligt Linux. "
-"Kontrollen läser inga bildskärmsidentifierare och ändrar inga "
-"skärminställningar. Vissa grafikdrivrutiner och virtuella maskiner visar "
-"inte all information om anslutningarna."
+"Läs av anslutningsstatus och upplösningar som Linux rapporterar för "
+"skärmanslutningar. Upplösningslistan visar inte vilken upplösning eller "
+"uppdateringsfrekvens som används just nu. Kontrollen läser inte av "
+"bildskärmsidentifierare och ändrar inga skärminställningar. Vissa "
+"grafikdrivrutiner och virtuella maskiner visar begränsad information om "
+"anslutningar."
 
 #: src/ubuntu_start.py:3191
 msgid "Refresh display status"
@@ -6537,3 +6541,30 @@ msgstr "Laddningen stoppas vid {end} %."
 #: src/ubuntu_start.py:2722
 msgid "Charge limit"
 msgstr "Laddningsgräns"
+
+
+#: src/ubuntu_start.py:64
+msgid "Compare supported resolutions"
+msgstr "Jämför upplösningar som stöds"
+
+#: src/ubuntu_start.py:64
+msgid ""
+"On the Network and hardware page, review the resolutions Linux reports for "
+"connected displays. This list does not identify the currently selected "
+"resolution or refresh rate. Open Display Settings to compare the available "
+"options."
+msgstr ""
+"På sidan Nätverk och maskinvara kan du se vilka upplösningar Linux "
+"rapporterar för anslutna skärmar. Listan visar inte vilken upplösning eller "
+"uppdateringsfrekvens som används just nu. Öppna skärminställningarna för att "
+"jämföra alternativen."
+
+
+#: src/ubuntu_start.py:3260
+#, python-brace-format
+msgid "{resolutions}, and {count} more"
+msgstr "{resolutions}, samt {count} till"
+
+#: src/ubuntu_start.py:3265
+msgid "Resolutions reported by Linux"
+msgstr "Upplösningar som Linux rapporterar"

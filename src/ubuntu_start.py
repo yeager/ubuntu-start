@@ -61,6 +61,7 @@ GUIDES = [
     ]),
     (_("Displays and graphics"), "display", [
         (_("Check power and cables"), _("Make sure the display is on, the cable is connected and the correct input is selected.")),
+        (_("Compare supported resolutions"), _("On the Network and hardware page, review the resolutions Linux reports for connected displays. This list does not identify the currently selected resolution or refresh rate. Open Display Settings to compare the available options.")),
         (_("Open Display Settings"), _("Check whether Ubuntu detects the display. Try a supported resolution and refresh rate.")),
         (_("Review graphics drivers"), _("If graphics are unstable or a feature is missing, review the drivers offered by Ubuntu before changing anything.")),
     ]),
@@ -3195,7 +3196,7 @@ class UbuntuStart(Adw.Application):
     def add_display_status(self, parent):
         display_box, _display_rows = self.page(
             _("Display connection status"),
-            _("Read connection and active states reported for display connectors by Linux. The check does not read monitor identifiers or change display settings. Some graphics drivers and virtual machines expose limited connector data."),
+            _("Read connection state and resolutions reported by Linux for display connectors. Resolution lists do not show the currently selected resolution or refresh rate. The check does not read monitor identifiers or change display settings. Some graphics drivers and virtual machines expose limited connector data."),
             include_rows=False,
         )
         display_status = Gtk.Label(label="", xalign=0, wrap=True)
@@ -3252,6 +3253,18 @@ class UbuntuStart(Adw.Application):
                 title = _("Display connector {name}").format(name=connector["name"])
                 self.row(display_rows, title, subtitle)
                 details.append(f"{title}: {subtitle}")
+                resolutions = connector.get("resolutions")
+                resolution_count = connector.get("resolution_count")
+                if resolutions:
+                    resolution_text = ", ".join(resolutions)
+                    if isinstance(resolution_count, int) and resolution_count > len(resolutions):
+                        resolution_text = _("{resolutions}, and {count} more").format(
+                            resolutions=resolution_text,
+                            count=resolution_count - len(resolutions),
+                        )
+                    resolution_title = _("Resolutions reported by Linux")
+                    self.row(display_rows, resolution_title, resolution_text)
+                    details.append(f"{resolution_title}: {resolution_text}")
             if len(connectors) == 1:
                 message = _("Display status updated: 1 connector found.")
             else:

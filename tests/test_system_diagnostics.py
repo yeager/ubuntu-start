@@ -1433,6 +1433,44 @@ class DisplayConnectorTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             self.assertEqual(read_display_connectors(Path(temporary) / "missing"), [])
 
+    def test_reads_valid_unique_resolutions_for_connected_displays(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            connector = Path(temporary) / "card0-HDMI-A-1"
+            connector.mkdir()
+            (connector / "status").write_text("connected\n", encoding="utf-8")
+            (connector / "modes").write_text(
+                "1280x800\n1920x1080\n1920x1080\n319x200\n99999x1000\ninvalid\n",
+                encoding="utf-8",
+            )
+            result = read_display_connectors(temporary)
+
+        self.assertEqual(result[0]["resolutions"], ["1280x800", "1920x1080"])
+        self.assertEqual(result[0]["resolution_count"], 2)
+
+    def test_limits_reported_resolution_list_and_counts_remaining(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            connector = Path(temporary) / "card0-HDMI-A-1"
+            connector.mkdir()
+            (connector / "status").write_text("connected\n", encoding="utf-8")
+            (connector / "modes").write_text(
+                "".join(f"{width}x1080\n" for width in range(800, 2100, 100)),
+                encoding="utf-8",
+            )
+            result = read_display_connectors(temporary)
+
+        self.assertEqual(len(result[0]["resolutions"]), 12)
+        self.assertEqual(result[0]["resolution_count"], 13)
+
+    def test_does_not_read_modes_for_disconnected_displays(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            connector = Path(temporary) / "card0-HDMI-A-1"
+            connector.mkdir()
+            (connector / "status").write_text("disconnected\n", encoding="utf-8")
+            (connector / "modes").write_text("1920x1080\n", encoding="utf-8")
+            result = read_display_connectors(temporary)
+
+        self.assertNotIn("resolutions", result[0])
+
 
 class LocalDiagnosticsTests(unittest.TestCase):
     def test_parses_upgrade_and_held_back_counts_from_apt_simulation(self):

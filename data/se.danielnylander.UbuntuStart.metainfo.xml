@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.37" date="2026-10-30">
+      <description>
+        <p>List unique resolutions reported by Linux for connected displays, while clarifying that the list does not show the active resolution or refresh rate.</p>
+        <p xml:lang="sv">Visa unika upplösningar som Linux rapporterar för anslutna skärmar och förklara att listan inte visar den aktiva upplösningen eller uppdateringsfrekvensen.</p>
+      </description>
+    </release>
     <release version="0.3.36" date="2026-10-30">
       <description>
         <p>Show battery charge thresholds when Linux exposes them, and explain how a configured limit can affect charging. Ubuntu Start reads these settings without changing them.</p>

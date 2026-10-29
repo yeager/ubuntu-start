@@ -2078,6 +2078,32 @@ class DisplayStatusAnnouncementTests(unittest.TestCase):
             "Display status updated: 1 connector found. Display connector card0-HDMI-A-1: Connected · Active",
         )
 
+    def test_display_status_shows_reported_resolutions_without_claiming_active_mode(self):
+        app = Mock()
+        status_label = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+        resolutions = [f"{width}x1080" for width in range(800, 2100, 100)]
+        UbuntuStart.show_display_status(
+            app, Mock(), status_label, rows,
+            [{
+                "name": "card0-HDMI-A-1",
+                "status": "connected",
+                "enabled": "enabled",
+                "resolutions": resolutions[:12],
+                "resolution_count": len(resolutions),
+            }],
+            announce=True,
+        )
+
+        app.row.assert_any_call(
+            rows, "Resolutions reported by Linux", ", ".join(resolutions[:12]) + ", and 1 more",
+        )
+        self.assertIn(
+            "Resolutions reported by Linux: " + ", ".join(resolutions[:12]) + ", and 1 more",
+            app.announce_to_screen_reader.call_args.args[1],
+        )
+
     def test_display_status_explains_when_linux_reports_no_connectors(self):
         app = Mock()
         rows = Mock()

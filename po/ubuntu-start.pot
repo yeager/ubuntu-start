@@ -4904,9 +4904,11 @@ msgstr ""
 
 #: src/ubuntu_start.py:3186
 msgid ""
-"Read connection and active states reported for display connectors by Linux. "
-"The check does not read monitor identifiers or change display settings. Some "
-"graphics drivers and virtual machines expose limited connector data."
+"Read connection state and resolutions reported by Linux for display "
+"connectors. Resolution lists do not show the currently selected resolution "
+"or refresh rate. The check does not read monitor identifiers or change "
+"display settings. Some graphics drivers and virtual machines expose limited "
+"connector data."
 msgstr ""
 
 #: src/ubuntu_start.py:3191
@@ -5219,4 +5221,27 @@ msgstr ""
 
 #: src/ubuntu_start.py:2722
 msgid "Charge limit"
+msgstr ""
+
+
+#: src/ubuntu_start.py:64
+msgid "Compare supported resolutions"
+msgstr ""
+
+#: src/ubuntu_start.py:64
+msgid ""
+"On the Network and hardware page, review the resolutions Linux reports for "
+"connected displays. This list does not identify the currently selected "
+"resolution or refresh rate. Open Display Settings to compare the available "
+"options."
+msgstr ""
+
+
+#: src/ubuntu_start.py:3260
+#, python-brace-format
+msgid "{resolutions}, and {count} more"
+msgstr ""
+
+#: src/ubuntu_start.py:3265
+msgid "Resolutions reported by Linux"
 msgstr ""

@@ -110,8 +110,10 @@ def read_video_devices(sysfs_directory: str | Path = "/sys/class/video4linux") -
     return devices
 
 
-def read_display_connectors(drm_directory: str | Path = "/sys/class/drm") -> list[dict[str, str | None]]:
-    """Read DRM connector state only; do not read monitor EDID or identifiers."""
+def read_display_connectors(
+    drm_directory: str | Path = "/sys/class/drm",
+) -> list[dict[str, str | int | list[str] | None]]:
+    """Read connector state and reported resolutions without monitor identifiers."""
     directory = Path(drm_directory)
     try:
         entries = sorted(directory.iterdir(), key=lambda path: path.name)
@@ -128,7 +130,27 @@ def read_display_connectors(drm_directory: str | Path = "/sys/class/drm") -> lis
         enabled = _read(entry / "enabled")
         if enabled not in {"enabled", "disabled", "unknown"}:
             enabled = None
-        connectors.append({"name": entry.name, "status": status, "enabled": enabled})
+        connector: dict[str, str | int | list[str] | None] = {
+            "name": entry.name, "status": status, "enabled": enabled,
+        }
+        if status == "connected":
+            seen_resolutions = set()
+            resolutions = []
+            for mode in (_read(entry / "modes") or "").splitlines():
+                match = re.fullmatch(r"\s*(\d{3,5})x(\d{3,5})\s*", mode)
+                if not match:
+                    continue
+                width, height = (int(value) for value in match.groups())
+                if not (320 <= width <= 16384 and 200 <= height <= 16384):
+                    continue
+                resolution = f"{width}x{height}"
+                if resolution not in seen_resolutions:
+                    seen_resolutions.add(resolution)
+                    resolutions.append(resolution)
+            if resolutions:
+                connector["resolutions"] = resolutions[:12]
+                connector["resolution_count"] = len(resolutions)
+        connectors.append(connector)
     return connectors
 
 
