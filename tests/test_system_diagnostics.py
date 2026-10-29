@@ -35,6 +35,8 @@ from system_diagnostics import (
     parse_pressure_status,
     read_resource_pressure,
     read_bluetooth_status,
+    parse_failed_services,
+    read_failed_services,
     read_hardware_details,
     read_network_devices,
     read_interface_ip_status,
@@ -338,6 +340,37 @@ job user-secret is printing on Office_Laser
     @patch("system_diagnostics.shutil.which", return_value="/usr/bin/lpstat")
     def test_reports_local_cups_timeout(self, _which, _run):
         self.assertEqual(read_printer_status(), ([], "timeout"))
+
+
+class FailedServiceTests(unittest.TestCase):
+    def test_parses_failed_service_units_and_skips_non_service_rows(self):
+        output = """alpha.service loaded failed failed The first service
+some.socket loaded failed failed Not a service
+good.service loaded active running Should not be marked failed
+bad@device\\x20name.service loaded failed failed Device service description
+"""
+        self.assertEqual(parse_failed_services(output), [
+            ("alpha.service", "The first service"),
+            ("bad@device\\x20name.service", "Device service description"),
+        ])
+
+    @patch("system_diagnostics._run_local")
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/systemctl")
+    def test_reads_failed_service_summary_without_privileged_changes(self, _which, run_local):
+        run_local.return_value = subprocess.CompletedProcess(
+            [], 0, "alpha.service loaded failed failed Example service\n", "",
+        )
+        self.assertEqual(read_failed_services(), ([
+            ("alpha.service", "Example service"),
+        ], None))
+        self.assertEqual(run_local.call_args.args[0], [
+            "/usr/bin/systemctl", "--failed", "--type=service", "--no-legend", "--plain", "--no-pager",
+        ])
+        self.assertEqual(run_local.call_args.kwargs["env"]["LC_ALL"], "C")
+
+    @patch("system_diagnostics.shutil.which", return_value=None)
+    def test_handles_missing_systemctl(self, _which):
+        self.assertEqual(read_failed_services(), ([], "not-installed"))
 
 
 class BluetoothStatusTests(unittest.TestCase):

@@ -6,6 +6,33 @@ from guide_search import find_guide_matches
 
 
 class AccessibilityAnnouncementTests(unittest.TestCase):
+    def test_failed_services_are_shown_and_summary_is_announced(self):
+        button = Mock()
+        status_label = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+
+        UbuntuStart.show_failed_services(
+            self.app, button, status_label, rows,
+            [("geoclue.service", "Location Lookup Service")], None,
+            announce=True,
+        )
+
+        self.app.row.assert_called_once_with(rows, "geoclue.service", "Location Lookup Service")
+        status_label.set_text.assert_called_once_with("1 service units are marked as failed.")
+        self.app.announce_to_screen_reader.assert_called_once_with(
+            status_label, "1 service units are marked as failed.",
+        )
+
+    def test_failed_services_explain_empty_status(self):
+        status_label = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+
+        UbuntuStart.show_failed_services(self.app, Mock(), status_label, rows, [], None)
+
+        status_label.set_text.assert_called_once_with("No failed system services are reported.")
+
     def test_resource_pressure_refresh_announces_all_readings(self):
         button = Mock()
         status_label = Mock()
@@ -43,6 +70,18 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
 
         self.assertTrue(matches)
         self.assertTrue(all(match[2] == "Computer feels slow" for match in matches))
+
+    def test_failed_service_help_is_searchable(self):
+        entries = [
+            ("device", index, guide_title, step_title, description)
+            for index, (guide_title, _panel, steps) in enumerate(GUIDES)
+            for step_title, description in steps
+        ]
+
+        matches = find_guide_matches("failed service systemd", entries)
+
+        self.assertTrue(matches)
+        self.assertTrue(all(match[2] == "A system service is marked failed" for match in matches))
 
     def test_manual_memory_refresh_announces_ram_and_swap_status(self):
         button = Mock()

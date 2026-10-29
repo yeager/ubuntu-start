@@ -541,6 +541,41 @@ def read_resource_pressure(pressure_path: str | Path = "/proc/pressure") -> dict
     return result or None
 
 
+def parse_failed_services(output: str) -> list[tuple[str, str]]:
+    """Parse only failed systemd service unit names and descriptions."""
+    services = []
+    for line in output.splitlines():
+        fields = line.split(None, 4)
+        if len(fields) < 4 or not re.fullmatch(r"(?:[A-Za-z0-9_.@:-]|\\x[0-9A-Fa-f]{2}){1,200}\.service", fields[0]):
+            continue
+        if fields[2] != "failed" or fields[3] != "failed":
+            continue
+        description = ""
+        if len(fields) == 5:
+            description = " ".join(
+                "".join(character if character.isprintable() else " " for character in fields[4]).split()
+            )[:160]
+        services.append((fields[0], description))
+    return services
+
+
+def read_failed_services(timeout: float = 3.0) -> tuple[list[tuple[str, str]], str | None]:
+    """Read failed service units from the local system manager; make no changes."""
+    systemctl = shutil.which("systemctl")
+    if not systemctl:
+        return [], "not-installed"
+    result = _run_local(
+        [systemctl, "--failed", "--type=service", "--no-legend", "--plain", "--no-pager"],
+        timeout,
+        env={**os.environ, "LC_ALL": "C"},
+    )
+    if result is None:
+        return [], "timeout"
+    if result.returncode != 0:
+        return [], "unavailable"
+    return parse_failed_services(result.stdout), None
+
+
 def lookup_pci_device_name(
     vendor_id: str,
     device_id: str,

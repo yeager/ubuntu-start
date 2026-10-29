@@ -12,7 +12,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_devices, read_power_profile, read_printer_status, read_resource_pressure, read_storage_locations, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
+from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_devices, read_power_profile, read_printer_status, read_resource_pressure, read_storage_locations, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -99,6 +99,11 @@ GUIDES = [
         (_("Close applications you recognize"), _("Save your work, then close applications and browser tabs you are not using. Avoid stopping unfamiliar system processes.")),
         (_("Check free storage"), _("Review the system filesystem in Network and hardware. If it is almost full, follow the safe disk cleanup guide.")),
         (_("Review Ubuntu updates"), _("Check cached update status, then open Software Updater to refresh package information and review any changes.")),
+    ]),
+    (_("A system service is marked failed"), "hardware", [
+        (_("Check whether a feature is affected"), _("A failed service does not always mean something is broken. First check whether a device or feature related to the service is actually not working.")),
+        (_("Read the service name and description"), _("Refresh System service status in systemd and compare the name with the feature that has a problem. The list does not show why the service failed.")),
+        (_("Get help before changing services"), _("Check Ubuntu documentation or ask your system administrator before stopping, restarting or disabling a service. Some failures are temporary or expected.")),
     ]),
 ]
 
@@ -800,6 +805,26 @@ class UbuntuStart(Adw.Application):
         box.append(pressure_box)
         self.refresh_resource_pressure(pressure_refresh, pressure_status, pressure_rows)
 
+        services_box, _service_rows = self.page(
+            _("System service status"),
+            _("Lists service units systemd currently marks as failed. A failure can be temporary or expected and does not prove that a feature is broken. The list does not include logs or explain the cause; do not change services based on this status alone."),
+            include_rows=False,
+        )
+        services_status = Gtk.Label(label="", xalign=0, wrap=True)
+        service_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        services_refresh = Gtk.Button(label=_("Refresh system service status"), halign=Gtk.Align.START)
+        services_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_failed_services(
+                services_refresh, services_status, service_rows, announce=True,
+            ),
+        )
+        services_box.append(services_refresh)
+        services_box.append(services_status)
+        services_box.append(service_rows)
+        box.append(services_box)
+        self.refresh_failed_services(services_refresh, services_status, service_rows)
+
         usb_box, _usb_rows = self.page(
             _("Connected USB devices"),
             _("This local list reads USB device names and bound kernel drivers. Serial numbers are not read."),
@@ -1311,6 +1336,43 @@ class UbuntuStart(Adw.Application):
                 self.row(pressure_rows, label, value)
                 details.append(f"{label}: {value}")
             message = _("System pressure updated: {details}").format(details="; ".join(details))
+
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
+
+    def refresh_failed_services(self, button, status_label, service_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking system service status…"))
+
+        def read_status():
+            services, error = read_failed_services()
+            GLib.idle_add(
+                self.show_failed_services,
+                button, status_label, service_rows, services, error, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_failed_services(self, button, status_label, service_rows, services, error, announce=False):
+        button.set_sensitive(True)
+        while (child := service_rows.get_first_child()) is not None:
+            service_rows.remove(child)
+
+        error_messages = {
+            "not-installed": _("The system service manager is not available."),
+            "timeout": _("The system service manager did not respond in time."),
+            "unavailable": _("Could not read system service status."),
+        }
+        if error:
+            message = error_messages.get(error, error_messages["unavailable"])
+        elif services:
+            for unit, description in services:
+                self.row(service_rows, unit, description or _("No description available"))
+            message = _("{count} service units are marked as failed.").format(count=len(services))
+        else:
+            message = _("No failed system services are reported.")
 
         status_label.set_text(message)
         if announce:
