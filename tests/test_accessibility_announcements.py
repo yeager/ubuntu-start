@@ -343,6 +343,7 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
 
     def setUp(self):
         self.app = Mock()
+        self.app.open_device_guide = lambda title: UbuntuStart.open_device_guide(self.app, title)
 
     def test_control_f_opens_device_guides_and_focuses_search(self):
         self.app.main_stack = Mock()
@@ -392,6 +393,36 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         expected_index = next(
             index for index, (title, _target, _steps) in enumerate(GUIDES)
             if title == "Battery and charging"
+        )
+        self.app.device_search.set_text.assert_called_once_with("")
+        self.app.device_chooser.set_selected.assert_called_once_with(expected_index)
+        self.app.main_stack.set_visible_child_name.assert_called_once_with("Fix a device")
+
+    def test_open_wifi_guide_selects_wifi_steps(self):
+        self.app.device_search = Mock()
+        self.app.device_chooser = Mock()
+        self.app.main_stack = Mock()
+
+        UbuntuStart.open_wifi_guide(self.app)
+
+        expected_index = next(
+            index for index, (title, _target, _steps) in enumerate(GUIDES)
+            if title == "Wi-Fi"
+        )
+        self.app.device_search.set_text.assert_called_once_with("")
+        self.app.device_chooser.set_selected.assert_called_once_with(expected_index)
+        self.app.main_stack.set_visible_child_name.assert_called_once_with("Fix a device")
+
+    def test_open_sound_guide_selects_sound_and_microphone_steps(self):
+        self.app.device_search = Mock()
+        self.app.device_chooser = Mock()
+        self.app.main_stack = Mock()
+
+        UbuntuStart.open_sound_guide(self.app)
+
+        expected_index = next(
+            index for index, (title, _target, _steps) in enumerate(GUIDES)
+            if title == "Sound and microphones"
         )
         self.app.device_search.set_text.assert_called_once_with("")
         self.app.device_chooser.set_selected.assert_called_once_with(expected_index)
@@ -1266,6 +1297,7 @@ class VideoStatusAnnouncementTests(unittest.TestCase):
 
     def test_open_camera_guide_selects_the_camera_steps(self):
         app = Mock()
+        app.open_device_guide = lambda title: UbuntuStart.open_device_guide(app, title)
         UbuntuStart.open_camera_guide(app)
         app.device_search.set_text.assert_called_once_with("")
         app.device_chooser.set_selected.assert_called_once_with(

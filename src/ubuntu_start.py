@@ -647,7 +647,12 @@ class UbuntuStart(Adw.Application):
                 radio_refresh, radio_status, radio_rows, announce=True,
             ),
         )
+        radio_guide_button = Gtk.Button(
+            label=_("Open Wi-Fi troubleshooting guide"), halign=Gtk.Align.START,
+        )
+        radio_guide_button.connect("clicked", lambda *_: self.open_wifi_guide())
         radio_box.append(radio_refresh)
+        radio_box.append(radio_guide_button)
         radio_box.append(radio_status)
         radio_box.append(radio_rows)
         box.append(radio_box)
@@ -678,7 +683,12 @@ class UbuntuStart(Adw.Application):
         audio_rows.append(input_status)
         audio_refresh = Gtk.Button(label=_("Refresh audio status"), halign=Gtk.Align.START)
         audio_refresh.connect("clicked", lambda *_: self.refresh_audio_status(output_status, input_status, announce=True))
+        audio_guide_button = Gtk.Button(
+            label=_("Open sound and microphone guide"), halign=Gtk.Align.START,
+        )
+        audio_guide_button.connect("clicked", lambda *_: self.open_sound_guide())
         audio_box.append(audio_refresh)
+        audio_box.append(audio_guide_button)
         box.append(audio_box)
         self.refresh_audio_status(output_status, input_status)
 
@@ -1059,13 +1069,22 @@ class UbuntuStart(Adw.Application):
         return GLib.SOURCE_REMOVE
 
     def open_camera_guide(self):
-        camera_index = next(
+        self.open_device_guide(_("Camera"))
+
+    def open_device_guide(self, guide_title):
+        guide_index = next(
             index for index, (title, _target, _steps) in enumerate(GUIDES)
-            if title == _("Camera")
+            if title == guide_title
         )
         self.device_search.set_text("")
-        self.device_chooser.set_selected(camera_index)
+        self.device_chooser.set_selected(guide_index)
         self.main_stack.set_visible_child_name(_("Fix a device"))
+
+    def open_wifi_guide(self):
+        self.open_device_guide(_("Wi-Fi"))
+
+    def open_sound_guide(self):
+        self.open_device_guide(_("Sound and microphones"))
 
     def open_time_guide(self):
         guide_index = next(
@@ -1363,13 +1382,7 @@ class UbuntuStart(Adw.Application):
         self.main_stack.set_visible_child_name(_("System guides"))
 
     def open_battery_guide(self):
-        guide_index = next(
-            index for index, (title, _target, _steps) in enumerate(GUIDES)
-            if title == _("Battery and charging")
-        )
-        self.device_search.set_text("")
-        self.device_chooser.set_selected(guide_index)
-        self.main_stack.set_visible_child_name(_("Fix a device"))
+        self.open_device_guide(_("Battery and charging"))
 
     def refresh_audio_status(self, output_row, input_row, announce=False):
         output_row.set_subtitle(_("Checking status…"))
