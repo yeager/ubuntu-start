@@ -1119,6 +1119,37 @@ class SystemDetailsTests(unittest.TestCase):
         self.assertEqual(sum(label == "System filesystem" for label, _value in details), 1)
         self.assertFalse(any(label == "Home folder filesystem" for label, _value in details))
 
+
+class StorageStatusRowTests(unittest.TestCase):
+    @patch("ubuntu_start.GLib.format_size", side_effect=lambda value: f"{value} bytes")
+    @patch("ubuntu_start.locale.format_string", side_effect=lambda _format, value, grouping: str(value))
+    def test_shows_file_entry_availability_when_reported(self, _format_count, _format_size):
+        app = Mock()
+        rows = Mock()
+
+        UbuntuStart.add_storage_status_rows(
+            app, rows,
+            {"system": {
+                "total": 1000, "used": 500, "free": 500, "read_only": False,
+                "file_entries_total": 100, "file_entries_free": 25,
+            }},
+        )
+
+        app.row.assert_any_call(rows, "System filesystem", "500 bytes free of 1000 bytes (50% used)")
+        app.row.assert_any_call(rows, "Available file entries", "25 of 100 available (75% used)")
+
+    @patch("ubuntu_start.GLib.format_size", side_effect=lambda value: f"{value} bytes")
+    def test_omits_file_entry_row_when_not_reported(self, _format_size):
+        app = Mock()
+        rows = Mock()
+
+        UbuntuStart.add_storage_status_rows(
+            app, rows,
+            {"system": {"total": 1000, "used": 500, "free": 500, "read_only": False}},
+        )
+
+        self.assertNotIn("Available file entries", [call.args[1] for call in app.row.call_args_list])
+
     @patch("ubuntu_start.read_storage_locations", return_value={})
     @patch("ubuntu_start.read_hardware_details", return_value={
         "system_model": None, "processor": None, "memory": None,

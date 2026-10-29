@@ -2705,8 +2705,10 @@ msgstr ""
 
 #: src/ubuntu_start.py:1065
 msgid ""
-"Local filesystem capacity. A separate home filesystem is shown when your "
-"personal files use a different mounted volume."
+"Local filesystem capacity and, when Linux reports it, available file "
+"entries. A filesystem can run out of file entries even while byte space "
+"remains. A separate home filesystem is shown when your personal files use a "
+"different mounted volume."
 msgstr ""
 
 #: src/ubuntu_start.py:1070 src/ubuntu_start.py:2985
@@ -5244,4 +5246,27 @@ msgstr ""
 
 #: src/ubuntu_start.py:3265
 msgid "Resolutions reported by Linux"
+msgstr ""
+
+
+#: src/ubuntu_start.py:258
+msgid "Check available file entries"
+msgstr ""
+
+#: src/ubuntu_start.py:258
+msgid ""
+"If you cannot save files even though storage space remains, check the "
+"available file entries in Network and hardware. Some filesystems limit file "
+"entries, often called inodes, separately from bytes. Ask for help before "
+"removing files from system folders."
+msgstr ""
+
+
+#: src/ubuntu_start.py:1611
+msgid "Available file entries"
+msgstr ""
+
+#: src/ubuntu_start.py:1612
+#, python-brace-format
+msgid "{free} of {total} available ({percent}% used)"
 msgstr ""

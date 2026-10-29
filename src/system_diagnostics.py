@@ -1156,10 +1156,26 @@ def read_storage_status(path: str | Path = "/") -> dict[str, int | bool | None]:
     """Return local filesystem capacity and whether it is mounted read-only."""
     usage = shutil.disk_usage(path)
     try:
-        read_only = bool(os.statvfs(path).f_flag & os.ST_RDONLY)
+        filesystem = os.statvfs(path)
+        read_only = bool(filesystem.f_flag & os.ST_RDONLY)
     except OSError:
+        filesystem = None
         read_only = None
-    return {"total": usage.total, "used": usage.used, "free": usage.free, "read_only": read_only}
+    status: dict[str, int | bool | None] = {
+        "total": usage.total, "used": usage.used, "free": usage.free, "read_only": read_only,
+    }
+    if filesystem is not None:
+        total_file_entries = getattr(filesystem, "f_files", 0)
+        available_file_entries = getattr(filesystem, "f_favail", -1)
+        if (
+            isinstance(total_file_entries, int)
+            and isinstance(available_file_entries, int)
+            and total_file_entries > 0
+            and 0 <= available_file_entries <= total_file_entries
+        ):
+            status["file_entries_total"] = total_file_entries
+            status["file_entries_free"] = available_file_entries
+    return status
 
 
 def read_storage_locations(

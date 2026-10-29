@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.38" date="2026-10-30">
+      <description>
+        <p>Show available file entries when the filesystem reports them, helping explain why a computer may not create files despite having free byte space.</p>
+        <p xml:lang="sv">Visa tillgängliga filposter när filsystemet rapporterar dem. Det kan förklara varför datorn inte kan skapa filer trots att det finns ledigt lagringsutrymme.</p>
+      </description>
+    </release>
     <release version="0.3.37" date="2026-10-30">
       <description>
         <p>List unique resolutions reported by Linux for connected displays, while clarifying that the list does not show the active resolution or refresh rate.</p>

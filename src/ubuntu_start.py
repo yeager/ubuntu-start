@@ -255,6 +255,7 @@ SYSTEM_GUIDES = [
     ]),
     (_("Free up disk space safely"), ("overview", "storage"), _("Open storage overview"), [
         (_("Check which filesystem is low"), _("Open Network and hardware and review the available space for the system and home filesystems.")),
+        (_("Check available file entries"), _("If you cannot save files even though storage space remains, check the available file entries in Network and hardware. Some filesystems limit file entries, often called inodes, separately from bytes. Ask for help before removing files from system folders.")),
         (_("Review large personal files"), _("In Files, check Downloads, Videos and other folders you recognize. Sort by size when that option is available.")),
         (_("Remove only files you recognize"), _("Move important files to a separate drive or trusted backup before deleting them. Empty the Trash only after checking its contents.")),
         (_("Leave system files alone"), _("Do not delete files from system folders or paste cleanup commands that use sudo. Ask for help if you are unsure what a file does.")),
@@ -1064,25 +1065,11 @@ class UbuntuStart(Adw.Application):
         storage_locations = read_storage_locations()
         storage_box, storage_rows = self.page(
             _("Storage"),
-            _("Local filesystem capacity. A separate home filesystem is shown when your personal files use a different mounted volume."),
+            _("Local filesystem capacity and, when Linux reports it, available file entries. A filesystem can run out of file entries even while byte space remains. A separate home filesystem is shown when your personal files use a different mounted volume."),
         )
         self.storage_box = storage_box
         self.storage_rows = storage_rows
-        for location, storage in storage_locations.items():
-            title = _("System filesystem") if location == "system" else _("Home folder filesystem")
-            storage_percent = round(storage["used"] / storage["total"] * 100) if storage["total"] else 0
-            self.row(storage_rows, title, _("{free} free of {total} ({percent}% used)").format(
-                free=GLib.format_size(storage["free"]), total=GLib.format_size(storage["total"]), percent=storage_percent,
-            ))
-            if storage_percent >= 95:
-                warning_title = _("System filesystem is almost full") if location == "system" else _("Home folder filesystem is almost full")
-                self.row(storage_rows, warning_title, _("Remove files you no longer need or review large downloads. Ubuntu may need free space for updates. Avoid deleting system files."))
-            if storage.get("read_only") is True:
-                self.row(
-                    storage_rows,
-                    _("Filesystem is mounted read-only"),
-                    _("Ubuntu cannot write to this filesystem right now. If this is unexpected, restart the computer. If it remains read-only, use Ubuntu recovery options or ask a trusted support person before attempting repairs."),
-                )
+        self.add_storage_status_rows(storage_rows, storage_locations)
         box.append(storage_box)
 
         backup_box, _backup_rows = self.page(
@@ -1608,6 +1595,35 @@ class UbuntuStart(Adw.Application):
         self.refresh_usb_status(usb_refresh, usb_status, usb_rows)
         box.append(usb_box)
         return self.add_display_status(box)
+
+    def add_storage_status_rows(self, storage_rows, storage_locations):
+        for location, storage in storage_locations.items():
+            title = _("System filesystem") if location == "system" else _("Home folder filesystem")
+            storage_percent = round(storage["used"] / storage["total"] * 100) if storage["total"] else 0
+            self.row(storage_rows, title, _("{free} free of {total} ({percent}% used)").format(
+                free=GLib.format_size(storage["free"]), total=GLib.format_size(storage["total"]), percent=storage_percent,
+            ))
+            file_total = storage.get("file_entries_total")
+            file_free = storage.get("file_entries_free")
+            if isinstance(file_total, int) and isinstance(file_free, int) and file_total > 0:
+                self.row(
+                    storage_rows,
+                    _("Available file entries"),
+                    _("{free} of {total} available ({percent}% used)").format(
+                        free=locale.format_string("%d", file_free, grouping=True),
+                        total=locale.format_string("%d", file_total, grouping=True),
+                        percent=round((file_total - file_free) / file_total * 100),
+                    ),
+                )
+            if storage_percent >= 95:
+                warning_title = _("System filesystem is almost full") if location == "system" else _("Home folder filesystem is almost full")
+                self.row(storage_rows, warning_title, _("Remove files you no longer need or review large downloads. Ubuntu may need free space for updates. Avoid deleting system files."))
+            if storage.get("read_only") is True:
+                self.row(
+                    storage_rows,
+                    _("Filesystem is mounted read-only"),
+                    _("Ubuntu cannot write to this filesystem right now. If this is unexpected, restart the computer. If it remains read-only, use Ubuntu recovery options or ask a trusted support person before attempting repairs."),
+                )
 
     def refresh_usb_status(self, button, status_label, device_rows, announce=False):
         button.set_sensitive(False)

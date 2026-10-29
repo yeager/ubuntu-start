@@ -1527,6 +1527,28 @@ Inst package-two [2.0] (2.1 repo [amd64])
     def test_reports_writable_filesystem(self, _disk_usage, _statvfs):
         self.assertFalse(read_storage_status("/system")["read_only"])
 
+    @patch(
+        "system_diagnostics.os.statvfs",
+        return_value=SimpleNamespace(f_flag=0, f_files=1000, f_favail=250),
+    )
+    @patch("system_diagnostics.shutil.disk_usage", return_value=SimpleNamespace(total=1000, used=700, free=300))
+    def test_reports_available_file_entries_when_filesystem_exposes_them(self, _disk_usage, _statvfs):
+        result = read_storage_status("/system")
+
+        self.assertEqual(result["file_entries_total"], 1000)
+        self.assertEqual(result["file_entries_free"], 250)
+
+    @patch(
+        "system_diagnostics.os.statvfs",
+        return_value=SimpleNamespace(f_flag=0, f_files=0, f_favail=-1),
+    )
+    @patch("system_diagnostics.shutil.disk_usage", return_value=SimpleNamespace(total=1000, used=700, free=300))
+    def test_omits_unavailable_file_entry_capacity(self, _disk_usage, _statvfs):
+        result = read_storage_status("/system")
+
+        self.assertNotIn("file_entries_total", result)
+        self.assertNotIn("file_entries_free", result)
+
     @patch("system_diagnostics.os.statvfs", side_effect=OSError("unavailable"))
     @patch("system_diagnostics.shutil.disk_usage", return_value=SimpleNamespace(total=1000, used=700, free=300))
     def test_handles_unavailable_mount_flags(self, _disk_usage, _statvfs):
