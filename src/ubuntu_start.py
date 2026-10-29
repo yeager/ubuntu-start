@@ -7,12 +7,13 @@ import platform
 import shutil
 import sys
 import threading
+import time
 import gi
 
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import build_support_report, check_internet_connection, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_network_devices, read_storage_status, run_network_diagnostics
+from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_reboot_required, read_resource_pressure, read_rfkill_status, read_secure_boot_status, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -36,7 +37,7 @@ GUIDES = [
     (_("Battery and charging"), "power", [
         (_("Check the power adapter"), _("Connect the adapter securely at both ends and try a working outlet. Stop using a cable or adapter that is damaged or unusually hot.")),
         (_("Check the charging status"), _("Review the charge level and charging state on the Network and hardware page. If it is not charging, check the power connection and Power Settings.")),
-        (_("Check for battery wear"), _("If the estimated capacity is much lower than the design capacity, consult the laptop manufacturer’s support information about battery service.")),
+        (_("Check for battery wear"), _("Use capacity estimates, reported battery health and cycle count as context, not as a universal replacement threshold. If capacity is much lower than design, consult the laptop manufacturer’s battery service information.")),
     ]),
     (_("Bluetooth"), "bluetooth", [
         (_("Check power and charge"), _("Make sure Bluetooth is enabled and the device has enough charge.")),
@@ -72,6 +73,7 @@ GUIDES = [
     ]),
     (_("Wi-Fi"), "wifi", [
         (_("Check Wi-Fi and airplane mode"), _("Turn airplane mode off and make sure Wi-Fi is enabled in Quick Settings.")),
+        (_("Check for a wireless radio block"), _("Refresh Wireless radio status on the Network and hardware page. A software block may come from airplane mode. A hard block is reported by hardware or firmware and cannot be cleared by an app; check the computer manual before changing settings.")),
         (_("Check the network"), _("See whether another device can connect. If none can, restart the router and check its internet connection.")),
         (_("Reconnect to the network"), _("Forget the network in Wi-Fi Settings, then connect again and carefully enter the password.")),
         (_("If only this computer has trouble"), _("Install available Ubuntu updates. Check the computer or Wi-Fi adapter support information before installing a driver.")),
@@ -81,11 +83,40 @@ GUIDES = [
         (_("Check app permissions"), _("Review camera access in Privacy Settings. A managed work or school computer may restrict access.")),
         (_("Close other camera apps"), _("Quit video calls and other apps that may already be using the camera, then try again.")),
     ]),
+    (_("USB devices"), "hardware", [
+        (_("Check the USB connection"), _("Make sure the device is powered on. Reconnect it directly to the computer if possible, without a hub.")),
+        (_("Refresh the USB device list"), _("Open Network and hardware and refresh Connected USB devices. If the device appears, note its hardware ID and driver.")),
+        (_("Try another port or cable"), _("Use another port or cable. Check whether another device works in the same port.")),
+        (_("Use hardware details when asking for help"), _("The hardware ID and driver can help support identify the device. Do not share a serial number.")),
+    ]),
+    (_("PCI device is missing or not working"), "hardware", [
+        (_("Refresh the PCI device list"), _("Open Network and hardware and refresh PCI devices. The list shows hardware IDs and any kernel driver currently attached.")),
+        (_("Check the driver status"), _("A device with no attached driver may need a driver, but this status alone does not prove a fault. Check Ubuntu’s Additional Drivers tool and the device manufacturer’s Ubuntu support information.")),
+        (_("Keep the hardware ID for support"), _("Share the PCI hardware ID and driver name when asking for help. Do not install drivers from an untrusted source.")),
+    ]),
     (_("Wired network"), "network", [
         (_("Check the Ethernet cable"), _("Connect the cable firmly to the computer and to a router, switch or wall socket. Look for a link light near the port.")),
         (_("Wait for a connection"), _("Ubuntu normally configures a wired connection automatically. Give it a few seconds and check the network menu.")),
         (_("Check Network Settings"), _("Open Network Settings and confirm that the wired connection is enabled.")),
         (_("Try another port or cable"), _("If there is still no link, try a different cable or router port. Ask your network administrator before entering manual IP settings.")),
+    ]),
+    (_("Computer feels slow"), "hardware", [
+        (_("Check memory while it feels slow"), _("Open Network and hardware and refresh Memory use. Compare available RAM and swap while the slowdown is happening.")),
+        (_("Check CPU, memory and storage pressure"), _("Refresh System resource pressure during the slowdown. A higher percentage means tasks spent more time waiting on that resource; the reading is system-wide and does not identify a process.")),
+        (_("Close applications you recognize"), _("Save your work, then close applications and browser tabs you are not using. Avoid stopping unfamiliar system processes.")),
+        (_("Check free storage"), _("Review the system filesystem in Network and hardware. If it is almost full, follow the safe disk cleanup guide.")),
+        (_("Review Ubuntu updates"), _("Check cached update status, then open Software Updater to refresh package information and review any changes.")),
+    ]),
+    (_("A system service is marked failed"), "hardware", [
+        (_("Check whether a feature is affected"), _("A failed service does not always mean something is broken. First check whether a device or feature related to the service is actually not working.")),
+        (_("Read the service name and description"), _("Refresh System service status in systemd and compare the name with the feature that has a problem. The list does not show why the service failed.")),
+        (_("Get help before changing services"), _("Check Ubuntu documentation or ask your system administrator before stopping, restarting or disabling a service. Some failures are temporary or expected.")),
+    ]),
+    (_("Computer gets hot or the fan is loud"), "hardware", [
+        (_("Keep vents clear"), _("Place the computer on a firm surface and keep air vents clear of fabric, dust and other obstructions.")),
+        (_("Check available temperature sensors"), _("Open Network and hardware and refresh Temperature sensor status. Some computers, docks and virtual machines do not expose temperature sensors to Linux.")),
+        (_("Compare readings with device guidance"), _("Sensor labels and normal temperatures vary by model. Check the computer manufacturer’s guidance instead of relying on a universal temperature limit.")),
+        (_("Stop if the computer becomes unusually hot"), _("Save your work and shut down if the computer becomes unusually hot, smells burnt or behaves unpredictably. Contact the manufacturer or support service.")),
     ]),
 ]
 
@@ -96,19 +127,36 @@ SYSTEM_GUIDES = [
         (_("Enter the password"), _("Type the network password when Ubuntu asks, then select Connect. Never share the password in a support request.")),
         (_("Check the connection"), _("Wait for the Wi-Fi icon to settle. If it disconnects, move closer to the router and check the password.")),
     ]),
+    (_("Connect to a VPN"), ("settings", "network"), _("Open Network Settings"), [
+        (_("Get the connection details"), _("Ask your VPN provider or work or school administrator for the connection type and setup details. Never share passwords, private keys or VPN configuration files in a support request.")),
+        (_("Add the VPN in Network Settings"), _("Open Network Settings and look for the VPN section. Choose + if it is available. If your connection type is not listed, ask the provider or administrator which trusted Ubuntu component is required.")),
+        (_("Connect and check the status"), _("Select the saved VPN from the system menu and choose Connect. If it fails, check your internet connection, device clock and setup details. A VPN does not make all online activity anonymous.")),
+    ]),
     (_("Connect with an Ethernet cable"), ("settings", "network"), _("Open Network Settings"), [
         (_("Connect the cable"), _("Plug one end into the computer and the other into a router, switch or active wall socket.")),
         (_("Wait for Ubuntu"), _("A wired connection is usually configured automatically. The network menu shows when it is ready.")),
         (_("Check the connection"), _("Open Network Settings and make sure the Wired switch is on. If there is no link light, try another port or cable.")),
+    ]),
+    (_("Check date and time"), ("settings", "datetime"), _("Open Date & Time Settings"), [
+        (_("Check the time zone"), _("Make sure the selected time zone matches your location. A wrong time zone changes the displayed local time.")),
+        (_("Review automatic time"), _("If automatic date and time is available, turn it on so Ubuntu can keep the system clock synchronized.")),
+        (_("Check the network connection"), _("If the clock is not synchronized, check the internet connection and review Date and Time Settings again.")),
+        (_("Ask before changing a managed computer"), _("Work or school computers may control time settings centrally. Ask the administrator if the options are locked.")),
     ]),
     (_("Add a printer"), ("settings", "printers"), _("Open Printer Settings"), [
         (_("Connect the printer"), _("Turn it on and connect it to the same network as your computer, or connect it with USB.")),
         (_("Add the printer"), _("Open Printers in Settings, select Add Printer and choose the printer Ubuntu finds.")),
         (_("Print a test page"), _("Follow the prompts, then print a test page. Install a model-specific driver only when Ubuntu or the manufacturer recommends it.")),
     ]),
+    (_("Check printer queue"), ("overview", "printer"), _("Open printer status"), [
+        (_("Refresh the local queue status"), _("Open Network and hardware and select Refresh printer status to read queues from the local CUPS service.")),
+        (_("Check a disabled queue"), _("If a queue is disabled or stopped, check the printer for paper, power or connection problems, then review its message in Printer Settings.")),
+        (_("Send a test page when ready"), _("Once the printer and queue are ready, send a test page from Printer Settings.")),
+    ]),
     (_("Pair a Bluetooth device"), ("settings", "bluetooth"), _("Open Bluetooth Settings"), [
         (_("Prepare the device"), _("Charge the device, keep it nearby and follow its instructions to enable pairing mode.")),
         (_("Enable Bluetooth"), _("Open Bluetooth Settings and make sure Bluetooth is switched on. Managed computers may restrict this setting.")),
+        (_("Check the Bluetooth service"), _("Open Network and hardware and refresh Bluetooth status. If the service is not running or has failed, refresh System service status and ask for help before changing service settings.")),
         (_("Select and pair the device"), _("Choose the device from the list and confirm the pairing code on both devices if prompted.")),
         (_("Reconnect if pairing fails"), _("Remove an old pairing, restart Bluetooth on the device and computer, then try again.")),
     ]),
@@ -149,10 +197,25 @@ SYSTEM_GUIDES = [
         (_("Choose and test a flash style"), _("Select the whole screen or focused window if those choices are available. Try a sound alert to check that the flash is noticeable.")),
         (_("Turn off alerts if they distract you"), _("Return to the same section to change the flash style or turn Visual Alerts off.")),
     ]),
+    (_("Free up disk space safely"), ("overview", "storage"), _("Open storage overview"), [
+        (_("Check which filesystem is low"), _("Open Network and hardware and review the available space for the system and home filesystems.")),
+        (_("Review large personal files"), _("In Files, check Downloads, Videos and other folders you recognize. Sort by size when that option is available.")),
+        (_("Remove only files you recognize"), _("Move important files to a separate drive or trusted backup before deleting them. Empty the Trash only after checking its contents.")),
+        (_("Leave system files alone"), _("Do not delete files from system folders or paste cleanup commands that use sudo. Ask for help if you are unsure what a file does.")),
+        (_("Check storage again"), _("Return to the storage overview after cleaning up. If you need space for Ubuntu updates, run Software Updater again when enough space is available.")),
+    ]),
+    (_("Set up backups"), ("external", "https://help.ubuntu.com/stable/ubuntu-help/backup-why.html.en"), _("Open Ubuntu backup help"), [
+        # Keep the guide concise so the action remains visible in the default window.
+
+        (_("Choose what you cannot replace"), _("Focus on personal files that would be difficult to recreate. Use the Backups app if it is available, or copy files you recognize with Files.")),
+        (_("Store the backup separately"), _("Choose a separate external drive or trusted online service with enough free space. If you encrypt it, keep the recovery password safe so you can restore your files.")),
+        (_("Verify and repeat"), _("Check that the first backup finishes and restore or open a non-critical file. Repeat backups regularly, especially after important changes.")),
+    ]),
     (_("Install Ubuntu updates"), ("app", "update-manager"), _("Open Software Updater"), [
+        (_("Check for incomplete package installations"), _("On the Network and hardware page, run the package health check to review the local dpkg audit. It lists entries but does not repair them. Review any proposed changes in Software Updater, or ask your administrator. Do not remove packages based only on this report.")),
         (_("Open Software Updater"), _("Ubuntu checks for updates when Software Updater opens. Select Check if it does not start checking.")),
         (_("Review available updates"), _("Read the update summary. Save your work before installing system updates.")),
-        (_("Install and restart if asked"), _("Select Install Now and enter your password if prompted. Restart only when Ubuntu asks you to.")),
+        (_("Install and restart if asked"), _("Save your work first. Select Install Now and enter your password if prompted. Restart from Ubuntu’s system menu when an update asks you to; this app never restarts the computer.")),
     ]),
     (_("Install a desktop application"), ("app-center", ""), _("Open Ubuntu App Center"), [
         (_("Search for the app name"), _("Enter the app’s exact name in the App Center search box. Check that the result is the app you intended.")),
@@ -183,6 +246,9 @@ class UbuntuStart(Adw.Application):
         win = Adw.ApplicationWindow(application=app, title=_("Ubuntu Start"), default_width=900, default_height=620)
         toolbar = Adw.ToolbarView()
         header = Adw.HeaderBar()
+        about_button = Gtk.Button(label=_("About"))
+        about_button.connect("clicked", lambda *_: self.show_about())
+        header.pack_end(about_button)
         toolbar.add_top_bar(header)
         split = Adw.NavigationSplitView()
         sidebar = Adw.NavigationPage(title=_("Guide"))
@@ -212,22 +278,51 @@ class UbuntuStart(Adw.Application):
         toolbar.set_content(split)
         win.set_content(toolbar)
 
-        pages = [
-            (_("Welcome"), self.make_welcome()),
-            (_("Get started"), self.make_get_started()),
-            (_("Tips and tricks"), self.make_tips_page()),
-            (_("Fix a device"), self.make_device_page()),
-            (_("System guides"), self.make_system_guides()),
-            (_("Network and hardware"), self.make_network_hardware()),
-            (_("Drivers"), self.make_drivers()),
-            (_("Help and support"), self.make_help()),
-        ]
-        for name, page in pages:
-            scroller = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER)
-            scroller.set_child(page)
-            stack.add_titled(scroller, name, name)
-        stack.set_visible_child_name(pages[0][0])
+        first_page_name = _("Welcome")
+        first_page = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER)
+        first_page.set_child(self.make_welcome())
+        stack.add_titled(first_page, first_page_name, first_page_name)
+        stack.set_visible_child_name(first_page_name)
+        key_controller = Gtk.EventControllerKey()
+        key_controller.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
+        key_controller.connect("key-pressed", self.on_key_pressed)
+        win.add_controller(key_controller)
         win.present()
+
+        remaining_pages = [
+            (_("Get started"), self.make_get_started),
+            (_("Tips and tricks"), self.make_tips_page),
+            (_("Fix a device"), self.make_device_page),
+            (_("System guides"), self.make_system_guides),
+            (_("Network and hardware"), self.make_network_hardware),
+            (_("Drivers"), self.make_drivers),
+            (_("Help and support"), self.make_help),
+        ]
+        GLib.idle_add(self.add_next_page, stack, remaining_pages)
+
+    def add_next_page(self, stack, remaining_pages):
+        """Populate one guide page per idle callback after the window is shown."""
+        if not remaining_pages:
+            return GLib.SOURCE_REMOVE
+        name, builder = remaining_pages.pop(0)
+        scroller = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER)
+        scroller.set_child(builder())
+        stack.add_titled(scroller, name, name)
+        if name == _("Fix a device") and getattr(self, "_pending_device_search_focus", False):
+            stack.set_visible_child_name(name)
+            self.device_search.grab_focus()
+            self._pending_device_search_focus = False
+        return GLib.SOURCE_CONTINUE if remaining_pages else GLib.SOURCE_REMOVE
+
+    def on_key_pressed(self, _controller, keyval, _keycode, state):
+        if keyval == Gdk.KEY_f and state & Gdk.ModifierType.CONTROL_MASK:
+            if hasattr(self, "device_search"):
+                self.main_stack.set_visible_child_name(_("Fix a device"))
+                self.device_search.grab_focus()
+            else:
+                self._pending_device_search_focus = True
+            return True
+        return False
 
     def page(self, title, subtitle=None, include_rows=True):
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
@@ -268,6 +363,51 @@ class UbuntuStart(Adw.Application):
             (_("Accessibility"), _("Adjust text size, magnification, screen reader and keyboard access."), ("settings", "universal-access")),
         ]:
             self.row(rows, title, subtitle, _("Open Settings"), lambda t=target: self.open_target(t))
+        accessibility_box, _accessibility_rows = self.page(
+            _("Accessibility status"),
+            _("Read selected GNOME accessibility settings. Ubuntu Start does not change them."),
+            include_rows=False,
+        )
+        self.accessibility_box = accessibility_box
+        accessibility_status = Gtk.Label(label="", xalign=0, wrap=True)
+        accessibility_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        accessibility_settings = Gtk.Button(label=_("Open Accessibility Settings"), halign=Gtk.Align.START)
+        accessibility_settings.connect(
+            "clicked", lambda *_: self.open_target(("settings", "universal-access")),
+        )
+        accessibility_refresh = Gtk.Button(label=_("Refresh accessibility status"), halign=Gtk.Align.START)
+        accessibility_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_accessibility_status(
+                accessibility_refresh, accessibility_status, accessibility_rows, announce=True,
+            ),
+        )
+        accessibility_box.append(accessibility_settings)
+        accessibility_box.append(accessibility_refresh)
+        accessibility_box.append(accessibility_status)
+        accessibility_box.append(accessibility_rows)
+        box.append(accessibility_box)
+        self.refresh_accessibility_status(accessibility_refresh, accessibility_status, accessibility_rows)
+        time_box, _time_rows = self.page(
+            _("Date and time status"),
+            _("Read the local time zone, whether automatic time synchronization is supported and enabled, and whether the clock is synchronized. The app suggests what to check but does not change settings or start synchronization."),
+            include_rows=False,
+        )
+        time_status = Gtk.Label(label="", xalign=0, wrap=True)
+        time_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        time_refresh = Gtk.Button(label=_("Refresh date and time status"), halign=Gtk.Align.START)
+        time_guide_button = Gtk.Button(label=_("Open date and time guide"), halign=Gtk.Align.START)
+        time_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_time_status(time_refresh, time_status, time_rows, announce=True),
+        )
+        time_guide_button.connect("clicked", lambda *_: self.open_time_guide())
+        time_box.append(time_refresh)
+        time_box.append(time_guide_button)
+        time_box.append(time_status)
+        time_box.append(time_rows)
+        box.append(time_box)
+        self.refresh_time_status(time_refresh, time_status, time_rows)
         return box
 
     def open_target(self, target):
@@ -278,8 +418,38 @@ class UbuntuStart(Adw.Application):
             self.open_terminal()
         elif kind == "app-center":
             self.confirm_app_center()
+        elif kind == "external":
+            self.confirm_external_link(
+                value,
+                _("Open Ubuntu help?"),
+                _("This opens Ubuntu Desktop documentation in your browser. The website will receive a normal web request and can see your IP address."),
+            )
+        elif kind == "overview" and value == "storage":
+            self.main_stack.set_visible_child_name(_("Network and hardware"))
+            GLib.timeout_add(50, self.scroll_to_storage_overview)
+        elif kind == "overview" and value == "printer":
+            self.main_stack.set_visible_child_name(_("Network and hardware"))
+            GLib.timeout_add(50, self.scroll_to_printer_status)
         else:
             self.open_app(value)
+
+    def scroll_to_storage_overview(self):
+        scroller = self.main_stack.get_visible_child()
+        if scroller and self.storage_box.get_mapped():
+            found, bounds = self.storage_box.compute_bounds(scroller.get_child())
+            if found:
+                adjustment = scroller.get_vadjustment()
+                adjustment.set_value(bounds.get_y())
+        return GLib.SOURCE_REMOVE
+
+    def scroll_to_printer_status(self):
+        scroller = self.main_stack.get_visible_child()
+        if scroller and self.printer_box.get_mapped():
+            found, bounds = self.printer_box.compute_bounds(scroller.get_child())
+            if found:
+                adjustment = scroller.get_vadjustment()
+                adjustment.set_value(bounds.get_y())
+        return GLib.SOURCE_REMOVE
 
     def confirm_app_center(self):
         dialog = Adw.AlertDialog(
@@ -317,6 +487,8 @@ class UbuntuStart(Adw.Application):
             include_rows=False,
         )
         search = Gtk.SearchEntry(placeholder_text=_("Search all guides and steps"))
+        search.set_tooltip_text(_("Press Ctrl+F to search guides and troubleshooting steps."))
+        self.device_search = search
         search_label = Gtk.Label(label=_("Search all guides and steps"), xalign=0)
         search_label.set_mnemonic_widget(search)
         box.append(search_label)
@@ -324,6 +496,9 @@ class UbuntuStart(Adw.Application):
         browse = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         chooser = Gtk.DropDown.new_from_strings([title for title, _panel, _steps in GUIDES])
         self.device_chooser = chooser
+        chooser_label = Gtk.Label(label=_("Choose a device"), xalign=0)
+        chooser_label.set_mnemonic_widget(chooser)
+        browse.append(chooser_label)
         browse.append(chooser)
         steps_stack = Gtk.Stack(transition_type=Gtk.StackTransitionType.CROSSFADE)
         for index, (_title, _panel, steps) in enumerate(GUIDES):
@@ -373,10 +548,15 @@ class UbuntuStart(Adw.Application):
         open_button = Gtk.Button(label=_("Open related Settings"), halign=Gtk.Align.START)
         browse.append(open_button)
 
-        def update_guide(*_):
+        def update_guide(*_args):
             selected = chooser.get_selected()
             if selected < len(GUIDES):
                 steps_stack.set_visible_child_name(f"guide-{selected}")
+                open_button.set_label(
+                    _("Open hardware overview")
+                    if GUIDES[selected][1] == "hardware"
+                    else _("Open related Settings")
+                )
 
         def update_search(*_args):
             query = search.get_text().strip().casefold()
@@ -401,8 +581,17 @@ class UbuntuStart(Adw.Application):
         chooser.connect("notify::selected", update_guide)
         search.connect("changed", update_search)
         update_guide()
-        open_button.connect("clicked", lambda *_: self.open_app("gnome-control-center", GUIDES[chooser.get_selected()][1]))
+        open_button.connect(
+            "clicked",
+            lambda *_: self.open_device_target(GUIDES[chooser.get_selected()][1]),
+        )
         return box
+
+    def open_device_target(self, target):
+        if target == "hardware":
+            self.main_stack.set_visible_child_name(_("Network and hardware"))
+        else:
+            self.open_app("gnome-control-center", target)
 
     def make_system_guides(self):
         box, _rows = self.page(
@@ -454,18 +643,43 @@ class UbuntuStart(Adw.Application):
 
         network_box, _unused = self.page(
             _("Network status"),
-            _("NetworkManager device states help show whether Ubuntu sees a wired or wireless adapter."),
+            _("NetworkManager device states help show whether Ubuntu sees a wired or wireless adapter. The app also reads the local adapter name, hardware ID and kernel driver when exposed. If the optional iw tool is installed, signal strength and link rates are read from the active Wi-Fi link; the network name is not collected and nearby networks are not scanned. Signal values closer to 0 dBm are usually stronger. Link rates are not internet speed tests."),
             include_rows=False,
         )
         network_status = Gtk.Label(label=_("Network status has not been refreshed yet."), xalign=0, wrap=True)
         network_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
         refresh_button = Gtk.Button(label=_("Refresh network status"), halign=Gtk.Align.START)
-        refresh_button.connect("clicked", lambda *_: self.refresh_network_status(network_status, network_rows))
+        refresh_button.connect("clicked", lambda *_: self.refresh_network_status(network_status, network_rows, announce=True))
         network_box.append(refresh_button)
         network_box.append(network_status)
         network_box.append(network_rows)
         box.append(network_box)
         self.refresh_network_status(network_status, network_rows)
+
+        radio_box, _radio_unused = self.page(
+            _("Wireless radio status"),
+            _("Read local Linux radio block flags for Wi-Fi, Bluetooth and other wireless devices. This does not enable or disable radios."),
+            include_rows=False,
+        )
+        radio_status = Gtk.Label(label=_("Radio status has not been refreshed yet."), xalign=0, wrap=True)
+        radio_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        radio_refresh = Gtk.Button(label=_("Refresh radio status"), halign=Gtk.Align.START)
+        radio_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_rfkill_status(
+                radio_refresh, radio_status, radio_rows, announce=True,
+            ),
+        )
+        radio_guide_button = Gtk.Button(
+            label=_("Open Wi-Fi troubleshooting guide"), halign=Gtk.Align.START,
+        )
+        radio_guide_button.connect("clicked", lambda *_: self.open_wifi_guide())
+        radio_box.append(radio_refresh)
+        radio_box.append(radio_guide_button)
+        radio_box.append(radio_status)
+        radio_box.append(radio_rows)
+        box.append(radio_box)
+        self.refresh_rfkill_status(radio_refresh, radio_status, radio_rows)
 
         bluetooth_box, bluetooth_rows = self.page(
             _("Bluetooth status"),
@@ -474,24 +688,53 @@ class UbuntuStart(Adw.Application):
         bluetooth_status = Adw.ActionRow(title=_("Bluetooth controller"), subtitle=_("Checking status…"))
         bluetooth_rows.append(bluetooth_status)
         bluetooth_refresh = Gtk.Button(label=_("Refresh Bluetooth status"), halign=Gtk.Align.START)
-        bluetooth_refresh.connect("clicked", lambda *_: self.refresh_bluetooth_status(bluetooth_status))
+        bluetooth_refresh.connect("clicked", lambda *_: self.refresh_bluetooth_status(bluetooth_status, announce=True))
+        bluetooth_guide_button = Gtk.Button(label=_("Open Bluetooth pairing guide"), halign=Gtk.Align.START)
+        bluetooth_guide_button.connect("clicked", lambda *_: self.open_bluetooth_guide())
         bluetooth_box.append(bluetooth_refresh)
+        bluetooth_box.append(bluetooth_guide_button)
         box.append(bluetooth_box)
         self.refresh_bluetooth_status(bluetooth_status)
 
         audio_box, audio_rows = self.page(
             _("Audio status"),
-            _("Read the default speaker and microphone volume and mute state. This check does not play sound or change settings."),
+            _("Read the default speaker and microphone names, volume and mute state when available. This check does not play sound or change settings."),
         )
         output_status = Adw.ActionRow(title=_("Speaker output"), subtitle=_("Checking status…"))
         input_status = Adw.ActionRow(title=_("Microphone input"), subtitle=_("Checking status…"))
         audio_rows.append(output_status)
         audio_rows.append(input_status)
         audio_refresh = Gtk.Button(label=_("Refresh audio status"), halign=Gtk.Align.START)
-        audio_refresh.connect("clicked", lambda *_: self.refresh_audio_status(output_status, input_status))
+        audio_refresh.connect("clicked", lambda *_: self.refresh_audio_status(output_status, input_status, announce=True))
+        audio_guide_button = Gtk.Button(
+            label=_("Open sound and microphone guide"), halign=Gtk.Align.START,
+        )
+        audio_guide_button.connect("clicked", lambda *_: self.open_sound_guide())
         audio_box.append(audio_refresh)
+        audio_box.append(audio_guide_button)
         box.append(audio_box)
         self.refresh_audio_status(output_status, input_status)
+
+        printer_box, _printer_rows = self.page(
+            _("Printer queue status"),
+            _("Read printer queues from the local printing service. This does not send a print job or contact a printer directly."),
+            include_rows=False,
+        )
+        self.printer_box = printer_box
+        printer_status = Gtk.Label(label="", xalign=0, wrap=True)
+        printer_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        printer_refresh = Gtk.Button(label=_("Refresh printer status"), halign=Gtk.Align.START)
+        printer_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_printer_status(
+                printer_refresh, printer_status, printer_rows, announce=True,
+            ),
+        )
+        self.add_printer_controls(printer_box, printer_refresh, printer_status)
+
+        printer_box.append(printer_rows)
+        box.append(printer_box)
+        self.refresh_printer_status(printer_refresh, printer_status, printer_rows)
 
         diagnostic_box, _diagnostic_rows = self.page(
             _("Connection quality"),
@@ -518,44 +761,114 @@ class UbuntuStart(Adw.Application):
         internet_box.append(internet_status)
         box.append(internet_box)
 
-        storage = read_storage_status()
-        storage_percent = round(storage["used"] / storage["total"] * 100) if storage["total"] else 0
+        updates_box, _updates_rows = self.page(
+            _("Ubuntu update status"),
+            _("Simulate an upgrade using local APT package lists only and read Ubuntu’s local restart-required marker. This check does not contact a network, refresh package lists, install packages or make system changes."),
+            include_rows=False,
+        )
+        updates_status = Gtk.Label(label="", xalign=0, wrap=True)
+        updates_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        updates_refresh = Gtk.Button(label=_("Check cached update status"), halign=Gtk.Align.START)
+        updates_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_apt_update_status(
+                updates_refresh, updates_status, updates_rows, announce=True,
+            ),
+        )
+        updates_open = Gtk.Button(label=_("Open Software Updater"), halign=Gtk.Align.START)
+        updates_open.connect("clicked", lambda *_: self.open_app("update-manager"))
+        updates_box.append(updates_refresh)
+        updates_box.append(updates_open)
+        updates_box.append(updates_status)
+        updates_box.append(updates_rows)
+        box.append(updates_box)
+        self.refresh_apt_update_status(updates_refresh, updates_status, updates_rows)
+
+        package_box, _package_rows = self.page(
+            _("Package installation health"),
+            _("Check the local dpkg database for interrupted or incomplete package installations. This read-only check does not use the network or change system files. If entries appear, review them in Software Updater or ask your administrator before running repair commands."),
+            include_rows=False,
+        )
+        package_status = Gtk.Label(label=_("Package health has not been checked yet."), xalign=0, wrap=True)
+        package_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        package_refresh = Gtk.Button(label=_("Check package health"), halign=Gtk.Align.START)
+        package_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_package_health(
+                package_refresh, package_status, package_rows, announce=True,
+            ),
+        )
+        package_open = Gtk.Button(label=_("Open Software Updater"), halign=Gtk.Align.START)
+        package_open.connect("clicked", lambda *_: self.open_app("update-manager"))
+        package_box.append(package_refresh)
+        package_box.append(package_open)
+        package_box.append(package_status)
+        package_box.append(package_rows)
+        box.append(package_box)
+
+        storage_locations = read_storage_locations()
         storage_box, storage_rows = self.page(
             _("Storage"),
-            _("Local filesystem capacity. Ubuntu may need free space to install updates and save files."),
+            _("Local filesystem capacity. A separate home filesystem is shown when your personal files use a different mounted volume."),
         )
-        self.row(storage_rows, _("Available space"), _("{free} free of {total} ({percent}% used)").format(
-            free=GLib.format_size(storage["free"]), total=GLib.format_size(storage["total"]), percent=storage_percent,
-        ))
-        if storage_percent >= 95:
-            self.row(storage_rows, _("Storage is almost full"), _("Remove files you no longer need or review large downloads. Avoid deleting system files."))
+        self.storage_box = storage_box
+        self.storage_rows = storage_rows
+        for location, storage in storage_locations.items():
+            title = _("System filesystem") if location == "system" else _("Home folder filesystem")
+            storage_percent = round(storage["used"] / storage["total"] * 100) if storage["total"] else 0
+            self.row(storage_rows, title, _("{free} free of {total} ({percent}% used)").format(
+                free=GLib.format_size(storage["free"]), total=GLib.format_size(storage["total"]), percent=storage_percent,
+            ))
+            if storage_percent >= 95:
+                warning_title = _("System filesystem is almost full") if location == "system" else _("Home folder filesystem is almost full")
+                self.row(storage_rows, warning_title, _("Remove files you no longer need or review large downloads. Ubuntu may need free space for updates. Avoid deleting system files."))
         box.append(storage_box)
 
-        batteries = read_battery_status()
-        battery_box, battery_rows = self.page(
+        battery_box, _battery_rows = self.page(
             _("Battery"),
-            _("Charge level and charging state come from local system information. An estimated capacity compared with the original design is shown only if the battery exposes both values."),
+            _("Charge level, charging state, reported battery health, cycle count and the active power profile are read from local system information when available. An estimated capacity compared with the original design is shown only if the battery exposes both values. Battery health algorithms vary by manufacturer, so reported values are not directly comparable. These readings are informational, not universal service thresholds. The power profile is shown for information and is not changed here."),
+            include_rows=False,
         )
-        battery_states = {
-            "Charging": _("Charging"),
-            "Discharging": _("Discharging"),
-            "Full": _("Full"),
-            "Not charging": _("Not charging"),
-            "Unknown": _("Unknown"),
-        }
-        if batteries:
-            for index, battery in enumerate(batteries, start=1):
-                title = _("Battery {number}").format(number=index)
-                self.row(battery_rows, title, _("Charge: {capacity}% · {status}").format(
-                    capacity=battery["capacity"], status=battery_states.get(battery["status"], battery_states["Unknown"]),
-                ))
-                if "design_capacity_percent" in battery:
-                    self.row(battery_rows, _("Estimated capacity vs. design"), _("{percent}% of original design capacity").format(
-                        percent=battery["design_capacity_percent"],
-                    ))
-        else:
-            self.row(battery_rows, _("No battery information"), _("This computer may not have a battery, or the system does not expose battery data."))
+        battery_refresh = Gtk.Button(label=_("Refresh battery status"), halign=Gtk.Align.START)
+        battery_status_label = Gtk.Label(label="", xalign=0, wrap=True)
+        battery_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        battery_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_battery_status(
+                battery_refresh, battery_status_label, battery_rows, announce=True,
+            ),
+        )
+        battery_guide_button = Gtk.Button(
+            label=_("Open battery and charging guide"), halign=Gtk.Align.START,
+        )
+        battery_guide_button.connect("clicked", lambda *_: self.open_battery_guide())
+        battery_box.append(battery_refresh)
+        battery_box.append(battery_guide_button)
+        battery_box.append(battery_status_label)
+        battery_box.append(battery_rows)
+        self.refresh_battery_status(battery_refresh, battery_status_label, battery_rows)
         box.append(battery_box)
+
+        video_box, _video_rows = self.page(
+            _("Video device status"),
+            _("Read names of video devices reported by Linux. Ubuntu Start does not open a camera or test video or audio."),
+            include_rows=False,
+        )
+        video_status = Gtk.Label(label="", xalign=0, wrap=True)
+        video_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        video_refresh = Gtk.Button(label=_("Refresh video device status"), halign=Gtk.Align.START)
+        video_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_video_status(video_refresh, video_status, video_rows, announce=True),
+        )
+        video_guide_button = Gtk.Button(label=_("Open camera guide"), halign=Gtk.Align.START)
+        video_guide_button.connect("clicked", lambda *_: self.open_camera_guide())
+        video_box.append(video_refresh)
+        video_box.append(video_guide_button)
+        video_box.append(video_status)
+        video_box.append(video_rows)
+        box.append(video_box)
+        self.refresh_video_status(video_refresh, video_status, video_rows)
 
         hardware_box, hardware_rows = self.page(
             _("Hardware overview"),
@@ -563,6 +876,8 @@ class UbuntuStart(Adw.Application):
         )
         hardware = read_hardware_details()
         values = [
+            (_("Operating system"), hardware["operating_system"]),
+            (_("Kernel"), hardware["kernel"]),
             (_("System model"), hardware["system_model"]),
             (_("Processor"), hardware["processor"]),
             (_("Memory"), hardware["memory"]),
@@ -572,7 +887,268 @@ class UbuntuStart(Adw.Application):
         for label, value in values:
             self.row(hardware_rows, label, value or _("Not available"))
         box.append(hardware_box)
-        return box
+
+        pci_box, _pci_rows = self.page(
+            _("PCI devices"),
+            _("This read-only list shows PCI hardware IDs and attached kernel drivers. Device names are matched against an installed local PCI database when available. Bridge devices are omitted; a missing driver is not by itself proof of a problem."),
+            include_rows=False,
+        )
+        pci_status = Gtk.Label(label="", xalign=0, wrap=True)
+        pci_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        pci_refresh = Gtk.Button(label=_("Refresh PCI device list"), halign=Gtk.Align.START)
+        pci_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_pci_status(pci_refresh, pci_status, pci_rows, announce=True),
+        )
+        pci_box.append(pci_refresh)
+        pci_box.append(pci_status)
+        pci_box.append(pci_rows)
+        box.append(pci_box)
+        self.refresh_pci_status(pci_refresh, pci_status, pci_rows)
+
+        memory_box, _memory_rows = self.page(
+            _("Memory use"),
+            _("Read available RAM and swap from Linux. Compare the values while the computer feels slow. If little memory is available, save your work and close applications you recognize and are not using."),
+            include_rows=False,
+        )
+        memory_status = Gtk.Label(label="", xalign=0, wrap=True)
+        memory_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        memory_refresh = Gtk.Button(label=_("Refresh memory status"), halign=Gtk.Align.START)
+        memory_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_memory_status(memory_refresh, memory_status, memory_rows, announce=True),
+        )
+        memory_box.append(memory_refresh)
+        memory_box.append(memory_status)
+        memory_box.append(memory_rows)
+        box.append(memory_box)
+        self.refresh_memory_status(memory_refresh, memory_status, memory_rows)
+
+        pressure_box, _pressure_rows = self.page(
+            _("System resource pressure"),
+            _("Linux reports how often at least one task was waiting for CPU time, memory or storage I/O during the last 10 seconds. These system-wide readings do not identify a process or prove the cause of a slowdown."),
+            include_rows=False,
+        )
+        pressure_status = Gtk.Label(label="", xalign=0, wrap=True)
+        pressure_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        pressure_refresh = Gtk.Button(label=_("Refresh system pressure"), halign=Gtk.Align.START)
+        pressure_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_resource_pressure(
+                pressure_refresh, pressure_status, pressure_rows, announce=True,
+            ),
+        )
+        pressure_box.append(pressure_refresh)
+        pressure_box.append(pressure_status)
+        pressure_box.append(pressure_rows)
+        box.append(pressure_box)
+        self.refresh_resource_pressure(pressure_refresh, pressure_status, pressure_rows)
+
+        services_box, _service_rows = self.page(
+            _("System service status"),
+            _("Lists service units systemd currently marks as failed. A failure can be temporary or expected and does not prove that a feature is broken. The list does not include logs or explain the cause; do not change services based on this status alone."),
+            include_rows=False,
+        )
+        services_status = Gtk.Label(label="", xalign=0, wrap=True)
+        service_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        services_refresh = Gtk.Button(label=_("Refresh system service status"), halign=Gtk.Align.START)
+        services_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_failed_services(
+                services_refresh, services_status, service_rows, announce=True,
+            ),
+        )
+        services_box.append(services_refresh)
+        services_box.append(services_status)
+        services_box.append(service_rows)
+        box.append(services_box)
+        self.refresh_failed_services(services_refresh, services_status, service_rows)
+
+        temperature_box, _temperature_rows = self.page(
+            _("Temperature sensor status"),
+            _("Read temperature values that Linux already exposes. Sensor coverage and normal temperatures vary by model. This check does not stress-test hardware or change fan or power settings."),
+            include_rows=False,
+        )
+        temperature_status = Gtk.Label(label="", xalign=0, wrap=True)
+        temperature_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        temperature_refresh = Gtk.Button(label=_("Refresh temperature status"), halign=Gtk.Align.START)
+        temperature_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_temperature_status(
+                temperature_refresh, temperature_status, temperature_rows, announce=True,
+            ),
+        )
+        temperature_box.append(temperature_refresh)
+        temperature_box.append(temperature_status)
+        temperature_box.append(temperature_rows)
+        box.append(temperature_box)
+        self.refresh_temperature_status(temperature_refresh, temperature_status, temperature_rows)
+
+        usb_box, _usb_rows = self.page(
+            _("Connected USB devices"),
+            _("This local list reads USB device names and bound kernel drivers. It may match vendor and product names from an installed local USB ID database; hardware IDs remain visible for reference. Serial numbers are not read."),
+            include_rows=False,
+        )
+        usb_status = Gtk.Label(label="", xalign=0, wrap=True)
+        usb_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        usb_refresh = Gtk.Button(label=_("Refresh USB device list"), halign=Gtk.Align.START)
+        usb_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_usb_status(usb_refresh, usb_status, usb_rows, announce=True),
+        )
+        usb_box.append(usb_refresh)
+        usb_box.append(usb_status)
+        usb_box.append(usb_rows)
+        self.refresh_usb_status(usb_refresh, usb_status, usb_rows)
+        box.append(usb_box)
+        return self.add_display_status(box)
+
+    def refresh_usb_status(self, button, status_label, device_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Reading USB devices…"))
+
+        def read_status():
+            devices = read_usb_devices()
+            GLib.idle_add(
+                self.show_usb_status, button, status_label, device_rows, devices, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def refresh_pci_status(self, button, status_label, device_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Reading PCI devices…"))
+        while (child := device_rows.get_first_child()) is not None:
+            device_rows.remove(child)
+
+        def read_status():
+            devices = read_pci_devices()
+            GLib.idle_add(
+                self.show_pci_status, button, status_label, device_rows, devices, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_pci_status(self, button, status_label, device_rows, devices, announce=False):
+        button.set_sensitive(True)
+        while (child := device_rows.get_first_child()) is not None:
+            device_rows.remove(child)
+        if devices:
+            for device in devices:
+                name = device["name"] or _("PCI device")
+                title = f"{name} [{device['id']}]"
+                driver = device["driver"]
+                subtitle = (
+                    _("Kernel driver: {driver}").format(driver=driver)
+                    if driver else _("No kernel driver is currently attached.")
+                )
+                self.row(device_rows, title, subtitle)
+            message = (
+                _("PCI device list updated: 1 device found.")
+                if len(devices) == 1
+                else _("PCI device list updated: {count} devices found.").format(count=len(devices))
+            )
+        else:
+            message = _("No PCI devices found")
+            self.row(device_rows, message, _("Linux did not expose any PCI devices to list."))
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
+
+    def refresh_video_status(self, button, status_label, device_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Reading video devices…"))
+        while (child := device_rows.get_first_child()) is not None:
+            device_rows.remove(child)
+
+        def read_status():
+            devices = read_video_devices()
+            GLib.idle_add(self.show_video_status, button, status_label, device_rows, devices, announce)
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_video_status(self, button, status_label, device_rows, devices, announce=False):
+        button.set_sensitive(True)
+        while (child := device_rows.get_first_child()) is not None:
+            device_rows.remove(child)
+        if devices:
+            for device in devices:
+                self.row(device_rows, device, _("Reported by Linux"))
+            if len(devices) == 1:
+                message = _("Video device status updated: 1 device found.")
+            else:
+                message = _("Video device status updated: {count} devices found.").format(count=len(devices))
+        else:
+            message = _("No video devices reported by Linux")
+            self.row(
+                device_rows,
+                message,
+                _("Connect a camera or check its privacy shutter, then refresh. This status does not test the camera."),
+            )
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
+
+    def open_camera_guide(self):
+        self.open_device_guide(_("Camera"))
+
+    def open_device_guide(self, guide_title):
+        guide_index = next(
+            index for index, (title, _target, _steps) in enumerate(GUIDES)
+            if title == guide_title
+        )
+        self.device_search.set_text("")
+        self.device_chooser.set_selected(guide_index)
+        self.main_stack.set_visible_child_name(_("Fix a device"))
+
+    def open_wifi_guide(self):
+        self.open_device_guide(_("Wi-Fi"))
+
+    def open_sound_guide(self):
+        self.open_device_guide(_("Sound and microphones"))
+
+    def open_time_guide(self):
+        guide_index = next(
+            index for index, (title, _target, _action, _steps) in enumerate(SYSTEM_GUIDES)
+            if title == _("Check date and time")
+        )
+        self.system_guide_chooser.set_selected(guide_index)
+        self.main_stack.set_visible_child_name(_("System guides"))
+
+    def show_usb_status(self, button, status_label, device_rows, devices, announce=False):
+        button.set_sensitive(True)
+        while (child := device_rows.get_first_child()) is not None:
+            device_rows.remove(child)
+
+        if not devices:
+            message = _("No external USB devices detected")
+            self.row(
+                device_rows, message,
+                _("Connect a USB device and refresh the list."),
+            )
+        else:
+            summaries = []
+            for device in devices:
+                device_name = device["name"]
+                title = (
+                    f"{device_name} [{device['id']}]" if device_name
+                    else _("USB device ({id})").format(id=device["id"])
+                )
+                drivers = device["drivers"]
+                subtitle = (
+                    _("Kernel driver: {drivers}").format(drivers=", ".join(drivers))
+                    if drivers else _("No kernel driver is currently attached.")
+                )
+                self.row(device_rows, title, subtitle)
+                summaries.append(title)
+            message = _("USB device list updated: {devices}").format(devices="; ".join(summaries))
+
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
 
     def confirm_internet_test(self, button, status_label):
         dialog = Adw.AlertDialog(
@@ -590,8 +1166,12 @@ class UbuntuStart(Adw.Application):
                 status_label.set_text(_("Checking connection to ubuntu.com…"))
 
                 def check():
+                    started = time.monotonic()
                     result = check_internet_connection()
-                    GLib.idle_add(self.show_internet_result, button, status_label, result)
+                    elapsed_ms = round((time.monotonic() - started) * 1000, 1)
+                    GLib.idle_add(
+                        self.show_internet_result, button, status_label, result, elapsed_ms,
+                    )
 
                 threading.Thread(target=check, daemon=True).start()
 
@@ -627,16 +1207,28 @@ class UbuntuStart(Adw.Application):
         self.last_network_diagnostics = result
         lines = []
         if result.get("dns_latency_ms") is not None:
-            lines.append(_("DNS lookup: {ms} ms").format(ms=result["dns_latency_ms"]))
+            lines.append(_("DNS lookup: {ms} ms").format(ms=format_milliseconds(result["dns_latency_ms"])))
         else:
             lines.append(_("DNS lookup failed. Check DNS settings or the network connection."))
         gateway = result.get("gateway")
         if gateway:
             lines.append(_("Gateway: {address}").format(address=gateway))
             if result.get("gateway_latency_ms") is not None:
-                lines.append(_("Gateway response: {ms} ms").format(ms=result["gateway_latency_ms"]))
+                lines.append(_("Gateway response: {ms} ms").format(ms=format_milliseconds(result["gateway_latency_ms"])))
+            elif result.get("gateway_error") == "ping-not-installed":
+                lines.append(_("The ping tool is not installed. Check that the iputils-ping package is installed or ask your administrator."))
+            elif result.get("gateway_error") == "timeout":
+                elapsed = result.get("gateway_test_duration_ms")
+                if elapsed is not None:
+                    lines.append(_("The gateway ping timed out after {ms} ms. Some routers block ping requests.").format(ms=format_milliseconds(elapsed)))
+                else:
+                    lines.append(_("The gateway ping timed out. Some routers block ping requests."))
             else:
-                lines.append(_("Gateway did not answer the ping. Some routers block ping requests."))
+                elapsed = result.get("gateway_test_duration_ms")
+                if elapsed is not None:
+                    lines.append(_("The gateway did not answer the ping after {ms} ms. Some routers block ping requests.").format(ms=format_milliseconds(elapsed)))
+                else:
+                    lines.append(_("Gateway did not answer the ping. Some routers block ping requests."))
             mac = result.get("gateway_mac")
             if mac:
                 lines.append(_("Gateway MAC address: {mac}").format(mac=mac))
@@ -646,9 +1238,11 @@ class UbuntuStart(Adw.Application):
                 lines.append(_("Gateway MAC address is not available in the local neighbor table."))
         else:
             lines.append(_("No default gateway was found."))
+            lines.append(_("Next step: check Wi-Fi or wired connection in Settings. On a managed network, ask the administrator before changing route settings."))
         if result.get("dns_latency_ms") is None:
             lines.append(_("Next step: check that the network is connected and review its DNS settings."))
-        if result.get("gateway") and result.get("gateway_latency_ms") is None:
+        if (result.get("gateway") and result.get("gateway_latency_ms") is None
+                and result.get("gateway_error") != "ping-not-installed"):
             lines.append(_("Next step: check the local connection. Some gateways block ping, so this alone does not prove that the network is down."))
         status_label.set_text("\n".join(lines))
         self.announce_to_screen_reader(status_label, "\n".join(lines))
@@ -663,76 +1257,702 @@ class UbuntuStart(Adw.Application):
         dialog.connect("response", lambda _dialog, response: self.open_uri(uri) if response == "open" else None)
         dialog.present(self.get_active_window())
 
-    def show_internet_result(self, button, status_label, result):
+    def show_internet_result(self, button, status_label, result, elapsed_ms):
         button.set_sensitive(True)
         if result.startswith("reachable:"):
-            message = _("ubuntu.com responded. Internet access is available.")
+            message = _(
+                "ubuntu.com responded in {ms} ms. Internet access is available."
+            ).format(ms=format_milliseconds(elapsed_ms))
         else:
-            message = _("Could not reach ubuntu.com. Check the router, network sign-in page, DNS settings or firewall.")
+            message = _(
+                "Could not reach ubuntu.com after {ms} ms. Check the router, "
+                "network sign-in page, DNS settings or firewall."
+            ).format(ms=format_milliseconds(elapsed_ms))
         status_label.set_text(message)
         self.announce_to_screen_reader(status_label, message)
         return GLib.SOURCE_REMOVE
 
-    def refresh_network_status(self, status_label, device_rows):
+    def refresh_network_status(self, status_label, device_rows, announce=False):
         status_label.set_text(_("Checking NetworkManager…"))
         while (child := device_rows.get_first_child()) is not None:
             device_rows.remove(child)
 
         def read_status():
             devices, error = read_network_devices()
-            GLib.idle_add(self.show_network_status, status_label, device_rows, devices, error)
+            adapter_details = {
+                name: details
+                for name, _device_type, _state in devices
+                if (details := read_network_adapter_details(name)) is not None
+            }
+            interface_ips = {
+                name: details
+                for name, _device_type, state in devices
+                if state in {"connected", "unmanaged"}
+                if (details := read_interface_ip_status(name)) is not None
+            }
+            wifi_details = {
+                name: details
+                for name, device_type, state in devices
+                if device_type == "wifi" and state == "connected"
+                if (details := read_wifi_link_status(name))
+            }
+            GLib.idle_add(
+                self.show_network_status, status_label, device_rows, devices,
+                error, announce, wifi_details, interface_ips, adapter_details,
+            )
 
         threading.Thread(target=read_status, daemon=True).start()
 
-    def refresh_bluetooth_status(self, status_row):
+    def refresh_rfkill_status(self, button, status_label, radio_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking radio block status…"))
+        while (child := radio_rows.get_first_child()) is not None:
+            radio_rows.remove(child)
+
+        def read_status():
+            radios = read_rfkill_status()
+            GLib.idle_add(
+                self.show_rfkill_status, button, status_label, radio_rows, radios, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_rfkill_status(self, button, status_label, radio_rows, radios, announce=False):
+        button.set_sensitive(True)
+        if radios is None:
+            message = _("Radio block status is not available on this computer.")
+        elif not radios:
+            message = _("Linux did not expose any wireless radio block controls.")
+        else:
+            labels = {
+                "wlan": _("Wi-Fi radio"),
+                "bluetooth": _("Bluetooth radio"),
+                "wwan": _("Mobile broadband radio"),
+                "gps": _("GPS radio"),
+                "nfc": _("NFC radio"),
+                "uwb": _("UWB radio"),
+                "wimax": _("WiMAX radio"),
+                "fm": _("FM radio"),
+            }
+            blocked_states = {
+                (False, False): _("Not blocked"),
+                (True, False): _("Blocked in software"),
+                (False, True): _("Blocked by hardware or firmware"),
+                (True, True): _("Blocked in software and by hardware or firmware"),
+            }
+            summaries = []
+            blocked = False
+            for radio in radios:
+                title = labels[radio["type"]]
+                state = blocked_states[(radio["soft_blocked"], radio["hard_blocked"])]
+                if radio["soft_blocked"] or radio["hard_blocked"]:
+                    blocked = True
+                    if radio["type"] == "wlan":
+                        next_step = _("Check the physical Wi-Fi switch or keyboard shortcut; consult the computer manual if it remains blocked.")
+                    elif radio["type"] == "bluetooth":
+                        next_step = _("Check the physical Bluetooth switch or keyboard shortcut; consult the computer manual if it remains blocked.")
+                    else:
+                        next_step = _("Check the computer or device manual for its radio controls.")
+                    state = f"{state} · {next_step}"
+                self.row(radio_rows, title, state)
+                summaries.append(f"{title}: {state}")
+            if blocked:
+                message = _("One or more wireless radios are blocked. Review the details below.")
+            else:
+                message = _("No reported wireless radios are blocked.")
+        status_label.set_text(message)
+        if announce:
+            details = "; ".join(summaries) if radios else message
+            self.announce_to_screen_reader(
+                status_label,
+                _("Wireless radio status updated: {details}").format(details=details),
+            )
+        return GLib.SOURCE_REMOVE
+
+    def refresh_bluetooth_status(self, status_row, announce=False):
         status_row.set_subtitle(_("Checking status…"))
 
         def read_status():
             status = read_bluetooth_status()
-            GLib.idle_add(self.show_bluetooth_status, status_row, status)
+            GLib.idle_add(self.show_bluetooth_status, status_row, status, announce)
 
         threading.Thread(target=read_status, daemon=True).start()
 
-    def show_bluetooth_status(self, status_row, status):
+    def show_bluetooth_status(self, status_row, status, announce=False):
         states = {
             "powered": _("On"),
             "off": _("Off"),
             "no-controller": _("No Bluetooth controller found"),
+            "service-inactive": _("Bluetooth service is not running. Refresh System service status for details."),
+            "service-failed": _("Bluetooth service has failed. Refresh System service status for details."),
             "unknown": _("Power state is unknown"),
             "not-installed": _("Bluetooth command-line tool is not installed"),
             "timeout-or-unavailable": _("Bluetooth controller did not respond in time"),
             "unavailable": _("Could not read Bluetooth controller status"),
         }
-        status_row.set_subtitle(states.get(status, states["unavailable"]))
+        message = states.get(status, states["unavailable"])
+        status_row.set_subtitle(message)
+        if announce:
+            self.announce_to_screen_reader(status_row, f"{status_row.get_title()}: {message}")
         return GLib.SOURCE_REMOVE
 
-    def refresh_audio_status(self, output_row, input_row):
+    def open_bluetooth_guide(self):
+        guide_index = next(
+            index for index, (title, _target, _action, _steps) in enumerate(SYSTEM_GUIDES)
+            if title == _("Pair a Bluetooth device")
+        )
+        self.system_guide_chooser.set_selected(guide_index)
+        self.main_stack.set_visible_child_name(_("System guides"))
+
+    def open_battery_guide(self):
+        self.open_device_guide(_("Battery and charging"))
+
+    def refresh_audio_status(self, output_row, input_row, announce=False):
         output_row.set_subtitle(_("Checking status…"))
         input_row.set_subtitle(_("Checking status…"))
 
         def read_status():
             status = read_audio_status()
-            GLib.idle_add(self.show_audio_status, output_row, input_row, status)
+            GLib.idle_add(self.show_audio_status, output_row, input_row, status, announce)
 
         threading.Thread(target=read_status, daemon=True).start()
 
-    def show_audio_status(self, output_row, input_row, status):
+    def refresh_printer_status(self, button, status_label, printer_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking printer queues…"))
+        while (child := printer_rows.get_first_child()) is not None:
+            printer_rows.remove(child)
+
+        def read_status():
+            printers, error = read_printer_status()
+            GLib.idle_add(
+                self.show_printer_status, button, status_label, printer_rows,
+                printers, error, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def refresh_accessibility_status(self, button, status_label, setting_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking accessibility settings…"))
+        while (child := setting_rows.get_first_child()) is not None:
+            setting_rows.remove(child)
+
+        def read_status():
+            settings, error = read_accessibility_settings()
+            GLib.idle_add(
+                self.show_accessibility_status, button, status_label, setting_rows,
+                settings, error, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def refresh_time_status(self, button, status_label, setting_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking date and time status…"))
+        while (child := setting_rows.get_first_child()) is not None:
+            setting_rows.remove(child)
+
+        def read_status():
+            status, error = read_time_status()
+            GLib.idle_add(self.show_time_status, button, status_label, setting_rows, status, error, announce)
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_time_status(self, button, status_label, setting_rows, status, error, announce=False):
+        button.set_sensitive(True)
+        timezone = status.get("timezone")
+        self.row(setting_rows, _("Time zone"), timezone if isinstance(timezone, str) else _("Not available"))
+        can_ntp = status.get("can_ntp")
+        self.row(
+            setting_rows,
+            _("Automatic time synchronization available"),
+            _("Available") if can_ntp is True
+            else _("Unavailable") if can_ntp is False
+            else _("Not available"),
+        )
+        ntp = status.get("ntp")
+        self.row(
+            setting_rows,
+            _("Automatic time synchronization"),
+            _("On") if ntp is True else _("Off") if ntp is False else _("Not available"),
+        )
+        synchronized = status.get("synchronized")
+        sync_label = (
+            _("Synchronized") if synchronized is True
+            else _("Not synchronized") if synchronized is False
+            else _("Not available")
+        )
+        self.row(setting_rows, _("Clock synchronization"), sync_label)
+        guidance = None
+        if can_ntp is False:
+            guidance = _(
+                "Automatic time synchronization is unavailable on this system. If this is a "
+                "managed computer, ask your administrator how its clock is maintained."
+            )
+        elif ntp is False:
+            guidance = _(
+                "Automatic time synchronization is off. Open Date & Time Settings and turn on "
+                "automatic date and time if the option is available."
+            )
+        elif ntp is True and synchronized is False:
+            guidance = _(
+                "Automatic time synchronization is on, but the clock is not synchronized. Check "
+                "the network connection and Date & Time Settings."
+            )
+        if guidance:
+            self.row(setting_rows, _("Next step"), guidance)
+        errors = {
+            "not-installed": _("The timedatectl tool is not installed."),
+            "timeout": _("The system time service did not respond in time."),
+            "unavailable": _("Could not read the local date and time status."),
+        }
+        message = errors.get(error, _("Local date and time status read. No settings were changed."))
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
+
+    def show_accessibility_status(self, button, status_label, setting_rows, settings, error, announce=False):
+        button.set_sensitive(True)
+        for key, title in (
+            ("screen_reader", _("Screen reader")),
+            ("screen_magnifier", _("Screen magnifier")),
+            ("screen_keyboard", _("On-screen keyboard")),
+            ("high_contrast", _("High contrast")),
+            ("sticky_keys", _("Sticky Keys")),
+            ("slow_keys", _("Slow Keys")),
+            ("bounce_keys", _("Bounce Keys")), ("mouse_keys", _("Mouse Keys")),
+            ("visual_bell", _("Visual sound alerts")),
+        ):
+            value = settings.get(key)
+            state = _("On") if value is True else _("Off") if value is False else _("Not available")
+            self.row(setting_rows, title, state)
+
+        text_scale = settings.get("text_scale")
+        scale_label = _("Not available")
+        if isinstance(text_scale, (int, float)):
+            scale_label = _("{percent}%").format(percent=round(text_scale * 100))
+        self.row(setting_rows, _("Text size"), scale_label)
+
+        cursor_size = settings.get("cursor_size")
+        cursor_label = _("Not available")
+        if isinstance(cursor_size, int):
+            cursor_label = _("{pixels} pixels").format(pixels=cursor_size)
+        self.row(setting_rows, _("Pointer size"), cursor_label)
+
+        errors = {
+            "not-installed": _("GNOME Settings tools are not installed."),
+            "unavailable": _("Could not read GNOME accessibility settings."),
+        }
+        message = errors.get(error, _("GNOME accessibility settings read. No settings were changed."))
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
+
+    def show_printer_status(self, button, status_label, printer_rows, printers, error, announce=False):
+        button.set_sensitive(True)
+        labels = {
+            "idle": _("Ready"),
+            "printing": _("Printing"),
+            "disabled": _("Disabled"),
+            "busy": _("Busy"),
+            "processing": _("Busy"),
+            "stopped": _("Stopped"),
+        }
+        if printers:
+            for name, state, pending_jobs in printers:
+                self.row(printer_rows, name, self.printer_queue_status(state, pending_jobs, labels))
+            message = _("Printer status updated: {count} printer queues found.").format(count=len(printers))
+        else:
+            messages = {
+                "not-installed": _("CUPS printer tools are not installed."),
+                "timeout": _("The local printing service did not respond in time."),
+                "unavailable": _("Could not read printer queues from the local printing service."),
+                "no-printers": _("No printer queues were found in the local printing service."),
+            }
+            message = messages.get(error, messages["unavailable"])
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
+
+    def refresh_battery_status(self, button, status_label, battery_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking battery status…"))
+
+        def read_status():
+            batteries = read_battery_status()
+            power_profile = read_power_profile()
+            GLib.idle_add(
+                self.show_battery_status, button, status_label, battery_rows,
+                batteries, announce, power_profile,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def refresh_apt_update_status(self, button, status_label, update_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking cached package update status…"))
+
+        def read_status():
+            status, error, reboot_required = self.read_update_status()
+            GLib.idle_add(
+                self.show_apt_update_status, button, status_label, update_rows,
+                status, error, reboot_required, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def refresh_package_health(self, button, status_label, package_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking package installation health…"))
+
+        def read_status():
+            packages, error = read_package_health()
+            GLib.idle_add(
+                self.show_package_health, button, status_label, package_rows,
+                packages, error, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_package_health(self, button, status_label, package_rows, packages, error, announce=False):
+        button.set_sensitive(True)
+        while (child := package_rows.get_first_child()) is not None:
+            package_rows.remove(child)
+
+        error_messages = {
+            "not-installed": _("dpkg is not available on this system."),
+            "timeout-or-unavailable": _("The package check could not finish. Try again later."),
+            "unavailable": _("Could not read the local package database."),
+        }
+        if error or packages is None:
+            message = error_messages.get(error, error_messages["unavailable"])
+        elif packages:
+            for package in packages:
+                self.row(
+                    package_rows, package,
+                    _("dpkg reports an incomplete or inconsistent installation."),
+                )
+            message = _("Package check found {count} package entries to review.").format(count=len(packages))
+        else:
+            message = _("dpkg reported no incomplete package installations.")
+
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
+
+    def refresh_memory_status(self, button, status_label, memory_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking memory status…"))
+
+        def read_status():
+            status = read_memory_status()
+            GLib.idle_add(self.show_memory_status, button, status_label, memory_rows, status, announce)
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_memory_status(self, button, status_label, memory_rows, status, announce=False):
+        button.set_sensitive(True)
+        while (child := memory_rows.get_first_child()) is not None:
+            memory_rows.remove(child)
+
+        if not status:
+            message = _("Memory status is not available from this system.")
+        else:
+            used_percent = round(status["used"] / status["total"] * 100)
+            self.row(memory_rows, _("Total RAM"), GLib.format_size(status["total"]))
+            self.row(memory_rows, _("Available RAM"), GLib.format_size(status["available"]))
+            self.row(
+                memory_rows,
+                _("Estimated RAM in use"),
+                _("{size} ({percent}%)").format(
+                    size=GLib.format_size(status["used"]), percent=used_percent,
+                ),
+            )
+            if status["swap_total"]:
+                swap_percent = round(status["swap_used"] / status["swap_total"] * 100)
+                swap_text = _("{used} of {total} ({percent}%)").format(
+                    used=GLib.format_size(status["swap_used"]),
+                    total=GLib.format_size(status["swap_total"]),
+                    percent=swap_percent,
+                )
+            else:
+                swap_text = _("No swap space is configured")
+            self.row(memory_rows, _("Swap in use"), swap_text)
+            message = _("Memory status updated. Available RAM: {available}. Swap: {swap}.").format(
+                available=GLib.format_size(status["available"]),
+                swap=swap_text,
+            )
+
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
+
+    def refresh_resource_pressure(self, button, status_label, pressure_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking system pressure…"))
+
+        def read_status():
+            status = read_resource_pressure()
+            GLib.idle_add(
+                self.show_resource_pressure,
+                button, status_label, pressure_rows, status, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_resource_pressure(self, button, status_label, pressure_rows, status, announce=False):
+        button.set_sensitive(True)
+        while (child := pressure_rows.get_first_child()) is not None:
+            pressure_rows.remove(child)
+
+        resource_labels = {
+            "cpu": _("Tasks waiting on CPU"),
+            "memory": _("Tasks waiting on memory"),
+            "io": _("Tasks waiting on storage I/O"),
+        }
+        if not status:
+            message = _("System resource pressure is not available on this system.")
+        else:
+            details = []
+            for resource, label in resource_labels.items():
+                percentage = status.get(resource, {}).get("some")
+                value = (
+                    _("{percent:.1f}% in the last 10 seconds").format(percent=percentage)
+                    if percentage is not None else _("Not available")
+                )
+                self.row(pressure_rows, label, value)
+                details.append(f"{label}: {value}")
+            message = _("System pressure updated: {details}").format(details="; ".join(details))
+
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
+
+    def refresh_failed_services(self, button, status_label, service_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking system service status…"))
+
+        def read_status():
+            services, error = read_failed_services()
+            GLib.idle_add(
+                self.show_failed_services,
+                button, status_label, service_rows, services, error, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_failed_services(self, button, status_label, service_rows, services, error, announce=False):
+        button.set_sensitive(True)
+        while (child := service_rows.get_first_child()) is not None:
+            service_rows.remove(child)
+
+        error_messages = {
+            "not-installed": _("The system service manager is not available."),
+            "timeout": _("The system service manager did not respond in time."),
+            "unavailable": _("Could not read system service status."),
+        }
+        if error:
+            message = error_messages.get(error, error_messages["unavailable"])
+        elif services:
+            for unit, description in services:
+                self.row(service_rows, unit, description or _("No description available"))
+            message = _("{count} service units are marked as failed.").format(count=len(services))
+        else:
+            message = _("No failed system services are reported.")
+
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
+
+    def refresh_temperature_status(self, button, status_label, temperature_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking temperature sensors…"))
+
+        def read_status():
+            sensors = read_temperature_sensors()
+            GLib.idle_add(
+                self.show_temperature_status,
+                button, status_label, temperature_rows, sensors, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_temperature_status(self, button, status_label, temperature_rows, sensors, announce=False):
+        button.set_sensitive(True)
+        while (child := temperature_rows.get_first_child()) is not None:
+            temperature_rows.remove(child)
+
+        if sensors:
+            for sensor in sensors:
+                temperature = sensor["temperature_c"]
+                value = _("{temperature:.1f} °C").format(temperature=temperature)
+                if "critical_c" in sensor:
+                    value = _("{temperature:.1f} °C · critical threshold {critical:.1f} °C").format(
+                        temperature=temperature, critical=sensor["critical_c"],
+                    )
+                self.row(temperature_rows, sensor["name"], value)
+            message = _("Temperature status updated: {count} sensors found.").format(count=len(sensors))
+        else:
+            message = _("No temperature sensors are exposed by Linux on this system.")
+
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
+
+    def show_apt_update_status(self, button, status_label, update_rows, status, error, reboot_required=None, announce=False):
+        self.reset_update_status(
+            button, update_rows, reboot_required
+        )
+
+        error_messages = {
+            "not-installed": _("APT package tools are not available."),
+            "timeout": _("The local package check took too long. Try again later."),
+            "unavailable": _("Could not read update status from the local package lists."),
+        }
+        if error or not status:
+            message = error_messages.get(error, error_messages["unavailable"])
+        else:
+            self.row(
+                update_rows,
+                _("Packages ready to upgrade"),
+                str(status["upgradeable"]),
+            )
+            self.row(
+                update_rows,
+                _("Packages kept back"),
+                str(status["held_back"]),
+            )
+            last_updated = status.get("last_updated")
+            if last_updated is None:
+                updated_text = _("Not available")
+            else:
+                updated_text = GLib.DateTime.new_from_unix_local(last_updated).format("%x %H:%M")
+            self.row(update_rows, _("Package lists last updated"), updated_text)
+            message = _("Local package update check complete. No packages were changed.")
+
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
+
+    def show_battery_status(self, button, status_label, battery_rows, batteries, announce=False, power_profile="unavailable"):
+        button.set_sensitive(True)
+        while (child := battery_rows.get_first_child()) is not None:
+            battery_rows.remove(child)
+
+        battery_states = {
+            "Charging": _("Charging"),
+            "Discharging": _("Discharging"),
+            "Full": _("Full"),
+            "Not charging": _("Not charging"),
+            "Unknown": _("Unknown"),
+        }
+        profiles = {
+            "power-saver": _("Power saver"),
+            "balanced": _("Balanced"),
+            "performance": _("Performance"),
+        }
+        if power_profile in profiles:
+            self.row(
+                battery_rows,
+                _("Active power profile"),
+                profiles[power_profile],
+            )
+        else:
+            self.row(
+                battery_rows,
+                _("Active power profile"),
+                _("Power profile information is not available on this system."),
+            )
+        if batteries:
+            summaries = []
+            for index, battery in enumerate(batteries, start=1):
+                title = _("Battery {number}").format(number=index)
+                state = battery_states.get(battery["status"], battery_states["Unknown"])
+                charge = _("Charge: {capacity}% · {status}").format(
+                    capacity=battery["capacity"], status=state,
+                )
+                self.row(battery_rows, title, charge)
+                summary_parts = [_("{capacity}% · {status}").format(
+                    capacity=battery["capacity"], status=state,
+                )]
+                if "design_capacity_percent" in battery:
+                    self.row(
+                        battery_rows,
+                        _("Estimated capacity vs. design"),
+                        _("{percent}% of original design capacity").format(
+                            percent=battery["design_capacity_percent"],
+                        ),
+                    )
+                if "cycle_count" in battery:
+                    self.row(
+                        battery_rows,
+                        _("Reported charge cycles"),
+                        str(battery["cycle_count"]),
+                    )
+                    summary_parts.append(_("Charge cycles: {count}").format(
+                        count=battery["cycle_count"],
+                    ))
+                if "state_of_health_percent" in battery:
+                    self.row(
+                        battery_rows,
+                        _("Reported battery health"),
+                        _("{percent}%").format(
+                            percent=battery["state_of_health_percent"],
+                        ),
+                    )
+                    summary_parts.append(_("Battery-reported health: {percent}%").format(
+                        percent=battery["state_of_health_percent"],
+                    ))
+                summaries.append(" · ".join(summary_parts))
+            message = _("Battery status updated: {details}").format(details="; ".join(summaries))
+        else:
+            message = _("No battery information found. This computer may not have a battery, or the system does not expose battery data.")
+            self.row(battery_rows, _("No battery information"), message)
+
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
+
+    def show_audio_status(self, output_row, input_row, status, announce=False):
         error = status.get("error")
         if error == "not-installed":
             unavailable = _("PipeWire and PulseAudio tools are not installed")
         else:
             unavailable = _("No default audio device or volume status is available")
+        announcements = []
         for row, key in ((output_row, "output"), (input_row, "input")):
             reading = status.get(key)
             if not isinstance(reading, tuple):
-                row.set_subtitle(unavailable if error else _("No default device is available"))
+                message = unavailable if error else _("No default device is available")
+                row.set_subtitle(message)
+                announcements.append(f"{row.get_title()}: {message}")
                 continue
             percent, muted = reading
             state = _("Muted") if muted else _("Not muted")
-            row.set_subtitle(_("{percent}% · {state}").format(percent=percent, state=state))
+            name = status.get(f"{key}_name")
+            volume_state = _("{percent}% · {state}").format(percent=percent, state=state)
+            message = f"{name} · {volume_state}" if isinstance(name, str) and name else volume_state
+            row.set_subtitle(message)
+            announcements.append(f"{row.get_title()}: {message}")
+        if announce:
+            self.announce_to_screen_reader(output_row, " ".join(announcements))
         return GLib.SOURCE_REMOVE
 
-    def show_network_status(self, status_label, device_rows, devices, error):
+    def show_network_status(
+        self, status_label, device_rows, devices, error, announce=False,
+        wifi_details=None, interface_ips=None, adapter_details=None,
+    ):
         errors = {
             "not-installed": _("NetworkManager command-line tools are not installed."),
             "timeout": _("NetworkManager did not respond in time. Try refreshing again."),
@@ -741,17 +1961,18 @@ class UbuntuStart(Adw.Application):
         if error:
             message = errors.get(error, errors["unavailable"])
             status_label.set_text(message)
-            self.announce_to_screen_reader(status_label, message)
+            if announce:
+                self.announce_to_screen_reader(status_label, message)
             return GLib.SOURCE_REMOVE
         if not devices:
             message = _("NetworkManager reported no network devices.")
             status_label.set_text(message)
-            self.announce_to_screen_reader(status_label, message)
+            if announce:
+                self.announce_to_screen_reader(status_label, message)
             return GLib.SOURCE_REMOVE
 
         message = _("This is local device status; internet access has not been tested.")
         status_label.set_text(message)
-        self.announce_to_screen_reader(status_label, message)
         device_types = {
             "wifi": _("Wi-Fi"),
             "ethernet": _("Wired"),
@@ -767,17 +1988,115 @@ class UbuntuStart(Adw.Application):
             "unmanaged": _("Not managed by NetworkManager"),
             "unavailable (firmware missing)": _("Unavailable (missing firmware)"),
         }
+        device_announcements = []
         for name, device_type, state in devices:
             title = f"{device_types.get(device_type, device_type)} · {name}"
-            self.row(device_rows, title, states.get(state, state))
+            subtitle = states.get(state, state)
+            adapter = (adapter_details or {}).get(name, {})
+            metrics = (wifi_details or {}).get(name, {})
+            details = []
+            if adapter.get("name"):
+                details.append(adapter["name"])
+            if adapter.get("bus") and adapter.get("id"):
+                details.append(_("Hardware ID: {bus} {id}").format(
+                    bus=adapter["bus"], id=adapter["id"],
+                ))
+            if adapter.get("driver"):
+                details.append(_("Kernel driver: {driver}").format(driver=adapter["driver"]))
+            if "signal_dbm" in metrics:
+                details.append(_("Signal: {dbm} dBm").format(dbm=metrics["signal_dbm"]))
+            if "rx_bitrate_mbps" in metrics:
+                details.append(_("Receive rate: {rate} Mbit/s").format(rate=metrics["rx_bitrate_mbps"]))
+            if "tx_bitrate_mbps" in metrics:
+                details.append(_("Transmit rate: {rate} Mbit/s").format(rate=metrics["tx_bitrate_mbps"]))
+            addresses = (interface_ips or {}).get(name)
+            if addresses is not None:
+                if addresses["ipv4"] and addresses["ipv6"]:
+                    details.append(_("IPv4 and IPv6 addresses assigned"))
+                elif addresses["ipv4"]:
+                    details.append(_("IPv4 address assigned"))
+                elif addresses["ipv6"]:
+                    details.append(_("IPv6 address assigned"))
+                elif addresses["link_local"]:
+                    details.append(_("Only link-local addresses assigned"))
+                else:
+                    details.append(_("No IP address assigned"))
+            if details:
+                subtitle = f"{subtitle} · {' · '.join(details)}"
+            self.row(device_rows, title, subtitle)
+            device_announcements.append(f"{title}: {subtitle}")
+        if announce:
+            announcement = _("Network status updated: {details}").format(
+                details="; ".join(device_announcements),
+            )
+            self.announce_to_screen_reader(status_label, announcement)
         return GLib.SOURCE_REMOVE
 
     def make_drivers(self):
         box, rows = self.page(_("Graphics drivers"), _("Ubuntu can offer compatible drivers for some graphics hardware. Review the available choices in Ubuntu’s Additional Drivers tool before installing anything."))
         self.row(rows, _("Review available drivers"), _("This opens Ubuntu’s driver tool. Read the recommendation and confirm any changes there."), _("Open Drivers"), lambda: self.open_app("software-properties-gtk", "--open-tab=4"))
         self.row(rows, _("Secure Boot"), _("Some drivers need a one-time confirmation during restart when Secure Boot is enabled. Follow Ubuntu’s on-screen instructions."))
+        self.secure_boot_status_row = Adw.ActionRow(
+            title=_("Secure Boot status"), subtitle=_("Not checked yet."),
+        )
+        rows.append(self.secure_boot_status_row)
+        self.secure_boot_refresh_button = Gtk.Button(
+            label=_("Check Secure Boot status"), halign=Gtk.Align.START,
+        )
+        self.secure_boot_refresh_button.connect(
+            "clicked",
+            lambda *_: self.refresh_secure_boot_status(
+                self.secure_boot_refresh_button, self.secure_boot_status_row, announce=True,
+            ),
+        )
+        box.append(self.secure_boot_refresh_button)
+        box.append(Gtk.Label(
+            label=_("This read-only check uses mokutil when available. It does not change firmware settings or enroll keys."),
+            xalign=0, wrap=True, css_classes=["body"],
+        ))
+        self.refresh_secure_boot_status(
+            self.secure_boot_refresh_button, self.secure_boot_status_row,
+        )
+        self.row(
+            rows,
+            _("If the graphics adapter has no name"),
+            _("Adapter names come from a local PCI database. If only a PCI ID is shown, keep that ID and the driver name to identify the hardware. Choose drivers through Ubuntu’s Additional Drivers tool."),
+            _("Open hardware overview"),
+            lambda: self.main_stack.set_visible_child_name(_("Network and hardware")),
+        )
         self.row(rows, _("Need more detail?"), _("Ubuntu’s driver guidance explains the supported installation route."), _("Open Ubuntu help"), lambda: self.open_uri("https://ubuntu.com/desktop/docs/en/latest/how-to/graphics/install-nvidia-drivers/"))
         return box
+
+    def refresh_secure_boot_status(self, button, status_row, announce=False):
+        button.set_sensitive(False)
+        status_row.set_subtitle(_("Checking Secure Boot status…"))
+
+        def read_status():
+            state, error = read_secure_boot_status()
+            GLib.idle_add(
+                self.show_secure_boot_status, button, status_row, state, error, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_secure_boot_status(self, button, status_row, state, error, announce=False):
+        button.set_sensitive(True)
+        messages = {
+            "enabled": _("Enabled. Some third-party drivers may require a one-time key confirmation during restart."),
+            "disabled": _("Disabled. Review Ubuntu’s driver recommendation before installing a driver."),
+            "setup-mode": _("The computer is in firmware Setup Mode. Check the manufacturer’s instructions before changing firmware settings."),
+            "unsupported": _("Secure Boot status is not available in this boot mode."),
+        }
+        errors = {
+            "not-installed": _("mokutil is not installed, so Secure Boot status cannot be read."),
+            "timeout-or-unavailable": _("The Secure Boot status check could not finish. Try again later."),
+            "unavailable": _("Could not read Secure Boot status from firmware."),
+        }
+        message = messages.get(state, errors.get(error, errors["unavailable"]))
+        status_row.set_subtitle(message)
+        if announce:
+            self.announce_to_screen_reader(status_row, _("Secure Boot status: {status}").format(status=message))
+        return GLib.SOURCE_REMOVE
 
     def system_details(self):
         try:
@@ -788,6 +2107,7 @@ class UbuntuStart(Adw.Application):
         desktop = os.environ.get("XDG_CURRENT_DESKTOP", "GNOME").replace(":", ", ")
         hardware = read_hardware_details()
         graphics = "; ".join(hardware["graphics"]) if hardware["graphics"] else _("Not available")
+        storage_locations = read_storage_locations()
         details = [
             (_("Ubuntu version"), os_name),
             (_("Desktop"), desktop),
@@ -798,6 +2118,35 @@ class UbuntuStart(Adw.Application):
             (_("Graphics adapters"), graphics),
             (_("Architecture"), platform.machine()),
         ]
+        usb_devices = hardware.get("usb_devices", [])
+        if usb_devices:
+            usb_summaries = []
+            for device in usb_devices:
+                name = device["name"] or _("Unknown USB device")
+                drivers = ", ".join(device["drivers"]) or _("no driver attached")
+                usb_summaries.append(
+                    _("{name} [{id}] (driver: {drivers})").format(
+                        name=name, id=device["id"], drivers=drivers,
+                    )
+                )
+            details.append((_("Connected USB devices"), "; ".join(usb_summaries)))
+        pci_devices = hardware.get("pci_devices", [])
+        if pci_devices:
+            pci_summaries = []
+            for device in pci_devices:
+                name = device["name"] or _("PCI device")
+                driver = device["driver"] or _("No kernel driver is currently attached.")
+                pci_summaries.append(f"{name} [{device['id']}] ({driver})")
+            details.append((_("PCI devices"), "; ".join(pci_summaries)))
+        for location, storage in storage_locations.items():
+            label = _("System filesystem") if location == "system" else _("Home folder filesystem")
+            percent = round(storage["used"] / storage["total"] * 100) if storage["total"] else 0
+            value = _("{free} free of {total} ({percent}% used)").format(
+                free=GLib.format_size(storage["free"]),
+                total=GLib.format_size(storage["total"]),
+                percent=percent,
+            )
+            details.append((label, value))
         return details
 
     def make_help(self):
@@ -881,6 +2230,20 @@ class UbuntuStart(Adw.Application):
                 widget, message, Gtk.AccessibleAnnouncementPriority.MEDIUM,
             )
 
+    def show_about(self):
+        about = Adw.AboutDialog(
+            application_name=_("Ubuntu Start"),
+            application_icon=APP_ID,
+            developer_name="Daniel Nylander",
+            developers=["Daniel Nylander"],
+            issue_url="https://github.com/yeager/ubuntu-start/issues",
+            license_type=Gtk.License.GPL_3_0_ONLY,
+            comments=_("An Ubuntu Desktop guide for first-run setup and device troubleshooting."),
+        )
+        about.add_link(_("Daniel Nylander's website"), "https://www.danielnylander.se")
+        about.add_link(_("GitHub repository"), "https://github.com/yeager/ubuntu-start")
+        about.present(self.get_active_window())
+
     def review_support_report(self, status_label):
         report = build_support_report(self.system_details(), getattr(self, "last_network_diagnostics", None))
         window = Adw.Window(
@@ -956,6 +2319,172 @@ class UbuntuStart(Adw.Application):
         dialog = Adw.AlertDialog(heading=_("Could not open the requested tool"), body=detail)
         dialog.add_response("close", _("Close"))
         dialog.present(self.get_active_window())
+
+    def add_display_status(self, parent):
+        display_box, _display_rows = self.page(
+            _("Display connection status"),
+            _("Read connection and active states reported for display connectors by Linux. The check does not read monitor identifiers or change display settings. Some graphics drivers and virtual machines expose limited connector data."),
+            include_rows=False,
+        )
+        display_status = Gtk.Label(label="", xalign=0, wrap=True)
+        display_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        display_refresh = Gtk.Button(label=_("Refresh display status"), halign=Gtk.Align.START)
+        display_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_display_status(display_refresh, display_status, display_rows, announce=True),
+        )
+        display_guide_button = Gtk.Button(label=_("Open external display guide"), halign=Gtk.Align.START)
+        display_guide_button.connect("clicked", lambda *_: self.open_display_guide())
+        display_box.append(display_refresh)
+        display_box.append(display_guide_button)
+        display_box.append(display_status)
+        display_box.append(display_rows)
+        parent.append(display_box)
+        self.refresh_display_status(display_refresh, display_status, display_rows)
+        return parent
+
+    def refresh_display_status(self, button, status_label, display_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Reading display connector status…"))
+        while (child := display_rows.get_first_child()) is not None:
+            display_rows.remove(child)
+
+        def read_status():
+            connectors = read_display_connectors()
+            GLib.idle_add(
+                self.show_display_status, button, status_label, display_rows, connectors, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_display_status(self, button, status_label, display_rows, connectors, announce=False):
+        button.set_sensitive(True)
+        while (child := display_rows.get_first_child()) is not None:
+            display_rows.remove(child)
+        connection_states = {
+            "connected": _("Connected"),
+            "disconnected": _("Disconnected"),
+            "unknown": _("Unknown"),
+        }
+        enabled_states = {
+            "enabled": _("Active"),
+            "disabled": _("Inactive"),
+            "unknown": _("Unknown"),
+        }
+        if connectors:
+            details = []
+            for connector in connectors:
+                connection = connection_states[connector["status"]]
+                enabled = enabled_states.get(connector["enabled"])
+                subtitle = f"{connection} · {enabled}" if enabled else connection
+                title = _("Display connector {name}").format(name=connector["name"])
+                self.row(display_rows, title, subtitle)
+                details.append(f"{title}: {subtitle}")
+            if len(connectors) == 1:
+                message = _("Display status updated: 1 connector found.")
+            else:
+                message = _("Display status updated: {count} connectors found.").format(
+                    count=len(connectors),
+                )
+        else:
+            message = _("No display connector status reported by Linux.")
+            self.row(
+                display_rows,
+                message,
+                _("A graphics driver or virtual machine may not expose connector data. Open Display Settings to check whether a monitor is detected."),
+            )
+            details = [message]
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, f"{message} {'; '.join(details)}")
+        return GLib.SOURCE_REMOVE
+
+    def open_display_guide(self):
+        display_index = next(
+            index for index, (title, _target, _steps) in enumerate(GUIDES)
+            if title == _("External display or projector")
+        )
+        self.device_search.set_text("")
+        self.device_chooser.set_selected(display_index)
+        self.main_stack.set_visible_child_name(_("Fix a device"))
+
+    def add_printer_controls(self, parent, refresh_button, status_label):
+        parent.append(refresh_button)
+        guide_button = Gtk.Button(label=_("Open print queue guide"), halign=Gtk.Align.START)
+        guide_button.connect("clicked", lambda *_: self.open_printer_guide())
+        parent.append(guide_button)
+        parent.append(status_label)
+
+    def read_update_status(self):
+        status, error = read_apt_update_status()
+        return status, error, read_reboot_required()
+
+    def reset_update_status(self, button, update_rows, reboot_required):
+        button.set_sensitive(True)
+        while (child := update_rows.get_first_child()) is not None:
+            update_rows.remove(child)
+        reboot_state = (
+            _("Required") if reboot_required is True
+            else _("Not required") if reboot_required is False
+            else _("Not available")
+        )
+        self.row(update_rows, _("Restart required"), reboot_state)
+
+    def printer_queue_status(self, state, pending_jobs, labels):
+        status = labels.get(state, _("Status unknown"))
+        if pending_jobs is None:
+            unavailable = _("Unfinished job count unavailable")
+            return f"{status} · {unavailable}"
+        job_count = _n(
+            "{count} unfinished print job",
+            "{count} unfinished print jobs",
+            pending_jobs,
+        ).format(count=pending_jobs)
+        return f"{status} · {job_count}"
+
+    def open_printer_guide(self):
+        printer_index = next(
+            index for index, (title, _target, _steps) in enumerate(GUIDES)
+            if title == _("Print job is stuck or the queue is paused")
+        )
+        self.device_search.set_text("")
+        self.device_chooser.set_selected(printer_index)
+        self.main_stack.set_visible_child_name(_("Fix a device"))
+
+
+GUIDES.extend([
+    (_("Print job is stuck or the queue is paused"), "printers", [
+        (_("Check the printer itself"), _("Check its display or status lights, power, paper, open covers, and ink or toner before sending the job again.")),
+        (_("Refresh the local queue"), _("Open Network and hardware and refresh Printer queue status. The queue state and unfinished-job count can show whether work is waiting or the queue is paused.")),
+        (_("Review the queue in Printer Settings"), _("Open Printer Settings and inspect the queue. Cancel only a job you own and are ready to discard. On a shared printer, ask its owner or administrator before changing other jobs.")),
+        (_("Send one test page"), _("After fixing the cause, send one test page. Avoid resending the same document repeatedly if it does not print.")),
+    ]),
+    (_("Wi-Fi is slow or keeps disconnecting"), "wifi", [
+        (_("Compare the connection near the router"), _("Move closer to the router and try the same task again. If it works better nearby, distance or obstacles may be weakening the signal.")),
+        (_("Check the active Wi-Fi link"), _("Refresh Network status on the Network and hardware page. When available, signal values closer to 0 dBm are stronger. Receive and transmit rates describe the Wi-Fi link, not your measured internet speed.")),
+        (_("Compare another device or service"), _("Try another device on the same Wi-Fi and another app or website. If several devices have trouble, check the router or ask your internet provider. If only this computer is affected, check its adapter and Ubuntu updates.")),
+        (_("Look for nearby channel overlap"), _("The WiFi Analyzer recommendation on the Network and hardware page can help you review nearby signal levels and channel use. It opens an external project page after confirmation; ask the network owner before changing router settings.")),
+        (_("Keep private details out of support requests"), _("Share the adapter model, hardware ID and driver if you need help. Do not share the Wi-Fi password or private network details.")),
+    ]),
+])
+
+SYSTEM_GUIDES.append((_("Use Mouse Keys"), ("settings", "universal-access"), _("Open Accessibility Settings"), [
+    (_("Open Pointing and Clicking"), _("In Accessibility Settings, open the Pointing and Clicking section.")),
+    (_("Turn on Mouse Keys"), _("Mouse Keys lets you control the pointer with the numeric keypad. Turn Num Lock off to use the keypad for pointer movement.")),
+    (_("Test it and turn it off if needed"), _("Try moving the pointer and clicking a simple target. Return to Pointing and Clicking to turn Mouse Keys off when you are finished.")),
+]))
+
+
+def format_milliseconds(value: int | float) -> str:
+    """Format a latency value with the active locale's decimal separator."""
+    value = float(value)
+    precision = 0 if value.is_integer() else 1
+    formatted = f"{value:.{precision}f}"
+    decimal_point = locale.localeconv().get("decimal_point") or "."
+    return formatted.replace(".", decimal_point, 1)
+
+
+_n = gettext.ngettext
 
 
 def main():

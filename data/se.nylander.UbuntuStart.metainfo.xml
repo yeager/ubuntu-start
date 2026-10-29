@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.2" date="2026-10-29">
+      <description>
+        <p>Add read-only status for wireless link quality, accessibility, audio, displays, printers, storage, battery, memory, temperature and system services. Expand searchable troubleshooting guides and improve keyboard navigation and assistive-technology support.</p>
+        <p xml:lang="sv">Lägg till skrivskyddade statuskontroller för wifi, hjälpmedel, ljud, skärmar, skrivare, lagring, batteri, minne, temperatur och systemtjänster. Utöka de sökbara felsökningsguiderna och förbättra tangentbordsnavigering och stöd för hjälpmedel.</p>
+      </description>
+    </release>
     <release version="0.3.1" date="2026-10-28">
       <description>
         <p>Provide an installable Debian package and improve the touchpad troubleshooting text so it displays correctly in GTK.</p>
