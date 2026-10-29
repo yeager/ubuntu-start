@@ -47,6 +47,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contributor guidance and the maintain
 - System details also show whether the current session uses Wayland, X11 or a text console when Ubuntu exposes that information. This helps when reporting display and input issues; unknown session data is shown as unavailable.
 - A read-only temperature check shows values and critical limits from Linux thermal and hardware-monitor sensors when available. A searchable guide covers ventilation, interpreting model-specific limits and when to shut down and seek support; the app does not run stress tests or change fan settings.
 - A local Ubuntu update check simulates `apt-get upgrade` against cached package lists and reads Ubuntu's local reboot-required marker. It reports packages ready to upgrade, packages held back, when the lists were last refreshed and whether Ubuntu has marked that a restart is required, then lets the user open Software Updater. It does not contact a network, refresh lists, install anything or restart the computer.
+- A searchable release-upgrade guide explains LTS and interim support periods, backup and disk-space preparation, supported sequential upgrade paths and why an upgrade prompt may not be available yet. The lifecycle and upgrade documentation links open only after confirmation.
 - A beginner-friendly Terminal guide explains the prompt, command output and errors, `pwd`, `ls`, `cd`, paths with spaces, Tab completion, command history, `--help`, `man`, safe copy and paste, password prompts, commands that take time and safe ways to stop a command.
 - Optional connection diagnostics report DNS lookup and gateway ping latency in milliseconds, plus the gateway MAC address and a local OUI vendor match. The test asks before running; it sends one DNS lookup to the configured resolver and one ping to the local gateway. If `ping` is missing, Ubuntu Start reports that the gateway test could not run instead of treating the gateway as unreachable.
 - A read-only wireless radio check distinguishes software blocks, such as airplane mode, from hard blocks reported by hardware or firmware when Linux exposes those flags. It does not toggle radios and provides a direct link to the Wi-Fi guide.
@@ -77,7 +78,7 @@ meson compile -C build
 sudo meson install -C build
 ```
 
-To build an installable Debian package after installing the dependencies, run `scripts/build-deb.sh`. It creates `build/packages/ubuntu-start_0.3.10-1_all.deb`. Install it with `sudo apt install ./build/packages/ubuntu-start_0.3.10-1_all.deb`; APT resolves the declared GTK and Python runtime dependencies.
+To build an installable Debian package after installing the dependencies, run `scripts/build-deb.sh`. It creates `build/packages/ubuntu-start_0.3.11-1_all.deb`. Install it with `sudo apt install ./build/packages/ubuntu-start_0.3.11-1_all.deb`; APT resolves the declared GTK and Python runtime dependencies.
 
 The wheel and source distribution are published on [PyPI](https://pypi.org/project/ubuntu-start/). Install the GTK platform dependencies with APT first, then install the package in an isolated environment that can access system PyGObject bindings:
 

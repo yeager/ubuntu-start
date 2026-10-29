@@ -253,6 +253,18 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.assertTrue(matches)
         self.assertTrue(all(match[2] == "Install Ubuntu updates" for match in matches))
 
+    def test_release_upgrade_guidance_is_searchable(self):
+        entries = [
+            ("system", index, guide_title, step_title, description)
+            for index, (guide_title, _target, _action, steps) in enumerate(SYSTEM_GUIDES)
+            for step_title, description in steps
+        ]
+
+        matches = find_guide_matches("LTS interim support upgrade backup disk space", entries)
+
+        self.assertTrue(matches)
+        self.assertTrue(all(match[2] == "Plan an Ubuntu version upgrade" for match in matches))
+
     def test_mouse_keys_accessibility_help_is_searchable(self):
         entries = [
             ("system", index, guide_title, step_title, description)
@@ -1290,6 +1302,19 @@ class SystemGuideTests(unittest.TestCase):
 
         app.confirm_external_link.assert_called_once_with(
             "https://help.ubuntu.com/stable/ubuntu-help/backup-why.html.en",
+            "Open Ubuntu help?",
+            "This opens Ubuntu Desktop documentation in your browser. The website will receive a normal web request and can see your IP address.",
+        )
+        app.open_uri.assert_not_called()
+
+    def test_release_upgrade_guide_requires_confirmation_before_opening_documentation(self):
+        app = Mock()
+        guide = next(guide for guide in SYSTEM_GUIDES if guide[0] == "Plan an Ubuntu version upgrade")
+
+        UbuntuStart.open_target(app, guide[1])
+
+        app.confirm_external_link.assert_called_once_with(
+            "https://ubuntu.com/desktop/docs/en/latest/how-to/upgrade-ubuntu-desktop/",
             "Open Ubuntu help?",
             "This opens Ubuntu Desktop documentation in your browser. The website will receive a normal web request and can see your IP address.",
         )

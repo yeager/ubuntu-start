@@ -232,6 +232,13 @@ SYSTEM_GUIDES = [
         (_("Review available updates"), _("Read the update summary. Save your work before installing system updates.")),
         (_("Install and restart if asked"), _("Save your work first. Select Install Now and enter your password if prompted. Restart from Ubuntu’s system menu when an update asks you to; this app never restarts the computer.")),
     ]),
+    (_("Plan an Ubuntu version upgrade"), ("external", "https://ubuntu.com/desktop/docs/en/latest/how-to/upgrade-ubuntu-desktop/"), _("Open Ubuntu’s upgrade guide"), [
+        (_("Find your current Ubuntu version"), _("Open Settings and choose System, then About. On older Ubuntu releases, version details may be under Details. You can also see the version in Ubuntu Start’s system details.")),
+        (_("Check the support period"), _("LTS releases receive five years of standard security maintenance. Interim releases are supported for nine months. Ubuntu Pro can extend security coverage for eligible LTS systems. Check the official release lifecycle for your version.")),
+        (_("Prepare before upgrading"), _("Back up important files, connect a laptop to power and make sure several gigabytes of disk space are available. Install current updates and restart if Ubuntu asks.")),
+        (_("Follow Ubuntu’s supported upgrade path"), _("Open Software Updater and follow its release upgrade prompt. Read the release notes and review each prompt. Ubuntu supports upgrades between consecutive LTS releases or consecutive interim releases; an older system may need more than one upgrade.")),
+        (_("If no upgrade is offered"), _("An upgrade may not be offered immediately. LTS upgrades can wait for the first point release, and interim upgrades may appear several days after release. Check the official guide or ask your administrator on a managed computer. Do not force a development release.")),
+    ]),
     (_("Install a desktop application"), ("app-center", ""), _("Open Ubuntu App Center"), [
         (_("Search for the app name"), _("Enter the app’s exact name in the App Center search box. Check that the result is the app you intended.")),
         (_("Review the publisher and source"), _("Check who publishes the app, where it comes from and which permissions it requests. Follow your organization’s software policy on managed computers.")),
@@ -2731,6 +2738,11 @@ class UbuntuStart(Adw.Application):
             _("Find trusted instructions and prepare useful details when you ask others for help."),
         )
         self.row(rows, _("Ubuntu Desktop guide"), _("Official help for settings, accessibility, networks and common tasks."), _("Open guide"), lambda: self.open_uri("https://help.ubuntu.com/stable/ubuntu-help/"))
+        self.row(rows, _("Ubuntu release lifecycle"), _("Check standard support periods for LTS and interim releases."), _("View support periods"), lambda: self.confirm_external_link(
+            "https://ubuntu.com/about/release-cycle",
+            _("Open Ubuntu release information?"),
+            _("This opens Ubuntu’s official release lifecycle page in your browser. The website receives a normal web request and can see your IP address."),
+        ))
         self.row(rows, _("Ask Ubuntu"), _("Search community answers or ask a focused question about Ubuntu."), _("Open Ask Ubuntu"), lambda: self.open_uri("https://askubuntu.com/"))
         self.row(rows, _("Ubuntu community forum"), _("Get help from Ubuntu users and community members."), _("Open forum"), lambda: self.open_uri("https://discourse.ubuntu.com/c/support-and-help/306"))
 
