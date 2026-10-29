@@ -805,7 +805,12 @@ class UbuntuStart(Adw.Application):
                 battery_refresh, battery_status_label, battery_rows, announce=True,
             ),
         )
+        battery_guide_button = Gtk.Button(
+            label=_("Open battery and charging guide"), halign=Gtk.Align.START,
+        )
+        battery_guide_button.connect("clicked", lambda *_: self.open_battery_guide())
         battery_box.append(battery_refresh)
+        battery_box.append(battery_guide_button)
         battery_box.append(battery_status_label)
         battery_box.append(battery_rows)
         self.refresh_battery_status(battery_refresh, battery_status_label, battery_rows)
@@ -1356,6 +1361,15 @@ class UbuntuStart(Adw.Application):
         )
         self.system_guide_chooser.set_selected(guide_index)
         self.main_stack.set_visible_child_name(_("System guides"))
+
+    def open_battery_guide(self):
+        guide_index = next(
+            index for index, (title, _target, _steps) in enumerate(GUIDES)
+            if title == _("Battery and charging")
+        )
+        self.device_search.set_text("")
+        self.device_chooser.set_selected(guide_index)
+        self.main_stack.set_visible_child_name(_("Fix a device"))
 
     def refresh_audio_status(self, output_row, input_row, announce=False):
         output_row.set_subtitle(_("Checking status…"))

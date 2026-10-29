@@ -382,6 +382,21 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.app.system_guide_chooser.set_selected.assert_called_once_with(expected_index)
         self.app.main_stack.set_visible_child_name.assert_called_once_with("System guides")
 
+    def test_open_battery_guide_selects_charging_instructions(self):
+        self.app.device_search = Mock()
+        self.app.device_chooser = Mock()
+        self.app.main_stack = Mock()
+
+        UbuntuStart.open_battery_guide(self.app)
+
+        expected_index = next(
+            index for index, (title, _target, _steps) in enumerate(GUIDES)
+            if title == "Battery and charging"
+        )
+        self.app.device_search.set_text.assert_called_once_with("")
+        self.app.device_chooser.set_selected.assert_called_once_with(expected_index)
+        self.app.main_stack.set_visible_child_name.assert_called_once_with("Fix a device")
+
     def test_unrelated_key_is_not_consumed(self):
         self.app.main_stack = Mock()
         self.app.device_search = Mock()
