@@ -26,6 +26,7 @@ EXPECTED_PAGES = {
     "Drivers",
     "Help and support",
 }
+BUTTON_ROLES = {"button", "push button"}
 
 
 def accessible_tree(
@@ -106,7 +107,10 @@ def main() -> int:
         missing = sorted(page for page in EXPECTED_PAGES if ("list item", page) not in names_and_roles)
         if not missing:
             about_button = next(
-                (node for role, name, node in entries if (role, name) == ("button", "About")),
+                (
+                    node for role, name, node in entries
+                    if role in BUTTON_ROLES and name == "About"
+                ),
                 None,
             )
             sidebar = next(
