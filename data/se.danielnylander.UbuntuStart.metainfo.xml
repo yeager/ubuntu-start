@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.26" date="2026-10-29">
+      <description>
+        <p>Strengthen startup-chain accessibility coverage with screen-reader announcement tests and an AT-SPI check for the inspection control.</p>
+        <p xml:lang="sv">Förbättra tillgänglighetstesterna för startkedjan med tester av skärmläsarannonsering och en AT-SPI-kontroll av knappen.</p>
+      </description>
+    </release>
     <release version="0.3.25" date="2026-10-29">
       <description>
         <p>Add a read-only view of systemd's dependency chain to graphical.target, with guidance on interpreting the result and reviewing service names before sharing.</p>

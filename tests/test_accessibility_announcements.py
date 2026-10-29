@@ -1421,6 +1421,46 @@ class DriverGuideTests(unittest.TestCase):
 
 
 class SystemGuideTests(unittest.TestCase):
+    def test_startup_chain_result_is_shown_and_announced(self):
+        app = Mock()
+        button = Mock()
+        status = Mock()
+        chain_label = Mock()
+        chain = "graphical.target @4.2s\n└─display-manager.service @3.1s +1.1s"
+
+        result = UbuntuStart.show_startup_chain(
+            app, button, status, chain_label, chain, None, announce=True,
+        )
+
+        message = (
+            "Systemd's critical chain to graphical.target is shown. It is one "
+            "dependency path and does not prove a unit is faulty."
+        )
+        button.set_sensitive.assert_called_once_with(True)
+        chain_label.set_text.assert_called_once_with(chain)
+        chain_label.set_visible.assert_called_once_with(True)
+        status.set_text.assert_called_once_with(message)
+        app.announce_to_screen_reader.assert_called_once_with(status, message)
+        self.assertEqual(result, GLib.SOURCE_REMOVE)
+
+    def test_startup_chain_error_is_announced_without_showing_output(self):
+        app = Mock()
+        button = Mock()
+        status = Mock()
+        chain_label = Mock()
+
+        result = UbuntuStart.show_startup_chain(
+            app, button, status, chain_label, None, "unavailable", announce=True,
+        )
+
+        message = "Could not read the graphical startup chain."
+        button.set_sensitive.assert_called_once_with(True)
+        chain_label.set_text.assert_not_called()
+        chain_label.set_visible.assert_not_called()
+        status.set_text.assert_called_once_with(message)
+        app.announce_to_screen_reader.assert_called_once_with(status, message)
+        self.assertEqual(result, GLib.SOURCE_REMOVE)
+
     def test_startup_time_guide_explains_scope_and_is_searchable(self):
         guide = next(
             guide for guide in SYSTEM_GUIDES

@@ -643,6 +643,7 @@ def main() -> int:
                         "Open Wi-Fi troubleshooting guide", "Open sound and microphone guide",
                         "Open Sound Settings", "Open Bluetooth audio guide",
                         "Check startup time", "Open startup time guide",
+                        "Inspect graphical startup chain",
                         "Refresh display status", "Open external display guide",
                         "Check backup app", "Open Backups", "Open Ubuntu App Center",
                     ):
@@ -736,7 +737,7 @@ def main() -> int:
                 )
                 if search_entry and search_entry.get_state_set().contains(Atspi.StateType.FOCUSED):
                     print(
-                        "AT-SPI verified guide names, About, Mouse Keys, Accessibility Settings, USB, PCI, Bluetooth pairing and audio, wireless-radio, Wi-Fi, sound, startup-time, battery, backup-app controls, date/time, video, displays, printer queue guide, memory, benchmark readiness, graphics benchmark result and cancellation, system-pressure, service-status, temperature, package-health and Secure Boot controls, and the labeled search entry; "
+                        "AT-SPI verified guide names, About, Mouse Keys, Accessibility Settings, USB, PCI, Bluetooth pairing and audio, wireless-radio, Wi-Fi, sound, startup-time and startup-chain controls, battery, backup-app controls, date/time, video, displays, printer queue guide, memory, benchmark readiness, graphics benchmark result and cancellation, system-pressure, service-status, temperature, package-health and Secure Boot controls, and the labeled search entry; "
                         "Ctrl+F moved focus to search."
                     )
                     return 0
