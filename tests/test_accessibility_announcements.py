@@ -822,6 +822,20 @@ class AboutDialogTests(unittest.TestCase):
 
 
 class SystemDetailsTests(unittest.TestCase):
+    @patch.dict("ubuntu_start.os.environ", {"XDG_SESSION_TYPE": "wayland"})
+    @patch("ubuntu_start.read_storage_locations", return_value={
+        "system": {"total": 1000, "used": 500, "free": 500},
+    })
+    @patch("ubuntu_start.read_hardware_details", return_value={
+        "system_model": None, "processor": None, "memory": None,
+        "graphics": [], "architecture": "x86_64", "usb_devices": [],
+    })
+    @patch("ubuntu_start.platform.freedesktop_os_release", return_value={"PRETTY_NAME": "Ubuntu Test"})
+    def test_system_details_include_normalized_session_type(self, *_mocks):
+        details = dict(UbuntuStart.system_details(Mock()))
+
+        self.assertEqual(details["Session type"], "Wayland")
+
     @patch("ubuntu_start.read_storage_locations")
     @patch("ubuntu_start.read_hardware_details")
     @patch("ubuntu_start.platform.freedesktop_os_release", return_value={"PRETTY_NAME": "Ubuntu Test"})

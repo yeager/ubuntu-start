@@ -44,6 +44,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contributor guidance and the maintain
 - Refreshable resource summaries show total and available RAM, estimated use and swap use from local `/proc/meminfo`, plus Linux pressure-stall averages for CPU, memory and storage I/O. `Some` reports when at least one task was stalled; memory and storage may also report `full`, when all non-idle tasks were stalled at once. These system-wide readings can help investigate slowdowns but do not identify a process or prove the cause. A searchable guide explains how to compare them, close unused apps safely, check disk space and review Ubuntu updates.
 - A system service status check lists local systemd service units marked failed and their descriptions. It does not read logs or change services; help explains that failures may be temporary or expected.
 - The hardware overview shows the operating system and kernel versions alongside model, processor, memory, graphics and architecture, so users can find version details without creating a support report.
+- System details also show whether the current session uses Wayland, X11 or a text console when Ubuntu exposes that information. This helps when reporting display and input issues; unknown session data is shown as unavailable.
 - A read-only temperature check shows values and critical limits from Linux thermal and hardware-monitor sensors when available. A searchable guide covers ventilation, interpreting model-specific limits and when to shut down and seek support; the app does not run stress tests or change fan settings.
 - A local Ubuntu update check simulates `apt-get upgrade` against cached package lists and reads Ubuntu's local reboot-required marker. It reports packages ready to upgrade, packages held back, when the lists were last refreshed and whether Ubuntu has marked that a restart is required, then lets the user open Software Updater. It does not contact a network, refresh lists, install anything or restart the computer.
 - A beginner-friendly Terminal guide explains the prompt, command output and errors, `pwd`, `ls`, `cd`, paths with spaces, Tab completion, command history, `--help`, `man`, safe copy and paste, password prompts, commands that take time and safe ways to stop a command.
@@ -76,7 +77,7 @@ meson compile -C build
 sudo meson install -C build
 ```
 
-To build an installable Debian package after installing the dependencies, run `scripts/build-deb.sh`. It creates `build/packages/ubuntu-start_0.3.6-1_all.deb`. Install it with `sudo apt install ./build/packages/ubuntu-start_0.3.6-1_all.deb`; APT resolves the declared GTK and Python runtime dependencies.
+To build an installable Debian package after installing the dependencies, run `scripts/build-deb.sh`. It creates `build/packages/ubuntu-start_0.3.10-1_all.deb`. Install it with `sudo apt install ./build/packages/ubuntu-start_0.3.10-1_all.deb`; APT resolves the declared GTK and Python runtime dependencies.
 
 The wheel and source distribution are published on [PyPI](https://pypi.org/project/ubuntu-start/). Install the GTK platform dependencies with APT first, then install the package in an isolated environment that can access system PyGObject bindings:
 

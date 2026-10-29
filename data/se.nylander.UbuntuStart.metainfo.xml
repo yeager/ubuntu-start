@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.10" date="2026-10-29">
+      <description>
+        <p>Show the active Wayland or X11 session type in system details to help diagnose display and input issues.</p>
+        <p xml:lang="sv">Visa om den aktiva sessionen använder Wayland eller X11 i systeminformationen för att underlätta felsökning av bildskärm och inmatning.</p>
+      </description>
+    </release>
     <release version="0.3.9" date="2026-10-29">
       <description>
         <p>Show that a saved CPU baseline is the median of three measurements, matching the current benchmark method.</p>

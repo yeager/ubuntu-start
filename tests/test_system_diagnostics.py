@@ -59,6 +59,7 @@ from system_diagnostics import (
     read_temperature_sensors,
     sensor_near_critical_limit,
     read_hardware_details,
+    normalize_session_type,
     read_network_devices,
     read_rfkill_status,
     read_network_adapter_details,
@@ -84,6 +85,7 @@ class BenchmarkTests(unittest.TestCase):
             project_file = Path(directory) / "pyproject.toml"
             project_file.write_text('[project]\nversion = "4.2.1"\n', encoding="utf-8")
             self.assertEqual(get_application_version(project_file), "4.2.1")
+
 
     def test_benchmark_baselines_persist_scores_with_private_file_permissions(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -233,6 +235,24 @@ class BenchmarkTests(unittest.TestCase):
     def test_rejects_missing_or_malformed_glmark2_score(self):
         self.assertIsNone(parse_glmark2_score("glmark2 Score: 0x10"))
         self.assertIsNone(parse_glmark2_score("no final score"))
+
+
+class SessionTypeTests(unittest.TestCase):
+    def test_normalizes_known_xdg_session_types(self):
+        for raw, expected in (
+            ("wayland", "Wayland"),
+            (" WAYLAND ", "Wayland"),
+            ("x11", "X11"),
+            ("X11", "X11"),
+            ("tty", "TTY"),
+        ):
+            with self.subTest(raw=raw):
+                self.assertEqual(normalize_session_type(raw), expected)
+
+    def test_unknown_or_missing_session_type_is_not_guessed(self):
+        for raw in (None, "", "mir", "unknown"):
+            with self.subTest(raw=raw):
+                self.assertIsNone(normalize_session_type(raw))
 
 
 class SupportReportTests(unittest.TestCase):

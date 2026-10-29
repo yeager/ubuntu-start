@@ -1007,6 +1007,17 @@ def read_hardware_details(
     }
 
 
+def normalize_session_type(session_type: str | None) -> str | None:
+    """Return a stable display-session label for the known XDG session types."""
+    if not isinstance(session_type, str):
+        return None
+    return {
+        "wayland": "Wayland",
+        "x11": "X11",
+        "tty": "TTY",
+    }.get(session_type.strip().casefold())
+
+
 def read_storage_status(path: str | Path = "/") -> dict[str, int | bool | None]:
     """Return local filesystem capacity and whether it is mounted read-only."""
     usage = shutil.disk_usage(path)
