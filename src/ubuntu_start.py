@@ -36,7 +36,7 @@ GUIDES = [
     (_("Battery and charging"), "power", [
         (_("Check the power adapter"), _("Connect the adapter securely at both ends and try a working outlet. Stop using a cable or adapter that is damaged or unusually hot.")),
         (_("Check the charging status"), _("Review the charge level and charging state on the Network and hardware page. If it is not charging, check the power connection and Power Settings.")),
-        (_("Check for battery wear"), _("Use the estimated capacity and reported cycle count as context, not as a universal replacement threshold. If capacity is much lower than design, consult the laptop manufacturer’s battery service information.")),
+        (_("Check for battery wear"), _("Use capacity estimates, reported battery health and cycle count as context, not as a universal replacement threshold. If capacity is much lower than design, consult the laptop manufacturer’s battery service information.")),
     ]),
     (_("Bluetooth"), "bluetooth", [
         (_("Check power and charge"), _("Make sure Bluetooth is enabled and the device has enough charge.")),
@@ -743,7 +743,7 @@ class UbuntuStart(Adw.Application):
 
         battery_box, _battery_rows = self.page(
             _("Battery"),
-            _("Charge level, charging state, reported cycle count and the active power profile are read from local system information when available. An estimated capacity compared with the original design is shown only if the battery exposes both values. Cycle counts and capacity estimates are informational and are not universal service thresholds. The power profile is shown for information and is not changed here."),
+            _("Charge level, charging state, reported battery health, cycle count and the active power profile are read from local system information when available. An estimated capacity compared with the original design is shown only if the battery exposes both values. Battery health algorithms vary by manufacturer, so reported values are not directly comparable. These readings are informational, not universal service thresholds. The power profile is shown for information and is not changed here."),
             include_rows=False,
         )
         battery_refresh = Gtk.Button(label=_("Refresh battery status"), halign=Gtk.Align.START)
@@ -1654,9 +1654,9 @@ class UbuntuStart(Adw.Application):
                     capacity=battery["capacity"], status=state,
                 )
                 self.row(battery_rows, title, charge)
-                summaries.append(_("{capacity}% · {status}").format(
+                summary_parts = [_("{capacity}% · {status}").format(
                     capacity=battery["capacity"], status=state,
-                ))
+                )]
                 if "design_capacity_percent" in battery:
                     self.row(
                         battery_rows,
@@ -1671,10 +1671,21 @@ class UbuntuStart(Adw.Application):
                         _("Reported charge cycles"),
                         str(battery["cycle_count"]),
                     )
-                    summaries[-1] = _("{capacity}% · {status} · Charge cycles: {count}").format(
-                        capacity=battery["capacity"], status=state,
+                    summary_parts.append(_("Charge cycles: {count}").format(
                         count=battery["cycle_count"],
+                    ))
+                if "state_of_health_percent" in battery:
+                    self.row(
+                        battery_rows,
+                        _("Reported battery health"),
+                        _("{percent}%").format(
+                            percent=battery["state_of_health_percent"],
+                        ),
                     )
+                    summary_parts.append(_("Battery-reported health: {percent}%").format(
+                        percent=battery["state_of_health_percent"],
+                    ))
+                summaries.append(" · ".join(summary_parts))
             message = _("Battery status updated: {details}").format(details="; ".join(summaries))
         else:
             message = _("No battery information found. This computer may not have a battery, or the system does not expose battery data.")

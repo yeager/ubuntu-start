@@ -997,6 +997,28 @@ Inst package-two [2.0] (2.1 repo [amd64])
 
         self.assertNotIn("cycle_count", result[0])
 
+    def test_reads_optional_vendor_reported_battery_health(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            battery = Path(temporary) / "BAT0"
+            battery.mkdir()
+            (battery / "type").write_text("Battery\n", encoding="utf-8")
+            (battery / "capacity").write_text("72\n", encoding="utf-8")
+            (battery / "state_of_health").write_text("87\n", encoding="utf-8")
+            result = read_battery_status(temporary)
+
+        self.assertEqual(result[0]["state_of_health_percent"], 87)
+
+    def test_ignores_out_of_range_vendor_reported_battery_health(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            battery = Path(temporary) / "BAT0"
+            battery.mkdir()
+            (battery / "type").write_text("Battery\n", encoding="utf-8")
+            (battery / "capacity").write_text("72\n", encoding="utf-8")
+            (battery / "state_of_health").write_text("101\n", encoding="utf-8")
+            result = read_battery_status(temporary)
+
+        self.assertNotIn("state_of_health_percent", result[0])
+
     @patch("system_diagnostics._run_local")
     @patch("system_diagnostics.shutil.which", return_value="/usr/bin/powerprofilesctl")
     def test_reads_allowlisted_power_profile(self, _which, run_local):

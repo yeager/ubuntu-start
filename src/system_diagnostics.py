@@ -938,6 +938,12 @@ def read_battery_status(power_supply_path: str | Path = "/sys/class/power_supply
                 cycle_count = -1
             if cycle_count >= 0:
                 details["cycle_count"] = cycle_count
+            try:
+                state_of_health = int(_read(battery / "state_of_health") or "")
+            except ValueError:
+                state_of_health = -1
+            if 0 <= state_of_health <= 100:
+                details["state_of_health_percent"] = state_of_health
             for full_name, design_name in (("energy_full", "energy_full_design"), ("charge_full", "charge_full_design")):
                 try:
                     full = int(_read(battery / full_name) or "")
