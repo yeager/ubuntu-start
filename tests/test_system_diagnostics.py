@@ -59,6 +59,7 @@ from system_diagnostics import (
     read_temperature_sensors,
     sensor_near_critical_limit,
     read_hardware_details,
+    normalize_desktop_name,
     normalize_session_type,
     read_network_devices,
     read_rfkill_status,
@@ -253,6 +254,15 @@ class SessionTypeTests(unittest.TestCase):
         for raw in (None, "", "mir", "unknown"):
             with self.subTest(raw=raw):
                 self.assertIsNone(normalize_session_type(raw))
+
+    def test_normalizes_current_desktop_list(self):
+        self.assertEqual(normalize_desktop_name("ubuntu:GNOME", "openbox"), "ubuntu, GNOME")
+
+    def test_falls_back_to_the_reported_session_desktop(self):
+        self.assertEqual(normalize_desktop_name(None, "openbox"), "openbox")
+
+    def test_does_not_guess_a_desktop_when_xdg_values_are_missing(self):
+        self.assertIsNone(normalize_desktop_name(None, None))
 
 
 class SupportReportTests(unittest.TestCase):

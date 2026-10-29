@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.12" date="2026-10-29">
+      <description>
+        <p>Report the desktop environment from XDG session data without assuming GNOME when it is unavailable.</p>
+        <p xml:lang="sv">Visa skrivbordsmiljön från XDG-sessionens uppgifter utan att anta GNOME när informationen saknas.</p>
+      </description>
+    </release>
     <release version="0.3.11" date="2026-10-29">
       <description>
         <p>Add a guide to Ubuntu support periods and safe, supported release upgrades.</p>

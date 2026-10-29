@@ -1018,6 +1018,17 @@ def normalize_session_type(session_type: str | None) -> str | None:
     }.get(session_type.strip().casefold())
 
 
+def normalize_desktop_name(current_desktop: str | None, session_desktop: str | None) -> str | None:
+    """Return the reported desktop names without guessing when XDG values are absent."""
+    for value in (current_desktop, session_desktop):
+        if not isinstance(value, str) or not value.strip():
+            continue
+        names = [name.strip() for name in value.replace(":", ",").split(",") if name.strip()]
+        if names:
+            return ", ".join(names)
+    return None
+
+
 def read_storage_status(path: str | Path = "/") -> dict[str, int | bool | None]:
     """Return local filesystem capacity and whether it is mounted read-only."""
     usage = shutil.disk_usage(path)

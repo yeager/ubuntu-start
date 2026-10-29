@@ -28,12 +28,12 @@ Run these commands from the repository root:
 
 ```sh
 xgettext --from-code=UTF-8 --language=Python --keyword=_ --keyword=_n:1,2 \
-  --package-name="Ubuntu Start" --package-version=0.3.11 \
+  --package-name="Ubuntu Start" --package-version=0.3.12 \
   --copyright-holder="Ubuntu Start contributors" \
   --msgid-bugs-address=https://github.com/yeager/ubuntu-start/issues \
   --output=po/ubuntu-start.pot src/ubuntu_start.py
 xgettext --from-code=UTF-8 --language=Desktop --join-existing \
-  --package-name="Ubuntu Start" --package-version=0.3.11 \
+  --package-name="Ubuntu Start" --package-version=0.3.12 \
   --copyright-holder="Ubuntu Start contributors" \
   --msgid-bugs-address=https://github.com/yeager/ubuntu-start/issues \
   --output=po/ubuntu-start.pot data/se.nylander.UbuntuStart.desktop
