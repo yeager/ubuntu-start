@@ -16,9 +16,9 @@ An Ubuntu Desktop guide for first-run setup and device troubleshooting.
 
 ![Read-only network and hardware overview](screenshots/network-hardware-en.png)
 
-[More screenshots: network diagnostics (EN)](screenshots/network-diagnostics-en.png) · [audio status (EN)](screenshots/audio-status-en.png) · [storage and battery (EN)](screenshots/storage-en.png) · [Terminal guide (EN)](screenshots/terminal-guide-en.png) · [WiFi Analyzer recommendation (EN)](screenshots/wifi-analyzer-en.png) · [help page (EN)](screenshots/help-en.png) · [hardware summary (EN)](screenshots/help-hardware-en.png)
+[More screenshots: network diagnostics (EN)](screenshots/network-diagnostics-en.png) · [audio status (EN)](screenshots/audio-status-en.png) · [storage and battery (EN)](screenshots/storage-en.png) · [system details and storage (EN)](screenshots/copy-system-details-en.png) · [Terminal guide (EN)](screenshots/terminal-guide-en.png) · [WiFi Analyzer recommendation (EN)](screenshots/wifi-analyzer-en.png) · [help page (EN)](screenshots/help-en.png) · [hardware summary (EN)](screenshots/help-hardware-en.png)
 
-[Swedish system guides](screenshots/system-guides-sv.png) · [network and hardware overview](screenshots/network-hardware-sv.png) · [network diagnostics](screenshots/network-diagnostics-sv.png) · [audio status](screenshots/audio-status-sv.png) · [storage and battery](screenshots/storage-sv.png) · [Terminal guide](screenshots/terminal-guide-sv.png) · [WiFi Analyzer recommendation](screenshots/wifi-analyzer-sv.png) · [help page](screenshots/help-sv.png) · [hardware summary](screenshots/help-hardware-sv.png) · [accessibility settings](screenshots/accessibility-panel-en.png)
+[Swedish system guides](screenshots/system-guides-sv.png) · [network and hardware overview](screenshots/network-hardware-sv.png) · [network diagnostics](screenshots/network-diagnostics-sv.png) · [audio status](screenshots/audio-status-sv.png) · [storage and battery](screenshots/storage-sv.png) · [system details and storage](screenshots/copy-system-details-sv.png) · [Terminal guide](screenshots/terminal-guide-sv.png) · [WiFi Analyzer recommendation](screenshots/wifi-analyzer-sv.png) · [help page](screenshots/help-sv.png) · [hardware summary](screenshots/help-hardware-sv.png) · [accessibility settings](screenshots/accessibility-panel-en.png)
 
 
 Ubuntu Start combines a first-run guide with practical device troubleshooting for Ubuntu Desktop. It is a GTK 4/libadwaita application intended for Ubuntu GNOME.
@@ -43,7 +43,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contributor guidance and the maintain
 - Wi-Fi troubleshooting recommends [WiFi Analyzer](https://github.com/yeager/wifi-analyzer) for nearby signal levels and channel use. Opening GitHub requires confirmation.
 - Built-in links to official Ubuntu documentation, Ask Ubuntu and the Ubuntu support forum.
 - Read-only NetworkManager, Bluetooth, hardware and storage summaries, battery charge and estimated capacity versus original design when exposed. Storage shows the system filesystem and, when it is a separate mounted volume, the home filesystem too; it flags volumes that are almost full. Graphics adapters are matched against an installed local PCI ID database when available, with the numeric IDs retained for reference. If the optional `iw` tool is installed, active Wi-Fi status also shows signal strength and receive/transmit link rates without collecting the network name or scanning nearby networks. Link rates are not internet speed tests. A copyable support report omits usernames, host names, serial numbers, network addresses, Wi-Fi names and installed applications.
-- A local support report can be reviewed and edited before saving. It includes system details and optional DNS/gateway timing; it excludes network addresses, interfaces, MAC addresses and vendor matches. The app does not upload it.
+- A local support report can be reviewed and edited before saving. It includes available space on the system filesystem and any separate home filesystem, plus optional DNS/gateway timing; it excludes network addresses, interfaces, MAC addresses and vendor matches. The app does not upload it.
 - Search and guide selectors have visible labels for assistive technology, and guides remain navigable with the keyboard.
 - Links into GNOME Control Center and Ubuntu's Additional Drivers tool. System changes remain in Ubuntu's own tools and require the user's confirmation.
 - gettext-based localization with English source strings and a complete Swedish (`sv`) catalog.
@@ -111,7 +111,7 @@ Tagged versions (`v*`) are built by GitHub Actions. Releases include a source ar
 
 ## Screenshots
 
-The screenshots show the welcome page, printer troubleshooting, Wi-Fi setup, accessibility instructions and network status. Additional English and Swedish screenshots include the storage and battery summary.
+The screenshots show the welcome page, printer troubleshooting, Wi-Fi setup, accessibility instructions and network status. Additional English and Swedish screenshots include storage, battery and support-report system details.
 
 
 ## License

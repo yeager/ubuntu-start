@@ -192,6 +192,42 @@ class AboutDialogTests(unittest.TestCase):
         dialog.present.assert_called_once_with(app.get_active_window.return_value)
 
 
+class SystemDetailsTests(unittest.TestCase):
+    @patch("ubuntu_start.read_storage_locations")
+    @patch("ubuntu_start.read_hardware_details")
+    @patch("ubuntu_start.platform.freedesktop_os_release", return_value={"PRETTY_NAME": "Ubuntu Test"})
+    def test_system_details_include_separate_filesystem_capacity(self, _os_release, hardware, storage):
+        hardware.return_value = {
+            "system_model": "Test model", "processor": "Test CPU", "memory": "8 GiB",
+            "graphics": [], "architecture": "x86_64",
+        }
+        storage.return_value = {
+            "system": {"total": 1000, "used": 500, "free": 500},
+            "home": {"total": 2000, "used": 1800, "free": 200},
+        }
+
+        details = UbuntuStart.system_details(Mock())
+
+        details_by_label = dict(details)
+        self.assertIn("500", details_by_label["System filesystem"])
+        self.assertIn("50% used", details_by_label["System filesystem"])
+        self.assertIn("200", details_by_label["Home folder filesystem"])
+        self.assertIn("90% used", details_by_label["Home folder filesystem"])
+
+    @patch("ubuntu_start.read_storage_locations", return_value={
+        "system": {"total": 1000, "used": 500, "free": 500},
+    })
+    @patch("ubuntu_start.read_hardware_details", return_value={
+        "system_model": None, "processor": None, "memory": None, "graphics": [], "architecture": "x86_64",
+    })
+    @patch("ubuntu_start.platform.freedesktop_os_release", return_value={"PRETTY_NAME": "Ubuntu Test"})
+    def test_system_details_omit_home_when_it_shares_the_system_filesystem(self, *_mocks):
+        details = UbuntuStart.system_details(Mock())
+
+        self.assertEqual(sum(label == "System filesystem" for label, _value in details), 1)
+        self.assertFalse(any(label == "Home folder filesystem" for label, _value in details))
+
+
 class DriverGuideTests(unittest.TestCase):
     def test_unknown_adapter_help_links_to_hardware_overview(self):
         app = Mock()

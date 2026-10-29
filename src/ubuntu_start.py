@@ -902,6 +902,7 @@ class UbuntuStart(Adw.Application):
         desktop = os.environ.get("XDG_CURRENT_DESKTOP", "GNOME").replace(":", ", ")
         hardware = read_hardware_details()
         graphics = "; ".join(hardware["graphics"]) if hardware["graphics"] else _("Not available")
+        storage_locations = read_storage_locations()
         details = [
             (_("Ubuntu version"), os_name),
             (_("Desktop"), desktop),
@@ -912,6 +913,15 @@ class UbuntuStart(Adw.Application):
             (_("Graphics adapters"), graphics),
             (_("Architecture"), platform.machine()),
         ]
+        for location, storage in storage_locations.items():
+            label = _("System filesystem") if location == "system" else _("Home folder filesystem")
+            percent = round(storage["used"] / storage["total"] * 100) if storage["total"] else 0
+            value = _("{free} free of {total} ({percent}% used)").format(
+                free=GLib.format_size(storage["free"]),
+                total=GLib.format_size(storage["total"]),
+                percent=percent,
+            )
+            details.append((label, value))
         return details
 
     def make_help(self):
