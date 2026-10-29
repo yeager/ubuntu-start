@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ubuntu Start 0.3.1\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 06:38+0100\n"
+"POT-Creation-Date: 2026-10-29 06:41+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -320,9 +320,9 @@ msgstr ""
 #: src/ubuntu_start.py:76
 msgid ""
 "Refresh Wireless radio status on the Network and hardware page. A software "
-"block may come from airplane mode; a hardware block may come from a switch "
-"or keyboard shortcut. Check the computer manual before changing firmware or "
-"hardware settings."
+"block may come from airplane mode. A hard block is reported by hardware or "
+"firmware and cannot be cleared by an app; check the computer manual before "
+"changing settings."
 msgstr ""
 
 #: src/ubuntu_start.py:77
@@ -2425,23 +2425,27 @@ msgid "Blocked in software"
 msgstr ""
 
 #: src/ubuntu_start.py:1293
-msgid "Blocked by a hardware switch"
+msgid "Blocked by hardware or firmware"
 msgstr ""
 
 #: src/ubuntu_start.py:1294
-msgid "Blocked in software and by a hardware switch"
+msgid "Blocked in software and by hardware or firmware"
 msgstr ""
 
 #: src/ubuntu_start.py:1304
-msgid "Check airplane mode, the Wi-Fi switch or keyboard shortcut."
+msgid ""
+"Check the physical Wi-Fi switch or keyboard shortcut; consult the computer "
+"manual if it remains blocked."
 msgstr ""
 
 #: src/ubuntu_start.py:1306
-msgid "Check airplane mode, the Bluetooth switch or keyboard shortcut."
+msgid ""
+"Check the physical Bluetooth switch or keyboard shortcut; consult the "
+"computer manual if it remains blocked."
 msgstr ""
 
 #: src/ubuntu_start.py:1308
-msgid "Check the wireless device switch or its keyboard shortcut."
+msgid "Check the computer or device manual for its radio controls."
 msgstr ""
 
 #: src/ubuntu_start.py:1313

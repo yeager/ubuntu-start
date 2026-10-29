@@ -73,7 +73,7 @@ GUIDES = [
     ]),
     (_("Wi-Fi"), "wifi", [
         (_("Check Wi-Fi and airplane mode"), _("Turn airplane mode off and make sure Wi-Fi is enabled in Quick Settings.")),
-        (_("Check for a wireless radio block"), _("Refresh Wireless radio status on the Network and hardware page. A software block may come from airplane mode; a hardware block may come from a switch or keyboard shortcut. Check the computer manual before changing firmware or hardware settings.")),
+        (_("Check for a wireless radio block"), _("Refresh Wireless radio status on the Network and hardware page. A software block may come from airplane mode. A hard block is reported by hardware or firmware and cannot be cleared by an app; check the computer manual before changing settings.")),
         (_("Check the network"), _("See whether another device can connect. If none can, restart the router and check its internet connection.")),
         (_("Reconnect to the network"), _("Forget the network in Wi-Fi Settings, then connect again and carefully enter the password.")),
         (_("If only this computer has trouble"), _("Install available Ubuntu updates. Check the computer or Wi-Fi adapter support information before installing a driver.")),
@@ -1290,8 +1290,8 @@ class UbuntuStart(Adw.Application):
             blocked_states = {
                 (False, False): _("Not blocked"),
                 (True, False): _("Blocked in software"),
-                (False, True): _("Blocked by a hardware switch"),
-                (True, True): _("Blocked in software and by a hardware switch"),
+                (False, True): _("Blocked by hardware or firmware"),
+                (True, True): _("Blocked in software and by hardware or firmware"),
             }
             summaries = []
             blocked = False
@@ -1301,11 +1301,11 @@ class UbuntuStart(Adw.Application):
                 if radio["soft_blocked"] or radio["hard_blocked"]:
                     blocked = True
                     if radio["type"] == "wlan":
-                        next_step = _("Check airplane mode, the Wi-Fi switch or keyboard shortcut.")
+                        next_step = _("Check the physical Wi-Fi switch or keyboard shortcut; consult the computer manual if it remains blocked.")
                     elif radio["type"] == "bluetooth":
-                        next_step = _("Check airplane mode, the Bluetooth switch or keyboard shortcut.")
+                        next_step = _("Check the physical Bluetooth switch or keyboard shortcut; consult the computer manual if it remains blocked.")
                     else:
-                        next_step = _("Check the wireless device switch or its keyboard shortcut.")
+                        next_step = _("Check the computer or device manual for its radio controls.")
                     state = f"{state} · {next_step}"
                 self.row(radio_rows, title, state)
                 summaries.append(f"{title}: {state}")

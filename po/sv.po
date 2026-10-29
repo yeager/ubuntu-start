@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ubuntu Start 0.3.1\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 06:38+0100\n"
+"POT-Creation-Date: 2026-10-29 06:41+0100\n"
 "PO-Revision-Date: 2026-10-28 15:18+0100\n"
 "Last-Translator: Ubuntu Start contributors\n"
 "Language-Team: Swedish\n"
@@ -370,14 +370,10 @@ msgstr "Kontrollera om den trådlösa radion är spärrad"
 #: src/ubuntu_start.py:76
 msgid ""
 "Refresh Wireless radio status on the Network and hardware page. A software "
-"block may come from airplane mode; a hardware block may come from a switch "
-"or keyboard shortcut. Check the computer manual before changing firmware or "
-"hardware settings."
-msgstr ""
-"Uppdatera radiospärrarnas status under Nätverk och maskinvara. En "
-"mjukvaruspärr kan bero på flygplansläge. En hårdvaruspärr kan komma från en "
-"fysisk omkopplare eller ett kortkommando. Läs datorns handbok innan du "
-"ändrar inställningar för fast programvara eller maskinvara."
+"block may come from airplane mode. A hard block is reported by hardware or "
+"firmware and cannot be cleared by an app; check the computer manual before "
+"changing settings."
+msgstr "Uppdatera radiospärrarnas status under Nätverk och maskinvara. En mjukvaruspärr kan bero på flygplansläge. En hård spärr rapporteras av maskinvaran eller den fasta programvaran och kan inte hävas av en app. Läs datorns handbok innan du ändrar inställningar."
 
 #: src/ubuntu_start.py:77
 msgid "Check the network"
@@ -2812,24 +2808,28 @@ msgid "Blocked in software"
 msgstr "Spärrad i programvara"
 
 #: src/ubuntu_start.py:1293
-msgid "Blocked by a hardware switch"
-msgstr "Spärrad med en fysisk omkopplare"
+msgid "Blocked by hardware or firmware"
+msgstr "Spärrad av maskinvara eller fast programvara"
 
 #: src/ubuntu_start.py:1294
-msgid "Blocked in software and by a hardware switch"
-msgstr "Spärrad i programvara och med en fysisk omkopplare"
+msgid "Blocked in software and by hardware or firmware"
+msgstr "Spärrad i programvara och av maskinvara eller fast programvara"
 
 #: src/ubuntu_start.py:1304
-msgid "Check airplane mode, the Wi-Fi switch or keyboard shortcut."
-msgstr "Kontrollera flygplansläget, Wi-Fi-knappen eller kortkommandot."
+msgid ""
+"Check the physical Wi-Fi switch or keyboard shortcut; consult the computer "
+"manual if it remains blocked."
+msgstr "Kontrollera datorns fysiska Wi-Fi-knapp eller kortkommando. Läs datorns handbok om radion fortfarande är spärrad."
 
 #: src/ubuntu_start.py:1306
-msgid "Check airplane mode, the Bluetooth switch or keyboard shortcut."
-msgstr "Kontrollera flygplansläget, Bluetooth-knappen eller kortkommandot."
+msgid ""
+"Check the physical Bluetooth switch or keyboard shortcut; consult the "
+"computer manual if it remains blocked."
+msgstr "Kontrollera datorns fysiska Bluetooth-knapp eller kortkommando. Läs datorns handbok om radion fortfarande är spärrad."
 
 #: src/ubuntu_start.py:1308
-msgid "Check the wireless device switch or its keyboard shortcut."
-msgstr "Kontrollera enhetens strömbrytare eller kortkommando."
+msgid "Check the computer or device manual for its radio controls."
+msgstr "Läs datorns eller enhetens handbok om reglagen för trådlösa funktioner."
 
 #: src/ubuntu_start.py:1313
 msgid "One or more wireless radios are blocked. Review the details below."
@@ -4245,6 +4245,32 @@ msgstr ""
 #: data/se.nylander.UbuntuStart.desktop:3
 msgid "Get started with Ubuntu and troubleshoot devices"
 msgstr "Kom igång med Ubuntu och felsök anslutna enheter"
+
+#~ msgid ""
+#~ "Refresh Wireless radio status on the Network and hardware page. A "
+#~ "software block may come from airplane mode; a hardware block may come "
+#~ "from a switch or keyboard shortcut. Check the computer manual before "
+#~ "changing firmware or hardware settings."
+#~ msgstr ""
+#~ "Uppdatera radiospärrarnas status under Nätverk och maskinvara. En "
+#~ "mjukvaruspärr kan bero på flygplansläge. En hårdvaruspärr kan komma från "
+#~ "en fysisk omkopplare eller ett kortkommando. Läs datorns handbok innan du "
+#~ "ändrar inställningar för fast programvara eller maskinvara."
+
+#~ msgid "Blocked by a hardware switch"
+#~ msgstr "Spärrad med en fysisk omkopplare"
+
+#~ msgid "Blocked in software and by a hardware switch"
+#~ msgstr "Spärrad i programvara och med en fysisk omkopplare"
+
+#~ msgid "Check airplane mode, the Wi-Fi switch or keyboard shortcut."
+#~ msgstr "Kontrollera flygplansläget, Wi-Fi-knappen eller kortkommandot."
+
+#~ msgid "Check airplane mode, the Bluetooth switch or keyboard shortcut."
+#~ msgstr "Kontrollera flygplansläget, Bluetooth-knappen eller kortkommandot."
+
+#~ msgid "Check the wireless device switch or its keyboard shortcut."
+#~ msgstr "Kontrollera enhetens strömbrytare eller kortkommando."
 
 #~ msgid ""
 #~ "Select Install Now and enter your password if prompted. Restart only when "

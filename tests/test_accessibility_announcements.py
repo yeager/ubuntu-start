@@ -450,7 +450,7 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
             announce=True,
         )
 
-        detail = "Blocked by a hardware switch · Check airplane mode, the Wi-Fi switch or keyboard shortcut."
+        detail = "Blocked by hardware or firmware · Check the physical Wi-Fi switch or keyboard shortcut; consult the computer manual if it remains blocked."
         self.app.row.assert_called_once_with(rows, "Wi-Fi radio", detail)
         status.set_text.assert_called_once_with(
             "One or more wireless radios are blocked. Review the details below.",
