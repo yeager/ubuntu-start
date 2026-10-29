@@ -1395,6 +1395,26 @@ class DriverGuideTests(unittest.TestCase):
 
 
 class SystemGuideTests(unittest.TestCase):
+    def test_screen_lock_guide_is_searchable_and_distinguishes_lock_from_encryption(self):
+        guide = next(
+            guide for guide in SYSTEM_GUIDES
+            if guide[0] == "Set up automatic screen locking"
+        )
+        title, target, action, steps = guide
+        entries = [
+            ("system", index, title, step_title, description)
+            for index, (step_title, description) in enumerate(steps)
+        ]
+        matches = find_guide_matches("automatic screen lock", entries)
+        step_text = " ".join(f"{step} {description}" for step, description in steps)
+
+        self.assertEqual(target, ("settings", "privacy"))
+        self.assertEqual(action, "Open Settings")
+        self.assertTrue(matches)
+        self.assertIn("does not sign you out", step_text)
+        self.assertIn("does not encrypt files", step_text)
+        self.assertIn("disk encryption", step_text)
+
     def test_accessibility_settings_target_opens_gnome_control_center(self):
         app = Mock()
 

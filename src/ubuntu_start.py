@@ -203,6 +203,13 @@ SYSTEM_GUIDES = [
         (_("Turn on Large Text"), _("Switch on Large Text. You can also try the accessibility menu in the top bar for a quick toggle.")),
         (_("Adjust other display options"), _("Try High Contrast or a different cursor size if those make the screen easier for you to use.")),
     ]),
+    (_("Set up automatic screen locking"), ("settings", "privacy"), _("Open Settings"), [
+        (_("Open Privacy settings"), _("Open Settings and look for Privacy & Security or Privacy. Panel names can vary between Ubuntu releases.")),
+        (_("Turn on automatic screen locking"), _("Find Screen Lock and enable automatic screen locking. On managed computers, your organization may control this setting.")),
+        (_("Choose a practical lock delay"), _("Choose how long the computer can be idle before locking. A shorter delay protects an unattended session sooner, while a longer delay can be more convenient.")),
+        (_("Test the lock and sign-in"), _("Press Super+L to lock the screen, then unlock it using your usual sign-in method. Keep your account password available in case another sign-in method is unavailable.")),
+        (_("Know what screen locking protects"), _("Locking protects an open session when you step away; it does not sign you out, and it does not encrypt files on the disk. Keep backups, and use disk encryption when you need protection for files on a powered-off or lost computer.")),
+    ]),
     (_("Magnify part of the screen"), ("settings", "universal-access"), _("Open Accessibility Settings"), [
         (_("Open the Zoom section"), _("In Settings, choose Accessibility, then open Zoom.")),
         (_("Turn on Desktop Zoom"), _("Switch on Desktop Zoom and move the pointer to the screen edge to explore the magnified area.")),
