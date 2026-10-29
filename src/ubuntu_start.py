@@ -278,31 +278,49 @@ class UbuntuStart(Adw.Application):
         toolbar.set_content(split)
         win.set_content(toolbar)
 
-        pages = [
-            (_("Welcome"), self.make_welcome()),
-            (_("Get started"), self.make_get_started()),
-            (_("Tips and tricks"), self.make_tips_page()),
-            (_("Fix a device"), self.make_device_page()),
-            (_("System guides"), self.make_system_guides()),
-            (_("Network and hardware"), self.make_network_hardware()),
-            (_("Drivers"), self.make_drivers()),
-            (_("Help and support"), self.make_help()),
-        ]
-        for name, page in pages:
-            scroller = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER)
-            scroller.set_child(page)
-            stack.add_titled(scroller, name, name)
-        stack.set_visible_child_name(pages[0][0])
+        first_page_name = _("Welcome")
+        first_page = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER)
+        first_page.set_child(self.make_welcome())
+        stack.add_titled(first_page, first_page_name, first_page_name)
+        stack.set_visible_child_name(first_page_name)
         key_controller = Gtk.EventControllerKey()
         key_controller.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
         key_controller.connect("key-pressed", self.on_key_pressed)
         win.add_controller(key_controller)
         win.present()
 
+        remaining_pages = [
+            (_("Get started"), self.make_get_started),
+            (_("Tips and tricks"), self.make_tips_page),
+            (_("Fix a device"), self.make_device_page),
+            (_("System guides"), self.make_system_guides),
+            (_("Network and hardware"), self.make_network_hardware),
+            (_("Drivers"), self.make_drivers),
+            (_("Help and support"), self.make_help),
+        ]
+        GLib.idle_add(self.add_next_page, stack, remaining_pages)
+
+    def add_next_page(self, stack, remaining_pages):
+        """Populate one guide page per idle callback after the window is shown."""
+        if not remaining_pages:
+            return GLib.SOURCE_REMOVE
+        name, builder = remaining_pages.pop(0)
+        scroller = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER)
+        scroller.set_child(builder())
+        stack.add_titled(scroller, name, name)
+        if name == _("Fix a device") and getattr(self, "_pending_device_search_focus", False):
+            stack.set_visible_child_name(name)
+            self.device_search.grab_focus()
+            self._pending_device_search_focus = False
+        return GLib.SOURCE_CONTINUE if remaining_pages else GLib.SOURCE_REMOVE
+
     def on_key_pressed(self, _controller, keyval, _keycode, state):
         if keyval == Gdk.KEY_f and state & Gdk.ModifierType.CONTROL_MASK:
-            self.main_stack.set_visible_child_name(_("Fix a device"))
-            self.device_search.grab_focus()
+            if hasattr(self, "device_search"):
+                self.main_stack.set_visible_child_name(_("Fix a device"))
+                self.device_search.grab_focus()
+            else:
+                self._pending_device_search_focus = True
             return True
         return False
 

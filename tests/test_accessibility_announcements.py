@@ -357,6 +357,15 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.app.main_stack.set_visible_child_name.assert_called_once_with("Fix a device")
         self.app.device_search.grab_focus.assert_called_once_with()
 
+    def test_control_f_during_page_population_defers_focus_until_search_exists(self):
+        app = type("App", (), {})()
+        handled = UbuntuStart.on_key_pressed(
+            app, Mock(), Gdk.KEY_f, 0, Gdk.ModifierType.CONTROL_MASK,
+        )
+
+        self.assertTrue(handled)
+        self.assertTrue(app._pending_device_search_focus)
+
     def test_open_time_guide_selects_date_and_time_instructions(self):
         self.app.system_guide_chooser = Mock()
         self.app.main_stack = Mock()
