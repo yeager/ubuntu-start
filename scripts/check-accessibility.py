@@ -28,26 +28,32 @@ EXPECTED_PAGES = {
 }
 
 
-def accessible_names(node, *, depth: int = 0, remaining: list[int] | None = None) -> set[str]:
-    """Collect accessible names while bounding traversal of a malformed tree."""
+def accessible_tree(
+    node, *, depth: int = 0, remaining: list[int] | None = None,
+) -> list[tuple[str, str, object]]:
+    """Collect accessible roles and names while bounding tree traversal."""
     if remaining is None:
         remaining = [4096]
     if depth > 16 or remaining[0] <= 0:
-        return set()
+        return []
     remaining[0] -= 1
 
-    names: set[str] = set()
     try:
         name = node.get_name()
-        if name:
-            names.add(name)
-        for index in range(node.get_child_count()):
-            child = node.get_child_at_index(index)
-            if child:
-                names.update(accessible_names(child, depth=depth + 1, remaining=remaining))
+        role = node.get_role_name()
+        child_count = node.get_child_count()
     except Exception:
-        return names
-    return names
+        return []
+
+    entries = [(role, name, node)] if name else []
+    for index in range(child_count):
+        try:
+            child = node.get_child_at_index(index)
+        except Exception:
+            continue
+        if child:
+            entries.extend(accessible_tree(child, depth=depth + 1, remaining=remaining))
+    return entries
 
 
 def main() -> int:
@@ -70,25 +76,78 @@ def main() -> int:
     try:
         Atspi.init()
         deadline = time.monotonic() + 15
-        found: set[str] = set()
+        app = None
+        entries: list[tuple[str, str, object]] = []
         while time.monotonic() < deadline:
             if process.poll() is not None:
                 break
             desktop = Atspi.get_desktop(0)
             for index in range(desktop.get_child_count()):
-                app = desktop.get_child_at_index(index)
-                if app and "Ubuntu Start" in accessible_names(app):
-                    found = accessible_names(app)
+                candidate = desktop.get_child_at_index(index)
+                if not candidate:
+                    continue
+                candidate_entries = accessible_tree(candidate)
+                if ("frame", "Ubuntu Start") in {
+                    (role, name) for role, name, _node in candidate_entries
+                }:
+                    app = candidate
+                    entries = candidate_entries
                     break
-            if EXPECTED_PAGES.issubset(found):
-                print(f"AT-SPI exposed all {len(EXPECTED_PAGES)} guide pages by name.")
-                return 0
+            names_and_roles = {(role, name) for role, name, _node in entries}
+            if app and all(("list item", page) in names_and_roles for page in EXPECTED_PAGES):
+                break
             time.sleep(0.25)
 
-        missing = sorted(EXPECTED_PAGES - found)
+        if app is None:
+            print("AT-SPI did not expose the Ubuntu Start application window.", file=sys.stderr)
+            return 1
+
+        names_and_roles = {(role, name) for role, name, _node in entries}
+        missing = sorted(page for page in EXPECTED_PAGES if ("list item", page) not in names_and_roles)
+        if not missing:
+            about_button = next(
+                (node for role, name, node in entries if (role, name) == ("button", "About")),
+                None,
+            )
+            sidebar = next(
+                (node for role, name, node in entries if (role, name) == ("list", "Sidebar")),
+                None,
+            )
+            if about_button is None:
+                missing.append("button: About")
+            if sidebar is None:
+                missing.append("sidebar")
+            else:
+                selection = sidebar.get_selection_iface()
+                fix_index = next(
+                    (
+                        index for index in range(sidebar.get_child_count())
+                        if (item := sidebar.get_child_at_index(index))
+                        and item.get_name() == "Fix a device"
+                    ),
+                    None,
+                )
+                if selection is None or fix_index is None or not selection.select_child(fix_index):
+                    missing.append("selectable Fix a device guide")
+
+        if not missing:
+            search_deadline = time.monotonic() + 5
+            while time.monotonic() < search_deadline:
+                entries = accessible_tree(app)
+                if ("entry", "Search all guides and steps") in {
+                    (role, name) for role, name, _node in entries
+                }:
+                    print(
+                        "AT-SPI exposed all guide names, the About button, "
+                        "and the labeled guide-search entry."
+                    )
+                    return 0
+                time.sleep(0.25)
+            missing.append("entry: Search all guides and steps")
+
         log.seek(0)
         details = log.read().strip()
-        print(f"AT-SPI did not expose the expected guide pages: {', '.join(missing)}", file=sys.stderr)
+        print(f"AT-SPI did not expose expected controls: {', '.join(missing)}", file=sys.stderr)
         if details:
             print(details, file=sys.stderr)
         return 1
