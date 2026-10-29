@@ -316,6 +316,12 @@ def main() -> int:
                     )
                     if package_health_button is None:
                         missing.append("button: Check package health on Network and hardware")
+                    for control in ("Refresh display status", "Open external display guide"):
+                        if not any(
+                            role in BUTTON_ROLES and name == control
+                            for role, name, _node in entries
+                        ):
+                            missing.append(f"button: {control} on Network and hardware")
                 if not select_page("Welcome"):
                     missing.append("selectable Welcome guide before Ctrl+F")
 
@@ -347,7 +353,7 @@ def main() -> int:
                 )
                 if search_entry and search_entry.get_state_set().contains(Atspi.StateType.FOCUSED):
                     print(
-                        "AT-SPI verified guide names, About, Mouse Keys, USB, PCI, Bluetooth, date/time, video, memory, system-pressure, service-status, temperature and package-health controls, and the labeled search entry; "
+                        "AT-SPI verified guide names, About, Mouse Keys, USB, PCI, Bluetooth, date/time, video, displays, memory, system-pressure, service-status, temperature and package-health controls, and the labeled search entry; "
                         "Ctrl+F moved focus to search."
                     )
                     return 0
@@ -360,7 +366,7 @@ def main() -> int:
         observed_controls = [
             (role, name)
             for role, name, _node in entries
-            if name in {"About", "Mouse Keys", "Refresh USB device list", "Refresh PCI device list", "Open Bluetooth pairing guide", "Open date and time guide", "Refresh video device status", "Open camera guide", "Refresh memory status", "Refresh system pressure", "Refresh system service status", "Refresh temperature status", "Check package health", "Search all guides and steps"}
+            if name in {"About", "Mouse Keys", "Refresh USB device list", "Refresh PCI device list", "Open Bluetooth pairing guide", "Open date and time guide", "Refresh video device status", "Open camera guide", "Refresh display status", "Open external display guide", "Refresh memory status", "Refresh system pressure", "Refresh system service status", "Refresh temperature status", "Check package health", "Search all guides and steps"}
         ]
         if observed_controls:
             print(f"Observed accessible roles and names: {observed_controls!r}", file=sys.stderr)

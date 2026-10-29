@@ -1169,5 +1169,47 @@ class VideoStatusAnnouncementTests(unittest.TestCase):
         app.main_stack.set_visible_child_name.assert_called_once_with("Fix a device")
 
 
+class DisplayStatusAnnouncementTests(unittest.TestCase):
+    def test_display_status_shows_connection_and_active_state(self):
+        app = Mock()
+        status_label = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+        UbuntuStart.show_display_status(
+            app, Mock(), status_label, rows,
+            [{"name": "card0-HDMI-A-1", "status": "connected", "enabled": "enabled"}],
+            announce=True,
+        )
+        app.row.assert_called_once_with(
+            rows, "Display connector card0-HDMI-A-1", "Connected · Active",
+        )
+        status_label.set_text.assert_called_once_with("Display status updated: 1 connector found.")
+        app.announce_to_screen_reader.assert_called_once_with(
+            status_label,
+            "Display status updated: 1 connector found. Display connector card0-HDMI-A-1: Connected · Active",
+        )
+
+    def test_display_status_explains_when_linux_reports_no_connectors(self):
+        app = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+        UbuntuStart.show_display_status(app, Mock(), Mock(), rows, [])
+        app.row.assert_called_once_with(
+            rows,
+            "No display connector status reported by Linux.",
+            "A graphics driver or virtual machine may not expose connector data. Open Display Settings to check whether a monitor is detected.",
+        )
+
+    def test_open_display_guide_selects_external_display_steps(self):
+        app = Mock()
+        UbuntuStart.open_display_guide(app)
+        app.device_search.set_text.assert_called_once_with("")
+        app.device_chooser.set_selected.assert_called_once_with(
+            next(index for index, (title, _target, _steps) in enumerate(GUIDES)
+                 if title == "External display or projector")
+        )
+        app.main_stack.set_visible_child_name.assert_called_once_with("Fix a device")
+
+
 if __name__ == "__main__":
     unittest.main()

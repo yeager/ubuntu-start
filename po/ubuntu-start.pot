@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ubuntu Start 0.3.1\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 05:50+0100\n"
+"POT-Creation-Date: 2026-10-29 05:56+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -191,7 +191,7 @@ msgid ""
 "by Ubuntu before changing anything."
 msgstr ""
 
-#: src/ubuntu_start.py:58
+#: src/ubuntu_start.py:58 src/ubuntu_start.py:2216
 msgid "External display or projector"
 msgstr ""
 
@@ -968,7 +968,7 @@ msgstr ""
 
 #: src/ubuntu_start.py:168 src/ubuntu_start.py:173 src/ubuntu_start.py:178
 #: src/ubuntu_start.py:183 src/ubuntu_start.py:188 src/ubuntu_start.py:193
-#: src/ubuntu_start.py:2145
+#: src/ubuntu_start.py:2233
 msgid "Open Accessibility Settings"
 msgstr ""
 
@@ -1490,7 +1490,7 @@ msgid "Tips and tricks"
 msgstr ""
 
 #: src/ubuntu_start.py:284 src/ubuntu_start.py:303 src/ubuntu_start.py:461
-#: src/ubuntu_start.py:606 src/ubuntu_start.py:1042
+#: src/ubuntu_start.py:606 src/ubuntu_start.py:1042 src/ubuntu_start.py:2220
 msgid "Fix a device"
 msgstr ""
 
@@ -2776,7 +2776,7 @@ msgstr ""
 msgid "Not charging"
 msgstr ""
 
-#: src/ubuntu_start.py:1720
+#: src/ubuntu_start.py:1720 src/ubuntu_start.py:2178 src/ubuntu_start.py:2183
 msgid "Unknown"
 msgstr ""
 
@@ -2918,11 +2918,11 @@ msgstr ""
 msgid "VPN"
 msgstr ""
 
-#: src/ubuntu_start.py:1847
+#: src/ubuntu_start.py:1847 src/ubuntu_start.py:2176
 msgid "Connected"
 msgstr ""
 
-#: src/ubuntu_start.py:1848
+#: src/ubuntu_start.py:1848 src/ubuntu_start.py:2177
 msgid "Disconnected"
 msgstr ""
 
@@ -3349,46 +3349,101 @@ msgid "Could not open the requested tool"
 msgstr ""
 
 #: src/ubuntu_start.py:2136
+msgid "Display connection status"
+msgstr ""
+
+#: src/ubuntu_start.py:2137
+msgid ""
+"Read connection and active states reported for display connectors by Linux. "
+"The check does not read monitor identifiers or change display settings. Some "
+"graphics drivers and virtual machines expose limited connector data."
+msgstr ""
+
+#: src/ubuntu_start.py:2142
+msgid "Refresh display status"
+msgstr ""
+
+#: src/ubuntu_start.py:2147
+msgid "Open external display guide"
+msgstr ""
+
+#: src/ubuntu_start.py:2159
+msgid "Reading display connector status…"
+msgstr ""
+
+#: src/ubuntu_start.py:2181
+msgid "Active"
+msgstr ""
+
+#: src/ubuntu_start.py:2182
+msgid "Inactive"
+msgstr ""
+
+#: src/ubuntu_start.py:2191
+#, python-brace-format
+msgid "Display connector {name}"
+msgstr ""
+
+#: src/ubuntu_start.py:2195
+msgid "Display status updated: 1 connector found."
+msgstr ""
+
+#: src/ubuntu_start.py:2197
+#, python-brace-format
+msgid "Display status updated: {count} connectors found."
+msgstr ""
+
+#: src/ubuntu_start.py:2201
+msgid "No display connector status reported by Linux."
+msgstr ""
+
+#: src/ubuntu_start.py:2205
+msgid ""
+"A graphics driver or virtual machine may not expose connector data. Open "
+"Display Settings to check whether a monitor is detected."
+msgstr ""
+
+#: src/ubuntu_start.py:2224
 msgid "Wi-Fi is slow or keeps disconnecting"
 msgstr ""
 
-#: src/ubuntu_start.py:2137
+#: src/ubuntu_start.py:2225
 msgid "Compare the connection near the router"
 msgstr ""
 
-#: src/ubuntu_start.py:2137
+#: src/ubuntu_start.py:2225
 msgid ""
 "Move closer to the router and try the same task again. If it works better "
 "nearby, distance or obstacles may be weakening the signal."
 msgstr ""
 
-#: src/ubuntu_start.py:2138
+#: src/ubuntu_start.py:2226
 msgid "Check the active Wi-Fi link"
 msgstr ""
 
-#: src/ubuntu_start.py:2138
+#: src/ubuntu_start.py:2226
 msgid ""
 "Refresh Network status on the Network and hardware page. When available, "
 "signal values closer to 0 dBm are stronger. Receive and transmit rates "
 "describe the Wi-Fi link, not your measured internet speed."
 msgstr ""
 
-#: src/ubuntu_start.py:2139
+#: src/ubuntu_start.py:2227
 msgid "Compare another device or service"
 msgstr ""
 
-#: src/ubuntu_start.py:2139
+#: src/ubuntu_start.py:2227
 msgid ""
 "Try another device on the same Wi-Fi and another app or website. If several "
 "devices have trouble, check the router or ask your internet provider. If "
 "only this computer is affected, check its adapter and Ubuntu updates."
 msgstr ""
 
-#: src/ubuntu_start.py:2140
+#: src/ubuntu_start.py:2228
 msgid "Look for nearby channel overlap"
 msgstr ""
 
-#: src/ubuntu_start.py:2140
+#: src/ubuntu_start.py:2228
 msgid ""
 "The WiFi Analyzer recommendation on the Network and hardware page can help "
 "you review nearby signal levels and channel use. It opens an external "
@@ -3396,43 +3451,43 @@ msgid ""
 "router settings."
 msgstr ""
 
-#: src/ubuntu_start.py:2141
+#: src/ubuntu_start.py:2229
 msgid "Keep private details out of support requests"
 msgstr ""
 
-#: src/ubuntu_start.py:2141
+#: src/ubuntu_start.py:2229
 msgid ""
 "Share the adapter model, hardware ID and driver if you need help. Do not "
 "share the Wi-Fi password or private network details."
 msgstr ""
 
-#: src/ubuntu_start.py:2145
+#: src/ubuntu_start.py:2233
 msgid "Use Mouse Keys"
 msgstr ""
 
-#: src/ubuntu_start.py:2146
+#: src/ubuntu_start.py:2234
 msgid "Open Pointing & Clicking"
 msgstr ""
 
-#: src/ubuntu_start.py:2146
+#: src/ubuntu_start.py:2234
 msgid "In Accessibility Settings, open the Pointing & Clicking section."
 msgstr ""
 
-#: src/ubuntu_start.py:2147
+#: src/ubuntu_start.py:2235
 msgid "Turn on Mouse Keys"
 msgstr ""
 
-#: src/ubuntu_start.py:2147
+#: src/ubuntu_start.py:2235
 msgid ""
 "Mouse Keys lets you control the pointer with the numeric keypad. Turn Num "
 "Lock off to use the keypad for pointer movement."
 msgstr ""
 
-#: src/ubuntu_start.py:2148
+#: src/ubuntu_start.py:2236
 msgid "Test it and turn it off if needed"
 msgstr ""
 
-#: src/ubuntu_start.py:2148
+#: src/ubuntu_start.py:2236
 msgid ""
 "Try moving the pointer and clicking a simple target. Return to Pointing & "
 "Clicking to turn Mouse Keys off when you are finished."

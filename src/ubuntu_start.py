@@ -13,7 +13,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_resource_pressure, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
+from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_resource_pressure, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -942,7 +942,7 @@ class UbuntuStart(Adw.Application):
         usb_box.append(usb_rows)
         self.refresh_usb_status(usb_refresh, usb_status, usb_rows)
         box.append(usb_box)
-        return box
+        return self.add_display_status(box)
 
     def refresh_usb_status(self, button, status_label, device_rows, announce=False):
         button.set_sensitive(False)
@@ -2130,6 +2130,94 @@ class UbuntuStart(Adw.Application):
         dialog = Adw.AlertDialog(heading=_("Could not open the requested tool"), body=detail)
         dialog.add_response("close", _("Close"))
         dialog.present(self.get_active_window())
+
+    def add_display_status(self, parent):
+        display_box, _display_rows = self.page(
+            _("Display connection status"),
+            _("Read connection and active states reported for display connectors by Linux. The check does not read monitor identifiers or change display settings. Some graphics drivers and virtual machines expose limited connector data."),
+            include_rows=False,
+        )
+        display_status = Gtk.Label(label="", xalign=0, wrap=True)
+        display_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        display_refresh = Gtk.Button(label=_("Refresh display status"), halign=Gtk.Align.START)
+        display_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_display_status(display_refresh, display_status, display_rows, announce=True),
+        )
+        display_guide_button = Gtk.Button(label=_("Open external display guide"), halign=Gtk.Align.START)
+        display_guide_button.connect("clicked", lambda *_: self.open_display_guide())
+        display_box.append(display_refresh)
+        display_box.append(display_guide_button)
+        display_box.append(display_status)
+        display_box.append(display_rows)
+        parent.append(display_box)
+        self.refresh_display_status(display_refresh, display_status, display_rows)
+        return parent
+
+    def refresh_display_status(self, button, status_label, display_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Reading display connector status…"))
+        while (child := display_rows.get_first_child()) is not None:
+            display_rows.remove(child)
+
+        def read_status():
+            connectors = read_display_connectors()
+            GLib.idle_add(
+                self.show_display_status, button, status_label, display_rows, connectors, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_display_status(self, button, status_label, display_rows, connectors, announce=False):
+        button.set_sensitive(True)
+        while (child := display_rows.get_first_child()) is not None:
+            display_rows.remove(child)
+        connection_states = {
+            "connected": _("Connected"),
+            "disconnected": _("Disconnected"),
+            "unknown": _("Unknown"),
+        }
+        enabled_states = {
+            "enabled": _("Active"),
+            "disabled": _("Inactive"),
+            "unknown": _("Unknown"),
+        }
+        if connectors:
+            details = []
+            for connector in connectors:
+                connection = connection_states[connector["status"]]
+                enabled = enabled_states.get(connector["enabled"])
+                subtitle = f"{connection} · {enabled}" if enabled else connection
+                title = _("Display connector {name}").format(name=connector["name"])
+                self.row(display_rows, title, subtitle)
+                details.append(f"{title}: {subtitle}")
+            if len(connectors) == 1:
+                message = _("Display status updated: 1 connector found.")
+            else:
+                message = _("Display status updated: {count} connectors found.").format(
+                    count=len(connectors),
+                )
+        else:
+            message = _("No display connector status reported by Linux.")
+            self.row(
+                display_rows,
+                message,
+                _("A graphics driver or virtual machine may not expose connector data. Open Display Settings to check whether a monitor is detected."),
+            )
+            details = [message]
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, f"{message} {'; '.join(details)}")
+        return GLib.SOURCE_REMOVE
+
+    def open_display_guide(self):
+        display_index = next(
+            index for index, (title, _target, _steps) in enumerate(GUIDES)
+            if title == _("External display or projector")
+        )
+        self.device_search.set_text("")
+        self.device_chooser.set_selected(display_index)
+        self.main_stack.set_visible_child_name(_("Fix a device"))
 
 
 GUIDES.extend([

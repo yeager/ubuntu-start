@@ -105,6 +105,28 @@ def read_video_devices(sysfs_directory: str | Path = "/sys/class/video4linux") -
     return devices
 
 
+def read_display_connectors(drm_directory: str | Path = "/sys/class/drm") -> list[dict[str, str | None]]:
+    """Read DRM connector state only; do not read monitor EDID or identifiers."""
+    directory = Path(drm_directory)
+    try:
+        entries = sorted(directory.iterdir(), key=lambda path: path.name)
+    except OSError:
+        return []
+
+    connectors = []
+    for entry in entries:
+        if not re.fullmatch(r"card\d+-[A-Za-z0-9_.-]{1,64}", entry.name) or not entry.is_dir():
+            continue
+        status = _read(entry / "status")
+        if status not in {"connected", "disconnected", "unknown"}:
+            continue
+        enabled = _read(entry / "enabled")
+        if enabled not in {"enabled", "disabled", "unknown"}:
+            enabled = None
+        connectors.append({"name": entry.name, "status": status, "enabled": enabled})
+    return connectors
+
+
 def parse_iw_link_status(output: str) -> dict[str, float | int]:
     """Extract signal and link rates without retaining SSID or access-point MAC."""
     details: dict[str, float | int] = {}

@@ -49,6 +49,7 @@ from system_diagnostics import (
     read_storage_status,
     read_storage_locations,
     read_video_devices,
+    read_display_connectors,
     parse_time_status,
     read_time_status,
     read_usb_devices,
@@ -913,6 +914,38 @@ class VideoDeviceTests(unittest.TestCase):
     def test_handles_missing_video_subsystem_directory(self):
         with tempfile.TemporaryDirectory() as temporary:
             self.assertEqual(read_video_devices(Path(temporary) / "missing"), [])
+
+
+class DisplayConnectorTests(unittest.TestCase):
+    def test_reads_only_valid_connector_states_without_monitor_identifiers(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            for name, status, enabled in (
+                ("card0-HDMI-A-1", "connected", "enabled"),
+                ("card0-DP-1", "disconnected", "disabled"),
+                ("card1-Virtual-1", "unknown", None),
+                ("card0-connector;bad", "connected", "enabled"),
+                ("card0-HDMI-A-2", "faulty", "enabled"),
+            ):
+                connector = root / name
+                connector.mkdir()
+                (connector / "status").write_text(f"{status}\n", encoding="utf-8")
+                if enabled:
+                    (connector / "enabled").write_text(f"{enabled}\n", encoding="utf-8")
+            (root / "card0").mkdir()
+            (root / "renderD128").mkdir()
+
+            result = read_display_connectors(root)
+
+        self.assertEqual(result, [
+            {"name": "card0-DP-1", "status": "disconnected", "enabled": "disabled"},
+            {"name": "card0-HDMI-A-1", "status": "connected", "enabled": "enabled"},
+            {"name": "card1-Virtual-1", "status": "unknown", "enabled": None},
+        ])
+
+    def test_handles_missing_drm_directory(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            self.assertEqual(read_display_connectors(Path(temporary) / "missing"), [])
 
 
 class LocalDiagnosticsTests(unittest.TestCase):
