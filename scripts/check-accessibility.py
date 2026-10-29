@@ -186,6 +186,10 @@ def main() -> int:
                             if name in checklist_tasks or "check" in role.casefold()
                         ]
                         print(f"Checklist AT-SPI entries: {observed_checklist!r}", file=sys.stderr)
+                        print(
+                            f"Get started AT-SPI sample: {[(role, name) for role, name, _node in entries[:100]]!r}",
+                            file=sys.stderr,
+                        )
                     for task in sorted(checklist_tasks - checklist_controls):
                         missing.append(f"accessible checklist checkbox: {task}")
 
