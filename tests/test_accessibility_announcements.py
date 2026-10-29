@@ -260,7 +260,7 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
             for step_title, description in steps
         ]
 
-        matches = find_guide_matches("LTS interim support upgrade backup disk space", entries)
+        matches = find_guide_matches("LTS interim support upgrade back up disk space", entries)
 
         self.assertTrue(matches)
         self.assertTrue(all(match[2] == "Plan an Ubuntu version upgrade" for match in matches))
