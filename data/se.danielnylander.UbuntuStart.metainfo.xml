@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.23" date="2026-10-29">
+      <description>
+        <p>Add a Bluetooth audio guide for selecting headset output and understanding call-profile changes.</p>
+        <p xml:lang="sv">Lägg till en guide för Bluetooth-ljud, val av headsetutgång och ljudprofiler vid samtal.</p>
+      </description>
+    </release>
     <release version="0.3.22" date="2026-10-29">
       <description>
         <p>Add a step-by-step guide to automatic screen locking, with clear advice about session locks and disk encryption.</p>

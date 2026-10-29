@@ -588,6 +588,19 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.app.system_guide_chooser.set_selected.assert_called_once_with(expected_index)
         self.app.main_stack.set_visible_child_name.assert_called_once_with("System guides")
 
+    def test_open_bluetooth_audio_guide_selects_audio_instructions(self):
+        self.app.system_guide_chooser = Mock()
+        self.app.main_stack = Mock()
+
+        UbuntuStart.open_bluetooth_audio_guide(self.app)
+
+        expected_index = next(
+            index for index, (title, _target, _action, _steps) in enumerate(SYSTEM_GUIDES)
+            if title == "Fix Bluetooth audio"
+        )
+        self.app.system_guide_chooser.set_selected.assert_called_once_with(expected_index)
+        self.app.main_stack.set_visible_child_name.assert_called_once_with("System guides")
+
     def test_open_battery_guide_selects_charging_instructions(self):
         self.app.device_search = Mock()
         self.app.device_chooser = Mock()
@@ -1395,6 +1408,23 @@ class DriverGuideTests(unittest.TestCase):
 
 
 class SystemGuideTests(unittest.TestCase):
+    def test_bluetooth_audio_guide_is_searchable_and_explains_call_profile_tradeoff(self):
+        guide = next(guide for guide in SYSTEM_GUIDES if guide[0] == "Fix Bluetooth audio")
+        title, target, action, steps = guide
+        entries = [
+            ("system", index, title, step_title, description)
+            for index, (step_title, description) in enumerate(steps)
+        ]
+        matches = find_guide_matches("Bluetooth headset microphone", entries)
+        step_text = " ".join(f"{step} {description}" for step, description in steps)
+
+        self.assertEqual(target, ("settings", "sound"))
+        self.assertEqual(action, "Open Sound Settings")
+        self.assertTrue(matches)
+        self.assertIn("call profile", step_text)
+        self.assertIn("playback quality", step_text)
+        self.assertIn("vary by headset", step_text)
+
     def test_screen_lock_guide_is_searchable_and_distinguishes_lock_from_encryption(self):
         guide = next(
             guide for guide in SYSTEM_GUIDES

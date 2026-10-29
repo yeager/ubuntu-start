@@ -192,6 +192,13 @@ SYSTEM_GUIDES = [
         (_("Select and pair the device"), _("Choose the device from the list and confirm the pairing code on both devices if prompted.")),
         (_("Reconnect if pairing fails"), _("Remove an old pairing, restart Bluetooth on the device and computer, then try again.")),
     ]),
+    (_("Fix Bluetooth audio"), ("settings", "sound"), _("Open Sound Settings"), [
+        (_("Check that the headset is connected"), _("Charge the headset, enable Bluetooth and connect it in Bluetooth Settings. If it is not paired yet, use the Bluetooth pairing guide first.")),
+        (_("Select the headset as the output"), _("Open Sound Settings and select the headset under Output. Check that the volume is up and the device is not muted.")),
+        (_("Choose the right microphone for calls"), _("For calls, check which microphone the app uses. Some headsets switch to a call profile while their microphone is active, which can change playback quality. Available profiles vary by headset.")),
+        (_("Test audio in another app"), _("Play a familiar sound in another app. If it works there, check the original app’s volume and audio-device settings.")),
+        (_("Pair again only if needed"), _("If the headset still has no sound, remove its old pairing in Bluetooth Settings, put it back in pairing mode and connect it again. Do not install drivers from an unfamiliar website.")),
+    ]),
     (_("Fix an external display"), ("settings", "display"), _("Open Display Settings"), [
         (_("Select the right input"), _("Turn on the display and select the input that matches its cable.")),
         (_("Check cable and adapter"), _("Reconnect both ends. If you use a dock or adapter, test a direct connection when possible.")),
@@ -922,9 +929,14 @@ class UbuntuStart(Adw.Application):
             label=_("Open sound and microphone guide"), halign=Gtk.Align.START,
         )
         audio_guide_button.connect("clicked", lambda *_: self.open_sound_guide())
+        bluetooth_audio_guide_button = Gtk.Button(
+            label=_("Open Bluetooth audio guide"), halign=Gtk.Align.START,
+        )
+        bluetooth_audio_guide_button.connect("clicked", lambda *_: self.open_bluetooth_audio_guide())
         audio_box.append(audio_refresh)
         audio_box.append(audio_settings_button)
         audio_box.append(audio_guide_button)
+        audio_box.append(bluetooth_audio_guide_button)
         box.append(audio_box)
         self.refresh_audio_status(output_status, input_status)
 
@@ -2052,6 +2064,14 @@ class UbuntuStart(Adw.Application):
         guide_index = next(
             index for index, (title, _target, _action, _steps) in enumerate(SYSTEM_GUIDES)
             if title == _("Pair a Bluetooth device")
+        )
+        self.system_guide_chooser.set_selected(guide_index)
+        self.main_stack.set_visible_child_name(_("System guides"))
+
+    def open_bluetooth_audio_guide(self):
+        guide_index = next(
+            index for index, (title, _target, _action, _steps) in enumerate(SYSTEM_GUIDES)
+            if title == _("Fix Bluetooth audio")
         )
         self.system_guide_chooser.set_selected(guide_index)
         self.main_stack.set_visible_child_name(_("System guides"))

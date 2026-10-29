@@ -641,7 +641,7 @@ def main() -> int:
                     for control in (
                         "Refresh radio status", "Open battery and charging guide",
                         "Open Wi-Fi troubleshooting guide", "Open sound and microphone guide",
-                        "Open Sound Settings",
+                        "Open Sound Settings", "Open Bluetooth audio guide",
                         "Refresh display status", "Open external display guide",
                         "Check backup app", "Open Backups", "Open Ubuntu App Center",
                     ):
@@ -700,7 +700,7 @@ def main() -> int:
                 )
                 if search_entry and search_entry.get_state_set().contains(Atspi.StateType.FOCUSED):
                     print(
-                        "AT-SPI verified guide names, About, Mouse Keys, Accessibility Settings, USB, PCI, Bluetooth, wireless-radio, Wi-Fi, sound, battery, backup-app controls, date/time, video, displays, printer queue guide, memory, benchmark readiness, graphics benchmark result and cancellation, system-pressure, service-status, temperature, package-health and Secure Boot controls, and the labeled search entry; "
+                        "AT-SPI verified guide names, About, Mouse Keys, Accessibility Settings, USB, PCI, Bluetooth pairing and audio, wireless-radio, Wi-Fi, sound, battery, backup-app controls, date/time, video, displays, printer queue guide, memory, benchmark readiness, graphics benchmark result and cancellation, system-pressure, service-status, temperature, package-health and Secure Boot controls, and the labeled search entry; "
                         "Ctrl+F moved focus to search."
                     )
                     return 0
@@ -713,7 +713,7 @@ def main() -> int:
         observed_controls = [
             (role, name)
             for role, name, _node in entries
-            if name in {"About", "Mouse Keys", "Open Accessibility Settings", "Refresh USB device list", "Refresh PCI device list", "Open Bluetooth pairing guide", "Open date and time guide", "Refresh radio status", "Open Wi-Fi troubleshooting guide", "Open sound and microphone guide", "Open battery and charging guide", "Refresh video device status", "Open camera guide", "Refresh display status", "Open external display guide", "Refresh printer status", "Open print queue guide", "Refresh memory status", "Check benchmark readiness", "Run CPU benchmark", "Run graphics benchmark", "Cancel graphics benchmark", "Open disk read benchmark", "Open GNOME disk benchmark guide", "Open optional disk write benchmark…", "Refresh system pressure", "Refresh system service status", "Refresh temperature status", "Check package health", "Check backup app", "Open Backups", "Open Ubuntu App Center", "Check Secure Boot status", "Search all guides and steps"}
+            if name in {"About", "Mouse Keys", "Open Accessibility Settings", "Refresh USB device list", "Refresh PCI device list", "Open Bluetooth pairing guide", "Open Bluetooth audio guide", "Open date and time guide", "Refresh radio status", "Open Wi-Fi troubleshooting guide", "Open sound and microphone guide", "Open battery and charging guide", "Refresh video device status", "Open camera guide", "Refresh display status", "Open external display guide", "Refresh printer status", "Open print queue guide", "Refresh memory status", "Check benchmark readiness", "Run CPU benchmark", "Run graphics benchmark", "Cancel graphics benchmark", "Open disk read benchmark", "Open GNOME disk benchmark guide", "Open optional disk write benchmark…", "Refresh system pressure", "Refresh system service status", "Refresh temperature status", "Check package health", "Check backup app", "Open Backups", "Open Ubuntu App Center", "Check Secure Boot status", "Search all guides and steps"}
         ]
         if observed_controls:
             print(f"Observed accessible roles and names: {observed_controls!r}", file=sys.stderr)
