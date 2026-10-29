@@ -13,7 +13,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import battery_is_discharging, battery_power_status_unknown, benchmark_score_change_percent, build_support_report, check_internet_connection, find_benchmark_tool, find_graphics_benchmark_tool, parse_glmark2_score, pressure_threshold_exceeded, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_reboot_required, read_resource_pressure, read_rfkill_status, read_secure_boot_status, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_cpu_benchmark, run_network_diagnostics, sensor_near_critical_limit
+from system_diagnostics import battery_is_discharging, battery_power_status_unknown, benchmark_score_change_percent, build_support_report, check_internet_connection, clear_benchmark_baselines, find_benchmark_tool, find_graphics_benchmark_tool, load_benchmark_baselines, parse_glmark2_score, pressure_threshold_exceeded, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_reboot_required, read_resource_pressure, read_rfkill_status, read_secure_boot_status, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_cpu_benchmark, run_network_diagnostics, save_benchmark_baseline, sensor_near_critical_limit
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -990,9 +990,29 @@ class UbuntuStart(Adw.Application):
             include_rows=False,
         )
         benchmark_status = Gtk.Label(label=_("Before testing: connect power, save work, close heavy apps and let the computer cool. Benchmarks can make the computer warm and use battery power."), xalign=0, wrap=True)
-        benchmark_results = Gtk.Label(label=_("No benchmark has run yet."), xalign=0, wrap=True)
-        previous_cpu_score = {"value": None}
-        previous_graphics_score = {"value": None}
+        saved_benchmarks = load_benchmark_baselines()
+        saved_cpu = saved_benchmarks.get("cpu", {})
+        saved_graphics = saved_benchmarks.get("graphics", {})
+        previous_cpu_score = {"value": saved_cpu.get("score")}
+        previous_graphics_score = {"value": saved_graphics.get("score")}
+        saved_results = []
+        if previous_cpu_score["value"] and saved_cpu.get("duration_seconds"):
+            saved_results.append(_("Single-thread CPU baseline: {score} iterations/second ({duration} seconds). Run again after a change to compare.").format(
+                score=round(previous_cpu_score["value"]),
+                duration=saved_cpu["duration_seconds"],
+            ))
+        if previous_graphics_score["value"]:
+            saved_results.append(_("Graphics baseline: {score}. Run again later to compare with the same settings.").format(
+                score=round(previous_graphics_score["value"]),
+            ))
+        benchmark_results = Gtk.Label(
+            label="\n".join(saved_results) if saved_results else _("No benchmark has run yet."),
+            xalign=0,
+            wrap=True,
+        )
+        clear_benchmark_button = Gtk.Button(
+            label=_("Clear saved benchmark results"), halign=Gtk.Align.START,
+        )
         precheck = Gtk.Button(label=_("Check benchmark readiness"), halign=Gtk.Align.START)
         cpu_button = Gtk.Button(label=_("Run CPU benchmark"), halign=Gtk.Align.START)
         graphics_button = Gtk.Button(label=_("Run graphics benchmark"), halign=Gtk.Align.START)
@@ -1074,6 +1094,8 @@ class UbuntuStart(Adw.Application):
 
         def start_cpu():
             cpu_button.set_sensitive(False)
+            graphics_button.set_sensitive(False)
+            clear_benchmark_button.set_sensitive(False)
             message = _("Running CPU benchmark…")
             benchmark_results.set_text(message)
             self.announce_to_screen_reader(benchmark_results, message)
@@ -1084,6 +1106,7 @@ class UbuntuStart(Adw.Application):
 
         def show_cpu(result):
             cpu_button.set_sensitive(True)
+            graphics_button.set_sensitive(True)
             score = result["iterations_per_second"]
             previous = previous_cpu_score["value"]
             change = benchmark_score_change_percent(score, previous) if previous else None
@@ -1092,6 +1115,12 @@ class UbuntuStart(Adw.Application):
             else:
                 message = _("Single-thread CPU baseline: {score} iterations/second ({duration} seconds). Run again after a change to compare.").format(score=score, duration=result["duration_seconds"])
             previous_cpu_score["value"] = score
+            saved = save_benchmark_baseline(
+                "cpu", score, result["duration_seconds"],
+            )
+            clear_benchmark_button.set_sensitive(True)
+            if not saved:
+                message += "\n" + _("This score could not be saved locally for future comparisons.")
             benchmark_results.set_text(message)
             self.announce_to_screen_reader(benchmark_results, message)
 
@@ -1111,6 +1140,8 @@ class UbuntuStart(Adw.Application):
 
         def run_graphics(executable):
             graphics_button.set_sensitive(False)
+            cpu_button.set_sensitive(False)
+            clear_benchmark_button.set_sensitive(False)
             graphics_run["cancelled"] = False
             message = _("Running graphics benchmark…")
             benchmark_results.set_text(message)
@@ -1125,6 +1156,8 @@ class UbuntuStart(Adw.Application):
                 process.communicate_utf8_async(None, None, graphics_finished, None)
             except GLib.Error:
                 graphics_button.set_sensitive(True)
+                cpu_button.set_sensitive(True)
+                clear_benchmark_button.set_sensitive(True)
                 message = _("Could not start the graphics benchmark.")
                 benchmark_results.set_text(message)
                 self.announce_to_screen_reader(benchmark_results, message)
@@ -1142,8 +1175,10 @@ class UbuntuStart(Adw.Application):
 
         def graphics_finished(process, async_result, _user_data):
             graphics_button.set_sensitive(True)
+            cpu_button.set_sensitive(True)
             cancel_graphics_button.set_sensitive(False)
             graphics_run["process"] = None
+            clear_benchmark_button.set_sensitive(True)
             try:
                 completed, output, _stderr = process.communicate_utf8_finish(async_result)
             except GLib.Error:
@@ -1165,6 +1200,31 @@ class UbuntuStart(Adw.Application):
                     else:
                         message = _("Graphics score: {score}; {change} % since the previous run. Keep the display, driver and session the same when comparing.").format(score=score, change=f"{change:+.1f}")
                     previous_graphics_score["value"] = score
+                    if not save_benchmark_baseline("graphics", score):
+                        message += "\n" + _("This score could not be saved locally for future comparisons.")
+            benchmark_results.set_text(message)
+            self.announce_to_screen_reader(benchmark_results, message)
+
+        def confirm_clear_benchmarks(*_args):
+            dialog = Adw.AlertDialog(
+                heading=_("Clear saved benchmark results?"),
+                body=_("This removes the CPU and graphics scores saved on this computer. It does not affect system settings or installed applications."),
+            )
+            dialog.add_response("cancel", _("Cancel"))
+            dialog.add_response("clear", _("Clear saved results"))
+            dialog.set_default_response("cancel")
+            dialog.connect("response", clear_benchmarks)
+            dialog.present(self.get_active_window())
+
+        def clear_benchmarks(_dialog, response):
+            if response != "clear":
+                return
+            if not clear_benchmark_baselines():
+                message = _("Could not clear saved benchmark results.")
+            else:
+                previous_cpu_score["value"] = None
+                previous_graphics_score["value"] = None
+                message = _("Saved benchmark results cleared.")
             benchmark_results.set_text(message)
             self.announce_to_screen_reader(benchmark_results, message)
 
@@ -1205,7 +1265,8 @@ class UbuntuStart(Adw.Application):
             _("This opens GNOME's online guide to disk tests and results in your browser. The website receives a normal web request and can see your IP address."),
         ))
         disk_write_button.connect("clicked", launch_write)
-        for widget in (precheck, cpu_button, graphics_button, cancel_graphics_button, disk_button, disk_help_button, disk_write_button, benchmark_status, benchmark_results):
+        clear_benchmark_button.connect("clicked", confirm_clear_benchmarks)
+        for widget in (precheck, cpu_button, graphics_button, cancel_graphics_button, disk_button, disk_help_button, disk_write_button, clear_benchmark_button, benchmark_status, benchmark_results):
             benchmark_box.append(widget)
         box.append(benchmark_box)
 

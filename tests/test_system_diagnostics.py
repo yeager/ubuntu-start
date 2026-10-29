@@ -39,6 +39,10 @@ from system_diagnostics import (
     read_reboot_required,
     read_power_profile,
     run_cpu_benchmark,
+    clear_benchmark_baselines,
+    get_application_version,
+    load_benchmark_baselines,
+    save_benchmark_baseline,
     find_benchmark_tool,
     benchmark_score_change_percent,
     find_graphics_benchmark_tool,
@@ -75,6 +79,75 @@ from system_diagnostics import (
 
 
 class BenchmarkTests(unittest.TestCase):
+    def test_application_version_can_be_read_from_source_metadata(self):
+        with tempfile.TemporaryDirectory() as directory:
+            project_file = Path(directory) / "pyproject.toml"
+            project_file.write_text('[project]\nversion = "4.2.1"\n', encoding="utf-8")
+            self.assertEqual(get_application_version(project_file), "4.2.1")
+
+    def test_benchmark_baselines_persist_scores_with_private_file_permissions(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "benchmarks.json"
+            app_version = get_application_version()
+            self.assertTrue(save_benchmark_baseline(
+                "graphics", 5678, path=path, recorded_at="2026-10-29T10:01:00+00:00",
+                session_type="wayland", app_version=app_version,
+            ))
+            self.assertTrue(save_benchmark_baseline(
+                "cpu", 1234, 1.0, path, recorded_at="2026-10-29T10:00:00+00:00",
+                app_version=app_version,
+            ))
+
+            baselines = load_benchmark_baselines(path, session_type="wayland")
+            self.assertEqual(baselines["cpu"]["score"], 1234.0)
+            self.assertEqual(baselines["cpu"]["duration_seconds"], 1.0)
+            self.assertEqual(baselines["graphics"]["score"], 5678.0)
+            self.assertEqual(baselines["graphics"]["session_type"], "wayland")
+            self.assertEqual(baselines["cpu"]["app_version"], app_version)
+            self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+            self.assertNotIn("hostname", path.read_text(encoding="utf-8"))
+            self.assertNotIn("graphics", load_benchmark_baselines(path, session_type="x11"))
+            self.assertEqual(load_benchmark_baselines(path, app_version="99.99"), {})
+
+    def test_benchmark_baselines_ignore_invalid_scores_and_unknown_methods(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "benchmarks.json"
+            path.write_text(
+                '{"schema_version":2,"baselines":{'
+                '"cpu":{"method":"python-integer-loop-v1","score":NaN},'
+                '"graphics":{"method":"unknown","score":500}}}',
+                encoding="utf-8",
+            )
+            self.assertEqual(load_benchmark_baselines(path), {})
+            self.assertFalse(save_benchmark_baseline("cpu", float("inf"), path=path))
+            self.assertFalse(save_benchmark_baseline("unknown", 10, path=path))
+
+    def test_benchmark_baselines_ignore_unsupported_schema_versions(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "benchmarks.json"
+            path.write_text(
+                '{"schema_version":3,"baselines":{"cpu":'
+                '{"method":"python-integer-loop-v1","score":100}}}',
+                encoding="utf-8",
+            )
+            self.assertEqual(load_benchmark_baselines(path), {})
+
+    def test_benchmark_baselines_can_be_cleared(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "benchmarks.json"
+            self.assertTrue(save_benchmark_baseline("cpu", 1234, 1.0, path))
+            self.assertTrue(clear_benchmark_baselines(path))
+            self.assertFalse(path.exists())
+            self.assertEqual(load_benchmark_baselines(path), {})
+            self.assertTrue(clear_benchmark_baselines(path))
+
+    def test_benchmark_baseline_save_reports_unwritable_state_location(self):
+        with tempfile.TemporaryDirectory() as directory:
+            not_a_directory = Path(directory) / "file"
+            not_a_directory.write_text("", encoding="utf-8")
+            path = not_a_directory / "benchmarks.json"
+            self.assertFalse(save_benchmark_baseline("cpu", 1234, 1.0, path))
+
     def test_battery_readiness_uses_reported_state(self):
         self.assertTrue(battery_is_discharging([{"status": "Discharging"}]))
         self.assertFalse(battery_is_discharging([{"status": "Charging"}]))
