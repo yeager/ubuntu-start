@@ -187,12 +187,21 @@ def read_bluetooth_status(
     timeout: float = 3.0,
     controller_path: str | Path = "/sys/class/bluetooth",
 ) -> str:
-    """Read local Bluetooth controller power state without scanning for devices."""
-    if shutil.which("bluetoothctl") is None:
-        return "not-installed"
+    """Read adapter, service and controller state without scanning for devices."""
     if not any(Path(controller_path).glob("hci*")):
         return "no-controller"
-    result = _run_local(["bluetoothctl", "show"], timeout)
+    systemctl = shutil.which("systemctl")
+    if systemctl:
+        service = _run_local(
+            [systemctl, "is-active", "bluetooth.service"], timeout,
+            env={**os.environ, "LC_ALL": "C"},
+        )
+        if service and service.stdout.strip() in {"inactive", "failed"}:
+            return f"service-{service.stdout.strip()}"
+    bluetoothctl = shutil.which("bluetoothctl")
+    if bluetoothctl is None:
+        return "not-installed"
+    result = _run_local([bluetoothctl, "show"], timeout)
     if result is None:
         return "timeout-or-unavailable"
     if result.returncode != 0:

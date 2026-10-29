@@ -149,6 +149,7 @@ SYSTEM_GUIDES = [
     (_("Pair a Bluetooth device"), ("settings", "bluetooth"), _("Open Bluetooth Settings"), [
         (_("Prepare the device"), _("Charge the device, keep it nearby and follow its instructions to enable pairing mode.")),
         (_("Enable Bluetooth"), _("Open Bluetooth Settings and make sure Bluetooth is switched on. Managed computers may restrict this setting.")),
+        (_("Check the Bluetooth service"), _("Open Network and hardware and refresh Bluetooth status. If the service is not running or has failed, refresh System service status and ask for help before changing service settings.")),
         (_("Select and pair the device"), _("Choose the device from the list and confirm the pairing code on both devices if prompted.")),
         (_("Reconnect if pairing fails"), _("Remove an old pairing, restart Bluetooth on the device and computer, then try again.")),
     ]),
@@ -619,7 +620,10 @@ class UbuntuStart(Adw.Application):
         bluetooth_rows.append(bluetooth_status)
         bluetooth_refresh = Gtk.Button(label=_("Refresh Bluetooth status"), halign=Gtk.Align.START)
         bluetooth_refresh.connect("clicked", lambda *_: self.refresh_bluetooth_status(bluetooth_status, announce=True))
+        bluetooth_guide_button = Gtk.Button(label=_("Open Bluetooth pairing guide"), halign=Gtk.Align.START)
+        bluetooth_guide_button.connect("clicked", lambda *_: self.open_bluetooth_guide())
         bluetooth_box.append(bluetooth_refresh)
+        bluetooth_box.append(bluetooth_guide_button)
         box.append(bluetooth_box)
         self.refresh_bluetooth_status(bluetooth_status)
 
@@ -1176,6 +1180,8 @@ class UbuntuStart(Adw.Application):
             "powered": _("On"),
             "off": _("Off"),
             "no-controller": _("No Bluetooth controller found"),
+            "service-inactive": _("Bluetooth service is not running. Refresh System service status for details."),
+            "service-failed": _("Bluetooth service has failed. Refresh System service status for details."),
             "unknown": _("Power state is unknown"),
             "not-installed": _("Bluetooth command-line tool is not installed"),
             "timeout-or-unavailable": _("Bluetooth controller did not respond in time"),
@@ -1186,6 +1192,14 @@ class UbuntuStart(Adw.Application):
         if announce:
             self.announce_to_screen_reader(status_row, f"{status_row.get_title()}: {message}")
         return GLib.SOURCE_REMOVE
+
+    def open_bluetooth_guide(self):
+        guide_index = next(
+            index for index, (title, _target, _action, _steps) in enumerate(SYSTEM_GUIDES)
+            if title == _("Pair a Bluetooth device")
+        )
+        self.system_guide_chooser.set_selected(guide_index)
+        self.main_stack.set_visible_child_name(_("System guides"))
 
     def refresh_audio_status(self, output_row, input_row, announce=False):
         output_row.set_subtitle(_("Checking status…"))

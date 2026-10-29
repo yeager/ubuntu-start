@@ -387,26 +387,57 @@ class BluetoothStatusTests(unittest.TestCase):
 
     @patch("system_diagnostics.shutil.which", return_value=None)
     def test_handles_missing_bluetooth_command(self, _which):
-        self.assertEqual(read_bluetooth_status(), "not-installed")
+        with tempfile.TemporaryDirectory() as temporary:
+            (Path(temporary) / "hci0").mkdir()
+            self.assertEqual(read_bluetooth_status(controller_path=temporary), "not-installed")
 
     @patch("system_diagnostics._run_local")
-    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/bluetoothctl")
-    def test_reports_absent_controller_without_waiting_on_bluetooth_service(self, _which, run):
+    @patch("system_diagnostics.shutil.which")
+    def test_reports_absent_controller_without_waiting_on_bluetooth_service(self, which, run):
         with tempfile.TemporaryDirectory() as temporary:
             self.assertEqual(read_bluetooth_status(controller_path=temporary), "no-controller")
+        which.assert_not_called()
         run.assert_not_called()
 
     @patch("system_diagnostics._run_local")
-    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/bluetoothctl")
-    def test_reads_controller_state_without_scanning(self, _which, run):
-        run.return_value = subprocess.CompletedProcess(
-            ["bluetoothctl", "show"], 0,
-            "Controller AA:BB:CC:DD:EE:FF (public)\n\tPowered: yes\n", "",
-        )
+    @patch("system_diagnostics.shutil.which")
+    def test_reads_service_and_controller_state_without_scanning(self, which, run):
+        which.side_effect = lambda command: {
+            "systemctl": "/usr/bin/systemctl", "bluetoothctl": "/usr/bin/bluetoothctl",
+        }.get(command)
+        run.side_effect = [
+            subprocess.CompletedProcess(["systemctl", "is-active", "bluetooth.service"], 0, "active\n", ""),
+            subprocess.CompletedProcess(
+                ["bluetoothctl", "show"], 0,
+                "Controller AA:BB:CC:DD:EE:FF (public)\n\tPowered: yes\n", "",
+            ),
+        ]
         with tempfile.TemporaryDirectory() as temporary:
             (Path(temporary) / "hci0").mkdir()
             self.assertEqual(read_bluetooth_status(controller_path=temporary), "powered")
-        self.assertEqual(run.call_args.args[0], ["bluetoothctl", "show"])
+        self.assertEqual(run.call_args_list[0].args[0], [
+            "/usr/bin/systemctl", "is-active", "bluetooth.service",
+        ])
+        self.assertEqual(run.call_args_list[0].kwargs["env"]["LC_ALL"], "C")
+        self.assertEqual(run.call_args_list[1].args[0], ["/usr/bin/bluetoothctl", "show"])
+
+    @patch("system_diagnostics._run_local")
+    @patch("system_diagnostics.shutil.which")
+    def test_distinguishes_inactive_bluetooth_service(self, which, run):
+        which.side_effect = lambda command: {
+            "systemctl": "/usr/bin/systemctl", "bluetoothctl": "/usr/bin/bluetoothctl",
+        }.get(command)
+        run.return_value = subprocess.CompletedProcess(
+            ["systemctl", "is-active", "bluetooth.service"], 3, "inactive\n", "",
+        )
+        with tempfile.TemporaryDirectory() as temporary:
+            (Path(temporary) / "hci0").mkdir()
+            self.assertEqual(read_bluetooth_status(controller_path=temporary), "service-inactive")
+        run.assert_called_once()
+        self.assertEqual(run.call_args.args[0], [
+            "/usr/bin/systemctl", "is-active", "bluetooth.service",
+        ])
+        self.assertEqual(run.call_args.kwargs["env"]["LC_ALL"], "C")
 
 
 class AudioStatusTests(unittest.TestCase):

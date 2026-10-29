@@ -46,7 +46,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contributor guidance and the maintain
 - A beginner-friendly Terminal guide explains the prompt, command output and errors, `pwd`, `ls`, `cd`, paths with spaces, Tab completion, command history, `--help`, `man`, `sudo` and safe ways to stop a command.
 - Optional connection diagnostics report DNS lookup and gateway ping latency in milliseconds, plus the gateway MAC address and a local OUI vendor match. The test asks before running; it sends one DNS lookup to the configured resolver and one ping to the local gateway.
 - DNS and gateway results include clear next steps when checks fail, while explaining that some gateways block ping.
-- Read-only Bluetooth status reports whether a controller is present and powered on without scanning for nearby devices.
+- Read-only Bluetooth status reports whether a controller is present and powered on without scanning for nearby devices. When a controller is exposed, it also distinguishes inactive or failed Bluetooth services and links directly to the pairing guide.
 - Read-only audio status shows default speaker and microphone names when PipeWire exposes them, along with volume and mute state through PipeWire or PulseAudio. It does not play sound or change settings.
 - Read-only printer status lists queue names and basic states from the local CUPS service. It does not send print jobs or contact printers directly.
 - Read-only video status lists device names reported by Linux's video4linux subsystem and links to the camera troubleshooting guide. It does not open camera devices or test video or audio; a missing device can also result from a privacy switch, permissions or driver support.

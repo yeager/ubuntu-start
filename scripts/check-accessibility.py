@@ -192,6 +192,15 @@ def main() -> int:
                         time.sleep(0.25)
                     if pci_refresh_button is None:
                         missing.append("button: Refresh PCI device list on Network and hardware")
+                    bluetooth_guide_button = next(
+                        (
+                            node for role, name, node in entries
+                            if role in BUTTON_ROLES and name == "Open Bluetooth pairing guide"
+                        ),
+                        None,
+                    )
+                    if bluetooth_guide_button is None:
+                        missing.append("button: Open Bluetooth pairing guide on Network and hardware")
                     video_deadline = time.monotonic() + 5
                     camera_guide_button = None
                     while time.monotonic() < video_deadline:
@@ -312,7 +321,7 @@ def main() -> int:
                 )
                 if search_entry and search_entry.get_state_set().contains(Atspi.StateType.FOCUSED):
                     print(
-                        "AT-SPI verified guide names, About, USB, PCI, date/time, video, memory, system-pressure, service-status and temperature controls, and the labeled search entry; "
+                        "AT-SPI verified guide names, About, USB, PCI, Bluetooth, date/time, video, memory, system-pressure, service-status and temperature controls, and the labeled search entry; "
                         "Ctrl+F moved focus to search."
                     )
                     return 0
@@ -325,7 +334,7 @@ def main() -> int:
         observed_controls = [
             (role, name)
             for role, name, _node in entries
-            if name in {"About", "Refresh USB device list", "Refresh PCI device list", "Open date and time guide", "Refresh video device status", "Open camera guide", "Refresh memory status", "Refresh system pressure", "Refresh system service status", "Refresh temperature status", "Search all guides and steps"}
+            if name in {"About", "Refresh USB device list", "Refresh PCI device list", "Open Bluetooth pairing guide", "Open date and time guide", "Refresh video device status", "Open camera guide", "Refresh memory status", "Refresh system pressure", "Refresh system service status", "Refresh temperature status", "Search all guides and steps"}
         ]
         if observed_controls:
             print(f"Observed accessible roles and names: {observed_controls!r}", file=sys.stderr)

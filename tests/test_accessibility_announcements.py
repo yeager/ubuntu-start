@@ -279,6 +279,19 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.app.system_guide_chooser.set_selected.assert_called_once_with(expected_index)
         self.app.main_stack.set_visible_child_name.assert_called_once_with("System guides")
 
+    def test_open_bluetooth_guide_selects_pairing_instructions(self):
+        self.app.system_guide_chooser = Mock()
+        self.app.main_stack = Mock()
+
+        UbuntuStart.open_bluetooth_guide(self.app)
+
+        expected_index = next(
+            index for index, (title, _target, _action, _steps) in enumerate(SYSTEM_GUIDES)
+            if title == "Pair a Bluetooth device"
+        )
+        self.app.system_guide_chooser.set_selected.assert_called_once_with(expected_index)
+        self.app.main_stack.set_visible_child_name.assert_called_once_with("System guides")
+
     def test_unrelated_key_is_not_consumed(self):
         self.app.main_stack = Mock()
         self.app.device_search = Mock()
@@ -306,6 +319,18 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
 
         self.app.announce_to_screen_reader.assert_called_once_with(
             row, "Bluetooth controller: On",
+        )
+
+    def test_bluetooth_service_status_explains_where_to_check_next(self):
+        row = Mock()
+        row.get_title.return_value = "Bluetooth controller"
+
+        UbuntuStart.show_bluetooth_status(self.app, row, "service-inactive", announce=True)
+
+        message = "Bluetooth service is not running. Refresh System service status for details."
+        row.set_subtitle.assert_called_once_with(message)
+        self.app.announce_to_screen_reader.assert_called_once_with(
+            row, f"Bluetooth controller: {message}",
         )
 
     def test_network_refresh_only_announces_when_requested(self):
