@@ -1684,6 +1684,8 @@ Inst package-two [2.0] (2.1 repo [amd64])
             ("192.168.1.1", "wlp2s0"),
         )
         self.assertIsNone(parse_default_route("default via not-an-ip dev eth0\n"))
+        self.assertIsNone(parse_default_route("default via 192.168.1.1 dev proto dhcp\n"))
+        self.assertIsNone(parse_default_route("default dev via 192.168.1.1 metric 100\n"))
 
     def test_validates_gateway_mac(self):
         self.assertEqual(

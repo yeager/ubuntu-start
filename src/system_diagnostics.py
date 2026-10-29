@@ -1690,15 +1690,23 @@ def check_internet_connection(timeout: float = 5.0) -> str:
 
 def parse_default_route(output: str) -> tuple[str, str] | None:
     """Extract an IP default gateway and interface from `ip route` output."""
+    route_attributes = {
+        "via", "dev", "proto", "metric", "scope", "table", "src", "onlink",
+        "nexthop", "weight", "encap", "mtu", "advmss", "pref",
+    }
     for line in output.splitlines():
         fields = line.split()
         if len(fields) >= 5 and fields[0] == "default" and "via" in fields and "dev" in fields:
             try:
                 gateway = str(ipaddress.ip_address(fields[fields.index("via") + 1]))
+                interface = fields[fields.index("dev") + 1]
             except (ValueError, IndexError):
                 continue
-            interface = fields[fields.index("dev") + 1]
-            if interface and interface.replace("_", "").replace("-", "").replace(".", "").isalnum():
+            if (
+                interface not in route_attributes
+                and interface
+                and interface.replace("_", "").replace("-", "").replace(".", "").isalnum()
+            ):
                 return gateway, interface
     return None
 

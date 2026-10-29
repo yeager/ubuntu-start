@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.32" date="2026-10-29">
+      <description>
+        <p>Reject malformed default-route output when identifying the local network gateway.</p>
+        <p xml:lang="sv">Avvisa felaktig information om standardrutten när den lokala nätverksgatewayen identifieras.</p>
+      </description>
+    </release>
     <release version="0.3.31" date="2026-10-29">
       <description>
         <p>Show the installed Ubuntu Start version in About and local support details, including Debian package installations.</p>
