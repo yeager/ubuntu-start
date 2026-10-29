@@ -77,16 +77,34 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
                 "rx_bitrate_mbps": 780.0,
                 "tx_bitrate_mbps": 650.5,
             }},
+            interface_ips={"wlp2s0": {"ipv4": True, "ipv6": False, "link_local": False}},
         )
 
         self.app.row.assert_called_once_with(
             rows,
             "Wi-Fi · wlp2s0",
-            "Connected · Signal: -53 dBm · Receive rate: 780.0 Mbit/s · Transmit rate: 650.5 Mbit/s",
+            "Connected · Signal: -53 dBm · Receive rate: 780.0 Mbit/s · Transmit rate: 650.5 Mbit/s · IPv4 address assigned",
         )
         self.app.announce_to_screen_reader.assert_called_once_with(
             status,
-            "Network status updated: Wi-Fi · wlp2s0: Connected · Signal: -53 dBm · Receive rate: 780.0 Mbit/s · Transmit rate: 650.5 Mbit/s",
+            "Network status updated: Wi-Fi · wlp2s0: Connected · Signal: -53 dBm · Receive rate: 780.0 Mbit/s · Transmit rate: 650.5 Mbit/s · IPv4 address assigned",
+        )
+
+    def test_network_status_shows_address_families_for_unmanaged_interfaces(self):
+        status = Mock()
+        rows = Mock()
+        self.app.row = Mock()
+
+        UbuntuStart.show_network_status(
+            self.app, status, rows,
+            [("eth0", "ethernet", "unmanaged")], None,
+            interface_ips={"eth0": {"ipv4": True, "ipv6": True, "link_local": True}},
+        )
+
+        self.app.row.assert_called_once_with(
+            rows,
+            "Wired · eth0",
+            "Not managed by NetworkManager · IPv4 and IPv6 addresses assigned",
         )
 
     def test_missing_gateway_result_includes_and_announces_next_step(self):

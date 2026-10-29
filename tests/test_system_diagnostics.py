@@ -17,6 +17,7 @@ from system_diagnostics import (
     parse_memory_kib,
     parse_neighbor_mac,
     parse_nmcli_device_status,
+    parse_interface_ip_status,
     parse_pactl_mute,
     parse_pactl_volume,
     parse_printer_status,
@@ -30,6 +31,7 @@ from system_diagnostics import (
     read_bluetooth_status,
     read_hardware_details,
     read_network_devices,
+    read_interface_ip_status,
     read_printer_status,
     read_storage_status,
     read_storage_locations,
@@ -120,6 +122,46 @@ org.gnome.desktop.interface cursor-size 48
 
 
 class ParseNetworkStatusTests(unittest.TestCase):
+    def test_parses_address_families_without_returning_private_addresses(self):
+        output = '''[{"ifname":"wlan0","addr_info":[
+{"family":"inet","local":"192.168.1.24","prefixlen":24},
+{"family":"inet6","local":"fe80::1234","prefixlen":64},
+{"family":"inet6","local":"fd00::1234","prefixlen":64},
+{"family":"inet","local":"127.0.0.1","prefixlen":8}
+]}]'''
+        status = parse_interface_ip_status(output)
+        self.assertEqual(status, {"ipv4": True, "ipv6": True, "link_local": True})
+        self.assertNotIn("192.168.1.24", repr(status))
+
+    def test_reports_link_local_only_and_rejects_malformed_json(self):
+        output = '[{"addr_info":[{"family":"inet","local":"169.254.2.5","prefixlen":16}]}]'
+        self.assertEqual(
+            parse_interface_ip_status(output),
+            {"ipv4": False, "ipv6": False, "link_local": True},
+        )
+        self.assertIsNone(parse_interface_ip_status("not json"))
+
+    @patch("system_diagnostics.shutil.which", return_value="/usr/sbin/ip")
+    @patch("system_diagnostics._run_local")
+    def test_reads_only_local_interface_address_family_status(self, run, _which):
+        run.return_value = subprocess.CompletedProcess(
+            ["ip"], 0,
+            '[{"ifname":"wlan0","addr_info":[{"family":"inet","local":"10.0.0.5","prefixlen":24}]}]',
+            "",
+        )
+        self.assertEqual(
+            read_interface_ip_status("wlan0"),
+            {"ipv4": True, "ipv6": False, "link_local": False},
+        )
+        self.assertEqual(run.call_args.args[0], ["/usr/sbin/ip", "-j", "address", "show", "dev", "wlan0"])
+
+    @patch("system_diagnostics.shutil.which")
+    @patch("system_diagnostics._run_local")
+    def test_rejects_unexpected_interface_names(self, run, which):
+        self.assertIsNone(read_interface_ip_status("wlan0; ping example.com"))
+        run.assert_not_called()
+        which.assert_not_called()
+
     def test_parses_active_wifi_metrics_without_returning_network_identifiers(self):
         output = """Connected to AA:BB:CC:DD:EE:FF (on wlp2s0)
 \tSSID: private-network-name

@@ -33,6 +33,55 @@ def parse_nmcli_device_status(output: str) -> list[tuple[str, str, str]]:
     return devices
 
 
+def parse_interface_ip_status(output: str) -> dict[str, bool] | None:
+    """Report whether an interface has usable IPv4/IPv6 or only link-local addresses."""
+    try:
+        interfaces = json.loads(output)
+    except (TypeError, json.JSONDecodeError):
+        return None
+    if not isinstance(interfaces, list):
+        return None
+    result = {"ipv4": False, "ipv6": False, "link_local": False}
+    for interface in interfaces:
+        if not isinstance(interface, dict):
+            continue
+        address_info = interface.get("addr_info", [])
+        if not isinstance(address_info, list):
+            continue
+        for info in address_info:
+            if not isinstance(info, dict):
+                continue
+            local = info.get("local")
+            if not isinstance(local, str):
+                continue
+            try:
+                address = ipaddress.ip_address(local)
+            except ValueError:
+                continue
+            if address.is_loopback or address.is_unspecified or address.is_multicast:
+                continue
+            if address.is_link_local:
+                result["link_local"] = True
+            elif address.version == 4:
+                result["ipv4"] = True
+            else:
+                result["ipv6"] = True
+    return result
+
+
+def read_interface_ip_status(interface: str, timeout: float = 2.0) -> dict[str, bool] | None:
+    """Read only IP address-family presence from a local interface; return no address values."""
+    if not re.fullmatch(r"[A-Za-z0-9_.:-]{1,64}", interface):
+        return None
+    ip = shutil.which("ip")
+    if not ip:
+        return None
+    result = _run_local([ip, "-j", "address", "show", "dev", interface], timeout)
+    if result is None or result.returncode != 0:
+        return None
+    return parse_interface_ip_status(result.stdout)
+
+
 def parse_iw_link_status(output: str) -> dict[str, float | int]:
     """Extract signal and link rates without retaining SSID or access-point MAC."""
     details: dict[str, float | int] = {}

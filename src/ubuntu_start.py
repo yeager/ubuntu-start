@@ -12,7 +12,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_network_devices, read_printer_status, read_storage_locations, read_usb_devices, read_wifi_link_status, run_network_diagnostics
+from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_interface_ip_status, read_network_devices, read_printer_status, read_storage_locations, read_usb_devices, read_wifi_link_status, run_network_diagnostics
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -859,13 +859,22 @@ class UbuntuStart(Adw.Application):
 
         def read_status():
             devices, error = read_network_devices()
+            interface_ips = {
+                name: details
+                for name, _device_type, state in devices
+                if state in {"connected", "unmanaged"}
+                if (details := read_interface_ip_status(name)) is not None
+            }
             wifi_details = {
                 name: details
                 for name, device_type, state in devices
                 if device_type == "wifi" and state == "connected"
                 if (details := read_wifi_link_status(name))
             }
-            GLib.idle_add(self.show_network_status, status_label, device_rows, devices, error, announce, wifi_details)
+            GLib.idle_add(
+                self.show_network_status, status_label, device_rows, devices,
+                error, announce, wifi_details, interface_ips,
+            )
 
         threading.Thread(target=read_status, daemon=True).start()
 
@@ -1075,7 +1084,10 @@ class UbuntuStart(Adw.Application):
             self.announce_to_screen_reader(output_row, " ".join(announcements))
         return GLib.SOURCE_REMOVE
 
-    def show_network_status(self, status_label, device_rows, devices, error, announce=False, wifi_details=None):
+    def show_network_status(
+        self, status_label, device_rows, devices, error, announce=False,
+        wifi_details=None, interface_ips=None,
+    ):
         errors = {
             "not-installed": _("NetworkManager command-line tools are not installed."),
             "timeout": _("NetworkManager did not respond in time. Try refreshing again."),
@@ -1123,6 +1135,18 @@ class UbuntuStart(Adw.Application):
                 details.append(_("Receive rate: {rate} Mbit/s").format(rate=metrics["rx_bitrate_mbps"]))
             if "tx_bitrate_mbps" in metrics:
                 details.append(_("Transmit rate: {rate} Mbit/s").format(rate=metrics["tx_bitrate_mbps"]))
+            addresses = (interface_ips or {}).get(name)
+            if addresses is not None:
+                if addresses["ipv4"] and addresses["ipv6"]:
+                    details.append(_("IPv4 and IPv6 addresses assigned"))
+                elif addresses["ipv4"]:
+                    details.append(_("IPv4 address assigned"))
+                elif addresses["ipv6"]:
+                    details.append(_("IPv6 address assigned"))
+                elif addresses["link_local"]:
+                    details.append(_("Only link-local addresses assigned"))
+                else:
+                    details.append(_("No IP address assigned"))
             if details:
                 subtitle = f"{subtitle} · {' · '.join(details)}"
             self.row(device_rows, title, subtitle)
