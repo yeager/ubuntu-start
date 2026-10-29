@@ -2,6 +2,7 @@
 """Smoke-test the running GTK app's AT-SPI navigation tree."""
 from __future__ import annotations
 
+import argparse
 import os
 from pathlib import Path
 import subprocess
@@ -25,6 +26,16 @@ EXPECTED_PAGES = {
     "Network and hardware",
     "Drivers",
     "Help and support",
+}
+SWEDISH_PAGES = {
+    "Välkommen",
+    "Kom igång",
+    "Tips och knep",
+    "Felsök en enhet",
+    "Systemguider",
+    "Nätverk och maskinvara",
+    "Drivrutiner",
+    "Hjälp och support",
 }
 BUTTON_ROLES = {"button", "push button"}
 CHECKBOX_ROLES = {"check box", "checkbutton"}
@@ -64,13 +75,36 @@ def accessible_tree(
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--localized-smoke",
+        choices=("sv",),
+        help="check that a localized UI exposes translated labels through AT-SPI",
+    )
+    args = parser.parse_args()
+
     if not os.environ.get("DISPLAY") or not os.environ.get("DBUS_SESSION_BUS_ADDRESS"):
         print("Run this check inside xvfb-run and dbus-run-session.", file=sys.stderr)
         return 2
 
+    language = args.localized_smoke or "en"
+    localized_smoke = args.localized_smoke is not None
     environment = os.environ.copy()
-    environment.update({"GTK_A11Y": "atspi", "GSK_RENDERER": "cairo", "LANGUAGE": "en"})
     benchmark_tools = tempfile.TemporaryDirectory(prefix="ubuntu-start-benchmark-tools-")
+    locale_dir = Path(benchmark_tools.name, "locale")
+    if language == "sv":
+        catalog_dir = locale_dir / "sv" / "LC_MESSAGES"
+        catalog_dir.mkdir(parents=True)
+        subprocess.run(
+            [
+                "msgfmt", "--check", "--check-format",
+                str(ROOT / "po" / "sv.po"),
+                "-o", str(catalog_dir / "ubuntu-start.mo"),
+            ],
+            check=True,
+        )
+        environment["UBUNTU_START_LOCALEDIR"] = str(locale_dir)
+    environment.update({"GTK_A11Y": "atspi", "GSK_RENDERER": "cairo", "LANGUAGE": language})
     environment["XDG_STATE_HOME"] = str(Path(benchmark_tools.name, "state"))
     delayed_benchmark_marker = Path(benchmark_tools.name, "delay-once")
     environment["UBUNTU_START_BENCHMARK_DELAY_ONCE"] = str(delayed_benchmark_marker)
@@ -102,6 +136,7 @@ def main() -> int:
         deadline = time.monotonic() + 15
         app = None
         entries: list[tuple[str, str, object]] = []
+        expected_pages = SWEDISH_PAGES if language == "sv" else EXPECTED_PAGES
         while time.monotonic() < deadline:
             if process.poll() is not None:
                 break
@@ -118,7 +153,7 @@ def main() -> int:
                     entries = candidate_entries
                     break
             names_and_roles = {(role, name) for role, name, _node in entries}
-            if app and all(("list item", page) in names_and_roles for page in EXPECTED_PAGES):
+            if app and all(("list item", page) in names_and_roles for page in expected_pages):
                 break
             time.sleep(0.25)
 
@@ -127,7 +162,24 @@ def main() -> int:
             return 1
 
         names_and_roles = {(role, name) for role, name, _node in entries}
-        missing = sorted(page for page in EXPECTED_PAGES if ("list item", page) not in names_and_roles)
+        missing = sorted(page for page in expected_pages if ("list item", page) not in names_and_roles)
+
+        if localized_smoke:
+            about_button = next(
+                (
+                    node for role, name, node in entries
+                    if role in BUTTON_ROLES and name == "Om"
+                ),
+                None,
+            )
+            if about_button is None:
+                missing.append("button: Om")
+            if missing:
+                print(f"Missing Swedish AT-SPI entries: {missing}", file=sys.stderr)
+                return 1
+            print("Swedish application labels are exposed through AT-SPI.")
+            return 0
+
         if not missing:
             about_button = next(
                 (

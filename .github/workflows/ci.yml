@@ -41,6 +41,8 @@ jobs:
         run: PYTHONPATH=src python3 -m unittest discover -s tests -v
       - name: Check app accessibility and keyboard focus
         run: xvfb-run -a dbus-run-session -- python3 scripts/check-accessibility.py
+      - name: Check Swedish app localization through AT-SPI
+        run: xvfb-run -a dbus-run-session -- python3 scripts/check-accessibility.py --localized-smoke sv
       - name: Build with Meson
         run: |
           meson setup build --prefix=/usr
@@ -96,6 +98,8 @@ jobs:
         run: PYTHONPATH=src python3 -m unittest discover -s tests -v
       - name: Check app accessibility and keyboard focus
         run: xvfb-run -a dbus-run-session -- python3 scripts/check-accessibility.py
+      - name: Check Swedish app localization through AT-SPI
+        run: xvfb-run -a dbus-run-session -- python3 scripts/check-accessibility.py --localized-smoke sv
       - name: Build and inspect Debian package
         run: |
           meson setup build --prefix=/usr
