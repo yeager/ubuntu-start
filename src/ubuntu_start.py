@@ -255,6 +255,8 @@ SYSTEM_GUIDES = [
         (_("Copy and paste safely"), _("Copy text with Ctrl+Shift+C and paste with Ctrl+Shift+V. Before pasting a command, read all of it: some terminals can run multiple pasted lines, and commands may change or delete files.")),
         (_("Move between folders"), _("Use cd Documents to enter a folder and cd .. to go up one level. Use pwd to check where you are.")),
         (_("Use Tab and command history"), _("Press Tab to complete a file or folder name when it is unique. Press the Up Arrow to find a command you used earlier; check it before pressing Enter.")),
+        (_("Search command history"), _("Press Ctrl+R and type part of an earlier command to search shell history. Press Ctrl+R again to cycle through older matches. Press Esc to put the selected command back at the prompt and review it; press Enter only if you intend to run it. Do not put passwords or access tokens directly in commands, because shell history may save them.")),
+        (_("Clear the terminal view"), _("Press Ctrl+L to clear the text currently shown in the terminal. This does not delete files or command history.")),
         (_("Type paths with spaces"), _("Put quotation marks around a folder or file name that contains spaces, for example: cd \"My Documents\". You can also type the first letters and press Tab to complete the name.")),
         (_("Ask a command for help"), _("Try a command followed by --help, such as ls --help. For more detail, use man followed by the command name; press q to leave the manual.")),
         (_("Understand sudo"), _("sudo runs a command with administrator privileges. Use it only when you understand and trust the command. Your password is not shown while you type it.")),

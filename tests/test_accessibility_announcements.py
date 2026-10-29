@@ -246,6 +246,21 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.assertTrue(matches)
         self.assertTrue(all(match[2] == "Use the Terminal" for match in matches))
 
+    def test_terminal_history_and_clear_screen_help_is_searchable(self):
+        entries = [
+            ("system", index, guide_title, step_title, description)
+            for index, (guide_title, _target, _action, steps) in enumerate(SYSTEM_GUIDES)
+            for step_title, description in steps
+        ]
+
+        history_matches = find_guide_matches("Ctrl+R search command history", entries)
+        self.assertTrue(history_matches)
+        self.assertTrue(all(match[2] == "Use the Terminal" for match in history_matches))
+
+        clear_matches = find_guide_matches("Ctrl+L clear terminal view", entries)
+        self.assertTrue(clear_matches)
+        self.assertTrue(all(match[2] == "Use the Terminal" for match in clear_matches))
+
     def test_pci_device_help_is_searchable(self):
         entries = [
             ("device", index, guide_title, step_title, description)
