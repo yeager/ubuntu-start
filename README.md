@@ -2,7 +2,7 @@
 
 An Ubuntu Desktop guide for first-run setup and device troubleshooting.
 
-![Ubuntu Start app icon](data/se.nylander.UbuntuStart.png)
+![Ubuntu Start app icon](data/se.danielnylander.UbuntuStart.png)
 
 ![Ubuntu Start welcome screen in English](screenshots/welcome-en.png)
 
@@ -78,7 +78,7 @@ meson compile -C build
 sudo meson install -C build
 ```
 
-To build an installable Debian package after installing the dependencies, run `scripts/build-deb.sh`. It creates `build/packages/ubuntu-start_0.3.16-1_all.deb`. Install it with `sudo apt install ./build/packages/ubuntu-start_0.3.16-1_all.deb`; APT resolves the declared GTK and Python runtime dependencies.
+To build an installable Debian package after installing the dependencies, run `scripts/build-deb.sh`. It creates `build/packages/ubuntu-start_0.3.17-1_all.deb`. Install it with `sudo apt install ./build/packages/ubuntu-start_0.3.17-1_all.deb`; APT resolves the declared GTK and Python runtime dependencies.
 
 The wheel and source distribution are published on [PyPI](https://pypi.org/project/ubuntu-start/). Install the GTK platform dependencies with APT first, then install the package in an isolated environment that can access system PyGObject bindings:
 
@@ -104,7 +104,7 @@ NetworkManager, Bluetooth, audio, storage, battery and hardware summaries use lo
 
 ## Validation
 
-Version `0.3.16` adds safe, step-by-step guidance for recovering from interrupted package updates, including reviewing APT's proposed changes before confirming them. Version `0.3.15` added beginner-friendly guidance for searching command history with Ctrl+R and clearing the terminal view with Ctrl+L, with a warning not to put secrets in commands. On Ubuntu 26.10, all 277 unit tests, English and Swedish Xvfb/AT-SPI checks, staged installation checks, Debian package build, Swedish catalog validation and AppStream validation passed for version `0.3.15`. Version `0.3.14` adds local/remote desktop-session status to system details and the optional support report, without including remote host details. On Ubuntu 26.10 machine `trv2`, the live logind check identified the active GNOME Wayland session as remote. All 276 unit tests and both English and Swedish Xvfb/AT-SPI checks passed for version `0.3.14`. Version `0.3.13` added step-by-step instructions for inspecting a failed system service and reviewing recent log messages safely. The prior `0.3.13-1` package installed with clean `dpkg --audit` and `apt-get check` results. A live-session check confirmed GNOME Wayland over RDP with Ubuntu Start running in that session. AT-SPI exposed the `Ubuntu Start` frame and reported it as visible. Pixel-level display rendering and physical device behavior remain unverified.
+Version `0.3.17` updates the app, desktop launcher, icon and AppStream identifiers to `se.danielnylander.UbuntuStart`; the Debian package name and local user-data paths remain stable. Version `0.3.16` adds safe, step-by-step guidance for recovering from interrupted package updates, including reviewing APT's proposed changes before confirming them. Version `0.3.15` added beginner-friendly guidance for searching command history with Ctrl+R and clearing the terminal view with Ctrl+L, with a warning not to put secrets in commands. On Ubuntu 26.10, all 277 unit tests, English and Swedish Xvfb/AT-SPI checks, staged installation checks, Debian package build, Swedish catalog validation and AppStream validation passed for version `0.3.15`. Version `0.3.14` adds local/remote desktop-session status to system details and the optional support report, without including remote host details. On Ubuntu 26.10 machine `trv2`, the live logind check identified the active GNOME Wayland session as remote. All 276 unit tests and both English and Swedish Xvfb/AT-SPI checks passed for version `0.3.14`. Version `0.3.13` added step-by-step instructions for inspecting a failed system service and reviewing recent log messages safely. The prior `0.3.13-1` package installed with clean `dpkg --audit` and `apt-get check` results. A live-session check confirmed GNOME Wayland over RDP with Ubuntu Start running in that session. AT-SPI exposed the `Ubuntu Start` frame and reported it as visible. Pixel-level display rendering and physical device behavior remain unverified.
 
 The CI workflow launches the application under Xvfb and checks its AT-SPI tree. On Ubuntu 24.04 and 26.04, it verifies that all eight guide pages are named list items, the About, USB, video and display controls are named buttons, the Mouse Keys status row is exposed, and Ctrl+F moves keyboard focus to the named guide-search entry; Orca 51 also lists the app on `trv2`. Ubuntu 26.10 now runs the same unit, accessibility and package checks in CI, and the released app has also passed a local GTK smoke test on that release. Earlier checks confirmed search behavior in a live GTK session and the Bluetooth, Wi-Fi, printer, display, privacy, sound and keyboard panel identifiers in GNOME Control Center. The two Ubuntu driver/update utilities were installed with `dpkg -i`; Additional Drivers and Update Manager opened in Swedish, and `dpkg --audit` and `apt-get check` reported no package errors. Those device and utility checks apply to the earlier revision. Xvfb does not verify physical-device behavior, hardware acceleration or GNOME/Wayland rendering.
 

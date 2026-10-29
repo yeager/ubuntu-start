@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>se.nylander.UbuntuStart</id>
+  <id>se.danielnylander.UbuntuStart</id>
   <name>Ubuntu Start</name>
   <summary>A friendly guide to Ubuntu setup and device troubleshooting</summary>
   <summary xml:lang="sv">En hjälpsam guide för att komma igång med Ubuntu och felsöka enheter</summary>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0</project_license>
-  <icon type="stock">se.nylander.UbuntuStart</icon>
-  <launchable type="desktop-id">se.nylander.UbuntuStart.desktop</launchable>
-  <developer id="se.nylander"><name>Ubuntu Start contributors</name></developer>
+  <icon type="stock">se.danielnylander.UbuntuStart</icon>
+  <launchable type="desktop-id">se.danielnylander.UbuntuStart.desktop</launchable>
+  <developer id="se.danielnylander"><name>Ubuntu Start contributors</name></developer>
   <url type="homepage">https://github.com/yeager/ubuntu-start</url>
   <categories>
     <category>Utility</category>
@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.17" date="2026-10-29">
+      <description>
+        <p>Use the se.danielnylander application identifier for Ubuntu Start.</p>
+        <p xml:lang="sv">Byt Ubuntu Starts programidentifierare till se.danielnylander.</p>
+      </description>
+    </release>
     <release version="0.3.16" date="2026-10-29">
       <description>
         <p>Add a safe, step-by-step guide for recovering from interrupted package updates.</p>

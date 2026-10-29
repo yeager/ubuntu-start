@@ -73,7 +73,7 @@ def main() -> None:
         ])
         run([
             "xgettext", "--from-code=UTF-8", "--language=Desktop", "--join-existing",
-            f"--output={template}", "data/se.nylander.UbuntuStart.desktop",
+            f"--output={template}", "data/se.danielnylander.UbuntuStart.desktop",
         ])
         for catalog in catalogs:
             run(["msgcmp", str(catalog), str(template)])

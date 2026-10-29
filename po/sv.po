@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Ubuntu Start 0.3.16\n"
+"Project-Id-Version: Ubuntu Start 0.3.17\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 20:57+0100\n"
+"POT-Creation-Date: 2026-10-29 21:04+0100\n"
 "PO-Revision-Date: 2026-10-28 15:18+0100\n"
 "Last-Translator: Ubuntu Start contributors\n"
 "Language-Team: Swedish\n"
@@ -2109,7 +2109,7 @@ msgstr ""
 "sudo, rm, diskverktyg eller skript hämtade från internet."
 
 #: src/ubuntu_start.py:271 src/ubuntu_start.py:280 src/ubuntu_start.py:2823
-#: data/se.nylander.UbuntuStart.desktop:2
+#: data/se.danielnylander.UbuntuStart.desktop:2
 msgid "Ubuntu Start"
 msgstr "Ubuntu Start"
 
@@ -5353,7 +5353,7 @@ msgstr ""
 "Prova att flytta pekaren och klicka på något enkelt. Gå tillbaka till Peka "
 "och klicka och stäng av Mustangenter när du är klar."
 
-#: data/se.nylander.UbuntuStart.desktop:3
+#: data/se.danielnylander.UbuntuStart.desktop:3
 msgid "Get started with Ubuntu and troubleshoot devices"
 msgstr "Kom igång med Ubuntu och felsök anslutna enheter"
 

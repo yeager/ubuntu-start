@@ -25,7 +25,7 @@ jobs:
           tag_version = os.environ["RELEASE_TAG"].removeprefix("v")
           project_text = open("meson.build", encoding="utf-8").read()
           project_version = re.search(r"version: '([^']+)'", project_text).group(1)
-          appstream_version = ET.parse("data/se.nylander.UbuntuStart.metainfo.xml").getroot().find("releases/release").get("version")
+          appstream_version = ET.parse("data/se.danielnylander.UbuntuStart.metainfo.xml").getroot().find("releases/release").get("version")
           assert tag_version == project_version == appstream_version, (tag_version, project_version, appstream_version)
           PY
       - name: Install build dependencies
@@ -46,7 +46,7 @@ jobs:
             msgfmt --check --check-format --statistics "$catalog" -o "/tmp/ubuntu-start-$language.mo"
           done < po/LINGUAS
       - name: Validate AppStream metadata
-        run: appstreamcli validate data/se.nylander.UbuntuStart.metainfo.xml
+        run: appstreamcli validate data/se.danielnylander.UbuntuStart.metainfo.xml
       - name: Run unit tests
         run: PYTHONPATH=src python3 -m unittest discover -s tests -v
       - name: Check app accessibility and keyboard focus

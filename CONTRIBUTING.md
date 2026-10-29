@@ -49,4 +49,4 @@ Do not merge while required checks are failing or while a blocking review thread
 
 ## Releases
 
-Releases are created from version tags matching `v*`. Before tagging, update the version in `meson.build` and the matching release entry in `data/se.nylander.UbuntuStart.metainfo.xml`. Pushing the tag starts GitHub Actions, which checks source-string coverage and Swedish translations, validates AppStream metadata, runs the unit tests, builds and checks the staged installation, then publishes a source archive with a SHA-256 checksum. Check the workflow and release assets after it finishes.
+Releases are created from version tags matching `v*`. Before tagging, update the version in `meson.build` and the matching release entry in `data/se.danielnylander.UbuntuStart.metainfo.xml`. Pushing the tag starts GitHub Actions, which checks source-string coverage and Swedish translations, validates AppStream metadata, runs the unit tests, builds and checks the staged installation, then publishes a source archive with a SHA-256 checksum. Check the workflow and release assets after it finishes.

@@ -36,7 +36,7 @@ jobs:
             msgfmt --check --check-format --statistics "$catalog" -o "/tmp/ubuntu-start-$language.mo"
           done < po/LINGUAS
       - name: Validate AppStream metadata
-        run: appstreamcli validate data/se.nylander.UbuntuStart.metainfo.xml
+        run: appstreamcli validate data/se.danielnylander.UbuntuStart.metainfo.xml
       - name: Run unit tests
         run: PYTHONPATH=src python3 -m unittest discover -s tests -v
       - name: Check app accessibility and keyboard focus
@@ -56,8 +56,8 @@ jobs:
           test "$#" -eq 1
           package=$1
           test "$(dpkg-deb --field "$package" Architecture)" = all
-          dpkg-deb --contents "$package" | grep -Fq './usr/share/applications/se.nylander.UbuntuStart.desktop'
-          dpkg-deb --contents "$package" | grep -Fq './usr/share/icons/hicolor/512x512/apps/se.nylander.UbuntuStart.png'
+          dpkg-deb --contents "$package" | grep -Fq './usr/share/applications/se.danielnylander.UbuntuStart.desktop'
+          dpkg-deb --contents "$package" | grep -Fq './usr/share/icons/hicolor/512x512/apps/se.danielnylander.UbuntuStart.png'
       - name: Build Python distributions
         run: |
           sh scripts/build-python-dist.sh
@@ -93,7 +93,7 @@ jobs:
             test -z "$(msgattrib --only-fuzzy --no-obsolete "$catalog")"
             msgfmt --check --check-format --statistics "$catalog" -o "/tmp/ubuntu-start-$language.mo"
           done < po/LINGUAS
-          appstreamcli validate data/se.nylander.UbuntuStart.metainfo.xml
+          appstreamcli validate data/se.danielnylander.UbuntuStart.metainfo.xml
       - name: Run unit tests
         run: PYTHONPATH=src python3 -m unittest discover -s tests -v
       - name: Check app accessibility and keyboard focus
@@ -110,5 +110,5 @@ jobs:
           set -- "$PWD"/build/packages/*.deb
           test "$#" -eq 1
           test "$(dpkg-deb --field "$1" Architecture)" = all
-          dpkg-deb --contents "$1" | grep -Fq './usr/share/applications/se.nylander.UbuntuStart.desktop'
-          dpkg-deb --contents "$1" | grep -Fq './usr/share/icons/hicolor/512x512/apps/se.nylander.UbuntuStart.png'
+          dpkg-deb --contents "$1" | grep -Fq './usr/share/applications/se.danielnylander.UbuntuStart.desktop'
+          dpkg-deb --contents "$1" | grep -Fq './usr/share/icons/hicolor/512x512/apps/se.danielnylander.UbuntuStart.png'

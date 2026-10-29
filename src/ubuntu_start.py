@@ -17,7 +17,7 @@ from system_diagnostics import battery_is_discharging, battery_power_status_unkn
 from guide_search import find_guide_matches
 from first_run_state import TASK_IDS as FIRST_RUN_TASK_IDS, load_completed_tasks, save_completed_tasks
 
-APP_ID = "se.nylander.UbuntuStart"
+APP_ID = "se.danielnylander.UbuntuStart"
 DOMAIN = "ubuntu-start"
 _prefix_locale_dir = os.path.join(os.path.dirname(sys.executable), "..", "share", "locale")
 LOCALEDIR = os.environ.get(
