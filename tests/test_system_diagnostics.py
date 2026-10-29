@@ -82,11 +82,11 @@ class BenchmarkTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "benchmarks.json"
             self.assertTrue(save_benchmark_baseline(
-                "cpu", 1234, 1.0, path, recorded_at="2026-10-29T10:00:00+00:00",
-            ))
-            self.assertTrue(save_benchmark_baseline(
                 "graphics", 5678, path=path, recorded_at="2026-10-29T10:01:00+00:00",
                 session_type="wayland",
+            ))
+            self.assertTrue(save_benchmark_baseline(
+                "cpu", 1234, 1.0, path, recorded_at="2026-10-29T10:00:00+00:00",
             ))
 
             baselines = load_benchmark_baselines(path, session_type="wayland")
@@ -129,6 +129,13 @@ class BenchmarkTests(unittest.TestCase):
             self.assertFalse(path.exists())
             self.assertEqual(load_benchmark_baselines(path), {})
             self.assertTrue(clear_benchmark_baselines(path))
+
+    def test_benchmark_baseline_save_reports_unwritable_state_location(self):
+        with tempfile.TemporaryDirectory() as directory:
+            not_a_directory = Path(directory) / "file"
+            not_a_directory.write_text("", encoding="utf-8")
+            path = not_a_directory / "benchmarks.json"
+            self.assertFalse(save_benchmark_baseline("cpu", 1234, 1.0, path))
 
     def test_battery_readiness_uses_reported_state(self):
         self.assertTrue(battery_is_discharging([{"status": "Discharging"}]))

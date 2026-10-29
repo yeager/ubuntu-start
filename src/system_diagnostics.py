@@ -1305,20 +1305,30 @@ def save_benchmark_baseline(
     destination = _benchmark_state_path(path)
     baselines = load_benchmark_baselines(destination, session_type="*")
     baselines[kind] = baseline
-    destination.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
     temporary_path = None
+    descriptor = None
     try:
+        destination.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
         descriptor, temporary_path = tempfile.mkstemp(prefix="benchmarks-", dir=destination.parent)
         os.fchmod(descriptor, 0o600)
-        with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+        handle = os.fdopen(descriptor, "w", encoding="utf-8")
+        descriptor = None
+        with handle:
             json.dump({"schema_version": 1, "baselines": baselines}, handle, indent=2)
             handle.write("\n")
+            handle.flush()
+            os.fsync(handle.fileno())
         os.replace(temporary_path, destination)
         temporary_path = None
         return True
     except OSError:
         return False
     finally:
+        if descriptor is not None:
+            try:
+                os.close(descriptor)
+            except OSError:
+                pass
         if temporary_path:
             try:
                 os.unlink(temporary_path)
