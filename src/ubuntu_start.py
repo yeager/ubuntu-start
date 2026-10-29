@@ -1074,6 +1074,10 @@ class UbuntuStart(Adw.Application):
             ("screen_magnifier", _("Screen magnifier")),
             ("screen_keyboard", _("On-screen keyboard")),
             ("high_contrast", _("High contrast")),
+            ("sticky_keys", _("Sticky Keys")),
+            ("slow_keys", _("Slow Keys")),
+            ("bounce_keys", _("Bounce Keys")),
+            ("visual_bell", _("Visual sound alerts")),
         ):
             value = settings.get(key)
             state = _("On") if value is True else _("Off") if value is False else _("Not available")

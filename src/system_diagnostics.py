@@ -325,8 +325,12 @@ ACCESSIBILITY_SETTINGS = {
     ("org.gnome.desktop.a11y.applications", "screen-magnifier-enabled"): ("screen_magnifier", "boolean"),
     ("org.gnome.desktop.a11y.applications", "screen-keyboard-enabled"): ("screen_keyboard", "boolean"),
     ("org.gnome.desktop.a11y.interface", "high-contrast"): ("high_contrast", "boolean"),
+    ("org.gnome.desktop.a11y.keyboard", "stickykeys-enable"): ("sticky_keys", "boolean"),
+    ("org.gnome.desktop.a11y.keyboard", "slowkeys-enable"): ("slow_keys", "boolean"),
+    ("org.gnome.desktop.a11y.keyboard", "bouncekeys-enable"): ("bounce_keys", "boolean"),
     ("org.gnome.desktop.interface", "text-scaling-factor"): ("text_scale", "float"),
     ("org.gnome.desktop.interface", "cursor-size"): ("cursor_size", "integer"),
+    ("org.gnome.desktop.wm.preferences", "visual-bell"): ("visual_bell", "boolean"),
 }
 
 

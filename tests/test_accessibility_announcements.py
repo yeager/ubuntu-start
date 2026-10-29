@@ -435,8 +435,12 @@ class AccessibilityStatusAnnouncementTests(unittest.TestCase):
             "screen_magnifier": False,
             "screen_keyboard": None,
             "high_contrast": True,
+            "sticky_keys": False,
+            "slow_keys": True,
+            "bounce_keys": False,
             "text_scale": 1.25,
             "cursor_size": 48,
+            "visual_bell": True,
         }
 
         UbuntuStart.show_accessibility_status(app, Mock(), status_label, rows, settings, None, announce=True)
@@ -448,6 +452,10 @@ class AccessibilityStatusAnnouncementTests(unittest.TestCase):
                 ("Screen magnifier", "Off"),
                 ("On-screen keyboard", "Not available"),
                 ("High contrast", "On"),
+                ("Sticky Keys", "Off"),
+                ("Slow Keys", "On"),
+                ("Bounce Keys", "Off"),
+                ("Visual sound alerts", "On"),
                 ("Text size", "125%"),
                 ("Pointer size", "48 pixels"),
             ],

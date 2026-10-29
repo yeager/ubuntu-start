@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ubuntu Start 0.3.1\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 03:23+0100\n"
+"POT-Creation-Date: 2026-10-29 03:27+0100\n"
 "PO-Revision-Date: 2026-10-28 15:18+0100\n"
 "Last-Translator: Ubuntu Start contributors\n"
 "Language-Team: Swedish\n"
@@ -345,7 +345,7 @@ msgstr ""
 "Om en mus fungerar men styrplattan inte gör det, sök efter Ubuntu-"
 "uppdateringar och läs datorns supportinformation innan du ändrar drivrutiner."
 
-#: src/ubuntu_start.py:73 src/ubuntu_start.py:1235
+#: src/ubuntu_start.py:73 src/ubuntu_start.py:1240
 msgid "Wi-Fi"
 msgstr "Wi-Fi"
 
@@ -396,7 +396,7 @@ msgstr ""
 "Installera tillgängliga Ubuntu-uppdateringar. Läs informationen om datorns "
 "eller Wi-Fi-adapterns stöd innan du installerar en drivrutin."
 
-#: src/ubuntu_start.py:79 src/ubuntu_start.py:803
+#: src/ubuntu_start.py:79 src/ubuntu_start.py:804
 msgid "Camera"
 msgstr "Kamera"
 
@@ -543,7 +543,7 @@ msgstr "Anslut till wifi"
 msgid "Open Wi-Fi Settings"
 msgstr "Öppna wifi-inställningarna"
 
-#: src/ubuntu_start.py:100 src/ubuntu_start.py:1382
+#: src/ubuntu_start.py:100 src/ubuntu_start.py:1387
 msgid "Open Quick Settings"
 msgstr "Öppna snabbinställningarna"
 
@@ -665,7 +665,9 @@ msgstr "Kontrollera nätverksanslutningen"
 msgid ""
 "If the clock is not synchronized, check the internet connection and review "
 "Date and Time Settings again."
-msgstr "Om klockan inte är synkroniserad kontrollerar du internetanslutningen och ser sedan över inställningarna för datum och tid igen."
+msgstr ""
+"Om klockan inte är synkroniserad kontrollerar du internetanslutningen och "
+"ser sedan över inställningarna för datum och tid igen."
 
 #: src/ubuntu_start.py:114
 msgid "Ask before changing a managed computer"
@@ -1260,7 +1262,7 @@ msgstr ""
 msgid "Use the Terminal"
 msgstr "Använd terminalen"
 
-#: src/ubuntu_start.py:187 src/ubuntu_start.py:1393
+#: src/ubuntu_start.py:187 src/ubuntu_start.py:1398
 msgid "Open Terminal"
 msgstr "Öppna terminalen"
 
@@ -1391,7 +1393,7 @@ msgstr ""
 "Klistra inte in kommandon som du inte förstår, särskilt inte kommandon med "
 "sudo, rm, diskverktyg eller skript hämtade från internet."
 
-#: src/ubuntu_start.py:207 src/ubuntu_start.py:216 src/ubuntu_start.py:1424
+#: src/ubuntu_start.py:207 src/ubuntu_start.py:216 src/ubuntu_start.py:1429
 #: data/se.nylander.UbuntuStart.desktop:2
 msgid "Ubuntu Start"
 msgstr "Ubuntu Start"
@@ -1412,12 +1414,12 @@ msgstr "Välkommen"
 msgid "Get started"
 msgstr "Kom igång"
 
-#: src/ubuntu_start.py:245 src/ubuntu_start.py:1375
+#: src/ubuntu_start.py:245 src/ubuntu_start.py:1380
 msgid "Tips and tricks"
 msgstr "Tips och knep"
 
 #: src/ubuntu_start.py:246 src/ubuntu_start.py:265 src/ubuntu_start.py:414
-#: src/ubuntu_start.py:559 src/ubuntu_start.py:807
+#: src/ubuntu_start.py:559 src/ubuntu_start.py:808
 msgid "Fix a device"
 msgstr "Felsök en enhet"
 
@@ -1426,7 +1428,7 @@ msgid "System guides"
 msgstr "Systemguider"
 
 #: src/ubuntu_start.py:248 src/ubuntu_start.py:357 src/ubuntu_start.py:360
-#: src/ubuntu_start.py:521 src/ubuntu_start.py:568 src/ubuntu_start.py:1293
+#: src/ubuntu_start.py:521 src/ubuntu_start.py:568 src/ubuntu_start.py:1298
 msgid "Network and hardware"
 msgstr "Nätverk och maskinvara"
 
@@ -1434,7 +1436,7 @@ msgstr "Nätverk och maskinvara"
 msgid "Drivers"
 msgstr "Drivrutiner"
 
-#: src/ubuntu_start.py:250 src/ubuntu_start.py:1343
+#: src/ubuntu_start.py:250 src/ubuntu_start.py:1348
 msgid "Help and support"
 msgstr "Hjälp och support"
 
@@ -1572,8 +1574,8 @@ msgstr ""
 "appar och uppdateringar. Ubuntu Start installerar inget. Du granskar "
 "uppgifterna i App Center och väljer själv om du vill installera appen."
 
-#: src/ubuntu_start.py:388 src/ubuntu_start.py:847 src/ubuntu_start.py:871
-#: src/ubuntu_start.py:925 src/ubuntu_start.py:1471
+#: src/ubuntu_start.py:388 src/ubuntu_start.py:848 src/ubuntu_start.py:872
+#: src/ubuntu_start.py:926 src/ubuntu_start.py:1476
 msgid "Cancel"
 msgstr "Avbryt"
 
@@ -1649,7 +1651,7 @@ msgstr "Inga steg matchar. Prova ett annat sökord."
 msgid "Open related Settings"
 msgstr "Öppna relevanta inställningar"
 
-#: src/ubuntu_start.py:485 src/ubuntu_start.py:1292
+#: src/ubuntu_start.py:485 src/ubuntu_start.py:1297
 msgid "Open hardware overview"
 msgstr "Visa maskinvaruöversikten"
 
@@ -1721,7 +1723,7 @@ msgid "Bluetooth controller"
 msgstr "Bluetooth-adapter"
 
 #: src/ubuntu_start.py:592 src/ubuntu_start.py:604 src/ubuntu_start.py:605
-#: src/ubuntu_start.py:969 src/ubuntu_start.py:994 src/ubuntu_start.py:995
+#: src/ubuntu_start.py:970 src/ubuntu_start.py:995 src/ubuntu_start.py:996
 msgid "Checking status…"
 msgstr "Kontrollerar status…"
 
@@ -1820,15 +1822,15 @@ msgstr ""
 "Här visas utrymmet på det lokala filsystemet. Om hemkatalogen ligger på en "
 "egen monterad volym visas den separat."
 
-#: src/ubuntu_start.py:668 src/ubuntu_start.py:1331
+#: src/ubuntu_start.py:668 src/ubuntu_start.py:1336
 msgid "System filesystem"
 msgstr "Systemets filsystem"
 
-#: src/ubuntu_start.py:668 src/ubuntu_start.py:1331
+#: src/ubuntu_start.py:668 src/ubuntu_start.py:1336
 msgid "Home folder filesystem"
 msgstr "Hemkatalogens filsystem"
 
-#: src/ubuntu_start.py:670 src/ubuntu_start.py:1333
+#: src/ubuntu_start.py:670 src/ubuntu_start.py:1338
 #, python-brace-format
 msgid "{free} free of {total} ({percent}% used)"
 msgstr "{free} ledigt av {total} ({percent} % använt)"
@@ -1883,47 +1885,51 @@ msgstr ""
 msgid "Refresh video device status"
 msgstr "Uppdatera videostatus"
 
-#: src/ubuntu_start.py:717
+#: src/ubuntu_start.py:710
+msgid "Open camera guide"
+msgstr "Öppna kameraguiden"
+
+#: src/ubuntu_start.py:720
 msgid "Hardware overview"
 msgstr "Översikt över maskinvaran"
 
-#: src/ubuntu_start.py:718
+#: src/ubuntu_start.py:721
 msgid ""
 "This summary reads local system files. Serial numbers are never collected."
 msgstr "Översikten läser lokala systemfiler. Serienummer samlas aldrig in."
 
-#: src/ubuntu_start.py:722 src/ubuntu_start.py:1312
+#: src/ubuntu_start.py:725 src/ubuntu_start.py:1317
 msgid "System model"
 msgstr "Datormodell"
 
-#: src/ubuntu_start.py:723 src/ubuntu_start.py:1313
+#: src/ubuntu_start.py:726 src/ubuntu_start.py:1318
 msgid "Processor"
 msgstr "Processor"
 
-#: src/ubuntu_start.py:724 src/ubuntu_start.py:1314
+#: src/ubuntu_start.py:727 src/ubuntu_start.py:1319
 msgid "Memory"
 msgstr "Minne"
 
-#: src/ubuntu_start.py:725 src/ubuntu_start.py:1315
+#: src/ubuntu_start.py:728 src/ubuntu_start.py:1320
 msgid "Graphics adapters"
 msgstr "Grafikkort"
 
-#: src/ubuntu_start.py:726 src/ubuntu_start.py:1316
+#: src/ubuntu_start.py:729 src/ubuntu_start.py:1321
 msgid "Architecture"
 msgstr "Processorarkitektur"
 
-#: src/ubuntu_start.py:729 src/ubuntu_start.py:1048 src/ubuntu_start.py:1053
-#: src/ubuntu_start.py:1056 src/ubuntu_start.py:1078 src/ubuntu_start.py:1082
-#: src/ubuntu_start.py:1088 src/ubuntu_start.py:1306 src/ubuntu_start.py:1312
-#: src/ubuntu_start.py:1313 src/ubuntu_start.py:1314
+#: src/ubuntu_start.py:732 src/ubuntu_start.py:1049 src/ubuntu_start.py:1054
+#: src/ubuntu_start.py:1057 src/ubuntu_start.py:1083 src/ubuntu_start.py:1087
+#: src/ubuntu_start.py:1093 src/ubuntu_start.py:1311 src/ubuntu_start.py:1317
+#: src/ubuntu_start.py:1318 src/ubuntu_start.py:1319
 msgid "Not available"
 msgstr "Inte tillgängligt"
 
-#: src/ubuntu_start.py:733 src/ubuntu_start.py:1329
+#: src/ubuntu_start.py:736 src/ubuntu_start.py:1334
 msgid "Connected USB devices"
 msgstr "Anslutna USB-enheter"
 
-#: src/ubuntu_start.py:734
+#: src/ubuntu_start.py:737
 msgid ""
 "This local list reads USB device names and bound kernel drivers. Serial "
 "numbers are not read."
@@ -1931,36 +1937,36 @@ msgstr ""
 "Listan visar enheternas namn och drivrutiner som är kopplade till dem. "
 "Serienummer läses inte."
 
-#: src/ubuntu_start.py:739
+#: src/ubuntu_start.py:742
 msgid "Refresh USB device list"
 msgstr "Uppdatera USB-enhetslistan"
 
-#: src/ubuntu_start.py:753
+#: src/ubuntu_start.py:756
 msgid "Reading USB devices…"
 msgstr "Läser av USB-enheter…"
 
-#: src/ubuntu_start.py:765
+#: src/ubuntu_start.py:768
 msgid "Reading video devices…"
 msgstr "Läser av videoenheter…"
 
-#: src/ubuntu_start.py:781
+#: src/ubuntu_start.py:784
 msgid "Reported by Linux"
 msgstr "Rapporteras av Linux"
 
-#: src/ubuntu_start.py:783
+#: src/ubuntu_start.py:786
 msgid "Video device status updated: 1 device found."
 msgstr "Videostatus uppdaterad: 1 enhet hittades."
 
-#: src/ubuntu_start.py:785
+#: src/ubuntu_start.py:788
 #, python-brace-format
 msgid "Video device status updated: {count} devices found."
 msgstr "Videostatus uppdaterad: {count} enheter hittades."
 
-#: src/ubuntu_start.py:787
+#: src/ubuntu_start.py:790
 msgid "No video devices reported by Linux"
 msgstr "Linux rapporterar inga videoenheter"
 
-#: src/ubuntu_start.py:791
+#: src/ubuntu_start.py:794
 msgid ""
 "Connect a camera or check its privacy shutter, then refresh. This status "
 "does not test the camera."
@@ -1968,42 +1974,38 @@ msgstr ""
 "Anslut en kamera eller kontrollera dess sekretesslucka och uppdatera sedan. "
 "Den här statusen testar inte kameran."
 
-#: src/ubuntu_start.py:792
-msgid "Open camera guide"
-msgstr "Öppna kameraguiden"
-
-#: src/ubuntu_start.py:815
+#: src/ubuntu_start.py:816
 msgid "No external USB devices detected"
 msgstr "Inga externa USB-enheter hittades"
 
-#: src/ubuntu_start.py:818
+#: src/ubuntu_start.py:819
 msgid "Connect a USB device and refresh the list."
 msgstr "Anslut en USB-enhet och uppdatera listan."
 
-#: src/ubuntu_start.py:826
+#: src/ubuntu_start.py:827
 #, python-brace-format
 msgid "USB device ({id})"
 msgstr "USB-enhet ({id})"
 
-#: src/ubuntu_start.py:830
+#: src/ubuntu_start.py:831
 #, python-brace-format
 msgid "Kernel driver: {drivers}"
 msgstr "Kärndrivrutiner: {drivers}"
 
-#: src/ubuntu_start.py:831
+#: src/ubuntu_start.py:832
 msgid "No kernel driver is currently attached."
 msgstr "Ingen kärndrivrutin är kopplad just nu."
 
-#: src/ubuntu_start.py:835
+#: src/ubuntu_start.py:836
 #, python-brace-format
 msgid "USB device list updated: {devices}"
 msgstr "USB-enhetslistan har uppdaterats: {devices}"
 
-#: src/ubuntu_start.py:844
+#: src/ubuntu_start.py:845
 msgid "Allow an internet connection test?"
 msgstr "Tillåta ett test av internetanslutningen?"
 
-#: src/ubuntu_start.py:845
+#: src/ubuntu_start.py:846
 msgid ""
 "Ubuntu Start will send one small HTTPS request to ubuntu.com. The site can "
 "see your IP address. No system details, Wi-Fi name or passwords are sent."
@@ -2011,19 +2013,19 @@ msgstr ""
 "Ubuntu Start skickar en liten HTTPS-förfrågan till ubuntu.com. Webbplatsen "
 "kan se din IP-adress. Inga systemuppgifter, wifi-namn eller lösenord skickas."
 
-#: src/ubuntu_start.py:848
+#: src/ubuntu_start.py:849
 msgid "Test connection"
 msgstr "Testa anslutningen"
 
-#: src/ubuntu_start.py:855
+#: src/ubuntu_start.py:856
 msgid "Checking connection to ubuntu.com…"
 msgstr "Kontrollerar anslutningen till ubuntu.com…"
 
-#: src/ubuntu_start.py:868
+#: src/ubuntu_start.py:869
 msgid "Run DNS and gateway tests?"
 msgstr "Köra DNS- och gatewaytest?"
 
-#: src/ubuntu_start.py:869
+#: src/ubuntu_start.py:870
 msgid ""
 "This sends one DNS lookup for ubuntu.com to your configured resolver and one "
 "ping to your local gateway. The gateway MAC address is checked against a "
@@ -2035,63 +2037,63 @@ msgstr ""
 "med en lokal tillverkardatabas. Ingen information skickas till någon extern "
 "uppslagningstjänst."
 
-#: src/ubuntu_start.py:872
+#: src/ubuntu_start.py:873
 msgid "Run tests"
 msgstr "Kör testerna"
 
-#: src/ubuntu_start.py:879
+#: src/ubuntu_start.py:880
 msgid "Testing DNS and gateway…"
 msgstr "Testar DNS och gateway…"
 
-#: src/ubuntu_start.py:895
+#: src/ubuntu_start.py:896
 #, python-brace-format
 msgid "DNS lookup: {ms} ms"
 msgstr "DNS-slagning: {ms} ms"
 
-#: src/ubuntu_start.py:897
+#: src/ubuntu_start.py:898
 msgid "DNS lookup failed. Check DNS settings or the network connection."
 msgstr ""
 "DNS-slagningen misslyckades. Kontrollera DNS-inställningarna eller "
 "nätverksanslutningen."
 
-#: src/ubuntu_start.py:900
+#: src/ubuntu_start.py:901
 #, python-brace-format
 msgid "Gateway: {address}"
 msgstr "Gateway: {address}"
 
-#: src/ubuntu_start.py:902
+#: src/ubuntu_start.py:903
 #, python-brace-format
 msgid "Gateway response: {ms} ms"
 msgstr "Svar från gateway: {ms} ms"
 
-#: src/ubuntu_start.py:904
+#: src/ubuntu_start.py:905
 msgid "Gateway did not answer the ping. Some routers block ping requests."
 msgstr ""
 "Gatewayen svarade inte på ping. Vissa routrar blockerar pingförfrågningar."
 
-#: src/ubuntu_start.py:907
+#: src/ubuntu_start.py:908
 #, python-brace-format
 msgid "Gateway MAC address: {mac}"
 msgstr "Gatewayens MAC-adress: {mac}"
 
-#: src/ubuntu_start.py:909
+#: src/ubuntu_start.py:910
 #, python-brace-format
 msgid "Manufacturer: {vendor}"
 msgstr "Tillverkare: {vendor}"
 
-#: src/ubuntu_start.py:909
+#: src/ubuntu_start.py:910
 msgid "Manufacturer not found in the local vendor database."
 msgstr "Tillverkaren hittades inte i den lokala tillverkardatabasen."
 
-#: src/ubuntu_start.py:911
+#: src/ubuntu_start.py:912
 msgid "Gateway MAC address is not available in the local neighbor table."
 msgstr "Gatewayens MAC-adress finns inte i den lokala grannlistan."
 
-#: src/ubuntu_start.py:913
+#: src/ubuntu_start.py:914
 msgid "No default gateway was found."
 msgstr "Hittade ingen standardgateway."
 
-#: src/ubuntu_start.py:914
+#: src/ubuntu_start.py:915
 msgid ""
 "Next step: check Wi-Fi or wired connection in Settings. On a managed "
 "network, ask the administrator before changing route settings."
@@ -2100,14 +2102,14 @@ msgstr ""
 "nätverket hanteras av någon annan bör du fråga administratören innan du "
 "ändrar ruttinställningar."
 
-#: src/ubuntu_start.py:916
+#: src/ubuntu_start.py:917
 msgid ""
 "Next step: check that the network is connected and review its DNS settings."
 msgstr ""
 "Nästa steg: kontrollera att nätverket är anslutet och se över dess DNS-"
 "inställningar."
 
-#: src/ubuntu_start.py:918
+#: src/ubuntu_start.py:919
 msgid ""
 "Next step: check the local connection. Some gateways block ping, so this "
 "alone does not prove that the network is down."
@@ -2115,15 +2117,15 @@ msgstr ""
 "Nästa steg: kontrollera den lokala anslutningen. Vissa nätverksgateways "
 "blockerar ping, så detta betyder inte i sig att nätverket är nere."
 
-#: src/ubuntu_start.py:926
+#: src/ubuntu_start.py:927
 msgid "Open link"
 msgstr "Öppna länken"
 
-#: src/ubuntu_start.py:935
+#: src/ubuntu_start.py:936
 msgid "ubuntu.com responded. Internet access is available."
 msgstr "ubuntu.com svarade. Internetanslutningen fungerar."
 
-#: src/ubuntu_start.py:937
+#: src/ubuntu_start.py:938
 msgid ""
 "Could not reach ubuntu.com. Check the router, network sign-in page, DNS "
 "settings or firewall."
@@ -2131,234 +2133,250 @@ msgstr ""
 "Det gick inte att nå ubuntu.com. Kontrollera routern, nätverkets "
 "inloggningssida, DNS-inställningar eller brandvägg."
 
-#: src/ubuntu_start.py:943
+#: src/ubuntu_start.py:944
 msgid "Checking NetworkManager…"
 msgstr "Kontrollerar NetworkManager…"
 
-#: src/ubuntu_start.py:979 src/ubuntu_start.py:1053 src/ubuntu_start.py:1078
+#: src/ubuntu_start.py:980 src/ubuntu_start.py:1054 src/ubuntu_start.py:1083
 msgid "On"
 msgstr "På"
 
-#: src/ubuntu_start.py:980 src/ubuntu_start.py:1053 src/ubuntu_start.py:1078
+#: src/ubuntu_start.py:981 src/ubuntu_start.py:1054 src/ubuntu_start.py:1083
 msgid "Off"
 msgstr "Av"
 
-#: src/ubuntu_start.py:981
+#: src/ubuntu_start.py:982
 msgid "No Bluetooth controller found"
 msgstr "Ingen Bluetooth-adapter hittades"
 
-#: src/ubuntu_start.py:982
+#: src/ubuntu_start.py:983
 msgid "Power state is unknown"
 msgstr "Okänd status"
 
-#: src/ubuntu_start.py:983
+#: src/ubuntu_start.py:984
 msgid "Bluetooth command-line tool is not installed"
 msgstr "Bluetooth-verktyget är inte installerat"
 
-#: src/ubuntu_start.py:984
+#: src/ubuntu_start.py:985
 msgid "Bluetooth controller did not respond in time"
 msgstr "Bluetooth-adaptern svarade inte i tid"
 
-#: src/ubuntu_start.py:985
+#: src/ubuntu_start.py:986
 msgid "Could not read Bluetooth controller status"
 msgstr "Det gick inte att läsa Bluetooth-adapterns status"
 
-#: src/ubuntu_start.py:1005
+#: src/ubuntu_start.py:1006
 msgid "Checking printer queues…"
 msgstr "Kontrollerar skrivarköer…"
 
-#: src/ubuntu_start.py:1020
+#: src/ubuntu_start.py:1021
 msgid "Checking accessibility settings…"
 msgstr "Läser tillgänglighetsinställningarna…"
 
-#: src/ubuntu_start.py:1035
+#: src/ubuntu_start.py:1036
 msgid "Checking date and time status…"
 msgstr "Kontrollerar status för datum och tid…"
 
-#: src/ubuntu_start.py:1048
+#: src/ubuntu_start.py:1049
 msgid "Time zone"
 msgstr "Tidszon"
 
-#: src/ubuntu_start.py:1052
+#: src/ubuntu_start.py:1053
 msgid "Automatic time synchronization"
 msgstr "Automatisk tidssynkronisering"
 
-#: src/ubuntu_start.py:1056
+#: src/ubuntu_start.py:1057
 msgid "Synchronized"
 msgstr "Synkroniserad"
 
-#: src/ubuntu_start.py:1056
+#: src/ubuntu_start.py:1057
 msgid "Not synchronized"
 msgstr "Inte synkroniserad"
 
-#: src/ubuntu_start.py:1057
+#: src/ubuntu_start.py:1058
 msgid "Clock synchronization"
 msgstr "Klocksynkronisering"
 
-#: src/ubuntu_start.py:1059
+#: src/ubuntu_start.py:1060
 msgid "The timedatectl tool is not installed."
 msgstr "Verktyget timedatectl är inte installerat."
 
-#: src/ubuntu_start.py:1060
+#: src/ubuntu_start.py:1061
 msgid "The system time service did not respond in time."
 msgstr "Systemets tidstjänst svarade inte i tid."
 
-#: src/ubuntu_start.py:1061
+#: src/ubuntu_start.py:1062
 msgid "Could not read the local date and time status."
 msgstr "Det gick inte att läsa den lokala statusen för datum och tid."
 
-#: src/ubuntu_start.py:1063
+#: src/ubuntu_start.py:1064
 msgid "Local date and time status read. No settings were changed."
 msgstr "Lokal status för datum och tid har lästs. Inga inställningar ändrades."
 
-#: src/ubuntu_start.py:1072
+#: src/ubuntu_start.py:1073
 msgid "Screen reader"
 msgstr "Skärmläsare"
 
-#: src/ubuntu_start.py:1073
+#: src/ubuntu_start.py:1074
 msgid "Screen magnifier"
 msgstr "Skärmförstoring"
 
-#: src/ubuntu_start.py:1074
+#: src/ubuntu_start.py:1075
 msgid "On-screen keyboard"
 msgstr "Skärmtangentbord"
 
-#: src/ubuntu_start.py:1075
+#: src/ubuntu_start.py:1076
 msgid "High contrast"
 msgstr "Hög kontrast"
 
-#: src/ubuntu_start.py:1084
+#: src/ubuntu_start.py:1077
+msgid "Sticky Keys"
+msgstr "Tröga tangenter"
+
+#: src/ubuntu_start.py:1078
+msgid "Slow Keys"
+msgstr "Långsamma tangenter"
+
+#: src/ubuntu_start.py:1079
+msgid "Bounce Keys"
+msgstr "Studsande tangenter"
+
+#: src/ubuntu_start.py:1080
+msgid "Visual sound alerts"
+msgstr "Visuella ljudsignaler"
+
+#: src/ubuntu_start.py:1089
 #, python-brace-format
 msgid "{percent}%"
 msgstr "{percent} %"
 
-#: src/ubuntu_start.py:1085
+#: src/ubuntu_start.py:1090
 msgid "Text size"
 msgstr "Textstorlek"
 
-#: src/ubuntu_start.py:1090
+#: src/ubuntu_start.py:1095
 #, python-brace-format
 msgid "{pixels} pixels"
 msgstr "{pixels} pixlar"
 
-#: src/ubuntu_start.py:1091
+#: src/ubuntu_start.py:1096
 msgid "Pointer size"
 msgstr "Pekarstorlek"
 
-#: src/ubuntu_start.py:1094
+#: src/ubuntu_start.py:1099
 msgid "GNOME Settings tools are not installed."
 msgstr "gsettings är inte installerat."
 
-#: src/ubuntu_start.py:1095
+#: src/ubuntu_start.py:1100
 msgid "Could not read GNOME accessibility settings."
 msgstr "Det gick inte att läsa GNOME:s tillgänglighetsinställningar."
 
-#: src/ubuntu_start.py:1097
+#: src/ubuntu_start.py:1102
 msgid "GNOME accessibility settings read. No settings were changed."
 msgstr ""
 "GNOME:s tillgänglighetsinställningar har lästs. Inga inställningar har "
 "ändrats."
 
-#: src/ubuntu_start.py:1106
+#: src/ubuntu_start.py:1111
 msgid "Ready"
 msgstr "Redo"
 
-#: src/ubuntu_start.py:1107
+#: src/ubuntu_start.py:1112
 msgid "Printing"
 msgstr "Skriver ut"
 
-#: src/ubuntu_start.py:1108
+#: src/ubuntu_start.py:1113
 msgid "Disabled"
 msgstr "Inaktiverad"
 
-#: src/ubuntu_start.py:1109 src/ubuntu_start.py:1110
+#: src/ubuntu_start.py:1114 src/ubuntu_start.py:1115
 msgid "Busy"
 msgstr "Upptagen"
 
-#: src/ubuntu_start.py:1111
+#: src/ubuntu_start.py:1116
 msgid "Stopped"
 msgstr "Stoppad"
 
-#: src/ubuntu_start.py:1115
+#: src/ubuntu_start.py:1120
 msgid "Status unknown"
 msgstr "Okänd status"
 
-#: src/ubuntu_start.py:1116
+#: src/ubuntu_start.py:1121
 #, python-brace-format
 msgid "Printer status updated: {count} printer queues found."
 msgstr "Skrivarstatus uppdaterad: {count} skrivarköer hittades."
 
-#: src/ubuntu_start.py:1119
+#: src/ubuntu_start.py:1124
 msgid "CUPS printer tools are not installed."
 msgstr "CUPS-verktyget lpstat är inte installerat."
 
-#: src/ubuntu_start.py:1120
+#: src/ubuntu_start.py:1125
 msgid "The local printing service did not respond in time."
 msgstr "Den lokala utskriftstjänsten svarade inte i tid."
 
-#: src/ubuntu_start.py:1121
+#: src/ubuntu_start.py:1126
 msgid "Could not read printer queues from the local printing service."
 msgstr ""
 "Det gick inte att läsa skrivarköerna från den lokala utskriftstjänsten."
 
-#: src/ubuntu_start.py:1122
+#: src/ubuntu_start.py:1127
 msgid "No printer queues were found in the local printing service."
 msgstr "Inga skrivarköer hittades i den lokala utskriftstjänsten."
 
-#: src/ubuntu_start.py:1132
+#: src/ubuntu_start.py:1137
 msgid "Checking battery status…"
 msgstr "Kontrollerar batteristatus…"
 
-#: src/ubuntu_start.py:1149
+#: src/ubuntu_start.py:1154
 msgid "Charging"
 msgstr "Laddar"
 
-#: src/ubuntu_start.py:1150
+#: src/ubuntu_start.py:1155
 msgid "Discharging"
 msgstr "Batteridrift"
 
-#: src/ubuntu_start.py:1151
+#: src/ubuntu_start.py:1156
 msgid "Full"
 msgstr "Fulladdat"
 
-#: src/ubuntu_start.py:1152
+#: src/ubuntu_start.py:1157
 msgid "Not charging"
 msgstr "Laddar inte"
 
-#: src/ubuntu_start.py:1153
+#: src/ubuntu_start.py:1158
 msgid "Unknown"
 msgstr "Okänt"
 
-#: src/ubuntu_start.py:1158
+#: src/ubuntu_start.py:1163
 #, python-brace-format
 msgid "Battery {number}"
 msgstr "Batteri {number}"
 
-#: src/ubuntu_start.py:1160
+#: src/ubuntu_start.py:1165
 #, python-brace-format
 msgid "Charge: {capacity}% · {status}"
 msgstr "Laddning: {capacity} % · {status}"
 
-#: src/ubuntu_start.py:1164
+#: src/ubuntu_start.py:1169
 #, python-brace-format
 msgid "{capacity}% · {status}"
 msgstr "{capacity} % · {status}"
 
-#: src/ubuntu_start.py:1170
+#: src/ubuntu_start.py:1175
 msgid "Estimated capacity vs. design"
 msgstr "Uppskattad kapacitet jämfört med ursprungsvärdet"
 
-#: src/ubuntu_start.py:1171
+#: src/ubuntu_start.py:1176
 #, python-brace-format
 msgid "{percent}% of original design capacity"
 msgstr "{percent} % av ursprunglig batterikapacitet"
 
-#: src/ubuntu_start.py:1175
+#: src/ubuntu_start.py:1180
 #, python-brace-format
 msgid "Battery status updated: {details}"
 msgstr "Batteristatus uppdaterad: {details}"
 
-#: src/ubuntu_start.py:1177
+#: src/ubuntu_start.py:1182
 msgid ""
 "No battery information found. This computer may not have a battery, or the "
 "system does not expose battery data."
@@ -2366,140 +2384,140 @@ msgstr ""
 "Ingen batteriinformation hittades. Datorn kanske saknar batteri, eller så "
 "visar systemet inte batteriuppgifter."
 
-#: src/ubuntu_start.py:1178
+#: src/ubuntu_start.py:1183
 msgid "No battery information"
 msgstr "Ingen batteriinformation"
 
-#: src/ubuntu_start.py:1188
+#: src/ubuntu_start.py:1193
 msgid "PipeWire and PulseAudio tools are not installed"
 msgstr "PipeWire- och PulseAudio-verktygen är inte installerade"
 
-#: src/ubuntu_start.py:1190
+#: src/ubuntu_start.py:1195
 msgid "No default audio device or volume status is available"
 msgstr "Ingen standardljudenhet eller volymstatus är tillgänglig"
 
-#: src/ubuntu_start.py:1195
+#: src/ubuntu_start.py:1200
 msgid "No default device is available"
 msgstr "Ingen standardenhet är tillgänglig"
 
-#: src/ubuntu_start.py:1200
+#: src/ubuntu_start.py:1205
 msgid "Muted"
 msgstr "Ljud av"
 
-#: src/ubuntu_start.py:1200
+#: src/ubuntu_start.py:1205
 msgid "Not muted"
 msgstr "Ljud på"
 
-#: src/ubuntu_start.py:1202
+#: src/ubuntu_start.py:1207
 #, python-brace-format
 msgid "{percent}% · {state}"
 msgstr "{percent} % · {state}"
 
-#: src/ubuntu_start.py:1215
+#: src/ubuntu_start.py:1220
 msgid "NetworkManager command-line tools are not installed."
 msgstr "NetworkManagers kommandoradsverktyg är inte installerade."
 
-#: src/ubuntu_start.py:1216
+#: src/ubuntu_start.py:1221
 msgid "NetworkManager did not respond in time. Try refreshing again."
 msgstr "NetworkManager svarade inte i tid. Försök uppdatera statusen igen."
 
-#: src/ubuntu_start.py:1217
+#: src/ubuntu_start.py:1222
 msgid "Could not read device status from NetworkManager."
 msgstr "Det gick inte att läsa enhetsstatus från NetworkManager."
 
-#: src/ubuntu_start.py:1226
+#: src/ubuntu_start.py:1231
 msgid "NetworkManager reported no network devices."
 msgstr "NetworkManager rapporterade inga nätverksenheter."
 
-#: src/ubuntu_start.py:1232
+#: src/ubuntu_start.py:1237
 msgid "This is local device status; internet access has not been tested."
 msgstr "Det här är en lokal enhetsstatus. Internetåtkomsten har inte testats."
 
-#: src/ubuntu_start.py:1236
+#: src/ubuntu_start.py:1241
 msgid "Wired"
 msgstr "Trådbundet"
 
-#: src/ubuntu_start.py:1237
+#: src/ubuntu_start.py:1242
 msgid "Mobile broadband"
 msgstr "Mobilt bredband"
 
-#: src/ubuntu_start.py:1238
+#: src/ubuntu_start.py:1243
 msgid "Bridge"
 msgstr "Brygga"
 
-#: src/ubuntu_start.py:1239
+#: src/ubuntu_start.py:1244
 msgid "VPN"
 msgstr "VPN"
 
-#: src/ubuntu_start.py:1242
+#: src/ubuntu_start.py:1247
 msgid "Connected"
 msgstr "Ansluten"
 
-#: src/ubuntu_start.py:1243
+#: src/ubuntu_start.py:1248
 msgid "Disconnected"
 msgstr "Frånkopplad"
 
-#: src/ubuntu_start.py:1244
+#: src/ubuntu_start.py:1249
 msgid "Connecting"
 msgstr "Ansluter"
 
-#: src/ubuntu_start.py:1245
+#: src/ubuntu_start.py:1250
 msgid "Unavailable"
 msgstr "Inte tillgänglig"
 
-#: src/ubuntu_start.py:1246
+#: src/ubuntu_start.py:1251
 msgid "Not managed by NetworkManager"
 msgstr "Hanteras inte av NetworkManager"
 
-#: src/ubuntu_start.py:1247
+#: src/ubuntu_start.py:1252
 msgid "Unavailable (missing firmware)"
 msgstr "Inte tillgänglig (fast programvara saknas)"
 
-#: src/ubuntu_start.py:1256
+#: src/ubuntu_start.py:1261
 #, python-brace-format
 msgid "Signal: {dbm} dBm"
 msgstr "Signal: {dbm} dBm"
 
-#: src/ubuntu_start.py:1258
+#: src/ubuntu_start.py:1263
 #, python-brace-format
 msgid "Receive rate: {rate} Mbit/s"
 msgstr "Mottagningshastighet: {rate} Mbit/s"
 
-#: src/ubuntu_start.py:1260
+#: src/ubuntu_start.py:1265
 #, python-brace-format
 msgid "Transmit rate: {rate} Mbit/s"
 msgstr "Sändningshastighet: {rate} Mbit/s"
 
-#: src/ubuntu_start.py:1264
+#: src/ubuntu_start.py:1269
 msgid "IPv4 and IPv6 addresses assigned"
 msgstr "Både IPv4 och IPv6 har fått en adress"
 
-#: src/ubuntu_start.py:1266
+#: src/ubuntu_start.py:1271
 msgid "IPv4 address assigned"
 msgstr "IPv4-adress tilldelad"
 
-#: src/ubuntu_start.py:1268
+#: src/ubuntu_start.py:1273
 msgid "IPv6 address assigned"
 msgstr "IPv6-adress tilldelad"
 
-#: src/ubuntu_start.py:1270
+#: src/ubuntu_start.py:1275
 msgid "Only link-local addresses assigned"
 msgstr "Endast länklokala adresser tilldelade"
 
-#: src/ubuntu_start.py:1272
+#: src/ubuntu_start.py:1277
 msgid "No IP address assigned"
 msgstr "Ingen IP-adress tilldelad"
 
-#: src/ubuntu_start.py:1278
+#: src/ubuntu_start.py:1283
 #, python-brace-format
 msgid "Network status updated: {details}"
 msgstr "Nätverksstatus uppdaterad: {details}"
 
-#: src/ubuntu_start.py:1285
+#: src/ubuntu_start.py:1290
 msgid "Graphics drivers"
 msgstr "Grafikdrivrutiner"
 
-#: src/ubuntu_start.py:1285
+#: src/ubuntu_start.py:1290
 msgid ""
 "Ubuntu can offer compatible drivers for some graphics hardware. Review the "
 "available choices in Ubuntu’s Additional Drivers tool before installing "
@@ -2509,11 +2527,11 @@ msgstr ""
 "alternativen i Ubuntus verktyg Ytterligare drivrutiner innan du installerar "
 "något."
 
-#: src/ubuntu_start.py:1286
+#: src/ubuntu_start.py:1291
 msgid "Review available drivers"
 msgstr "Granska tillgängliga drivrutiner"
 
-#: src/ubuntu_start.py:1286
+#: src/ubuntu_start.py:1291
 msgid ""
 "This opens Ubuntu’s driver tool. Read the recommendation and confirm any "
 "changes there."
@@ -2521,15 +2539,15 @@ msgstr ""
 "Det här öppnar Ubuntus drivrutinsverktyg. Läs rekommendationen och bekräfta "
 "eventuella ändringar där."
 
-#: src/ubuntu_start.py:1286
+#: src/ubuntu_start.py:1291
 msgid "Open Drivers"
 msgstr "Öppna drivrutiner"
 
-#: src/ubuntu_start.py:1287
+#: src/ubuntu_start.py:1292
 msgid "Secure Boot"
 msgstr "Secure Boot"
 
-#: src/ubuntu_start.py:1287
+#: src/ubuntu_start.py:1292
 msgid ""
 "Some drivers need a one-time confirmation during restart when Secure Boot is "
 "enabled. Follow Ubuntu’s on-screen instructions."
@@ -2537,11 +2555,11 @@ msgstr ""
 "Vissa drivrutiner kräver en engångsbekräftelse vid omstart när Secure Boot "
 "är aktiverat. Följ instruktionerna på skärmen."
 
-#: src/ubuntu_start.py:1290
+#: src/ubuntu_start.py:1295
 msgid "If the graphics adapter has no name"
 msgstr "Om grafikkortet saknar namn"
 
-#: src/ubuntu_start.py:1291
+#: src/ubuntu_start.py:1296
 msgid ""
 "Adapter names come from a local PCI database. If only a PCI ID is shown, "
 "keep that ID and the driver name to identify the hardware. Choose drivers "
@@ -2551,99 +2569,99 @@ msgstr ""
 "använda det tillsammans med drivrutinsnamnet för att identifiera hårdvaran. "
 "Välj drivrutin i Ubuntus verktyg Ytterligare drivrutiner."
 
-#: src/ubuntu_start.py:1295
+#: src/ubuntu_start.py:1300
 msgid "Need more detail?"
 msgstr "Vill du veta mer?"
 
-#: src/ubuntu_start.py:1295
+#: src/ubuntu_start.py:1300
 msgid "Ubuntu’s driver guidance explains the supported installation route."
 msgstr ""
 "Ubuntus drivrutinsguide beskriver hur du installerar drivrutiner på ett sätt "
 "som stöds."
 
-#: src/ubuntu_start.py:1295
+#: src/ubuntu_start.py:1300
 msgid "Open Ubuntu help"
 msgstr "Öppna Ubuntus hjälp"
 
-#: src/ubuntu_start.py:1301 src/ubuntu_start.py:1303
+#: src/ubuntu_start.py:1306 src/ubuntu_start.py:1308
 msgid "Unknown Ubuntu version"
 msgstr "Okänd Ubuntu-version"
 
-#: src/ubuntu_start.py:1309
+#: src/ubuntu_start.py:1314
 msgid "Ubuntu version"
 msgstr "Ubuntu-version"
 
-#: src/ubuntu_start.py:1310
+#: src/ubuntu_start.py:1315
 msgid "Desktop"
 msgstr "Skrivbordsmiljö"
 
-#: src/ubuntu_start.py:1311
+#: src/ubuntu_start.py:1316
 msgid "Kernel"
 msgstr "Linuxkärna"
 
-#: src/ubuntu_start.py:1322
+#: src/ubuntu_start.py:1327
 msgid "Unknown USB device"
 msgstr "Okänd USB-enhet"
 
-#: src/ubuntu_start.py:1323
+#: src/ubuntu_start.py:1328
 msgid "no driver attached"
 msgstr "ingen drivrutin ansluten"
 
-#: src/ubuntu_start.py:1325
+#: src/ubuntu_start.py:1330
 #, python-brace-format
 msgid "{name} [{id}] (driver: {drivers})"
 msgstr "{name} [{id}] (drivrutin: {drivers})"
 
-#: src/ubuntu_start.py:1344
+#: src/ubuntu_start.py:1349
 msgid ""
 "Find trusted instructions and prepare useful details when you ask others for "
 "help."
 msgstr ""
 "Läs Ubuntus guider och ta fram systemuppgifter att dela när du ber om hjälp."
 
-#: src/ubuntu_start.py:1346
+#: src/ubuntu_start.py:1351
 msgid "Ubuntu Desktop guide"
 msgstr "Ubuntu Desktop-handbok"
 
-#: src/ubuntu_start.py:1346
+#: src/ubuntu_start.py:1351
 msgid "Official help for settings, accessibility, networks and common tasks."
 msgstr ""
 "Officiell hjälp om inställningar, hjälpmedel, nätverk och vanliga uppgifter."
 
-#: src/ubuntu_start.py:1346
+#: src/ubuntu_start.py:1351
 msgid "Open guide"
 msgstr "Öppna handboken"
 
-#: src/ubuntu_start.py:1347
+#: src/ubuntu_start.py:1352
 msgid "Ask Ubuntu"
 msgstr "Ask Ubuntu"
 
-#: src/ubuntu_start.py:1347
+#: src/ubuntu_start.py:1352
 msgid "Search community answers or ask a focused question about Ubuntu."
 msgstr ""
 "Sök bland svar från andra användare eller ställ en tydlig fråga om Ubuntu."
 
-#: src/ubuntu_start.py:1347
+#: src/ubuntu_start.py:1352
 msgid "Open Ask Ubuntu"
 msgstr "Öppna Ask Ubuntu"
 
-#: src/ubuntu_start.py:1348
+#: src/ubuntu_start.py:1353
 msgid "Ubuntu community forum"
 msgstr "Ubuntus användarforum"
 
-#: src/ubuntu_start.py:1348
+#: src/ubuntu_start.py:1353
 msgid "Get help from Ubuntu users and community members."
 msgstr "Få hjälp av Ubuntu-användare och andra i gemenskapen."
 
-#: src/ubuntu_start.py:1348
+#: src/ubuntu_start.py:1353
 msgid "Open forum"
 msgstr "Öppna forumet"
 
-#: src/ubuntu_start.py:1351
+#: src/ubuntu_start.py:1356
 msgid "System details"
 msgstr "Systemuppgifter"
 
-#: src/ubuntu_start.py:1352
+#: src/ubuntu_start.py:1357
 msgid ""
 "These read-only details help explain a problem. They omit your username, "
 "computer name, serial numbers, network addresses, Wi-Fi names and installed "
@@ -2653,23 +2671,23 @@ msgstr ""
 "användarnamn, datornamn, serienummer, nätverksadresser, wifi-namn eller "
 "installerade program."
 
-#: src/ubuntu_start.py:1357
+#: src/ubuntu_start.py:1362
 msgid "Copy system details"
 msgstr "Kopiera systemuppgifter"
 
-#: src/ubuntu_start.py:1362
+#: src/ubuntu_start.py:1367
 msgid "Review and save support report"
 msgstr "Granska och spara supportrapport"
 
-#: src/ubuntu_start.py:1368
+#: src/ubuntu_start.py:1373
 msgid "When asking for help"
 msgstr "När du ber om hjälp"
 
-#: src/ubuntu_start.py:1369
+#: src/ubuntu_start.py:1374
 msgid "Describe what happened"
 msgstr "Beskriv vad som hände"
 
-#: src/ubuntu_start.py:1369
+#: src/ubuntu_start.py:1374
 msgid ""
 "Include your Ubuntu version, the device model, the exact error and what you "
 "already tried. Remove passwords and other personal details."
@@ -2677,7 +2695,7 @@ msgstr ""
 "Ange Ubuntu-version, enhetsmodell, exakt felmeddelande och vad du redan har "
 "provat. Ta bort lösenord och andra personuppgifter."
 
-#: src/ubuntu_start.py:1376
+#: src/ubuntu_start.py:1381
 msgid ""
 "These are Ubuntu’s default shortcuts. Open Keyboard Settings to review or "
 "change them; key labels can vary by device."
@@ -2685,28 +2703,28 @@ msgstr ""
 "Det här är Ubuntus standardgenvägar. Öppna tangentbordsinställningarna för "
 "att se eller ändra dem. Tangentnamn kan variera mellan olika enheter."
 
-#: src/ubuntu_start.py:1379
+#: src/ubuntu_start.py:1384
 msgid "Find apps and settings"
 msgstr "Hitta appar och inställningar"
 
-#: src/ubuntu_start.py:1379
+#: src/ubuntu_start.py:1384
 msgid "Press the Super key and start typing the name of an app or setting."
 msgstr ""
 "Tryck på Super-tangenten och börja skriva namnet på en app eller inställning."
 
-#: src/ubuntu_start.py:1380
+#: src/ubuntu_start.py:1385
 msgid "Switch between apps"
 msgstr "Växla mellan appar"
 
-#: src/ubuntu_start.py:1380
+#: src/ubuntu_start.py:1385
 msgid "Press Alt+Tab to move between open apps."
 msgstr "Tryck på Alt+Tab för att växla mellan öppna appar."
 
-#: src/ubuntu_start.py:1381
+#: src/ubuntu_start.py:1386
 msgid "Arrange windows side by side"
 msgstr "Placera fönster bredvid varandra"
 
-#: src/ubuntu_start.py:1381
+#: src/ubuntu_start.py:1386
 msgid ""
 "Press Super+Left or Super+Right to place the current window on one side of "
 "the screen."
@@ -2714,7 +2732,7 @@ msgstr ""
 "Tryck på Super+vänster eller Super+höger för att placera fönstret vid ena "
 "sidan av skärmen."
 
-#: src/ubuntu_start.py:1382
+#: src/ubuntu_start.py:1387
 msgid ""
 "Select the system menu at the top-right to reach Wi-Fi, Bluetooth, sound, "
 "brightness and power controls."
@@ -2722,11 +2740,11 @@ msgstr ""
 "Välj systemmenyn uppe till höger för att komma åt Wi-Fi, Bluetooth, ljud, "
 "ljusstyrka och strömreglage."
 
-#: src/ubuntu_start.py:1383
+#: src/ubuntu_start.py:1388
 msgid "Take a screenshot"
 msgstr "Ta en skärmbild"
 
-#: src/ubuntu_start.py:1383
+#: src/ubuntu_start.py:1388
 msgid ""
 "On Ubuntu GNOME, press Print to open the screenshot controls and choose a "
 "screen, window or area."
@@ -2734,11 +2752,11 @@ msgstr ""
 "I Ubuntu GNOME öppnar Print-tangenten skärmbildsverktyget, där du kan välja "
 "skärmen, ett fönster eller ett område."
 
-#: src/ubuntu_start.py:1384
+#: src/ubuntu_start.py:1389
 msgid "Show hidden files"
 msgstr "Visa dolda filer"
 
-#: src/ubuntu_start.py:1384
+#: src/ubuntu_start.py:1389
 msgid ""
 "In Files, press Ctrl+H to show or hide hidden files. Be careful when "
 "changing hidden configuration files."
@@ -2746,19 +2764,19 @@ msgstr ""
 "I Filer trycker du på Ctrl+H för att visa eller dölja dolda filer. Var "
 "försiktig när du ändrar dolda konfigurationsfiler."
 
-#: src/ubuntu_start.py:1385
+#: src/ubuntu_start.py:1390
 msgid "Create a folder in Files"
 msgstr "Skapa en mapp i Filer"
 
-#: src/ubuntu_start.py:1385
+#: src/ubuntu_start.py:1390
 msgid "Press Ctrl+Shift+N to create a folder in the current location."
 msgstr "Tryck på Ctrl+Skift+N för att skapa en mapp på den aktuella platsen."
 
-#: src/ubuntu_start.py:1386
+#: src/ubuntu_start.py:1391
 msgid "Open a location in Files"
 msgstr "Öppna en plats i Filer"
 
-#: src/ubuntu_start.py:1386
+#: src/ubuntu_start.py:1391
 msgid ""
 "Press Ctrl+L in Files to type a folder path or enter a network address. "
 "Press Enter to open it."
@@ -2766,11 +2784,11 @@ msgstr ""
 "Tryck på Ctrl+L i Filer för att skriva en mappsökväg eller nätverksadress. "
 "Tryck på Retur för att öppna den."
 
-#: src/ubuntu_start.py:1387
+#: src/ubuntu_start.py:1392
 msgid "Rename a file"
 msgstr "Byt namn på en fil"
 
-#: src/ubuntu_start.py:1387
+#: src/ubuntu_start.py:1392
 msgid ""
 "Select a file in Files and press F2 to rename it. Check the new name before "
 "pressing Enter."
@@ -2778,11 +2796,11 @@ msgstr ""
 "Markera en fil i Filer och tryck på F2 för att byta namn på den. Kontrollera "
 "det nya namnet innan du trycker på Retur."
 
-#: src/ubuntu_start.py:1388
+#: src/ubuntu_start.py:1393
 msgid "Undo a file action"
 msgstr "Ångra en filåtgärd"
 
-#: src/ubuntu_start.py:1388
+#: src/ubuntu_start.py:1393
 msgid ""
 "Press Ctrl+Z in Files to undo a recent file operation when available. Check "
 "the result before continuing."
@@ -2790,11 +2808,11 @@ msgstr ""
 "Tryck på Ctrl+Z i Filer för att ångra en nyligen utförd filåtgärd när det "
 "går. Kontrollera resultatet innan du fortsätter."
 
-#: src/ubuntu_start.py:1389
+#: src/ubuntu_start.py:1394
 msgid "Keep a backup copy"
 msgstr "Spara en säkerhetskopia"
 
-#: src/ubuntu_start.py:1389
+#: src/ubuntu_start.py:1394
 msgid ""
 "Copy important documents and photos to a separate drive or trusted backup "
 "service. Check occasionally that you can open a backed-up file."
@@ -2803,11 +2821,11 @@ msgstr ""
 "säkerhetskopieringstjänst. Kontrollera ibland att du kan öppna en "
 "säkerhetskopierad fil."
 
-#: src/ubuntu_start.py:1390
+#: src/ubuntu_start.py:1395
 msgid "Choose trusted app sources"
 msgstr "Välj betrodda appkällor"
 
-#: src/ubuntu_start.py:1390
+#: src/ubuntu_start.py:1395
 msgid ""
 "Prefer Ubuntu App Center or the software source recommended by your "
 "organization. Check the publisher before installing an app."
@@ -2815,11 +2833,11 @@ msgstr ""
 "Använd helst Ubuntus Appcenter eller programkällan som rekommenderas av din "
 "organisation. Kontrollera utgivaren innan du installerar en app."
 
-#: src/ubuntu_start.py:1391
+#: src/ubuntu_start.py:1396
 msgid "Switch keyboard layouts"
 msgstr "Växla tangentbordslayout"
 
-#: src/ubuntu_start.py:1391
+#: src/ubuntu_start.py:1396
 msgid ""
 "If you have added more than one layout, press Super+Space to switch between "
 "them."
@@ -2827,15 +2845,15 @@ msgstr ""
 "Om du har lagt till fler än en layout trycker du på Super+Blanksteg för att "
 "växla mellan dem."
 
-#: src/ubuntu_start.py:1392
+#: src/ubuntu_start.py:1397
 msgid "Lock the screen"
 msgstr "Lås skärmen"
 
-#: src/ubuntu_start.py:1392
+#: src/ubuntu_start.py:1397
 msgid "Press Super+L before leaving your computer to lock the screen."
 msgstr "Tryck på Super+L för att låsa skärmen när du lämnar datorn."
 
-#: src/ubuntu_start.py:1393
+#: src/ubuntu_start.py:1398
 msgid ""
 "Ctrl+Alt+T opens Terminal on Ubuntu by default. You can change this shortcut "
 "in Keyboard Settings."
@@ -2843,43 +2861,43 @@ msgstr ""
 "Ctrl+Alt+T öppnar terminalen som standard i Ubuntu. Du kan ändra "
 "kortkommandot i tangentbordsinställningarna."
 
-#: src/ubuntu_start.py:1399
+#: src/ubuntu_start.py:1404
 msgid "Keyboard shortcuts"
 msgstr "Tangentbordsgenvägar"
 
-#: src/ubuntu_start.py:1400
+#: src/ubuntu_start.py:1405
 msgid "Review or change the shortcuts used by your desktop."
 msgstr "Se över eller ändra skrivbordets kortkommandon."
 
-#: src/ubuntu_start.py:1401
+#: src/ubuntu_start.py:1406
 msgid "Open Keyboard Settings"
 msgstr "Öppna tangentbordsinställningarna"
 
-#: src/ubuntu_start.py:1409
+#: src/ubuntu_start.py:1414
 msgid "Clipboard is unavailable."
 msgstr "Urklipp är inte tillgängligt."
 
-#: src/ubuntu_start.py:1413
+#: src/ubuntu_start.py:1418
 msgid "System details copied."
 msgstr "Systemuppgifterna har kopierats."
 
-#: src/ubuntu_start.py:1431
+#: src/ubuntu_start.py:1436
 msgid "An Ubuntu Desktop guide for first-run setup and device troubleshooting."
 msgstr "En guide för att komma igång med Ubuntu Desktop och felsöka enheter."
 
-#: src/ubuntu_start.py:1433
+#: src/ubuntu_start.py:1438
 msgid "Daniel Nylander's website"
 msgstr "Daniel Nylanders webbplats"
 
-#: src/ubuntu_start.py:1434
+#: src/ubuntu_start.py:1439
 msgid "GitHub repository"
 msgstr "Projektet på GitHub"
 
-#: src/ubuntu_start.py:1441
+#: src/ubuntu_start.py:1446
 msgid "Review support report"
 msgstr "Granska supportrapport"
 
-#: src/ubuntu_start.py:1449
+#: src/ubuntu_start.py:1454
 msgid ""
 "Review or edit this report before saving. It stays on this computer unless "
 "you choose to share it. Network addresses, MAC addresses, host names and "
@@ -2889,27 +2907,27 @@ msgstr ""
 "om du inte själv väljer att dela den. Nätverksadresser, MAC-adresser, "
 "datornamn och serienummer utelämnas."
 
-#: src/ubuntu_start.py:1458 src/ubuntu_start.py:1510
+#: src/ubuntu_start.py:1463 src/ubuntu_start.py:1515
 msgid "Close"
 msgstr "Stäng"
 
-#: src/ubuntu_start.py:1459
+#: src/ubuntu_start.py:1464
 msgid "Save report"
 msgstr "Spara rapport"
 
-#: src/ubuntu_start.py:1470
+#: src/ubuntu_start.py:1475
 msgid "Save support report"
 msgstr "Spara supportrapport"
 
-#: src/ubuntu_start.py:1471
+#: src/ubuntu_start.py:1476
 msgid "Save"
 msgstr "Spara"
 
-#: src/ubuntu_start.py:1486
+#: src/ubuntu_start.py:1491
 msgid "Support report saved locally."
 msgstr "Supportrapporten har sparats lokalt."
 
-#: src/ubuntu_start.py:1509
+#: src/ubuntu_start.py:1514
 msgid "Could not open the requested tool"
 msgstr "Det gick inte att öppna verktyget"
 
