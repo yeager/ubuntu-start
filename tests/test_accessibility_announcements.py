@@ -362,16 +362,20 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
                 "tx_bitrate_mbps": 650.5,
             }},
             interface_ips={"wlp2s0": {"ipv4": True, "ipv6": False, "link_local": False}},
+            adapter_details={"wlp2s0": {
+                "bus": "PCI", "id": "8086:1234", "name": "Example Wi-Fi Adapter",
+                "driver": "iwlwifi",
+            }},
         )
 
         self.app.row.assert_called_once_with(
             rows,
             "Wi-Fi · wlp2s0",
-            "Connected · Signal: -53 dBm · Receive rate: 780.0 Mbit/s · Transmit rate: 650.5 Mbit/s · IPv4 address assigned",
+            "Connected · Example Wi-Fi Adapter · Hardware ID: PCI 8086:1234 · Kernel driver: iwlwifi · Signal: -53 dBm · Receive rate: 780.0 Mbit/s · Transmit rate: 650.5 Mbit/s · IPv4 address assigned",
         )
         self.app.announce_to_screen_reader.assert_called_once_with(
             status,
-            "Network status updated: Wi-Fi · wlp2s0: Connected · Signal: -53 dBm · Receive rate: 780.0 Mbit/s · Transmit rate: 650.5 Mbit/s · IPv4 address assigned",
+            "Network status updated: Wi-Fi · wlp2s0: Connected · Example Wi-Fi Adapter · Hardware ID: PCI 8086:1234 · Kernel driver: iwlwifi · Signal: -53 dBm · Receive rate: 780.0 Mbit/s · Transmit rate: 650.5 Mbit/s · IPv4 address assigned",
         )
 
     def test_network_status_shows_address_families_for_unmanaged_interfaces(self):

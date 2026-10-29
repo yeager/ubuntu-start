@@ -41,6 +41,7 @@ from system_diagnostics import (
     read_temperature_sensors,
     read_hardware_details,
     read_network_devices,
+    read_network_adapter_details,
     read_interface_ip_status,
     read_printer_status,
     read_storage_status,
@@ -197,6 +198,68 @@ class TimeStatusTests(unittest.TestCase):
 
 
 class ParseNetworkStatusTests(unittest.TestCase):
+    def test_reads_pci_network_adapter_name_id_and_driver_from_sysfs(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            adapter = root / "bus/pci/devices/0000:00:01.0"
+            adapter.mkdir(parents=True)
+            (adapter / "vendor").write_text("0x1234\n", encoding="ascii")
+            (adapter / "device").write_text("0x5678\n", encoding="ascii")
+            (adapter / "serial").write_text("DO-NOT-READ\n", encoding="ascii")
+            driver = root / "bus/pci/drivers/example_net"
+            driver.mkdir(parents=True)
+            (adapter / "driver").symlink_to(driver)
+            interface = root / "class/net/enp1s0"
+            interface.mkdir(parents=True)
+            (interface / "device").symlink_to(adapter)
+            database = root / "pci.ids"
+            database.write_text(
+                "1234  Example Vendor\n\t5678  Example Network Adapter\n",
+                encoding="ascii",
+            )
+
+            details = read_network_adapter_details(
+                "enp1s0", root, pci_databases=(str(database),),
+            )
+
+        self.assertEqual(details, {
+            "bus": "PCI", "id": "1234:5678",
+            "name": "Example Vendor Example Network Adapter", "driver": "example_net",
+        })
+        self.assertNotIn("DO-NOT-READ", repr(details))
+
+    def test_reads_usb_network_adapter_from_parent_device(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            usb_device = root / "devices/usb1/1-2"
+            usb_device.mkdir(parents=True)
+            (usb_device / "idVendor").write_text("046d\n", encoding="ascii")
+            (usb_device / "idProduct").write_text("c534\n", encoding="ascii")
+            (usb_device / "serial").write_text("DO-NOT-READ\n", encoding="ascii")
+            interface_device = usb_device / "1-2:1.0"
+            interface_device.mkdir()
+            driver = root / "drivers/usbnet"
+            driver.mkdir(parents=True)
+            (interface_device / "driver").symlink_to(driver)
+            interface = root / "class/net/enx001"
+            interface.mkdir(parents=True)
+            (interface / "device").symlink_to(interface_device)
+            database = root / "usb.ids"
+            database.write_text(
+                "046d  Example USB Vendor\n\tc534  Example Ethernet Adapter\n",
+                encoding="ascii",
+            )
+
+            details = read_network_adapter_details(
+                "enx001", root, usb_databases=(str(database),),
+            )
+
+        self.assertEqual(details, {
+            "bus": "USB", "id": "046d:c534",
+            "name": "Example USB Vendor Example Ethernet Adapter", "driver": "usbnet",
+        })
+        self.assertNotIn("DO-NOT-READ", repr(details))
+
     def test_parses_address_families_without_returning_private_addresses(self):
         output = '''[{"ifname":"wlan0","addr_info":[
 {"family":"inet","local":"192.168.1.24","prefixlen":24},

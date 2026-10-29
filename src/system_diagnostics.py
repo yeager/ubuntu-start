@@ -726,6 +726,61 @@ def lookup_usb_device_name(
     return None
 
 
+def read_network_adapter_details(
+    interface: str,
+    sys_root: str | Path = "/sys",
+    pci_databases: tuple[str, ...] = (
+        "/usr/share/misc/pci.ids", "/usr/share/hwdata/pci.ids", "/usr/share/pci.ids",
+    ),
+    usb_databases: tuple[str, ...] = (
+        "/usr/share/hwdata/usb.ids", "/usr/share/misc/usb.ids", "/var/lib/usbutils/usb.ids",
+    ),
+) -> dict[str, str | None] | None:
+    """Read a network interface's local bus ID, cached device name and driver."""
+    if not re.fullmatch(r"[A-Za-z0-9_.:-]{1,64}", interface):
+        return None
+    root = Path(sys_root)
+    try:
+        device_path = (root / "class/net" / interface / "device").resolve(strict=True)
+    except OSError:
+        return None
+
+    candidates = (device_path, *device_path.parents)
+    driver = None
+    for candidate in candidates:
+        try:
+            driver = (candidate / "driver").resolve(strict=True).name
+        except OSError:
+            continue
+        if driver:
+            break
+
+    for candidate in candidates:
+        vendor = _read(candidate / "vendor")
+        product = _read(candidate / "device")
+        if vendor and product and re.fullmatch(r"0x[0-9a-fA-F]{4}", vendor) and re.fullmatch(r"0x[0-9a-fA-F]{4}", product):
+            return {
+                "bus": "PCI",
+                "id": f"{vendor[2:].lower()}:{product[2:].lower()}",
+                "name": lookup_pci_device_name(vendor, product, pci_databases),
+                "driver": driver,
+            }
+
+    for candidate in candidates:
+        vendor = _read(candidate / "idVendor")
+        product = _read(candidate / "idProduct")
+        if vendor and product and re.fullmatch(r"[0-9a-fA-F]{4}", vendor) and re.fullmatch(r"[0-9a-fA-F]{4}", product):
+            resolved_name = lookup_usb_device_name(vendor, product, usb_databases)
+            name = " ".join(resolved_name) if resolved_name else None
+            return {
+                "bus": "USB",
+                "id": f"{vendor.lower()}:{product.lower()}",
+                "name": name,
+                "driver": driver,
+            }
+    return {"bus": None, "id": None, "name": None, "driver": driver}
+
+
 def read_usb_devices(
     devices_path: str | Path = "/sys/bus/usb/devices",
     usb_databases: tuple[str, ...] = (

@@ -12,7 +12,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_devices, read_pci_devices, read_power_profile, read_printer_status, read_resource_pressure, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
+from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_pci_devices, read_power_profile, read_printer_status, read_resource_pressure, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -599,7 +599,7 @@ class UbuntuStart(Adw.Application):
 
         network_box, _unused = self.page(
             _("Network status"),
-            _("NetworkManager device states help show whether Ubuntu sees a wired or wireless adapter. If the optional iw tool is installed, signal strength and link rates are read from the active Wi-Fi link; the network name is not collected and nearby networks are not scanned. Signal values closer to 0 dBm are usually stronger. Link rates are not internet speed tests."),
+            _("NetworkManager device states help show whether Ubuntu sees a wired or wireless adapter. The app also reads the local adapter name, hardware ID and kernel driver when exposed. If the optional iw tool is installed, signal strength and link rates are read from the active Wi-Fi link; the network name is not collected and nearby networks are not scanned. Signal values closer to 0 dBm are usually stronger. Link rates are not internet speed tests."),
             include_rows=False,
         )
         network_status = Gtk.Label(label=_("Network status has not been refreshed yet."), xalign=0, wrap=True)
@@ -1147,6 +1147,11 @@ class UbuntuStart(Adw.Application):
 
         def read_status():
             devices, error = read_network_devices()
+            adapter_details = {
+                name: details
+                for name, _device_type, _state in devices
+                if (details := read_network_adapter_details(name)) is not None
+            }
             interface_ips = {
                 name: details
                 for name, _device_type, state in devices
@@ -1161,7 +1166,7 @@ class UbuntuStart(Adw.Application):
             }
             GLib.idle_add(
                 self.show_network_status, status_label, device_rows, devices,
-                error, announce, wifi_details, interface_ips,
+                error, announce, wifi_details, interface_ips, adapter_details,
             )
 
         threading.Thread(target=read_status, daemon=True).start()
@@ -1684,7 +1689,7 @@ class UbuntuStart(Adw.Application):
 
     def show_network_status(
         self, status_label, device_rows, devices, error, announce=False,
-        wifi_details=None, interface_ips=None,
+        wifi_details=None, interface_ips=None, adapter_details=None,
     ):
         errors = {
             "not-installed": _("NetworkManager command-line tools are not installed."),
@@ -1725,8 +1730,17 @@ class UbuntuStart(Adw.Application):
         for name, device_type, state in devices:
             title = f"{device_types.get(device_type, device_type)} · {name}"
             subtitle = states.get(state, state)
+            adapter = (adapter_details or {}).get(name, {})
             metrics = (wifi_details or {}).get(name, {})
             details = []
+            if adapter.get("name"):
+                details.append(adapter["name"])
+            if adapter.get("bus") and adapter.get("id"):
+                details.append(_("Hardware ID: {bus} {id}").format(
+                    bus=adapter["bus"], id=adapter["id"],
+                ))
+            if adapter.get("driver"):
+                details.append(_("Kernel driver: {driver}").format(driver=adapter["driver"]))
             if "signal_dbm" in metrics:
                 details.append(_("Signal: {dbm} dBm").format(dbm=metrics["signal_dbm"]))
             if "rx_bitrate_mbps" in metrics:
