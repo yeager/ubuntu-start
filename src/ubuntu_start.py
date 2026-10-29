@@ -423,7 +423,10 @@ class UbuntuStart(Adw.Application):
                 label=title, active=task_id in self.first_run_completed,
                 valign=Gtk.Align.CENTER, hexpand=True,
             )
-            check.update_property([Gtk.AccessibleProperty.DESCRIPTION], [subtitle])
+            check.update_property(
+                [Gtk.AccessibleProperty.LABEL, Gtk.AccessibleProperty.DESCRIPTION],
+                [title, subtitle],
+            )
             handler_id = check.connect("toggled", self.on_first_run_task_toggled, task_id)
             self.first_run_checks[task_id] = (check, handler_id)
             subtitle_label = Gtk.Label(

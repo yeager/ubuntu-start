@@ -33,6 +33,7 @@ ENTRY_ROLES = {"entry", "text"}
 
 def accessible_tree(
     node, *, depth: int = 0, remaining: list[int] | None = None,
+    include_unnamed: bool = False,
 ) -> list[tuple[str, str, object]]:
     """Collect accessible roles and names while bounding tree traversal."""
     if remaining is None:
@@ -48,14 +49,17 @@ def accessible_tree(
     except Exception:
         return []
 
-    entries = [(role, name, node)] if name else []
+    entries = [(role, name, node)] if name or include_unnamed else []
     for index in range(child_count):
         try:
             child = node.get_child_at_index(index)
         except Exception:
             continue
         if child:
-            entries.extend(accessible_tree(child, depth=depth + 1, remaining=remaining))
+            entries.extend(accessible_tree(
+                child, depth=depth + 1, remaining=remaining,
+                include_unnamed=include_unnamed,
+            ))
     return entries
 
 
@@ -168,7 +172,7 @@ def main() -> int:
                     }
                     checklist_controls = set()
                     while time.monotonic() < checklist_deadline:
-                        entries = accessible_tree(app)
+                        entries = accessible_tree(app, include_unnamed=True)
                         checklist_controls = {
                             name for role, name, _node in entries
                             if role in CHECKBOX_ROLES and name in checklist_tasks
