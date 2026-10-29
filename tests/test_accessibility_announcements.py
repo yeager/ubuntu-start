@@ -1094,8 +1094,14 @@ class SystemDetailsTests(unittest.TestCase):
             "graphics": [], "architecture": "x86_64", "usb_devices": [],
         }
         storage.return_value = {
-            "system": {"total": 1000, "used": 500, "free": 500},
-            "home": {"total": 2000, "used": 1800, "free": 200},
+            "system": {
+                "total": 1000, "used": 500, "free": 500,
+                "file_entries_total": 100, "file_entries_free": 25,
+            },
+            "home": {
+                "total": 2000, "used": 1800, "free": 200,
+                "file_entries_total": 50, "file_entries_free": 10,
+            },
         }
 
         details = UbuntuStart.system_details(Mock())
@@ -1105,6 +1111,14 @@ class SystemDetailsTests(unittest.TestCase):
         self.assertIn("50% used", details_by_label["System filesystem"])
         self.assertIn("200", details_by_label["Home folder filesystem"])
         self.assertIn("90% used", details_by_label["Home folder filesystem"])
+        self.assertEqual(
+            details_by_label["System filesystem: Available file entries"],
+            "25 of 100 available (75% used)",
+        )
+        self.assertEqual(
+            details_by_label["Home folder filesystem: Available file entries"],
+            "10 of 50 available (80% used)",
+        )
 
     @patch("ubuntu_start.read_storage_locations", return_value={
         "system": {"total": 1000, "used": 500, "free": 500},

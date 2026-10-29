@@ -5262,11 +5262,11 @@ msgid ""
 msgstr ""
 
 
-#: src/ubuntu_start.py:1611
+#: src/ubuntu_start.py:1611 src/ubuntu_start.py:3026
 msgid "Available file entries"
 msgstr ""
 
-#: src/ubuntu_start.py:1612
+#: src/ubuntu_start.py:1612 src/ubuntu_start.py:3027
 #, python-brace-format
 msgid "{free} of {total} available ({percent}% used)"
 msgstr ""

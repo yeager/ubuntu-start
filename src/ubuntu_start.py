@@ -3019,6 +3019,17 @@ class UbuntuStart(Adw.Application):
                 percent=percent,
             )
             details.append((label, value))
+            file_total = storage.get("file_entries_total")
+            file_free = storage.get("file_entries_free")
+            if isinstance(file_total, int) and isinstance(file_free, int) and file_total > 0:
+                details.append((
+                    f"{label}: {_('Available file entries')}",
+                    _("{free} of {total} available ({percent}% used)").format(
+                        free=locale.format_string("%d", file_free, grouping=True),
+                        total=locale.format_string("%d", file_total, grouping=True),
+                        percent=round((file_total - file_free) / file_total * 100),
+                    ),
+                ))
         return details
 
     def make_help(self):
