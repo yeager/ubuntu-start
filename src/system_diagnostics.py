@@ -1072,6 +1072,39 @@ def read_apt_update_status(
     return {"upgradeable": counts[0], "held_back": counts[1], "last_updated": last_updated}, None
 
 
+def parse_dpkg_audit(output: str) -> list[str] | None:
+    """Extract package names reported by dpkg --audit; None means unknown output."""
+    if not isinstance(output, str):
+        return None
+    if not output.strip():
+        return []
+    packages = set()
+    for line in output.splitlines():
+        match = re.match(
+            r"^\s*([a-z0-9][a-z0-9+.-]*(?::[a-z0-9][a-z0-9-]*)?)(?:\s|$)",
+            line,
+        )
+        if match:
+            packages.add(match.group(1))
+    return sorted(packages) if packages else None
+
+
+def read_package_health(timeout: float = 8.0) -> tuple[list[str] | None, str | None]:
+    """Run the local, read-only dpkg audit without changing packages or contacting a network."""
+    dpkg = shutil.which("dpkg")
+    if not dpkg:
+        return None, "not-installed"
+    result = _run_local([dpkg, "--audit"], timeout, env={**os.environ, "LC_ALL": "C"})
+    if result is None:
+        return None, "timeout-or-unavailable"
+    if result.returncode != 0:
+        return None, "unavailable"
+    packages = parse_dpkg_audit(result.stdout)
+    if packages is None:
+        return None, "unavailable"
+    return packages, None
+
+
 def check_internet_connection(timeout: float = 5.0) -> str:
     """Make a small HTTPS request to Ubuntu; call only after explicit user consent."""
     request = urllib.request.Request("https://ubuntu.com/", method="HEAD", headers={"User-Agent": "Ubuntu-Start-connectivity-check"})

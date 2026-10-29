@@ -29,6 +29,8 @@ from system_diagnostics import (
     read_audio_status,
     read_accessibility_settings,
     parse_apt_upgrade_simulation,
+    parse_dpkg_audit,
+    read_package_health,
     read_battery_status,
     read_apt_update_status,
     read_power_profile,
@@ -1201,6 +1203,44 @@ Inst package-two [2.0] (2.1 repo [amd64])
         self.assertEqual(result["gateway_error"], "no-response")
         self.assertIsNone(result["gateway_latency_ms"])
         self.assertEqual(result["gateway_test_duration_ms"], 1500.0)
+
+
+class DpkgAuditTests(unittest.TestCase):
+    def test_empty_audit_means_no_reported_issues(self):
+        self.assertEqual(parse_dpkg_audit(""), [])
+        self.assertEqual(parse_dpkg_audit("\n"), [])
+
+    def test_audit_extracts_package_names_without_heading_text(self):
+        output = (
+            "The following packages have been unpacked but not yet configured:\n"
+            "  browser:amd64\n"
+            "  broken-app\n"
+            "  browser:amd64\n"
+        )
+        self.assertEqual(parse_dpkg_audit(output), ["broken-app", "browser:amd64"])
+
+    def test_unrecognized_nonempty_audit_output_is_unknown(self):
+        self.assertIsNone(parse_dpkg_audit("dpkg: error: database unavailable\n"))
+
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/dpkg")
+    @patch("system_diagnostics._run_local")
+    def test_runs_dpkg_audit_without_changing_packages(self, run, _which):
+        run.return_value = subprocess.CompletedProcess([], 0, "", "")
+
+        packages, error = read_package_health()
+
+        self.assertEqual((packages, error), ([], None))
+        self.assertEqual(run.call_args.args[0], ["/usr/bin/dpkg", "--audit"])
+        self.assertEqual(run.call_args.kwargs["env"]["LC_ALL"], "C")
+
+    @patch("system_diagnostics.shutil.which", return_value=None)
+    def test_reports_missing_dpkg(self, _which):
+        self.assertEqual(read_package_health(), (None, "not-installed"))
+
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/dpkg")
+    @patch("system_diagnostics._run_local", return_value=None)
+    def test_reports_unavailable_audit(self, _run, _which):
+        self.assertEqual(read_package_health(), (None, "timeout-or-unavailable"))
 
 
 def read_internet_check():

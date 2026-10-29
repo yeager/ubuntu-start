@@ -13,7 +13,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_pci_devices, read_power_profile, read_printer_status, read_resource_pressure, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
+from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_resource_pressure, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -728,6 +728,28 @@ class UbuntuStart(Adw.Application):
         updates_box.append(updates_rows)
         box.append(updates_box)
         self.refresh_apt_update_status(updates_refresh, updates_status, updates_rows)
+
+        package_box, _package_rows = self.page(
+            _("Package installation health"),
+            _("Check the local dpkg database for interrupted or incomplete package installations. This read-only check does not use the network or change system files. If entries appear, review them in Software Updater or ask your administrator before running repair commands."),
+            include_rows=False,
+        )
+        package_status = Gtk.Label(label=_("Package health has not been checked yet."), xalign=0, wrap=True)
+        package_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        package_refresh = Gtk.Button(label=_("Check package health"), halign=Gtk.Align.START)
+        package_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_package_health(
+                package_refresh, package_status, package_rows, announce=True,
+            ),
+        )
+        package_open = Gtk.Button(label=_("Open Software Updater"), halign=Gtk.Align.START)
+        package_open.connect("clicked", lambda *_: self.open_app("update-manager"))
+        package_box.append(package_refresh)
+        package_box.append(package_open)
+        package_box.append(package_status)
+        package_box.append(package_rows)
+        box.append(package_box)
 
         storage_locations = read_storage_locations()
         storage_box, storage_rows = self.page(
@@ -1444,6 +1466,46 @@ class UbuntuStart(Adw.Application):
             )
 
         threading.Thread(target=read_status, daemon=True).start()
+
+    def refresh_package_health(self, button, status_label, package_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking package installation health…"))
+
+        def read_status():
+            packages, error = read_package_health()
+            GLib.idle_add(
+                self.show_package_health, button, status_label, package_rows,
+                packages, error, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_package_health(self, button, status_label, package_rows, packages, error, announce=False):
+        button.set_sensitive(True)
+        while (child := package_rows.get_first_child()) is not None:
+            package_rows.remove(child)
+
+        error_messages = {
+            "not-installed": _("dpkg is not available on this system."),
+            "timeout-or-unavailable": _("The package check could not finish. Try again later."),
+            "unavailable": _("Could not read the local package database."),
+        }
+        if error or packages is None:
+            message = error_messages.get(error, error_messages["unavailable"])
+        elif packages:
+            for package in packages:
+                self.row(
+                    package_rows, package,
+                    _("dpkg reports an incomplete or inconsistent installation."),
+                )
+            message = _("Package check found {count} package entries to review.").format(count=len(packages))
+        else:
+            message = _("dpkg reported no incomplete package installations.")
+
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
 
     def refresh_memory_status(self, button, status_label, memory_rows, announce=False):
         button.set_sensitive(False)

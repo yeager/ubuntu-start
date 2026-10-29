@@ -253,6 +253,53 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         )
         self.app.announce_to_screen_reader.assert_not_called()
 
+    def test_package_health_lists_findings_and_announces_summary(self):
+        button = Mock()
+        status_label = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+
+        UbuntuStart.show_package_health(
+            self.app, button, status_label, rows, ["broken-app", "browser"], None,
+            announce=True,
+        )
+
+        button.set_sensitive.assert_called_once_with(True)
+        self.app.row.assert_any_call(
+            rows, "broken-app", "dpkg reports an incomplete or inconsistent installation.",
+        )
+        self.app.row.assert_any_call(
+            rows, "browser", "dpkg reports an incomplete or inconsistent installation.",
+        )
+        message = "Package check found 2 package entries to review."
+        status_label.set_text.assert_called_once_with(message)
+        self.app.announce_to_screen_reader.assert_called_once_with(status_label, message)
+
+    def test_package_health_reports_a_clean_audit(self):
+        status_label = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+
+        UbuntuStart.show_package_health(self.app, Mock(), status_label, rows, [], None)
+
+        status_label.set_text.assert_called_once_with(
+            "dpkg reported no incomplete package installations.",
+        )
+        self.app.row.assert_not_called()
+
+    def test_package_health_handles_unavailable_database(self):
+        status_label = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+
+        UbuntuStart.show_package_health(
+            self.app, Mock(), status_label, rows, None, "unavailable",
+        )
+
+        status_label.set_text.assert_called_once_with(
+            "Could not read the local package database.",
+        )
+
     def setUp(self):
         self.app = Mock()
 
