@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Ubuntu Start 0.3.24\n"
+"Project-Id-Version: Ubuntu Start 0.3.25\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
 "POT-Creation-Date: 2026-10-29 21:19+0000\n"
 "PO-Revision-Date: 2026-10-28 15:18+0100\n"
@@ -3787,12 +3787,6 @@ msgstr "Uppdatera systemtjänsternas status"
 msgid "System startup time"
 msgstr "Uppstartstid"
 
-#: src/ubuntu_start.py:1528
-msgid ""
-"Read systemd's local boot-time summary. This check makes no system changes, "
-"does not identify a slow service and does not measure every app that starts "
-"after sign-in."
-msgstr "Visa systemds lokala sammanfattning av uppstartstiden. Kontrollen gör inga ändringar, pekar inte ut en långsam tjänst och mäter inte alla appar som startar efter inloggning."
 
 #: src/ubuntu_start.py:1532
 msgid "Startup time has not been checked yet."
@@ -6429,3 +6423,68 @@ msgstr "Kom igång med Ubuntu och felsök anslutna enheter"
 #~ msgstr ""
 #~ "Uppgifterna kan hjälpa andra att förstå ett problem. De innehåller inte "
 #~ "ditt användarnamn, datornamn, nätverksadress eller installerade program."
+#: src/ubuntu_start.py:175
+msgid "Inspect the dependency chain"
+msgstr "Granska beroendekedjan"
+
+
+#: src/ubuntu_start.py:175
+msgid ""
+"Select Inspect graphical startup chain to read the systemd path to "
+"graphical.target. The @ value shows when a unit became active; the + value "
+"shows how long it took to start."
+msgstr ""
+"Välj Granska grafisk startkedja för att läsa systemd-sökvägen till "
+"graphical.target. Värdet @ visar när en enhet blev aktiv och värdet + hur "
+"lång tid den tog att starta."
+
+
+#: src/ubuntu_start.py:176
+msgid "Review service names before sharing"
+msgstr "Granska tjänstenamnen före delning"
+
+
+#: src/ubuntu_start.py:176
+msgid ""
+"The chain shows one dependency path, not every service or proof of a fault. "
+"Service names can reveal installed software, so review the output before "
+"sharing it."
+msgstr ""
+"Kedjan visar en enda beroendeväg, inte alla tjänster och inte heller att "
+"något är fel. Tjänstenamn kan avslöja installerade program, så granska "
+"resultatet innan du delar det."
+
+
+#: src/ubuntu_start.py:1530
+msgid ""
+"Read systemd's local boot-time summary. The optional dependency-chain view "
+"lists local service names, which can reveal installed software; review it "
+"before sharing."
+msgstr ""
+"Visa systemds lokala uppstartssammanfattning. Den valfria beroendekedjan "
+"visar lokala tjänstenamn som kan avslöja installerade program. Granska "
+"resultatet innan du delar det."
+
+
+#: src/ubuntu_start.py:1548
+msgid "Inspect graphical startup chain"
+msgstr "Granska grafisk startkedja"
+
+
+#: src/ubuntu_start.py:2525
+msgid "Inspecting the graphical startup chain…"
+msgstr "Läser in den grafiska startkedjan…"
+
+
+#: src/ubuntu_start.py:2540
+msgid "Could not read the graphical startup chain."
+msgstr "Det gick inte att läsa den grafiska startkedjan."
+
+
+#: src/ubuntu_start.py:2547
+msgid ""
+"Systemd's critical chain to graphical.target is shown. It is one dependency "
+"path and does not prove a unit is faulty."
+msgstr ""
+"Systemds kritiska kedja till graphical.target visas. Den utgör en enda "
+"beroendeväg och visar inte att någon enhet är felaktig."

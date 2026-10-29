@@ -30,6 +30,7 @@ from system_diagnostics import (
     read_audio_status,
     read_backup_tool_status,
     read_boot_timing,
+    read_boot_critical_chain,
     read_accessibility_settings,
     parse_apt_upgrade_simulation,
     parse_dpkg_audit,
@@ -832,6 +833,51 @@ class BootTimingTests(unittest.TestCase):
     @patch("system_diagnostics.shutil.which", return_value="/usr/bin/systemd-analyze")
     def test_reports_when_timing_cannot_be_read(self, _which, _run_local):
         self.assertEqual(read_boot_timing(), (None, "unavailable"))
+
+    @patch("system_diagnostics._run_local")
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/systemd-analyze")
+    def test_reads_bounded_graphical_target_dependency_chain(self, _which, run_local):
+        run_local.return_value = subprocess.CompletedProcess(
+            [], 0,
+            "graphical.target @4.2s\n└─display-manager.service @3.1s +1.1s\n",
+            "",
+        )
+
+        chain, error = read_boot_critical_chain()
+
+        self.assertIsNone(error)
+        self.assertEqual(
+            chain,
+            "graphical.target @4.2s\n└─display-manager.service @3.1s +1.1s",
+        )
+        self.assertEqual(
+            run_local.call_args.args[0],
+            ["/usr/bin/systemd-analyze", "critical-chain", "graphical.target"],
+        )
+        self.assertEqual(run_local.call_args.args[1], 5.0)
+        self.assertEqual(run_local.call_args.kwargs["env"]["LC_ALL"], "C")
+
+    @patch("system_diagnostics._run_local")
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/systemd-analyze")
+    def test_limits_chain_output_and_removes_control_characters(self, _which, run_local):
+        lines = [f"unit-{index}.service" for index in range(40)]
+        lines[1] = "bad\x1b[31mname.service"
+        run_local.return_value = subprocess.CompletedProcess([], 0, "\n".join(lines), "")
+
+        chain, error = read_boot_critical_chain()
+
+        self.assertIsNone(error)
+        self.assertEqual(len(chain.splitlines()), 32)
+        self.assertNotIn("\x1b", chain)
+
+    @patch("system_diagnostics.shutil.which", return_value=None)
+    def test_reports_when_systemd_analyze_is_missing_for_chain(self, _which):
+        self.assertEqual(read_boot_critical_chain(), (None, "not-installed"))
+
+    @patch("system_diagnostics._run_local", return_value=None)
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/systemd-analyze")
+    def test_reports_when_chain_cannot_be_read(self, _which, _run_local):
+        self.assertEqual(read_boot_critical_chain(), (None, "unavailable"))
 
 
 class BluetoothStatusTests(unittest.TestCase):

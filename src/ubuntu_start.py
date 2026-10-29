@@ -13,7 +13,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import battery_is_discharging, battery_power_status_unknown, benchmark_score_change_percent, build_support_report, check_internet_connection, clear_benchmark_baselines, find_benchmark_tool, find_graphics_benchmark_tool, load_benchmark_baselines, normalize_desktop_name, normalize_session_type, parse_glmark2_score, pressure_threshold_exceeded, read_accessibility_settings, read_apt_update_status, read_audio_status, read_backup_tool_status, read_battery_status, read_bluetooth_status, read_boot_timing, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_remote_session, read_reboot_required, read_resource_pressure, read_rfkill_status, read_secure_boot_status, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_cpu_benchmark, run_network_diagnostics, save_benchmark_baseline, sensor_near_critical_limit
+from system_diagnostics import battery_is_discharging, battery_power_status_unknown, benchmark_score_change_percent, build_support_report, check_internet_connection, clear_benchmark_baselines, find_benchmark_tool, find_graphics_benchmark_tool, load_benchmark_baselines, normalize_desktop_name, normalize_session_type, parse_glmark2_score, pressure_threshold_exceeded, read_accessibility_settings, read_apt_update_status, read_audio_status, read_backup_tool_status, read_battery_status, read_bluetooth_status, read_boot_critical_chain, read_boot_timing, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_remote_session, read_reboot_required, read_resource_pressure, read_rfkill_status, read_secure_boot_status, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_cpu_benchmark, run_network_diagnostics, save_benchmark_baseline, sensor_near_critical_limit
 from guide_search import find_guide_matches
 from first_run_state import TASK_IDS as FIRST_RUN_TASK_IDS, load_completed_tasks, save_completed_tasks
 
@@ -172,6 +172,8 @@ SYSTEM_GUIDES = [
     (_("Understand system startup time"), ("overview", "startup-time"), _("Open startup time check"), [
         (_("Read the reported boot timing"), _("Open Network and hardware and select Check startup time. The check reads the timing summary reported by systemd and makes no system changes.")),
         (_("Understand the timing parts"), _("The summary can include firmware, boot loader, kernel and userspace time. Firmware and boot loader values appear only when the system reports them.")),
+        (_("Inspect the dependency chain"), _("Select Inspect graphical startup chain to read the systemd path to graphical.target. The @ value shows when a unit became active; the + value shows how long it took to start.")),
+        (_("Review service names before sharing"), _("The chain shows one dependency path, not every service or proof of a fault. Service names can reveal installed software, so review the output before sharing it.")),
         (_("Know what the timing leaves out"), _("Systemd's boot timing does not measure every app that starts after you sign in. If the desktop becomes slow only after login, the reported boot time may not explain it.")),
         (_("Avoid changing services based on one reading"), _("Boot time varies with updates and background work. Do not disable or mask system services based on one timing result; ask for help before changing them.")),
     ]),
@@ -1525,12 +1527,14 @@ class UbuntuStart(Adw.Application):
 
         startup_box, _startup_rows = self.page(
             _("System startup time"),
-            _("Read systemd's local boot-time summary. This check makes no system changes, does not identify a slow service and does not measure every app that starts after sign-in."),
+            _("Read systemd's local boot-time summary. The optional dependency-chain view lists local service names, which can reveal installed software; review it before sharing."),
             include_rows=False,
         )
         self.startup_time_box = startup_box
         startup_status = Gtk.Label(label=_("Startup time has not been checked yet."), xalign=0, wrap=True)
         startup_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        startup_chain = Gtk.Label(label="", xalign=0, wrap=True, selectable=True, css_classes=["monospace"])
+        startup_chain.set_visible(False)
         startup_refresh = Gtk.Button(label=_("Check startup time"), halign=Gtk.Align.START)
         startup_refresh.connect(
             "clicked",
@@ -1540,10 +1544,21 @@ class UbuntuStart(Adw.Application):
         )
         startup_guide = Gtk.Button(label=_("Open startup time guide"), halign=Gtk.Align.START)
         startup_guide.connect("clicked", lambda *_: self.open_startup_time_guide())
+        startup_chain_button = Gtk.Button(
+            label=_("Inspect graphical startup chain"), halign=Gtk.Align.START,
+        )
+        startup_chain_button.connect(
+            "clicked",
+            lambda *_: self.refresh_startup_chain(
+                startup_chain_button, startup_status, startup_chain, announce=True,
+            ),
+        )
         startup_box.append(startup_refresh)
         startup_box.append(startup_guide)
+        startup_box.append(startup_chain_button)
         startup_box.append(startup_status)
         startup_box.append(startup_rows)
+        startup_box.append(startup_chain)
         box.append(startup_box)
 
         temperature_box, _temperature_rows = self.page(
@@ -2496,6 +2511,40 @@ class UbuntuStart(Adw.Application):
         elif timing:
             self.row(timing_rows, _("Reported boot timing"), timing)
             message = _("Systemd reported the startup timing above. It does not include every app started after sign-in.")
+        else:
+            message = error_messages["unavailable"]
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
+
+    def refresh_startup_chain(self, button, status_label, chain_label, announce=False):
+        button.set_sensitive(False)
+        chain_label.set_visible(False)
+        chain_label.set_text("")
+        status_label.set_text(_("Inspecting the graphical startup chain…"))
+
+        def read_chain():
+            chain, error = read_boot_critical_chain()
+            GLib.idle_add(
+                self.show_startup_chain,
+                button, status_label, chain_label, chain, error, announce,
+            )
+
+        threading.Thread(target=read_chain, daemon=True).start()
+
+    def show_startup_chain(self, button, status_label, chain_label, chain, error, announce=False):
+        button.set_sensitive(True)
+        error_messages = {
+            "not-installed": _("systemd-analyze is not installed."),
+            "unavailable": _("Could not read the graphical startup chain."),
+        }
+        if error:
+            message = error_messages.get(error, error_messages["unavailable"])
+        elif chain:
+            chain_label.set_text(chain)
+            chain_label.set_visible(True)
+            message = _("Systemd's critical chain to graphical.target is shown. It is one dependency path and does not prove a unit is faulty.")
         else:
             message = error_messages["unavailable"]
         status_label.set_text(message)

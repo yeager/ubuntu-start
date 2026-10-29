@@ -731,6 +731,30 @@ def read_boot_timing(timeout: float = 3.0) -> tuple[str | None, str | None]:
     return "\n".join(lines), None
 
 
+def read_boot_critical_chain(timeout: float = 5.0) -> tuple[str | None, str | None]:
+    """Read systemd's dependency chain to graphical.target without changing state."""
+    systemd_analyze = shutil.which("systemd-analyze")
+    if not systemd_analyze:
+        return None, "not-installed"
+    result = _run_local(
+        [systemd_analyze, "critical-chain", "graphical.target"],
+        timeout,
+        env={**os.environ, "LANG": "C", "LC_ALL": "C"},
+    )
+    if result is None or result.returncode != 0:
+        return None, "unavailable"
+    lines = []
+    for line in result.stdout.splitlines()[:32]:
+        cleaned = "".join(
+            character if character.isprintable() else " " for character in line
+        ).rstrip()
+        if cleaned:
+            lines.append(cleaned[:200])
+    if not lines:
+        return None, "unavailable"
+    return "\n".join(lines), None
+
+
 def lookup_pci_device_name(
     vendor_id: str,
     device_id: str,
