@@ -437,6 +437,39 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
             "NetworkManager did not respond in time. Try refreshing again.",
         )
 
+    def test_radio_status_explains_hardware_block_and_announces_next_step(self):
+        button = Mock()
+        status = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+        self.app.row = Mock()
+
+        UbuntuStart.show_rfkill_status(
+            self.app, button, status, rows,
+            [{"type": "wlan", "soft_blocked": False, "hard_blocked": True}],
+            announce=True,
+        )
+
+        detail = "Blocked by a hardware switch · Check airplane mode, the Wi-Fi switch or keyboard shortcut."
+        self.app.row.assert_called_once_with(rows, "Wi-Fi radio", detail)
+        status.set_text.assert_called_once_with(
+            "One or more wireless radios are blocked. Review the details below.",
+        )
+        self.app.announce_to_screen_reader.assert_called_once_with(
+            status, f"Wireless radio status updated: Wi-Fi radio: {detail}",
+        )
+
+    def test_radio_status_does_not_assume_when_sysfs_is_missing(self):
+        status = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+
+        UbuntuStart.show_rfkill_status(self.app, Mock(), status, rows, None)
+
+        status.set_text.assert_called_once_with(
+            "Radio block status is not available on this computer.",
+        )
+
     def test_network_status_shows_local_wifi_signal_and_link_rates(self):
         status = Mock()
         rows = Mock()

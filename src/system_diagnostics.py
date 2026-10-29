@@ -185,6 +185,35 @@ def read_network_devices(timeout: float = 3.0) -> tuple[list[tuple[str, str, str
     return parse_nmcli_device_status(result.stdout), None
 
 
+def read_rfkill_status(
+    rfkill_path: str | Path = "/sys/class/rfkill",
+) -> list[dict[str, str | bool]] | None:
+    """Read allowlisted wireless radio block flags from local sysfs."""
+    root = Path(rfkill_path)
+    if not root.is_dir():
+        return None
+    radios = []
+    try:
+        entries = sorted(root.glob("rfkill*"), key=lambda path: path.name)
+    except OSError:
+        return None
+    allowed_types = {"wlan", "bluetooth", "wwan", "gps", "nfc", "uwb", "wimax", "fm"}
+    for entry in entries:
+        if not re.fullmatch(r"rfkill\d+", entry.name):
+            continue
+        radio_type = _read(entry / "type")
+        soft = _read(entry / "soft")
+        hard = _read(entry / "hard")
+        if radio_type not in allowed_types or soft not in {"0", "1"} or hard not in {"0", "1"}:
+            continue
+        radios.append({
+            "type": radio_type,
+            "soft_blocked": soft == "1",
+            "hard_blocked": hard == "1",
+        })
+    return radios
+
+
 def parse_bluetooth_controller_status(output: str) -> str:
     """Parse only controller presence and power state from bluetoothctl output."""
     has_controller = False

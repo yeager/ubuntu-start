@@ -47,6 +47,7 @@ from system_diagnostics import (
     read_temperature_sensors,
     read_hardware_details,
     read_network_devices,
+    read_rfkill_status,
     read_network_adapter_details,
     read_interface_ip_status,
     read_printer_status,
@@ -218,6 +219,44 @@ class TimeStatusTests(unittest.TestCase):
 
 
 class ParseNetworkStatusTests(unittest.TestCase):
+    def test_reads_radio_block_flags_from_allowlisted_sysfs_fields(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            wifi = root / "rfkill0"
+            wifi.mkdir()
+            (wifi / "type").write_text("wlan\n", encoding="ascii")
+            (wifi / "soft").write_text("0\n", encoding="ascii")
+            (wifi / "hard").write_text("1\n", encoding="ascii")
+            bluetooth = root / "rfkill1"
+            bluetooth.mkdir()
+            (bluetooth / "type").write_text("bluetooth\n", encoding="ascii")
+            (bluetooth / "soft").write_text("0\n", encoding="ascii")
+            (bluetooth / "hard").write_text("0\n", encoding="ascii")
+            wimax = root / "rfkill2"
+            wimax.mkdir()
+            (wimax / "type").write_text("wimax\n", encoding="ascii")
+            (wimax / "soft").write_text("1\n", encoding="ascii")
+            (wimax / "hard").write_text("0\n", encoding="ascii")
+            malformed = root / "rfkill3"
+            malformed.mkdir()
+            (malformed / "type").write_text("unknown-device\n", encoding="ascii")
+            (malformed / "soft").write_text("0\n", encoding="ascii")
+            (malformed / "hard").write_text("0\n", encoding="ascii")
+            (root / "rfkill-not-a-device").mkdir()
+
+            result = read_rfkill_status(root)
+
+        self.assertEqual(result, [
+            {"type": "wlan", "soft_blocked": False, "hard_blocked": True},
+            {"type": "bluetooth", "soft_blocked": False, "hard_blocked": False},
+            {"type": "wimax", "soft_blocked": True, "hard_blocked": False},
+        ])
+
+    def test_distinguishes_missing_rfkill_directory_from_no_radios(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            self.assertIsNone(read_rfkill_status(Path(temporary) / "missing"))
+            self.assertEqual(read_rfkill_status(temporary), [])
+
     def test_reads_pci_network_adapter_name_id_and_driver_from_sysfs(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

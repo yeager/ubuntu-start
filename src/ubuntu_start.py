@@ -13,7 +13,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_reboot_required, read_resource_pressure, read_secure_boot_status, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
+from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_reboot_required, read_resource_pressure, read_rfkill_status, read_secure_boot_status, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -73,6 +73,7 @@ GUIDES = [
     ]),
     (_("Wi-Fi"), "wifi", [
         (_("Check Wi-Fi and airplane mode"), _("Turn airplane mode off and make sure Wi-Fi is enabled in Quick Settings.")),
+        (_("Check for a wireless radio block"), _("Refresh Wireless radio status on the Network and hardware page. A software block may come from airplane mode; a hardware block may come from a switch or keyboard shortcut. Check the computer manual before changing firmware or hardware settings.")),
         (_("Check the network"), _("See whether another device can connect. If none can, restart the router and check its internet connection.")),
         (_("Reconnect to the network"), _("Forget the network in Wi-Fi Settings, then connect again and carefully enter the password.")),
         (_("If only this computer has trouble"), _("Install available Ubuntu updates. Check the computer or Wi-Fi adapter support information before installing a driver.")),
@@ -631,6 +632,26 @@ class UbuntuStart(Adw.Application):
         network_box.append(network_rows)
         box.append(network_box)
         self.refresh_network_status(network_status, network_rows)
+
+        radio_box, _radio_unused = self.page(
+            _("Wireless radio status"),
+            _("Read local Linux radio block flags for Wi-Fi, Bluetooth and other wireless devices. This does not enable or disable radios."),
+            include_rows=False,
+        )
+        radio_status = Gtk.Label(label=_("Radio status has not been refreshed yet."), xalign=0, wrap=True)
+        radio_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        radio_refresh = Gtk.Button(label=_("Refresh radio status"), halign=Gtk.Align.START)
+        radio_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_rfkill_status(
+                radio_refresh, radio_status, radio_rows, announce=True,
+            ),
+        )
+        radio_box.append(radio_refresh)
+        radio_box.append(radio_status)
+        radio_box.append(radio_rows)
+        box.append(radio_box)
+        self.refresh_rfkill_status(radio_refresh, radio_status, radio_rows)
 
         bluetooth_box, bluetooth_rows = self.page(
             _("Bluetooth status"),
@@ -1234,6 +1255,72 @@ class UbuntuStart(Adw.Application):
             )
 
         threading.Thread(target=read_status, daemon=True).start()
+
+    def refresh_rfkill_status(self, button, status_label, radio_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking radio block status…"))
+        while (child := radio_rows.get_first_child()) is not None:
+            radio_rows.remove(child)
+
+        def read_status():
+            radios = read_rfkill_status()
+            GLib.idle_add(
+                self.show_rfkill_status, button, status_label, radio_rows, radios, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_rfkill_status(self, button, status_label, radio_rows, radios, announce=False):
+        button.set_sensitive(True)
+        if radios is None:
+            message = _("Radio block status is not available on this computer.")
+        elif not radios:
+            message = _("Linux did not expose any wireless radio block controls.")
+        else:
+            labels = {
+                "wlan": _("Wi-Fi radio"),
+                "bluetooth": _("Bluetooth radio"),
+                "wwan": _("Mobile broadband radio"),
+                "gps": _("GPS radio"),
+                "nfc": _("NFC radio"),
+                "uwb": _("UWB radio"),
+                "wimax": _("WiMAX radio"),
+                "fm": _("FM radio"),
+            }
+            blocked_states = {
+                (False, False): _("Not blocked"),
+                (True, False): _("Blocked in software"),
+                (False, True): _("Blocked by a hardware switch"),
+                (True, True): _("Blocked in software and by a hardware switch"),
+            }
+            summaries = []
+            blocked = False
+            for radio in radios:
+                title = labels[radio["type"]]
+                state = blocked_states[(radio["soft_blocked"], radio["hard_blocked"])]
+                if radio["soft_blocked"] or radio["hard_blocked"]:
+                    blocked = True
+                    if radio["type"] == "wlan":
+                        next_step = _("Check airplane mode, the Wi-Fi switch or keyboard shortcut.")
+                    elif radio["type"] == "bluetooth":
+                        next_step = _("Check airplane mode, the Bluetooth switch or keyboard shortcut.")
+                    else:
+                        next_step = _("Check the wireless device switch or its keyboard shortcut.")
+                    state = f"{state} · {next_step}"
+                self.row(radio_rows, title, state)
+                summaries.append(f"{title}: {state}")
+            if blocked:
+                message = _("One or more wireless radios are blocked. Review the details below.")
+            else:
+                message = _("No reported wireless radios are blocked.")
+        status_label.set_text(message)
+        if announce:
+            details = "; ".join(summaries) if radios else message
+            self.announce_to_screen_reader(
+                status_label,
+                _("Wireless radio status updated: {details}").format(details=details),
+            )
+        return GLib.SOURCE_REMOVE
 
     def refresh_bluetooth_status(self, status_row, announce=False):
         status_row.set_subtitle(_("Checking status…"))
