@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Ubuntu Start 0.3.30\n"
+"Project-Id-Version: Ubuntu Start 0.3.31\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 21:32+0000\n"
+"POT-Creation-Date: 2026-10-29 23:20+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: src/ubuntu_start.py:33 src/ubuntu_start.py:1707
+#: src/ubuntu_start.py:33 src/ubuntu_start.py:1714
 msgid "Sound and microphones"
 msgstr ""
 
@@ -51,7 +51,7 @@ msgid ""
 "microphone permission if only one app is affected."
 msgstr ""
 
-#: src/ubuntu_start.py:38 src/ubuntu_start.py:2144
+#: src/ubuntu_start.py:38 src/ubuntu_start.py:2151
 msgid "Battery and charging"
 msgstr ""
 
@@ -252,7 +252,7 @@ msgid ""
 "by Ubuntu before changing anything."
 msgstr ""
 
-#: src/ubuntu_start.py:66 src/ubuntu_start.py:3245
+#: src/ubuntu_start.py:66 src/ubuntu_start.py:3265
 msgid "External display or projector"
 msgstr ""
 
@@ -360,7 +360,7 @@ msgid ""
 "consult the laptop support information before changing drivers."
 msgstr ""
 
-#: src/ubuntu_start.py:82 src/ubuntu_start.py:1704 src/ubuntu_start.py:2806
+#: src/ubuntu_start.py:82 src/ubuntu_start.py:1711 src/ubuntu_start.py:2813
 msgid "Wi-Fi"
 msgstr ""
 
@@ -415,7 +415,7 @@ msgid ""
 "support information before installing a driver."
 msgstr ""
 
-#: src/ubuntu_start.py:89 src/ubuntu_start.py:1692
+#: src/ubuntu_start.py:89 src/ubuntu_start.py:1699
 msgid "Camera"
 msgstr ""
 
@@ -870,11 +870,11 @@ msgstr ""
 msgid "Connect to Wi-Fi"
 msgstr ""
 
-#: src/ubuntu_start.py:150 src/ubuntu_start.py:886
+#: src/ubuntu_start.py:150 src/ubuntu_start.py:893
 msgid "Open Wi-Fi Settings"
 msgstr ""
 
-#: src/ubuntu_start.py:151 src/ubuntu_start.py:3033
+#: src/ubuntu_start.py:151 src/ubuntu_start.py:3041
 msgid "Open Quick Settings"
 msgstr ""
 
@@ -1036,7 +1036,7 @@ msgid ""
 "may not identify the router maker."
 msgstr ""
 
-#: src/ubuntu_start.py:172 src/ubuntu_start.py:1723
+#: src/ubuntu_start.py:172 src/ubuntu_start.py:1730
 msgid "Understand system startup time"
 msgstr ""
 
@@ -1108,7 +1108,7 @@ msgid ""
 "them."
 msgstr ""
 
-#: src/ubuntu_start.py:180 src/ubuntu_start.py:1715
+#: src/ubuntu_start.py:180 src/ubuntu_start.py:1722
 msgid "Check date and time"
 msgstr ""
 
@@ -1227,7 +1227,7 @@ msgid ""
 "Once the printer and queue are ready, send a test page from Printer Settings."
 msgstr ""
 
-#: src/ubuntu_start.py:196 src/ubuntu_start.py:2130
+#: src/ubuntu_start.py:196 src/ubuntu_start.py:2137
 msgid "Pair a Bluetooth device"
 msgstr ""
 
@@ -1286,11 +1286,11 @@ msgid ""
 "try again."
 msgstr ""
 
-#: src/ubuntu_start.py:203 src/ubuntu_start.py:2138
+#: src/ubuntu_start.py:203 src/ubuntu_start.py:2145
 msgid "Fix Bluetooth audio"
 msgstr ""
 
-#: src/ubuntu_start.py:203 src/ubuntu_start.py:946
+#: src/ubuntu_start.py:203 src/ubuntu_start.py:953
 msgid "Open Sound Settings"
 msgstr ""
 
@@ -1394,7 +1394,7 @@ msgstr ""
 
 #: src/ubuntu_start.py:216 src/ubuntu_start.py:228 src/ubuntu_start.py:233
 #: src/ubuntu_start.py:238 src/ubuntu_start.py:243 src/ubuntu_start.py:248
-#: src/ubuntu_start.py:522 src/ubuntu_start.py:3318
+#: src/ubuntu_start.py:529 src/ubuntu_start.py:3338
 msgid "Open Accessibility Settings"
 msgstr ""
 
@@ -1430,7 +1430,7 @@ msgstr ""
 msgid "Set up automatic screen locking"
 msgstr ""
 
-#: src/ubuntu_start.py:221 src/ubuntu_start.py:430 src/ubuntu_start.py:500
+#: src/ubuntu_start.py:221 src/ubuntu_start.py:437 src/ubuntu_start.py:507
 msgid "Open Settings"
 msgstr ""
 
@@ -1751,7 +1751,7 @@ msgstr ""
 msgid "Restore files from a backup"
 msgstr ""
 
-#: src/ubuntu_start.py:268 src/ubuntu_start.py:1090
+#: src/ubuntu_start.py:268 src/ubuntu_start.py:1097
 msgid "Open Backups"
 msgstr ""
 
@@ -1813,8 +1813,8 @@ msgstr ""
 msgid "Install Ubuntu updates"
 msgstr ""
 
-#: src/ubuntu_start.py:275 src/ubuntu_start.py:277 src/ubuntu_start.py:1024
-#: src/ubuntu_start.py:1047
+#: src/ubuntu_start.py:275 src/ubuntu_start.py:277 src/ubuntu_start.py:1031
+#: src/ubuntu_start.py:1054
 msgid "Open Software Updater"
 msgstr ""
 
@@ -1860,7 +1860,7 @@ msgstr ""
 msgid "Recover from an interrupted package update"
 msgstr ""
 
-#: src/ubuntu_start.py:281 src/ubuntu_start.py:300 src/ubuntu_start.py:3044
+#: src/ubuntu_start.py:281 src/ubuntu_start.py:300 src/ubuntu_start.py:3052
 msgid "Open Terminal"
 msgstr ""
 
@@ -1980,7 +1980,7 @@ msgstr ""
 msgid "Install a desktop application"
 msgstr ""
 
-#: src/ubuntu_start.py:294 src/ubuntu_start.py:1093
+#: src/ubuntu_start.py:294 src/ubuntu_start.py:1100
 msgid "Open Ubuntu App Center"
 msgstr ""
 
@@ -2189,321 +2189,321 @@ msgid ""
 "rm, disk tools or scripts downloaded from the internet."
 msgstr ""
 
-#: src/ubuntu_start.py:325 src/ubuntu_start.py:334 src/ubuntu_start.py:3075
+#: src/ubuntu_start.py:329 src/ubuntu_start.py:338 src/ubuntu_start.py:3083
 #: data/se.danielnylander.UbuntuStart.desktop:2
 msgid "Ubuntu Start"
 msgstr ""
 
-#: src/ubuntu_start.py:328
+#: src/ubuntu_start.py:332
 msgid "About"
 msgstr ""
 
-#: src/ubuntu_start.py:333
+#: src/ubuntu_start.py:337
 msgid "Guide"
 msgstr ""
 
-#: src/ubuntu_start.py:360
+#: src/ubuntu_start.py:364
 msgid "Welcome"
 msgstr ""
 
-#: src/ubuntu_start.py:372 src/ubuntu_start.py:436
+#: src/ubuntu_start.py:376 src/ubuntu_start.py:443
 msgid "Get started"
 msgstr ""
 
-#: src/ubuntu_start.py:373 src/ubuntu_start.py:3026
+#: src/ubuntu_start.py:377 src/ubuntu_start.py:3034
 msgid "Tips and tricks"
 msgstr ""
 
-#: src/ubuntu_start.py:374 src/ubuntu_start.py:390 src/ubuntu_start.py:399
-#: src/ubuntu_start.py:694 src/ubuntu_start.py:846 src/ubuntu_start.py:1701
-#: src/ubuntu_start.py:3249 src/ubuntu_start.py:3292
+#: src/ubuntu_start.py:378 src/ubuntu_start.py:394 src/ubuntu_start.py:403
+#: src/ubuntu_start.py:701 src/ubuntu_start.py:853 src/ubuntu_start.py:1708
+#: src/ubuntu_start.py:3269 src/ubuntu_start.py:3312
 msgid "Fix a device"
 msgstr ""
 
-#: src/ubuntu_start.py:375 src/ubuntu_start.py:814 src/ubuntu_start.py:849
-#: src/ubuntu_start.py:1718 src/ubuntu_start.py:1726 src/ubuntu_start.py:2133
-#: src/ubuntu_start.py:2141
+#: src/ubuntu_start.py:379 src/ubuntu_start.py:821 src/ubuntu_start.py:856
+#: src/ubuntu_start.py:1725 src/ubuntu_start.py:1733 src/ubuntu_start.py:2140
+#: src/ubuntu_start.py:2148
 msgid "System guides"
 msgstr ""
 
-#: src/ubuntu_start.py:376 src/ubuntu_start.py:614 src/ubuntu_start.py:617
-#: src/ubuntu_start.py:620 src/ubuntu_start.py:623 src/ubuntu_start.py:806
-#: src/ubuntu_start.py:855 src/ubuntu_start.py:2894
+#: src/ubuntu_start.py:380 src/ubuntu_start.py:621 src/ubuntu_start.py:624
+#: src/ubuntu_start.py:627 src/ubuntu_start.py:630 src/ubuntu_start.py:813
+#: src/ubuntu_start.py:862 src/ubuntu_start.py:2901
 msgid "Network and hardware"
 msgstr ""
 
-#: src/ubuntu_start.py:377
+#: src/ubuntu_start.py:381
 msgid "Drivers"
 msgstr ""
 
-#: src/ubuntu_start.py:378 src/ubuntu_start.py:2989
+#: src/ubuntu_start.py:382 src/ubuntu_start.py:2997
 msgid "Help and support"
 msgstr ""
 
-#: src/ubuntu_start.py:429
+#: src/ubuntu_start.py:436
 msgid "A calmer start with Ubuntu"
 msgstr ""
 
-#: src/ubuntu_start.py:429
+#: src/ubuntu_start.py:436
 msgid ""
 "Set up the essentials, then find clear steps when a device does not work."
 msgstr ""
 
-#: src/ubuntu_start.py:430
+#: src/ubuntu_start.py:437
 msgid "Your computer, at a glance"
 msgstr ""
 
-#: src/ubuntu_start.py:430
+#: src/ubuntu_start.py:437
 msgid ""
 "Use Settings to check your Ubuntu version, storage and connected devices."
 msgstr ""
 
-#: src/ubuntu_start.py:431
+#: src/ubuntu_start.py:438
 msgid "Take it one step at a time"
 msgstr ""
 
-#: src/ubuntu_start.py:431
+#: src/ubuntu_start.py:438
 msgid "You can come back to any guide whenever you need it."
 msgstr ""
 
-#: src/ubuntu_start.py:437
+#: src/ubuntu_start.py:444
 msgid ""
 "Work through these steps at your own pace. Your checklist is saved privately "
 "on this computer."
 msgstr ""
 
-#: src/ubuntu_start.py:442
+#: src/ubuntu_start.py:449
 msgid "Language and keyboard"
 msgstr ""
 
-#: src/ubuntu_start.py:443
+#: src/ubuntu_start.py:450
 msgid "Choose your display language, region and keyboard layout."
 msgstr ""
 
-#: src/ubuntu_start.py:447
+#: src/ubuntu_start.py:454
 msgid "Internet connection"
 msgstr ""
 
-#: src/ubuntu_start.py:448
+#: src/ubuntu_start.py:455
 msgid "Connect to Wi-Fi or a wired network."
 msgstr ""
 
-#: src/ubuntu_start.py:451
+#: src/ubuntu_start.py:458
 msgid "Updates"
 msgstr ""
 
-#: src/ubuntu_start.py:452
+#: src/ubuntu_start.py:459
 msgid "Check for system updates and restart if Ubuntu asks you to."
 msgstr ""
 
-#: src/ubuntu_start.py:456
+#: src/ubuntu_start.py:463
 msgid "Sound and display"
 msgstr ""
 
-#: src/ubuntu_start.py:457
+#: src/ubuntu_start.py:464
 msgid "Choose speakers, microphone and monitor settings."
 msgstr ""
 
-#: src/ubuntu_start.py:461
+#: src/ubuntu_start.py:468
 msgid "Privacy and screen lock"
 msgstr ""
 
-#: src/ubuntu_start.py:462
+#: src/ubuntu_start.py:469
 msgid "Review app permissions and automatic screen locking."
 msgstr ""
 
-#: src/ubuntu_start.py:466
+#: src/ubuntu_start.py:473
 msgid "Accessibility"
 msgstr ""
 
-#: src/ubuntu_start.py:467
+#: src/ubuntu_start.py:474
 msgid "Adjust text size, magnification, screen reader and keyboard access."
 msgstr ""
 
-#: src/ubuntu_start.py:511
+#: src/ubuntu_start.py:518
 msgid "Reset checklist"
 msgstr ""
 
-#: src/ubuntu_start.py:515
+#: src/ubuntu_start.py:522
 msgid "Accessibility status"
 msgstr ""
 
-#: src/ubuntu_start.py:516
+#: src/ubuntu_start.py:523
 msgid ""
 "Read selected GNOME accessibility settings. Ubuntu Start does not change "
 "them."
 msgstr ""
 
-#: src/ubuntu_start.py:526
+#: src/ubuntu_start.py:533
 msgid "Refresh accessibility status"
 msgstr ""
 
-#: src/ubuntu_start.py:540
+#: src/ubuntu_start.py:547
 msgid "Date and time status"
 msgstr ""
 
-#: src/ubuntu_start.py:541
+#: src/ubuntu_start.py:548
 msgid ""
 "Read the local time zone, whether automatic time synchronization is "
 "supported and enabled, and whether the clock is synchronized. The app "
 "suggests what to check but does not change settings or start synchronization."
 msgstr ""
 
-#: src/ubuntu_start.py:546
+#: src/ubuntu_start.py:553
 msgid "Refresh date and time status"
 msgstr ""
 
-#: src/ubuntu_start.py:547
+#: src/ubuntu_start.py:554
 msgid "Open date and time guide"
 msgstr ""
 
-#: src/ubuntu_start.py:564
+#: src/ubuntu_start.py:571
 #, python-brace-format
 msgid "Setup progress: {completed} of {total} steps complete."
 msgstr ""
 
-#: src/ubuntu_start.py:577
+#: src/ubuntu_start.py:584
 msgid "Progress saved on this computer."
 msgstr ""
 
-#: src/ubuntu_start.py:580 src/ubuntu_start.py:587
+#: src/ubuntu_start.py:587 src/ubuntu_start.py:594
 msgid "Progress could not be saved. It will remain until you close the app."
 msgstr ""
 
-#: src/ubuntu_start.py:595
+#: src/ubuntu_start.py:602
 msgid "Checklist reset. Progress is saved on this computer."
 msgstr ""
 
-#: src/ubuntu_start.py:610
+#: src/ubuntu_start.py:617
 msgid "Open Ubuntu help?"
 msgstr ""
 
-#: src/ubuntu_start.py:611
+#: src/ubuntu_start.py:618
 msgid ""
 "This opens Ubuntu Desktop documentation in your browser. The website will "
 "receive a normal web request and can see your IP address."
 msgstr ""
 
-#: src/ubuntu_start.py:665
+#: src/ubuntu_start.py:672
 msgid "Open Ubuntu App Center?"
 msgstr ""
 
-#: src/ubuntu_start.py:666
+#: src/ubuntu_start.py:673
 msgid ""
 "The App Center may contact your configured software sources to show apps and "
 "updates. Ubuntu Start will not install anything. You can review app details "
 "and choose whether to install in the App Center."
 msgstr ""
 
-#: src/ubuntu_start.py:668 src/ubuntu_start.py:1303 src/ubuntu_start.py:1350
-#: src/ubuntu_start.py:1428 src/ubuntu_start.py:1466 src/ubuntu_start.py:1766
-#: src/ubuntu_start.py:1794 src/ubuntu_start.py:1873 src/ubuntu_start.py:3121
+#: src/ubuntu_start.py:675 src/ubuntu_start.py:1310 src/ubuntu_start.py:1357
+#: src/ubuntu_start.py:1435 src/ubuntu_start.py:1473 src/ubuntu_start.py:1773
+#: src/ubuntu_start.py:1801 src/ubuntu_start.py:1880 src/ubuntu_start.py:3135
 msgid "Cancel"
 msgstr ""
 
-#: src/ubuntu_start.py:669
+#: src/ubuntu_start.py:676
 msgid "Open App Center"
 msgstr ""
 
-#: src/ubuntu_start.py:680
+#: src/ubuntu_start.py:687
 msgid "No supported software center was found."
 msgstr ""
 
-#: src/ubuntu_start.py:690
+#: src/ubuntu_start.py:697
 msgid "No supported terminal application was found."
 msgstr ""
 
-#: src/ubuntu_start.py:695
+#: src/ubuntu_start.py:702
 msgid ""
 "Choose a device or search all guides for a symptom. These checks do not "
 "install software or change system files."
 msgstr ""
 
-#: src/ubuntu_start.py:698 src/ubuntu_start.py:701
+#: src/ubuntu_start.py:705 src/ubuntu_start.py:708
 msgid "Search all guides and steps"
 msgstr ""
 
-#: src/ubuntu_start.py:699
+#: src/ubuntu_start.py:706
 msgid "Press Ctrl+F to search guides and troubleshooting steps."
 msgstr ""
 
-#: src/ubuntu_start.py:708
+#: src/ubuntu_start.py:715
 msgid "Choose a device"
 msgstr ""
 
-#: src/ubuntu_start.py:715
+#: src/ubuntu_start.py:722
 msgid "Suggested checks"
 msgstr ""
 
-#: src/ubuntu_start.py:721
+#: src/ubuntu_start.py:728
 msgid "WiFi Analyzer"
 msgstr ""
 
-#: src/ubuntu_start.py:722
+#: src/ubuntu_start.py:729
 msgid ""
 "See nearby Wi-Fi signal levels and channel use to investigate weak signal or "
 "crowded channels."
 msgstr ""
 
-#: src/ubuntu_start.py:724
+#: src/ubuntu_start.py:731
 msgid "View on GitHub"
 msgstr ""
 
-#: src/ubuntu_start.py:727
+#: src/ubuntu_start.py:734
 msgid "Open WiFi Analyzer on GitHub?"
 msgstr ""
 
-#: src/ubuntu_start.py:728
+#: src/ubuntu_start.py:735
 msgid ""
 "This opens the project page in your browser. GitHub will receive a normal "
 "web request and can see your IP address."
 msgstr ""
 
-#: src/ubuntu_start.py:740
+#: src/ubuntu_start.py:747
 msgid "No matching steps. Try another word."
 msgstr ""
 
-#: src/ubuntu_start.py:757 src/ubuntu_start.py:772
+#: src/ubuntu_start.py:764 src/ubuntu_start.py:779
 msgid "Open related Settings"
 msgstr ""
 
-#: src/ubuntu_start.py:766 src/ubuntu_start.py:2893
+#: src/ubuntu_start.py:773 src/ubuntu_start.py:2900
 msgid "Open hardware overview"
 msgstr ""
 
-#: src/ubuntu_start.py:768 src/ubuntu_start.py:1467
+#: src/ubuntu_start.py:775 src/ubuntu_start.py:1474
 msgid "Open Disks"
 msgstr ""
 
-#: src/ubuntu_start.py:770
+#: src/ubuntu_start.py:777
 msgid "Open System Settings"
 msgstr ""
 
-#: src/ubuntu_start.py:786
+#: src/ubuntu_start.py:793
 msgid "Show this guide"
 msgstr ""
 
-#: src/ubuntu_start.py:815
+#: src/ubuntu_start.py:822
 msgid ""
 "Follow clear steps for common Ubuntu tasks. Open the related system tool "
 "when you are ready to make a change."
 msgstr ""
 
-#: src/ubuntu_start.py:820
+#: src/ubuntu_start.py:827
 msgid "Choose a system guide"
 msgstr ""
 
-#: src/ubuntu_start.py:856
+#: src/ubuntu_start.py:863
 msgid ""
 "Most information comes from this computer. Network and internet checks ask "
 "before contacting the configured DNS resolver or an internet site."
 msgstr ""
 
-#: src/ubuntu_start.py:861
+#: src/ubuntu_start.py:868
 msgid "Network status"
 msgstr ""
 
-#: src/ubuntu_start.py:862
+#: src/ubuntu_start.py:869
 msgid ""
 "NetworkManager device states help show whether Ubuntu sees a wired or "
 "wireless adapter. The app also reads the local adapter name, hardware ID and "
@@ -2514,130 +2514,130 @@ msgid ""
 "tests."
 msgstr ""
 
-#: src/ubuntu_start.py:865
+#: src/ubuntu_start.py:872
 msgid "Network status has not been refreshed yet."
 msgstr ""
 
-#: src/ubuntu_start.py:867
+#: src/ubuntu_start.py:874
 msgid "Refresh network status"
 msgstr ""
 
-#: src/ubuntu_start.py:876
+#: src/ubuntu_start.py:883
 msgid "Wi-Fi quick check"
 msgstr ""
 
-#: src/ubuntu_start.py:877
+#: src/ubuntu_start.py:884
 msgid ""
 "Combine local connection, radio-block and IP-address status to suggest a "
 "next step. This check does not contact the internet or scan nearby networks."
 msgstr ""
 
-#: src/ubuntu_start.py:880
+#: src/ubuntu_start.py:887
 msgid "Wi-Fi check has not been run yet."
 msgstr ""
 
-#: src/ubuntu_start.py:881
+#: src/ubuntu_start.py:888
 msgid "Check Wi-Fi connection"
 msgstr ""
 
-#: src/ubuntu_start.py:888 src/ubuntu_start.py:911
+#: src/ubuntu_start.py:895 src/ubuntu_start.py:918
 msgid "Open Wi-Fi troubleshooting guide"
 msgstr ""
 
-#: src/ubuntu_start.py:897
+#: src/ubuntu_start.py:904
 msgid "Wireless radio status"
 msgstr ""
 
-#: src/ubuntu_start.py:898
+#: src/ubuntu_start.py:905
 msgid ""
 "Read local Linux radio block flags for Wi-Fi, Bluetooth and other wireless "
 "devices. This does not enable or disable radios."
 msgstr ""
 
-#: src/ubuntu_start.py:901
+#: src/ubuntu_start.py:908
 msgid "Radio status has not been refreshed yet."
 msgstr ""
 
-#: src/ubuntu_start.py:903
+#: src/ubuntu_start.py:910
 msgid "Refresh radio status"
 msgstr ""
 
-#: src/ubuntu_start.py:922
+#: src/ubuntu_start.py:929
 msgid "Bluetooth status"
 msgstr ""
 
-#: src/ubuntu_start.py:923
+#: src/ubuntu_start.py:930
 msgid ""
 "Read the local controller power state only. Ubuntu Start does not scan for "
 "nearby devices."
 msgstr ""
 
-#: src/ubuntu_start.py:925
+#: src/ubuntu_start.py:932
 msgid "Bluetooth controller"
 msgstr ""
 
-#: src/ubuntu_start.py:925 src/ubuntu_start.py:940 src/ubuntu_start.py:941
-#: src/ubuntu_start.py:2075 src/ubuntu_start.py:2147 src/ubuntu_start.py:2148
+#: src/ubuntu_start.py:932 src/ubuntu_start.py:947 src/ubuntu_start.py:948
+#: src/ubuntu_start.py:2082 src/ubuntu_start.py:2154 src/ubuntu_start.py:2155
 msgid "Checking status…"
 msgstr ""
 
-#: src/ubuntu_start.py:927
+#: src/ubuntu_start.py:934
 msgid "Refresh Bluetooth status"
 msgstr ""
 
-#: src/ubuntu_start.py:929
+#: src/ubuntu_start.py:936
 msgid "Open Bluetooth pairing guide"
 msgstr ""
 
-#: src/ubuntu_start.py:937
+#: src/ubuntu_start.py:944
 msgid "Audio status"
 msgstr ""
 
-#: src/ubuntu_start.py:938
+#: src/ubuntu_start.py:945
 msgid ""
 "Read the default speaker and microphone names, volume and mute state when "
 "available. This check does not play sound or change settings."
 msgstr ""
 
-#: src/ubuntu_start.py:940
+#: src/ubuntu_start.py:947
 msgid "Speaker output"
 msgstr ""
 
-#: src/ubuntu_start.py:941
+#: src/ubuntu_start.py:948
 msgid "Microphone input"
 msgstr ""
 
-#: src/ubuntu_start.py:944
+#: src/ubuntu_start.py:951
 msgid "Refresh audio status"
 msgstr ""
 
-#: src/ubuntu_start.py:949
+#: src/ubuntu_start.py:956
 msgid "Open sound and microphone guide"
 msgstr ""
 
-#: src/ubuntu_start.py:953
+#: src/ubuntu_start.py:960
 msgid "Open Bluetooth audio guide"
 msgstr ""
 
-#: src/ubuntu_start.py:964
+#: src/ubuntu_start.py:971
 msgid "Printer queue status"
 msgstr ""
 
-#: src/ubuntu_start.py:965
+#: src/ubuntu_start.py:972
 msgid ""
 "Read printer queues from the local printing service. This does not send a "
 "print job or contact a printer directly."
 msgstr ""
 
-#: src/ubuntu_start.py:971
+#: src/ubuntu_start.py:978
 msgid "Refresh printer status"
 msgstr ""
 
-#: src/ubuntu_start.py:985
+#: src/ubuntu_start.py:992
 msgid "Connection quality"
 msgstr ""
 
-#: src/ubuntu_start.py:986
+#: src/ubuntu_start.py:993
 msgid ""
 "The test looks up ubuntu.com using your configured DNS, pings your local "
 "gateway once, and reads its MAC address from the local neighbor table. DNS "
@@ -2645,45 +2645,45 @@ msgid ""
 "is uploaded."
 msgstr ""
 
-#: src/ubuntu_start.py:992
+#: src/ubuntu_start.py:999
 msgid "Test DNS and gateway"
 msgstr ""
 
-#: src/ubuntu_start.py:999
+#: src/ubuntu_start.py:1006
 msgid "Internet connection test"
 msgstr ""
 
-#: src/ubuntu_start.py:1000
+#: src/ubuntu_start.py:1007
 msgid ""
 "This optional test sends a small HTTPS request to ubuntu.com. It shares your "
 "IP address with that site, as any web request does; no diagnostic details "
 "are sent."
 msgstr ""
 
-#: src/ubuntu_start.py:1004
+#: src/ubuntu_start.py:1011
 msgid "Test internet connection"
 msgstr ""
 
-#: src/ubuntu_start.py:1011
+#: src/ubuntu_start.py:1018
 msgid "Ubuntu update status"
 msgstr ""
 
-#: src/ubuntu_start.py:1012
+#: src/ubuntu_start.py:1019
 msgid ""
 "Simulate an upgrade using local APT package lists only and read Ubuntu’s "
 "local restart-required marker. This check does not contact a network, "
 "refresh package lists, install packages or make system changes."
 msgstr ""
 
-#: src/ubuntu_start.py:1017
+#: src/ubuntu_start.py:1024
 msgid "Check cached update status"
 msgstr ""
 
-#: src/ubuntu_start.py:1034
+#: src/ubuntu_start.py:1041
 msgid "Package installation health"
 msgstr ""
 
-#: src/ubuntu_start.py:1035
+#: src/ubuntu_start.py:1042
 msgid ""
 "Check the local dpkg database for interrupted or incomplete package "
 "installations. This read-only check does not use the network or change "
@@ -2691,81 +2691,81 @@ msgid ""
 "administrator before running repair commands."
 msgstr ""
 
-#: src/ubuntu_start.py:1038
+#: src/ubuntu_start.py:1045
 msgid "Package health has not been checked yet."
 msgstr ""
 
-#: src/ubuntu_start.py:1040
+#: src/ubuntu_start.py:1047
 msgid "Check package health"
 msgstr ""
 
-#: src/ubuntu_start.py:1057
+#: src/ubuntu_start.py:1064
 msgid "Storage"
 msgstr ""
 
-#: src/ubuntu_start.py:1058
+#: src/ubuntu_start.py:1065
 msgid ""
 "Local filesystem capacity. A separate home filesystem is shown when your "
 "personal files use a different mounted volume."
 msgstr ""
 
-#: src/ubuntu_start.py:1063 src/ubuntu_start.py:2977
+#: src/ubuntu_start.py:1070 src/ubuntu_start.py:2985
 msgid "System filesystem"
 msgstr ""
 
-#: src/ubuntu_start.py:1063 src/ubuntu_start.py:2977
+#: src/ubuntu_start.py:1070 src/ubuntu_start.py:2985
 msgid "Home folder filesystem"
 msgstr ""
 
-#: src/ubuntu_start.py:1065 src/ubuntu_start.py:2979
+#: src/ubuntu_start.py:1072 src/ubuntu_start.py:2987
 #, python-brace-format
 msgid "{free} free of {total} ({percent}% used)"
 msgstr ""
 
-#: src/ubuntu_start.py:1069
+#: src/ubuntu_start.py:1076
 msgid "System filesystem is almost full"
 msgstr ""
 
-#: src/ubuntu_start.py:1069
+#: src/ubuntu_start.py:1076
 msgid "Home folder filesystem is almost full"
 msgstr ""
 
-#: src/ubuntu_start.py:1070
+#: src/ubuntu_start.py:1077
 msgid ""
 "Remove files you no longer need or review large downloads. Ubuntu may need "
 "free space for updates. Avoid deleting system files."
 msgstr ""
 
-#: src/ubuntu_start.py:1074
+#: src/ubuntu_start.py:1081
 msgid "Filesystem is mounted read-only"
 msgstr ""
 
-#: src/ubuntu_start.py:1075
+#: src/ubuntu_start.py:1082
 msgid ""
 "Ubuntu cannot write to this filesystem right now. If this is unexpected, "
 "restart the computer. If it remains read-only, use Ubuntu recovery options "
 "or ask a trusted support person before attempting repairs."
 msgstr ""
 
-#: src/ubuntu_start.py:1080
+#: src/ubuntu_start.py:1087
 msgid "Backup app availability"
 msgstr ""
 
-#: src/ubuntu_start.py:1081
+#: src/ubuntu_start.py:1088
 msgid ""
 "Check locally whether Ubuntu’s Déjà Dup Backups app is installed. This does "
 "not inspect your files, backup destinations or backup history."
 msgstr ""
 
-#: src/ubuntu_start.py:1085
+#: src/ubuntu_start.py:1092
 msgid "Check backup app"
 msgstr ""
 
-#: src/ubuntu_start.py:1103
+#: src/ubuntu_start.py:1110
 msgid "Battery"
 msgstr ""
 
-#: src/ubuntu_start.py:1104
+#: src/ubuntu_start.py:1111
 msgid ""
 "Charge level, charging state, reported battery health, cycle count and the "
 "active power profile are read from local system information when available. "
@@ -2776,83 +2776,83 @@ msgid ""
 "for information and is not changed here."
 msgstr ""
 
-#: src/ubuntu_start.py:1107
+#: src/ubuntu_start.py:1114
 msgid "Refresh battery status"
 msgstr ""
 
-#: src/ubuntu_start.py:1117
+#: src/ubuntu_start.py:1124
 msgid "Open battery and charging guide"
 msgstr ""
 
-#: src/ubuntu_start.py:1128
+#: src/ubuntu_start.py:1135
 msgid "Video device status"
 msgstr ""
 
-#: src/ubuntu_start.py:1129
+#: src/ubuntu_start.py:1136
 msgid ""
 "Read names of video devices reported by Linux. Ubuntu Start does not open a "
 "camera or test video or audio."
 msgstr ""
 
-#: src/ubuntu_start.py:1134
+#: src/ubuntu_start.py:1141
 msgid "Refresh video device status"
 msgstr ""
 
-#: src/ubuntu_start.py:1139
+#: src/ubuntu_start.py:1146
 msgid "Open camera guide"
 msgstr ""
 
-#: src/ubuntu_start.py:1149
+#: src/ubuntu_start.py:1156
 msgid "Hardware overview"
 msgstr ""
 
-#: src/ubuntu_start.py:1150
+#: src/ubuntu_start.py:1157
 msgid ""
 "This summary reads local system files. Serial numbers are never collected."
 msgstr ""
 
-#: src/ubuntu_start.py:1154
+#: src/ubuntu_start.py:1161
 msgid "Operating system"
 msgstr ""
 
-#: src/ubuntu_start.py:1155 src/ubuntu_start.py:2949
+#: src/ubuntu_start.py:1162 src/ubuntu_start.py:2957
 msgid "Kernel"
 msgstr ""
 
-#: src/ubuntu_start.py:1156 src/ubuntu_start.py:2950
+#: src/ubuntu_start.py:1163 src/ubuntu_start.py:2958
 msgid "System model"
 msgstr ""
 
-#: src/ubuntu_start.py:1157 src/ubuntu_start.py:2951
+#: src/ubuntu_start.py:1164 src/ubuntu_start.py:2959
 msgid "Processor"
 msgstr ""
 
-#: src/ubuntu_start.py:1158 src/ubuntu_start.py:2952
+#: src/ubuntu_start.py:1165 src/ubuntu_start.py:2960
 msgid "Memory"
 msgstr ""
 
-#: src/ubuntu_start.py:1159 src/ubuntu_start.py:2953
+#: src/ubuntu_start.py:1166 src/ubuntu_start.py:2961
 msgid "Graphics adapters"
 msgstr ""
 
-#: src/ubuntu_start.py:1160 src/ubuntu_start.py:2954
+#: src/ubuntu_start.py:1167 src/ubuntu_start.py:2962
 msgid "Architecture"
 msgstr ""
 
-#: src/ubuntu_start.py:1163 src/ubuntu_start.py:2201 src/ubuntu_start.py:2208
-#: src/ubuntu_start.py:2214 src/ubuntu_start.py:2220 src/ubuntu_start.py:2265
-#: src/ubuntu_start.py:2269 src/ubuntu_start.py:2275 src/ubuntu_start.py:2463
-#: src/ubuntu_start.py:2653 src/ubuntu_start.py:2939 src/ubuntu_start.py:2940
-#: src/ubuntu_start.py:2942 src/ubuntu_start.py:2950 src/ubuntu_start.py:2951
-#: src/ubuntu_start.py:2952 src/ubuntu_start.py:3269 src/ubuntu_start.py:3343
+#: src/ubuntu_start.py:1170 src/ubuntu_start.py:2208 src/ubuntu_start.py:2215
+#: src/ubuntu_start.py:2221 src/ubuntu_start.py:2227 src/ubuntu_start.py:2272
+#: src/ubuntu_start.py:2276 src/ubuntu_start.py:2282 src/ubuntu_start.py:2470
+#: src/ubuntu_start.py:2660 src/ubuntu_start.py:2946 src/ubuntu_start.py:2947
+#: src/ubuntu_start.py:2949 src/ubuntu_start.py:2958 src/ubuntu_start.py:2959
+#: src/ubuntu_start.py:2960 src/ubuntu_start.py:3289 src/ubuntu_start.py:3363
 msgid "Not available"
 msgstr ""
 
-#: src/ubuntu_start.py:1167 src/ubuntu_start.py:2975
+#: src/ubuntu_start.py:1174 src/ubuntu_start.py:2983
 msgid "PCI devices"
 msgstr ""
 
-#: src/ubuntu_start.py:1168
+#: src/ubuntu_start.py:1175
 msgid ""
 "This read-only list shows PCI hardware IDs and attached kernel drivers. "
 "Device names are matched against an installed local PCI database when "
@@ -2860,30 +2860,30 @@ msgid ""
 "proof of a problem."
 msgstr ""
 
-#: src/ubuntu_start.py:1173
+#: src/ubuntu_start.py:1180
 msgid "Refresh PCI device list"
 msgstr ""
 
-#: src/ubuntu_start.py:1185
+#: src/ubuntu_start.py:1192
 msgid "Memory use"
 msgstr ""
 
-#: src/ubuntu_start.py:1186
+#: src/ubuntu_start.py:1193
 msgid ""
 "Read available RAM and swap from Linux. Compare the values while the "
 "computer feels slow. If little memory is available, save your work and close "
 "applications you recognize and are not using."
 msgstr ""
 
-#: src/ubuntu_start.py:1191
+#: src/ubuntu_start.py:1198
 msgid "Refresh memory status"
 msgstr ""
 
-#: src/ubuntu_start.py:1203
+#: src/ubuntu_start.py:1210
 msgid "Performance benchmark"
 msgstr ""
 
-#: src/ubuntu_start.py:1204
+#: src/ubuntu_start.py:1211
 msgid ""
 "Run a single-threaded integer workload on one CPU thread and open Ubuntu "
 "tools for graphics and disk measurements. Results are not uploaded. The CPU "
@@ -2892,152 +2892,152 @@ msgid ""
 "diagnosis; unavailable readings are shown as unavailable."
 msgstr ""
 
-#: src/ubuntu_start.py:1207
+#: src/ubuntu_start.py:1214
 msgid ""
 "Before testing: connect power, save work, close heavy apps and let the "
 "computer cool. Benchmarks can make the computer warm and use battery power."
 msgstr ""
 
-#: src/ubuntu_start.py:1215
+#: src/ubuntu_start.py:1222
 #, python-brace-format
 msgid ""
 "Single-thread CPU baseline: {score} iterations/second (median of three "
 "samples; {duration} seconds total). Run again after a change to compare."
 msgstr ""
 
-#: src/ubuntu_start.py:1220 src/ubuntu_start.py:1414
+#: src/ubuntu_start.py:1227 src/ubuntu_start.py:1421
 #, python-brace-format
 msgid ""
 "Graphics baseline: {score}. Run again later to compare with the same "
 "settings."
 msgstr ""
 
-#: src/ubuntu_start.py:1224
+#: src/ubuntu_start.py:1231
 msgid "No benchmark has run yet."
 msgstr ""
 
-#: src/ubuntu_start.py:1229
+#: src/ubuntu_start.py:1236
 msgid "Clear saved benchmark results"
 msgstr ""
 
-#: src/ubuntu_start.py:1231
+#: src/ubuntu_start.py:1238
 msgid "Check benchmark readiness"
 msgstr ""
 
-#: src/ubuntu_start.py:1232
+#: src/ubuntu_start.py:1239
 msgid "Run CPU benchmark"
 msgstr ""
 
-#: src/ubuntu_start.py:1233
+#: src/ubuntu_start.py:1240
 msgid "Run graphics benchmark"
 msgstr ""
 
-#: src/ubuntu_start.py:1234
+#: src/ubuntu_start.py:1241
 msgid "Cancel graphics benchmark"
 msgstr ""
 
-#: src/ubuntu_start.py:1237
+#: src/ubuntu_start.py:1244
 msgid "Open disk read benchmark"
 msgstr ""
 
-#: src/ubuntu_start.py:1238
+#: src/ubuntu_start.py:1245
 msgid "Open GNOME disk benchmark guide"
 msgstr ""
 
-#: src/ubuntu_start.py:1239
+#: src/ubuntu_start.py:1246
 msgid "Open optional disk write benchmark…"
 msgstr ""
 
-#: src/ubuntu_start.py:1243
+#: src/ubuntu_start.py:1250
 msgid "Checking benchmark readiness…"
 msgstr ""
 
-#: src/ubuntu_start.py:1259
+#: src/ubuntu_start.py:1266
 #, python-brace-format
 msgid "Power profile: {profile}"
 msgstr ""
 
-#: src/ubuntu_start.py:1259
+#: src/ubuntu_start.py:1266
 msgid "not available"
 msgstr ""
 
-#: src/ubuntu_start.py:1261
+#: src/ubuntu_start.py:1268
 msgid "The battery is discharging; connect AC power for a more comparable run."
 msgstr ""
 
-#: src/ubuntu_start.py:1263
+#: src/ubuntu_start.py:1270
 msgid ""
 "Battery power status is unknown; connect AC power for a more comparable run."
 msgstr ""
 
-#: src/ubuntu_start.py:1266
+#: src/ubuntu_start.py:1273
 msgid "CPU pressure is elevated right now; close busy apps and check again."
 msgstr ""
 
-#: src/ubuntu_start.py:1268
+#: src/ubuntu_start.py:1275
 msgid "No high CPU pressure was detected in the recent sample."
 msgstr ""
 
-#: src/ubuntu_start.py:1270
+#: src/ubuntu_start.py:1277
 msgid "CPU pressure data is not available; readiness could not be checked."
 msgstr ""
 
-#: src/ubuntu_start.py:1274
+#: src/ubuntu_start.py:1281
 msgid ""
 "Memory pressure is elevated; save work and close apps you recognize before "
 "benchmarking."
 msgstr ""
 
-#: src/ubuntu_start.py:1276
+#: src/ubuntu_start.py:1283
 msgid "No high memory pressure was detected in the recent sample."
 msgstr ""
 
-#: src/ubuntu_start.py:1278
+#: src/ubuntu_start.py:1285
 msgid "Memory pressure data is not available; readiness could not be checked."
 msgstr ""
 
-#: src/ubuntu_start.py:1281
+#: src/ubuntu_start.py:1288
 msgid ""
 "Storage I/O is busy; wait for file copies or updates to finish before "
 "measuring the disk."
 msgstr ""
 
-#: src/ubuntu_start.py:1283
+#: src/ubuntu_start.py:1290
 msgid "No high storage I/O pressure was detected in the recent sample."
 msgstr ""
 
-#: src/ubuntu_start.py:1285
+#: src/ubuntu_start.py:1292
 msgid ""
 "Storage I/O pressure data is not available; readiness could not be checked."
 msgstr ""
 
-#: src/ubuntu_start.py:1287
+#: src/ubuntu_start.py:1294
 msgid ""
 "Power Saver can reduce performance. On AC power, review Power Settings and "
 "use Performance only if it is offered."
 msgstr ""
 
-#: src/ubuntu_start.py:1291
+#: src/ubuntu_start.py:1298
 #, python-brace-format
 msgid ""
 "Hottest exposed sensor: {temperature} °C; sensor meaning varies by device."
 msgstr ""
 
-#: src/ubuntu_start.py:1293
+#: src/ubuntu_start.py:1300
 msgid ""
 "This sensor is within 10 °C of its reported critical limit. Let the computer "
 "cool before benchmarking; the limit is device-specific."
 msgstr ""
 
-#: src/ubuntu_start.py:1295
+#: src/ubuntu_start.py:1302
 msgid "Temperature sensors are not available."
 msgstr ""
 
-#: src/ubuntu_start.py:1302
+#: src/ubuntu_start.py:1309
 msgid "Run the CPU benchmark?"
 msgstr ""
 
-#: src/ubuntu_start.py:1302
+#: src/ubuntu_start.py:1309
 msgid ""
 "After a short warm-up, this runs three one-second, single-threaded CPU "
 "measurements and uses their median. It can increase heat and battery use. "
@@ -3045,15 +3045,15 @@ msgid ""
 "system rating."
 msgstr ""
 
-#: src/ubuntu_start.py:1304 src/ubuntu_start.py:1351
+#: src/ubuntu_start.py:1311 src/ubuntu_start.py:1358
 msgid "Run benchmark"
 msgstr ""
 
-#: src/ubuntu_start.py:1314
+#: src/ubuntu_start.py:1321
 msgid "Warming up and measuring CPU…"
 msgstr ""
 
-#: src/ubuntu_start.py:1329
+#: src/ubuntu_start.py:1336
 #, python-brace-format
 msgid ""
 "Single-thread CPU: {score} iterations/second; {change} % since the previous "
@@ -3061,127 +3061,127 @@ msgid ""
 "when comparing."
 msgstr ""
 
-#: src/ubuntu_start.py:1331
+#: src/ubuntu_start.py:1338
 #, python-brace-format
 msgid ""
 "Single-thread CPU baseline: {score} iterations/second (median of three "
 "samples over {duration} seconds). Run again after a change to compare."
 msgstr ""
 
-#: src/ubuntu_start.py:1338 src/ubuntu_start.py:1419
+#: src/ubuntu_start.py:1345 src/ubuntu_start.py:1426
 msgid "This score could not be saved locally for future comparisons."
 msgstr ""
 
-#: src/ubuntu_start.py:1345
+#: src/ubuntu_start.py:1352
 msgid ""
 "Graphics benchmark unavailable. Install the Ubuntu package glmark2 from your "
 "configured software sources or ask your administrator. Ubuntu Start will not "
 "install it."
 msgstr ""
 
-#: src/ubuntu_start.py:1349
+#: src/ubuntu_start.py:1356
 msgid "Run the graphics benchmark?"
 msgstr ""
 
-#: src/ubuntu_start.py:1349
+#: src/ubuntu_start.py:1356
 msgid ""
 "This opens glmark2 and renders a graphics workload. It can make the computer "
 "warm and use battery power. The result depends on the graphics driver, "
 "display and desktop session."
 msgstr ""
 
-#: src/ubuntu_start.py:1361
+#: src/ubuntu_start.py:1368
 msgid "Running graphics benchmark…"
 msgstr ""
 
-#: src/ubuntu_start.py:1376
+#: src/ubuntu_start.py:1383
 msgid "Could not start the graphics benchmark."
 msgstr ""
 
-#: src/ubuntu_start.py:1386
+#: src/ubuntu_start.py:1393
 msgid "Stopping graphics benchmark…"
 msgstr ""
 
-#: src/ubuntu_start.py:1402
+#: src/ubuntu_start.py:1409
 msgid "Graphics benchmark was cancelled."
 msgstr ""
 
-#: src/ubuntu_start.py:1405
+#: src/ubuntu_start.py:1412
 msgid "Graphics benchmark did not complete successfully."
 msgstr ""
 
-#: src/ubuntu_start.py:1409
+#: src/ubuntu_start.py:1416
 msgid "Could not read the glmark2 score from its output."
 msgstr ""
 
-#: src/ubuntu_start.py:1416
+#: src/ubuntu_start.py:1423
 #, python-brace-format
 msgid ""
 "Graphics score: {score}; {change} % since the previous run. Keep the "
 "display, driver and session the same when comparing."
 msgstr ""
 
-#: src/ubuntu_start.py:1425
+#: src/ubuntu_start.py:1432
 msgid "Clear saved benchmark results?"
 msgstr ""
 
-#: src/ubuntu_start.py:1426
+#: src/ubuntu_start.py:1433
 msgid ""
 "This removes the CPU and graphics scores saved on this computer. It does not "
 "affect system settings or installed applications."
 msgstr ""
 
-#: src/ubuntu_start.py:1429
+#: src/ubuntu_start.py:1436
 msgid "Clear saved results"
 msgstr ""
 
-#: src/ubuntu_start.py:1438
+#: src/ubuntu_start.py:1445
 msgid "Could not clear saved benchmark results."
 msgstr ""
 
-#: src/ubuntu_start.py:1442
+#: src/ubuntu_start.py:1449
 msgid "Saved benchmark results cleared."
 msgstr ""
 
-#: src/ubuntu_start.py:1449 src/ubuntu_start.py:1461
+#: src/ubuntu_start.py:1456 src/ubuntu_start.py:1468
 msgid ""
 "GNOME Disks is not installed. The Ubuntu package is gnome-disk-utility; "
 "install it from your configured software sources or ask your administrator. "
 "Ubuntu Start will not install it."
 msgstr ""
 
-#: src/ubuntu_start.py:1454
+#: src/ubuntu_start.py:1461
 msgid ""
 "In Disks, select a drive, open its menu and choose Benchmark… Use the read-"
 "only benchmark first. It may take several minutes."
 msgstr ""
 
-#: src/ubuntu_start.py:1465
+#: src/ubuntu_start.py:1472
 msgid "Open the optional disk write benchmark?"
 msgstr ""
 
-#: src/ubuntu_start.py:1465
+#: src/ubuntu_start.py:1472
 msgid ""
 "A write benchmark writes data to the selected drive and may require "
 "administrator approval. Use it only if you understand the risk and have a "
 "current backup. The app does not run or authorize the write test."
 msgstr ""
 
-#: src/ubuntu_start.py:1479
+#: src/ubuntu_start.py:1486
 msgid "Open GNOME disk benchmark guide?"
 msgstr ""
 
-#: src/ubuntu_start.py:1480
+#: src/ubuntu_start.py:1487
 msgid ""
 "This opens GNOME's online guide to disk tests and results in your browser. "
 "The website receives a normal web request and can see your IP address."
 msgstr ""
 
-#: src/ubuntu_start.py:1489
+#: src/ubuntu_start.py:1496
 msgid "System resource pressure"
 msgstr ""
 
-#: src/ubuntu_start.py:1490
+#: src/ubuntu_start.py:1497
 msgid ""
 "Linux reports how often at least one task was waiting for CPU time, memory "
 "or storage I/O during the last 10 seconds. Memory and storage may also "
@@ -3189,15 +3189,15 @@ msgid ""
 "wide readings do not identify a process or prove the cause of a slowdown."
 msgstr ""
 
-#: src/ubuntu_start.py:1495
+#: src/ubuntu_start.py:1502
 msgid "Refresh system pressure"
 msgstr ""
 
-#: src/ubuntu_start.py:1509
+#: src/ubuntu_start.py:1516
 msgid "System service status"
 msgstr ""
 
-#: src/ubuntu_start.py:1510
+#: src/ubuntu_start.py:1517
 msgid ""
 "Lists service units systemd currently marks as failed. A failure can be "
 "temporary or expected and does not prove that a feature is broken. The list "
@@ -3205,178 +3205,178 @@ msgid ""
 "this status alone."
 msgstr ""
 
-#: src/ubuntu_start.py:1515
+#: src/ubuntu_start.py:1522
 msgid "Refresh system service status"
 msgstr ""
 
-#: src/ubuntu_start.py:1529
+#: src/ubuntu_start.py:1536
 msgid "System startup time"
 msgstr ""
 
-#: src/ubuntu_start.py:1530
+#: src/ubuntu_start.py:1537
 msgid ""
 "Read systemd's local boot-time summary. The optional dependency-chain view "
 "lists local service names, which can reveal installed software; review it "
 "before sharing."
 msgstr ""
 
-#: src/ubuntu_start.py:1534
+#: src/ubuntu_start.py:1541
 msgid "Startup time has not been checked yet."
 msgstr ""
 
-#: src/ubuntu_start.py:1538
+#: src/ubuntu_start.py:1545
 msgid "Check startup time"
 msgstr ""
 
-#: src/ubuntu_start.py:1545
+#: src/ubuntu_start.py:1552
 msgid "Open startup time guide"
 msgstr ""
 
-#: src/ubuntu_start.py:1548
+#: src/ubuntu_start.py:1555
 msgid "Inspect graphical startup chain"
 msgstr ""
 
-#: src/ubuntu_start.py:1565
+#: src/ubuntu_start.py:1572
 msgid "Temperature sensor status"
 msgstr ""
 
-#: src/ubuntu_start.py:1566
+#: src/ubuntu_start.py:1573
 msgid ""
 "Read temperature values that Linux already exposes. Sensor coverage and "
 "normal temperatures vary by model. This check does not stress-test hardware "
 "or change fan or power settings."
 msgstr ""
 
-#: src/ubuntu_start.py:1571
+#: src/ubuntu_start.py:1578
 msgid "Refresh temperature status"
 msgstr ""
 
-#: src/ubuntu_start.py:1585 src/ubuntu_start.py:2967
+#: src/ubuntu_start.py:1592 src/ubuntu_start.py:2975
 msgid "Connected USB devices"
 msgstr ""
 
-#: src/ubuntu_start.py:1586
+#: src/ubuntu_start.py:1593
 msgid ""
 "This local list reads USB device names and bound kernel drivers. It may "
 "match vendor and product names from an installed local USB ID database; "
 "hardware IDs remain visible for reference. Serial numbers are not read."
 msgstr ""
 
-#: src/ubuntu_start.py:1591
+#: src/ubuntu_start.py:1598
 msgid "Refresh USB device list"
 msgstr ""
 
-#: src/ubuntu_start.py:1605
+#: src/ubuntu_start.py:1612
 msgid "Reading USB devices…"
 msgstr ""
 
-#: src/ubuntu_start.py:1617
+#: src/ubuntu_start.py:1624
 msgid "Reading PCI devices…"
 msgstr ""
 
-#: src/ubuntu_start.py:1635 src/ubuntu_start.py:2972
+#: src/ubuntu_start.py:1642 src/ubuntu_start.py:2980
 msgid "PCI device"
 msgstr ""
 
-#: src/ubuntu_start.py:1639 src/ubuntu_start.py:2834
+#: src/ubuntu_start.py:1646 src/ubuntu_start.py:2841
 #, python-brace-format
 msgid "Kernel driver: {driver}"
 msgstr ""
 
-#: src/ubuntu_start.py:1640 src/ubuntu_start.py:1750 src/ubuntu_start.py:2973
+#: src/ubuntu_start.py:1647 src/ubuntu_start.py:1757 src/ubuntu_start.py:2981
 msgid "No kernel driver is currently attached."
 msgstr ""
 
-#: src/ubuntu_start.py:1644
+#: src/ubuntu_start.py:1651
 msgid "PCI device list updated: 1 device found."
 msgstr ""
 
-#: src/ubuntu_start.py:1646
+#: src/ubuntu_start.py:1653
 #, python-brace-format
 msgid "PCI device list updated: {count} devices found."
 msgstr ""
 
-#: src/ubuntu_start.py:1649
+#: src/ubuntu_start.py:1656
 msgid "No PCI devices found"
 msgstr ""
 
-#: src/ubuntu_start.py:1650
+#: src/ubuntu_start.py:1657
 msgid "Linux did not expose any PCI devices to list."
 msgstr ""
 
-#: src/ubuntu_start.py:1658
+#: src/ubuntu_start.py:1665
 msgid "Reading video devices…"
 msgstr ""
 
-#: src/ubuntu_start.py:1674
+#: src/ubuntu_start.py:1681
 msgid "Reported by Linux"
 msgstr ""
 
-#: src/ubuntu_start.py:1676
+#: src/ubuntu_start.py:1683
 msgid "Video device status updated: 1 device found."
 msgstr ""
 
-#: src/ubuntu_start.py:1678
+#: src/ubuntu_start.py:1685
 #, python-brace-format
 msgid "Video device status updated: {count} devices found."
 msgstr ""
 
-#: src/ubuntu_start.py:1680
+#: src/ubuntu_start.py:1687
 msgid "No video devices reported by Linux"
 msgstr ""
 
-#: src/ubuntu_start.py:1684
+#: src/ubuntu_start.py:1691
 msgid ""
 "Connect a camera or check its privacy shutter, then refresh. This status "
 "does not test the camera."
 msgstr ""
 
-#: src/ubuntu_start.py:1734
+#: src/ubuntu_start.py:1741
 msgid "No external USB devices detected"
 msgstr ""
 
-#: src/ubuntu_start.py:1737
+#: src/ubuntu_start.py:1744
 msgid "Connect a USB device and refresh the list."
 msgstr ""
 
-#: src/ubuntu_start.py:1745
+#: src/ubuntu_start.py:1752
 #, python-brace-format
 msgid "USB device ({id})"
 msgstr ""
 
-#: src/ubuntu_start.py:1749
+#: src/ubuntu_start.py:1756
 #, python-brace-format
 msgid "Kernel driver: {drivers}"
 msgstr ""
 
-#: src/ubuntu_start.py:1754
+#: src/ubuntu_start.py:1761
 #, python-brace-format
 msgid "USB device list updated: {devices}"
 msgstr ""
 
-#: src/ubuntu_start.py:1763
+#: src/ubuntu_start.py:1770
 msgid "Allow an internet connection test?"
 msgstr ""
 
-#: src/ubuntu_start.py:1764
+#: src/ubuntu_start.py:1771
 msgid ""
 "Ubuntu Start will send one small HTTPS request to ubuntu.com. The site can "
 "see your IP address. No system details, Wi-Fi name or passwords are sent."
 msgstr ""
 
-#: src/ubuntu_start.py:1767
+#: src/ubuntu_start.py:1774
 msgid "Test connection"
 msgstr ""
 
-#: src/ubuntu_start.py:1774
+#: src/ubuntu_start.py:1781
 msgid "Checking connection to ubuntu.com…"
 msgstr ""
 
-#: src/ubuntu_start.py:1791
+#: src/ubuntu_start.py:1798
 msgid "Run DNS and gateway tests?"
 msgstr ""
 
-#: src/ubuntu_start.py:1792
+#: src/ubuntu_start.py:1799
 msgid ""
 "This sends one DNS lookup for ubuntu.com to your configured resolver and one "
 "ping to your local gateway. The gateway MAC address is checked against a "
@@ -3384,1687 +3384,1693 @@ msgid ""
 "service."
 msgstr ""
 
-#: src/ubuntu_start.py:1795
+#: src/ubuntu_start.py:1802
 msgid "Run tests"
 msgstr ""
 
-#: src/ubuntu_start.py:1802
+#: src/ubuntu_start.py:1809
 msgid "Testing DNS and gateway…"
 msgstr ""
 
-#: src/ubuntu_start.py:1818
+#: src/ubuntu_start.py:1825
 #, python-brace-format
 msgid "DNS lookup: {ms} ms"
 msgstr ""
 
-#: src/ubuntu_start.py:1823
+#: src/ubuntu_start.py:1830
 #, python-brace-format
 msgid ""
 "DNS lookup timed out after {ms} ms. Check the network connection or DNS "
 "server."
 msgstr ""
 
-#: src/ubuntu_start.py:1825 src/ubuntu_start.py:1830
+#: src/ubuntu_start.py:1832 src/ubuntu_start.py:1837
 msgid ""
 "The getent tool is not installed, so DNS could not be tested. Ask your "
 "administrator to check the system tools."
 msgstr ""
 
-#: src/ubuntu_start.py:1827
+#: src/ubuntu_start.py:1834
 #, python-brace-format
 msgid ""
 "DNS lookup failed after {ms} ms. Check DNS settings or the network "
 "connection."
 msgstr ""
 
-#: src/ubuntu_start.py:1832
+#: src/ubuntu_start.py:1839
 msgid "DNS lookup failed. Check DNS settings or the network connection."
 msgstr ""
 
-#: src/ubuntu_start.py:1835
+#: src/ubuntu_start.py:1842
 #, python-brace-format
 msgid "Gateway: {address}"
 msgstr ""
 
-#: src/ubuntu_start.py:1837
+#: src/ubuntu_start.py:1844
 #, python-brace-format
 msgid "Gateway response: {ms} ms"
 msgstr ""
 
-#: src/ubuntu_start.py:1839
+#: src/ubuntu_start.py:1846
 msgid ""
 "The ping tool is not installed. Check that the iputils-ping package is "
 "installed or ask your administrator."
 msgstr ""
 
-#: src/ubuntu_start.py:1843
+#: src/ubuntu_start.py:1850
 #, python-brace-format
 msgid ""
 "The gateway ping timed out after {ms} ms. Some routers block ping requests."
 msgstr ""
 
-#: src/ubuntu_start.py:1845
+#: src/ubuntu_start.py:1852
 msgid "The gateway ping timed out. Some routers block ping requests."
 msgstr ""
 
-#: src/ubuntu_start.py:1849
+#: src/ubuntu_start.py:1856
 #, python-brace-format
 msgid ""
 "The gateway did not answer the ping after {ms} ms. Some routers block ping "
 "requests."
 msgstr ""
 
-#: src/ubuntu_start.py:1851
+#: src/ubuntu_start.py:1858
 msgid "Gateway did not answer the ping. Some routers block ping requests."
 msgstr ""
 
-#: src/ubuntu_start.py:1854
+#: src/ubuntu_start.py:1861
 #, python-brace-format
 msgid "Gateway MAC address: {mac}"
 msgstr ""
 
-#: src/ubuntu_start.py:1856
+#: src/ubuntu_start.py:1863
 #, python-brace-format
 msgid "Manufacturer: {vendor}"
 msgstr ""
 
-#: src/ubuntu_start.py:1856
+#: src/ubuntu_start.py:1863
 msgid "Manufacturer not found in the local vendor database."
 msgstr ""
 
-#: src/ubuntu_start.py:1858
+#: src/ubuntu_start.py:1865
 msgid "Gateway MAC address is not available in the local neighbor table."
 msgstr ""
 
-#: src/ubuntu_start.py:1860
+#: src/ubuntu_start.py:1867
 msgid "No default gateway was found."
 msgstr ""
 
-#: src/ubuntu_start.py:1861
+#: src/ubuntu_start.py:1868
 msgid ""
 "Next step: check Wi-Fi or wired connection in Settings. On a managed "
 "network, ask the administrator before changing route settings."
 msgstr ""
 
-#: src/ubuntu_start.py:1863
+#: src/ubuntu_start.py:1870
 msgid ""
 "Next step: check that the network is connected and review its DNS settings."
 msgstr ""
 
-#: src/ubuntu_start.py:1866
+#: src/ubuntu_start.py:1873
 msgid ""
 "Next step: check the local connection. Some gateways block ping, so this "
 "alone does not prove that the network is down."
 msgstr ""
 
-#: src/ubuntu_start.py:1874
+#: src/ubuntu_start.py:1881
 msgid "Open link"
 msgstr ""
 
-#: src/ubuntu_start.py:1884
+#: src/ubuntu_start.py:1891
 #, python-brace-format
 msgid "ubuntu.com responded in {ms} ms. Internet access is available."
 msgstr ""
 
-#: src/ubuntu_start.py:1888
+#: src/ubuntu_start.py:1895
 #, python-brace-format
 msgid ""
 "Could not reach ubuntu.com after {ms} ms. Check the router, network sign-in "
 "page, DNS settings or firewall."
 msgstr ""
 
-#: src/ubuntu_start.py:1896
+#: src/ubuntu_start.py:1903
 msgid "Checking NetworkManager…"
 msgstr ""
 
-#: src/ubuntu_start.py:1928
+#: src/ubuntu_start.py:1935
 msgid "Checking Wi-Fi status…"
 msgstr ""
 
-#: src/ubuntu_start.py:1958
+#: src/ubuntu_start.py:1965
 msgid ""
 "Could not read Wi-Fi connection status from NetworkManager. Refresh Network "
 "status and try again."
 msgstr ""
 
-#: src/ubuntu_start.py:1965
+#: src/ubuntu_start.py:1972
 msgid ""
 "NetworkManager reports no Wi-Fi device. If this computer has Wi-Fi, review "
 "the hardware and driver details."
 msgstr ""
 
-#: src/ubuntu_start.py:1970
+#: src/ubuntu_start.py:1977
 msgid ""
 "Wi-Fi is blocked in software and by hardware or firmware. Check airplane "
 "mode and the computer’s Wi-Fi switch or keyboard shortcut."
 msgstr ""
 
-#: src/ubuntu_start.py:1972
+#: src/ubuntu_start.py:1979
 msgid ""
 "Wi-Fi is blocked in software. Check airplane mode or the Wi-Fi switch in "
 "Quick Settings."
 msgstr ""
 
-#: src/ubuntu_start.py:1974
+#: src/ubuntu_start.py:1981
 msgid ""
 "Wi-Fi is blocked by hardware or firmware. Check the computer’s physical "
 "switch or keyboard shortcut and consult its manual."
 msgstr ""
 
-#: src/ubuntu_start.py:1976
+#: src/ubuntu_start.py:1983
 msgid ""
 "The Wi-Fi device is available but not connected. Open Wi-Fi Settings and "
 "choose a network you recognize."
 msgstr ""
 
-#: src/ubuntu_start.py:1978
+#: src/ubuntu_start.py:1985
 msgid ""
 "NetworkManager reports that Wi-Fi firmware is missing. Review the hardware "
 "and driver details, then ask the computer manufacturer or administrator for "
 "help."
 msgstr ""
 
-#: src/ubuntu_start.py:1980
+#: src/ubuntu_start.py:1987
 msgid ""
 "The Wi-Fi device is unavailable. Check radio-block status and review the "
 "hardware and driver details."
 msgstr ""
 
-#: src/ubuntu_start.py:1982
+#: src/ubuntu_start.py:1989
 msgid ""
 "Wi-Fi is connecting. Wait briefly, refresh the status, and check the Wi-Fi "
 "guide if it does not connect."
 msgstr ""
 
-#: src/ubuntu_start.py:1984
+#: src/ubuntu_start.py:1991
 #, python-brace-format
 msgid ""
 "Wi-Fi status is {state}. Refresh the status or open the Wi-Fi guide for next "
 "steps."
 msgstr ""
 
-#: src/ubuntu_start.py:1988
+#: src/ubuntu_start.py:1995
 msgid ""
 "Wi-Fi is connected, but IP-address status is unavailable. Internet access "
 "has not been tested."
 msgstr ""
 
-#: src/ubuntu_start.py:1990
+#: src/ubuntu_start.py:1997
 msgid ""
 "Wi-Fi is connected and has an IP address. This does not confirm internet "
 "access; run Test DNS and gateway if websites still fail."
 msgstr ""
 
-#: src/ubuntu_start.py:1992
+#: src/ubuntu_start.py:1999
 msgid ""
 "Wi-Fi is connected but only a link-local address was found. Check router "
 "address assignment or a network sign-in page."
 msgstr ""
 
-#: src/ubuntu_start.py:1994
+#: src/ubuntu_start.py:2001
 msgid ""
 "Wi-Fi is connected but no IP address was found. Check router address "
 "assignment or a network sign-in page."
 msgstr ""
 
-#: src/ubuntu_start.py:1997
+#: src/ubuntu_start.py:2004
 #, python-brace-format
 msgid ""
 "Reported Wi-Fi signal: {signal} dBm. Values closer to 0 are generally "
 "stronger; compare from the same location."
 msgstr ""
 
-#: src/ubuntu_start.py:1999
+#: src/ubuntu_start.py:2006
 msgid ""
 "Radio-block status is unavailable, so the hardware or software block could "
 "not be checked."
 msgstr ""
 
-#: src/ubuntu_start.py:2010
+#: src/ubuntu_start.py:2017
 msgid "Checking radio block status…"
 msgstr ""
 
-#: src/ubuntu_start.py:2025
+#: src/ubuntu_start.py:2032
 msgid "Radio block status is not available on this computer."
 msgstr ""
 
-#: src/ubuntu_start.py:2027
+#: src/ubuntu_start.py:2034
 msgid "Linux did not expose any wireless radio block controls."
 msgstr ""
 
-#: src/ubuntu_start.py:2030
+#: src/ubuntu_start.py:2037
 msgid "Wi-Fi radio"
 msgstr ""
 
-#: src/ubuntu_start.py:2031
+#: src/ubuntu_start.py:2038
 msgid "Bluetooth radio"
 msgstr ""
 
-#: src/ubuntu_start.py:2032
+#: src/ubuntu_start.py:2039
 msgid "Mobile broadband radio"
 msgstr ""
 
-#: src/ubuntu_start.py:2033
+#: src/ubuntu_start.py:2040
 msgid "GPS radio"
 msgstr ""
 
-#: src/ubuntu_start.py:2034
+#: src/ubuntu_start.py:2041
 msgid "NFC radio"
 msgstr ""
 
-#: src/ubuntu_start.py:2035
+#: src/ubuntu_start.py:2042
 msgid "UWB radio"
 msgstr ""
 
-#: src/ubuntu_start.py:2036
+#: src/ubuntu_start.py:2043
 msgid "WiMAX radio"
 msgstr ""
 
-#: src/ubuntu_start.py:2037
+#: src/ubuntu_start.py:2044
 msgid "FM radio"
 msgstr ""
 
-#: src/ubuntu_start.py:2040
+#: src/ubuntu_start.py:2047
 msgid "Not blocked"
 msgstr ""
 
-#: src/ubuntu_start.py:2041
+#: src/ubuntu_start.py:2048
 msgid "Blocked in software"
 msgstr ""
 
-#: src/ubuntu_start.py:2042
+#: src/ubuntu_start.py:2049
 msgid "Blocked by hardware or firmware"
 msgstr ""
 
-#: src/ubuntu_start.py:2043
+#: src/ubuntu_start.py:2050
 msgid "Blocked in software and by hardware or firmware"
 msgstr ""
 
-#: src/ubuntu_start.py:2053
+#: src/ubuntu_start.py:2060
 msgid ""
 "Check the physical Wi-Fi switch or keyboard shortcut; consult the computer "
 "manual if it remains blocked."
 msgstr ""
 
-#: src/ubuntu_start.py:2055
+#: src/ubuntu_start.py:2062
 msgid ""
 "Check the physical Bluetooth switch or keyboard shortcut; consult the "
 "computer manual if it remains blocked."
 msgstr ""
 
-#: src/ubuntu_start.py:2057
+#: src/ubuntu_start.py:2064
 msgid "Check the computer or device manual for its radio controls."
 msgstr ""
 
-#: src/ubuntu_start.py:2062
+#: src/ubuntu_start.py:2069
 msgid "One or more wireless radios are blocked. Review the details below."
 msgstr ""
 
-#: src/ubuntu_start.py:2064
+#: src/ubuntu_start.py:2071
 msgid "No reported wireless radios are blocked."
 msgstr ""
 
-#: src/ubuntu_start.py:2070
+#: src/ubuntu_start.py:2077
 #, python-brace-format
 msgid "Wireless radio status updated: {details}"
 msgstr ""
 
-#: src/ubuntu_start.py:2084
+#: src/ubuntu_start.py:2091
 msgid "Checking whether Backups is installed…"
 msgstr ""
 
-#: src/ubuntu_start.py:2099
+#: src/ubuntu_start.py:2106
 msgid ""
 "Déjà Dup Backups is installed. This does not confirm that backups are "
 "configured or recent."
 msgstr ""
 
-#: src/ubuntu_start.py:2101
+#: src/ubuntu_start.py:2108
 msgid ""
 "Déjà Dup Backups is installed, but its launcher was not found. Open Ubuntu "
 "App Center or ask your administrator for help."
 msgstr ""
 
-#: src/ubuntu_start.py:2103
+#: src/ubuntu_start.py:2110
 msgid ""
 "Déjà Dup Backups is not installed. You can look for Backups in Ubuntu App "
 "Center or use Files to copy important files to a separate drive."
 msgstr ""
 
-#: src/ubuntu_start.py:2111 src/ubuntu_start.py:2214 src/ubuntu_start.py:2265
+#: src/ubuntu_start.py:2118 src/ubuntu_start.py:2221 src/ubuntu_start.py:2272
 msgid "On"
 msgstr ""
 
-#: src/ubuntu_start.py:2112 src/ubuntu_start.py:2214 src/ubuntu_start.py:2265
+#: src/ubuntu_start.py:2119 src/ubuntu_start.py:2221 src/ubuntu_start.py:2272
 msgid "Off"
 msgstr ""
 
-#: src/ubuntu_start.py:2113
+#: src/ubuntu_start.py:2120
 msgid "No Bluetooth controller found"
 msgstr ""
 
-#: src/ubuntu_start.py:2114
+#: src/ubuntu_start.py:2121
 msgid ""
 "Bluetooth service is not running. Refresh System service status for details."
 msgstr ""
 
-#: src/ubuntu_start.py:2115
+#: src/ubuntu_start.py:2122
 msgid ""
 "Bluetooth service has failed. Refresh System service status for details."
 msgstr ""
 
-#: src/ubuntu_start.py:2116
+#: src/ubuntu_start.py:2123
 msgid "Power state is unknown"
 msgstr ""
 
-#: src/ubuntu_start.py:2117
+#: src/ubuntu_start.py:2124
 msgid "Bluetooth command-line tool is not installed"
 msgstr ""
 
-#: src/ubuntu_start.py:2118
+#: src/ubuntu_start.py:2125
 msgid "Bluetooth controller did not respond in time"
 msgstr ""
 
-#: src/ubuntu_start.py:2119
+#: src/ubuntu_start.py:2126
 msgid "Could not read Bluetooth controller status"
 msgstr ""
 
-#: src/ubuntu_start.py:2158
+#: src/ubuntu_start.py:2165
 msgid "Checking printer queues…"
 msgstr ""
 
-#: src/ubuntu_start.py:2173
+#: src/ubuntu_start.py:2180
 msgid "Checking accessibility settings…"
 msgstr ""
 
-#: src/ubuntu_start.py:2188
+#: src/ubuntu_start.py:2195
 msgid "Checking date and time status…"
 msgstr ""
 
-#: src/ubuntu_start.py:2201
+#: src/ubuntu_start.py:2208
 msgid "Time zone"
 msgstr ""
 
-#: src/ubuntu_start.py:2205
+#: src/ubuntu_start.py:2212
 msgid "Automatic time synchronization available"
 msgstr ""
 
-#: src/ubuntu_start.py:2206
+#: src/ubuntu_start.py:2213
 msgid "Available"
 msgstr ""
 
-#: src/ubuntu_start.py:2207 src/ubuntu_start.py:2816
+#: src/ubuntu_start.py:2214 src/ubuntu_start.py:2823
 msgid "Unavailable"
 msgstr ""
 
-#: src/ubuntu_start.py:2213
+#: src/ubuntu_start.py:2220
 msgid "Automatic time synchronization"
 msgstr ""
 
-#: src/ubuntu_start.py:2218
+#: src/ubuntu_start.py:2225
 msgid "Synchronized"
 msgstr ""
 
-#: src/ubuntu_start.py:2219
+#: src/ubuntu_start.py:2226
 msgid "Not synchronized"
 msgstr ""
 
-#: src/ubuntu_start.py:2222
+#: src/ubuntu_start.py:2229
 msgid "Clock synchronization"
 msgstr ""
 
-#: src/ubuntu_start.py:2226
+#: src/ubuntu_start.py:2233
 msgid ""
 "Automatic time synchronization is unavailable on this system. If this is a "
 "managed computer, ask your administrator how its clock is maintained."
 msgstr ""
 
-#: src/ubuntu_start.py:2231
+#: src/ubuntu_start.py:2238
 msgid ""
 "Automatic time synchronization is off. Open Date & Time Settings and turn on "
 "automatic date and time if the option is available."
 msgstr ""
 
-#: src/ubuntu_start.py:2236
+#: src/ubuntu_start.py:2243
 msgid ""
 "Automatic time synchronization is on, but the clock is not synchronized. "
 "Check the network connection and Date & Time Settings."
 msgstr ""
 
-#: src/ubuntu_start.py:2240
+#: src/ubuntu_start.py:2247
 msgid "Next step"
 msgstr ""
 
-#: src/ubuntu_start.py:2242
+#: src/ubuntu_start.py:2249
 msgid "The timedatectl tool is not installed."
 msgstr ""
 
-#: src/ubuntu_start.py:2243
+#: src/ubuntu_start.py:2250
 msgid "The system time service did not respond in time."
 msgstr ""
 
-#: src/ubuntu_start.py:2244
+#: src/ubuntu_start.py:2251
 msgid "Could not read the local date and time status."
 msgstr ""
 
-#: src/ubuntu_start.py:2246
+#: src/ubuntu_start.py:2253
 msgid "Local date and time status read. No settings were changed."
 msgstr ""
 
-#: src/ubuntu_start.py:2255
+#: src/ubuntu_start.py:2262
 msgid "Screen reader"
 msgstr ""
 
-#: src/ubuntu_start.py:2256
+#: src/ubuntu_start.py:2263
 msgid "Screen magnifier"
 msgstr ""
 
-#: src/ubuntu_start.py:2257
+#: src/ubuntu_start.py:2264
 msgid "On-screen keyboard"
 msgstr ""
 
-#: src/ubuntu_start.py:2258
+#: src/ubuntu_start.py:2265
 msgid "High contrast"
 msgstr ""
 
-#: src/ubuntu_start.py:2259
+#: src/ubuntu_start.py:2266
 msgid "Sticky Keys"
 msgstr ""
 
-#: src/ubuntu_start.py:2260
+#: src/ubuntu_start.py:2267
 msgid "Slow Keys"
 msgstr ""
 
-#: src/ubuntu_start.py:2261
+#: src/ubuntu_start.py:2268
 msgid "Bounce Keys"
 msgstr ""
 
-#: src/ubuntu_start.py:2261
+#: src/ubuntu_start.py:2268
 msgid "Mouse Keys"
 msgstr ""
 
-#: src/ubuntu_start.py:2262
+#: src/ubuntu_start.py:2269
 msgid "Visual sound alerts"
 msgstr ""
 
-#: src/ubuntu_start.py:2271 src/ubuntu_start.py:2726
+#: src/ubuntu_start.py:2278 src/ubuntu_start.py:2733
 #, python-brace-format
 msgid "{percent}%"
 msgstr ""
 
-#: src/ubuntu_start.py:2272
+#: src/ubuntu_start.py:2279
 msgid "Text size"
 msgstr ""
 
-#: src/ubuntu_start.py:2277
+#: src/ubuntu_start.py:2284
 #, python-brace-format
 msgid "{pixels} pixels"
 msgstr ""
 
-#: src/ubuntu_start.py:2278
+#: src/ubuntu_start.py:2285
 msgid "Pointer size"
 msgstr ""
 
-#: src/ubuntu_start.py:2281
+#: src/ubuntu_start.py:2288
 msgid "GNOME Settings tools are not installed."
 msgstr ""
 
-#: src/ubuntu_start.py:2282
+#: src/ubuntu_start.py:2289
 msgid "Could not read GNOME accessibility settings."
 msgstr ""
 
-#: src/ubuntu_start.py:2284
+#: src/ubuntu_start.py:2291
 msgid "GNOME accessibility settings read. No settings were changed."
 msgstr ""
 
-#: src/ubuntu_start.py:2293
+#: src/ubuntu_start.py:2300
 msgid "Ready"
 msgstr ""
 
-#: src/ubuntu_start.py:2294
+#: src/ubuntu_start.py:2301
 msgid "Printing"
 msgstr ""
 
-#: src/ubuntu_start.py:2295
+#: src/ubuntu_start.py:2302
 msgid "Disabled"
 msgstr ""
 
-#: src/ubuntu_start.py:2296 src/ubuntu_start.py:2297
+#: src/ubuntu_start.py:2303 src/ubuntu_start.py:2304
 msgid "Busy"
 msgstr ""
 
-#: src/ubuntu_start.py:2298
+#: src/ubuntu_start.py:2305
 msgid "Stopped"
 msgstr ""
 
-#: src/ubuntu_start.py:2303
+#: src/ubuntu_start.py:2310
 #, python-brace-format
 msgid "Printer status updated: {count} printer queues found."
 msgstr ""
 
-#: src/ubuntu_start.py:2306
+#: src/ubuntu_start.py:2313
 msgid "CUPS printer tools are not installed."
 msgstr ""
 
-#: src/ubuntu_start.py:2307
+#: src/ubuntu_start.py:2314
 msgid "The local printing service did not respond in time."
 msgstr ""
 
-#: src/ubuntu_start.py:2308
+#: src/ubuntu_start.py:2315
 msgid "Could not read printer queues from the local printing service."
 msgstr ""
 
-#: src/ubuntu_start.py:2309
+#: src/ubuntu_start.py:2316
 msgid "No printer queues were found in the local printing service."
 msgstr ""
 
-#: src/ubuntu_start.py:2319
+#: src/ubuntu_start.py:2326
 msgid "Checking battery status…"
 msgstr ""
 
-#: src/ubuntu_start.py:2333
+#: src/ubuntu_start.py:2340
 msgid "Checking cached package update status…"
 msgstr ""
 
-#: src/ubuntu_start.py:2346
+#: src/ubuntu_start.py:2353
 msgid "Checking package installation health…"
 msgstr ""
 
-#: src/ubuntu_start.py:2363
+#: src/ubuntu_start.py:2370
 msgid "dpkg is not available on this system."
 msgstr ""
 
-#: src/ubuntu_start.py:2364
+#: src/ubuntu_start.py:2371
 msgid "The package check could not finish. Try again later."
 msgstr ""
 
-#: src/ubuntu_start.py:2365
+#: src/ubuntu_start.py:2372
 msgid "Could not read the local package database."
 msgstr ""
 
-#: src/ubuntu_start.py:2373
+#: src/ubuntu_start.py:2380
 msgid "dpkg reports an incomplete or inconsistent installation."
 msgstr ""
 
-#: src/ubuntu_start.py:2375
+#: src/ubuntu_start.py:2382
 #, python-brace-format
 msgid "Package check found {count} package entries to review."
 msgstr ""
 
-#: src/ubuntu_start.py:2377
+#: src/ubuntu_start.py:2384
 msgid "dpkg reported no incomplete package installations."
 msgstr ""
 
-#: src/ubuntu_start.py:2386
+#: src/ubuntu_start.py:2393
 msgid "Checking memory status…"
 msgstr ""
 
-#: src/ubuntu_start.py:2400
+#: src/ubuntu_start.py:2407
 msgid "Memory status is not available from this system."
 msgstr ""
 
-#: src/ubuntu_start.py:2403
+#: src/ubuntu_start.py:2410
 msgid "Total RAM"
 msgstr ""
 
-#: src/ubuntu_start.py:2404
+#: src/ubuntu_start.py:2411
 msgid "Available RAM"
 msgstr ""
 
-#: src/ubuntu_start.py:2407
+#: src/ubuntu_start.py:2414
 msgid "Estimated RAM in use"
 msgstr ""
 
-#: src/ubuntu_start.py:2408
+#: src/ubuntu_start.py:2415
 #, python-brace-format
 msgid "{size} ({percent}%)"
 msgstr ""
 
-#: src/ubuntu_start.py:2414
+#: src/ubuntu_start.py:2421
 #, python-brace-format
 msgid "{used} of {total} ({percent}%)"
 msgstr ""
 
-#: src/ubuntu_start.py:2420
+#: src/ubuntu_start.py:2427
 msgid "No swap space is configured"
 msgstr ""
 
-#: src/ubuntu_start.py:2421
+#: src/ubuntu_start.py:2428
 msgid "Swap in use"
 msgstr ""
 
-#: src/ubuntu_start.py:2422
+#: src/ubuntu_start.py:2429
 #, python-brace-format
 msgid "Memory status updated. Available RAM: {available}. Swap: {swap}."
 msgstr ""
 
-#: src/ubuntu_start.py:2434
+#: src/ubuntu_start.py:2441
 msgid "Checking system pressure…"
 msgstr ""
 
-#: src/ubuntu_start.py:2451
+#: src/ubuntu_start.py:2458
 msgid "Tasks waiting on CPU"
 msgstr ""
 
-#: src/ubuntu_start.py:2452
+#: src/ubuntu_start.py:2459
 msgid "Tasks waiting on memory"
 msgstr ""
 
-#: src/ubuntu_start.py:2453
+#: src/ubuntu_start.py:2460
 msgid "Tasks waiting on storage I/O"
 msgstr ""
 
-#: src/ubuntu_start.py:2456
+#: src/ubuntu_start.py:2463
 msgid "System resource pressure is not available on this system."
 msgstr ""
 
-#: src/ubuntu_start.py:2462 src/ubuntu_start.py:2474
+#: src/ubuntu_start.py:2469 src/ubuntu_start.py:2481
 #, python-brace-format
 msgid "{percent:.1f}% in the last 10 seconds"
 msgstr ""
 
-#: src/ubuntu_start.py:2470
+#: src/ubuntu_start.py:2477
 msgid "All tasks waiting on memory"
 msgstr ""
 
-#: src/ubuntu_start.py:2472
+#: src/ubuntu_start.py:2479
 msgid "All tasks waiting on storage I/O"
 msgstr ""
 
-#: src/ubuntu_start.py:2479
+#: src/ubuntu_start.py:2486
 #, python-brace-format
 msgid "System pressure updated: {details}"
 msgstr ""
 
-#: src/ubuntu_start.py:2488
+#: src/ubuntu_start.py:2495
 msgid "Checking system startup time…"
 msgstr ""
 
-#: src/ubuntu_start.py:2506 src/ubuntu_start.py:2539
+#: src/ubuntu_start.py:2513 src/ubuntu_start.py:2546
 msgid "systemd-analyze is not installed."
 msgstr ""
 
-#: src/ubuntu_start.py:2507
+#: src/ubuntu_start.py:2514
 msgid "Could not read system startup time."
 msgstr ""
 
-#: src/ubuntu_start.py:2512
+#: src/ubuntu_start.py:2519
 msgid "Reported boot timing"
 msgstr ""
 
-#: src/ubuntu_start.py:2513
+#: src/ubuntu_start.py:2520
 msgid ""
 "Systemd reported the startup timing above. It does not include every app "
 "started after sign-in."
 msgstr ""
 
-#: src/ubuntu_start.py:2525
+#: src/ubuntu_start.py:2532
 msgid "Inspecting the graphical startup chain…"
 msgstr ""
 
-#: src/ubuntu_start.py:2540
+#: src/ubuntu_start.py:2547
 msgid "Could not read the graphical startup chain."
 msgstr ""
 
-#: src/ubuntu_start.py:2547
+#: src/ubuntu_start.py:2554
 msgid ""
 "Systemd's critical chain to graphical.target is shown. It is one dependency "
 "path and does not prove a unit is faulty."
 msgstr ""
 
-#: src/ubuntu_start.py:2557
+#: src/ubuntu_start.py:2564
 msgid "Checking system service status…"
 msgstr ""
 
-#: src/ubuntu_start.py:2574
+#: src/ubuntu_start.py:2581
 msgid "The system service manager is not available."
 msgstr ""
 
-#: src/ubuntu_start.py:2575
+#: src/ubuntu_start.py:2582
 msgid "The system service manager did not respond in time."
 msgstr ""
 
-#: src/ubuntu_start.py:2576
+#: src/ubuntu_start.py:2583
 msgid "Could not read system service status."
 msgstr ""
 
-#: src/ubuntu_start.py:2582
+#: src/ubuntu_start.py:2589
 msgid "No description available"
 msgstr ""
 
-#: src/ubuntu_start.py:2583
+#: src/ubuntu_start.py:2590
 #, python-brace-format
 msgid "{count} service units are marked as failed."
 msgstr ""
 
-#: src/ubuntu_start.py:2585
+#: src/ubuntu_start.py:2592
 msgid "No failed system services are reported."
 msgstr ""
 
-#: src/ubuntu_start.py:2594
+#: src/ubuntu_start.py:2601
 msgid "Checking temperature sensors…"
 msgstr ""
 
-#: src/ubuntu_start.py:2613
+#: src/ubuntu_start.py:2620
 #, python-brace-format
 msgid "{temperature:.1f} °C"
 msgstr ""
 
-#: src/ubuntu_start.py:2615
+#: src/ubuntu_start.py:2622
 #, python-brace-format
 msgid "{temperature:.1f} °C · critical threshold {critical:.1f} °C"
 msgstr ""
 
-#: src/ubuntu_start.py:2619
+#: src/ubuntu_start.py:2626
 #, python-brace-format
 msgid "Temperature status updated: {count} sensors found."
 msgstr ""
 
-#: src/ubuntu_start.py:2621
+#: src/ubuntu_start.py:2628
 msgid "No temperature sensors are exposed by Linux on this system."
 msgstr ""
 
-#: src/ubuntu_start.py:2634
+#: src/ubuntu_start.py:2641
 msgid "APT package tools are not available."
 msgstr ""
 
-#: src/ubuntu_start.py:2635
+#: src/ubuntu_start.py:2642
 msgid "The local package check took too long. Try again later."
 msgstr ""
 
-#: src/ubuntu_start.py:2636
+#: src/ubuntu_start.py:2643
 msgid "Could not read update status from the local package lists."
 msgstr ""
 
-#: src/ubuntu_start.py:2643
+#: src/ubuntu_start.py:2650
 msgid "Packages ready to upgrade"
 msgstr ""
 
-#: src/ubuntu_start.py:2648
+#: src/ubuntu_start.py:2655
 msgid "Packages kept back"
 msgstr ""
 
-#: src/ubuntu_start.py:2656
+#: src/ubuntu_start.py:2663
 msgid "Package lists last updated"
 msgstr ""
 
-#: src/ubuntu_start.py:2657
+#: src/ubuntu_start.py:2664
 msgid "Local package update check complete. No packages were changed."
 msgstr ""
 
-#: src/ubuntu_start.py:2670
+#: src/ubuntu_start.py:2677
 msgid "Charging"
 msgstr ""
 
-#: src/ubuntu_start.py:2671
+#: src/ubuntu_start.py:2678
 msgid "Discharging"
 msgstr ""
 
-#: src/ubuntu_start.py:2672
+#: src/ubuntu_start.py:2679
 msgid "Full"
 msgstr ""
 
-#: src/ubuntu_start.py:2673
+#: src/ubuntu_start.py:2680
 msgid "Not charging"
 msgstr ""
 
-#: src/ubuntu_start.py:2674 src/ubuntu_start.py:3207 src/ubuntu_start.py:3212
+#: src/ubuntu_start.py:2681 src/ubuntu_start.py:3227 src/ubuntu_start.py:3232
 msgid "Unknown"
 msgstr ""
 
-#: src/ubuntu_start.py:2677
+#: src/ubuntu_start.py:2684
 msgid "Power saver"
 msgstr ""
 
-#: src/ubuntu_start.py:2678
+#: src/ubuntu_start.py:2685
 msgid "Balanced"
 msgstr ""
 
-#: src/ubuntu_start.py:2679
+#: src/ubuntu_start.py:2686
 msgid "Performance"
 msgstr ""
 
-#: src/ubuntu_start.py:2684 src/ubuntu_start.py:2690
+#: src/ubuntu_start.py:2691 src/ubuntu_start.py:2697
 msgid "Active power profile"
 msgstr ""
 
-#: src/ubuntu_start.py:2691
+#: src/ubuntu_start.py:2698
 msgid "Power profile information is not available on this system."
 msgstr ""
 
-#: src/ubuntu_start.py:2696
+#: src/ubuntu_start.py:2703
 #, python-brace-format
 msgid "Battery {number}"
 msgstr ""
 
-#: src/ubuntu_start.py:2698
+#: src/ubuntu_start.py:2705
 #, python-brace-format
 msgid "Charge: {capacity}% · {status}"
 msgstr ""
 
-#: src/ubuntu_start.py:2702
+#: src/ubuntu_start.py:2709
 #, python-brace-format
 msgid "{capacity}% · {status}"
 msgstr ""
 
-#: src/ubuntu_start.py:2708
+#: src/ubuntu_start.py:2715
 msgid "Estimated capacity vs. design"
 msgstr ""
 
-#: src/ubuntu_start.py:2709
+#: src/ubuntu_start.py:2716
 #, python-brace-format
 msgid "{percent}% of original design capacity"
 msgstr ""
 
-#: src/ubuntu_start.py:2716
+#: src/ubuntu_start.py:2723
 msgid "Reported charge cycles"
 msgstr ""
 
-#: src/ubuntu_start.py:2719
+#: src/ubuntu_start.py:2726
 #, python-brace-format
 msgid "Charge cycles: {count}"
 msgstr ""
 
-#: src/ubuntu_start.py:2725
+#: src/ubuntu_start.py:2732
 msgid "Reported battery health"
 msgstr ""
 
-#: src/ubuntu_start.py:2730
+#: src/ubuntu_start.py:2737
 #, python-brace-format
 msgid "Battery-reported health: {percent}%"
 msgstr ""
 
-#: src/ubuntu_start.py:2734
+#: src/ubuntu_start.py:2741
 #, python-brace-format
 msgid "Battery status updated: {details}"
 msgstr ""
 
-#: src/ubuntu_start.py:2736
+#: src/ubuntu_start.py:2743
 msgid ""
 "No battery information found. This computer may not have a battery, or the "
 "system does not expose battery data."
 msgstr ""
 
-#: src/ubuntu_start.py:2737
+#: src/ubuntu_start.py:2744
 msgid "No battery information"
 msgstr ""
 
-#: src/ubuntu_start.py:2747
+#: src/ubuntu_start.py:2754
 msgid "PipeWire and PulseAudio tools are not installed"
 msgstr ""
 
-#: src/ubuntu_start.py:2749
+#: src/ubuntu_start.py:2756
 msgid "No default audio device or volume status is available"
 msgstr ""
 
-#: src/ubuntu_start.py:2755
+#: src/ubuntu_start.py:2762
 msgid "Open Sound Settings to choose a default device."
 msgstr ""
 
-#: src/ubuntu_start.py:2757
+#: src/ubuntu_start.py:2764
 msgid ""
 "No default device is available. Open Sound Settings to choose a default "
 "device."
 msgstr ""
 
-#: src/ubuntu_start.py:2763
+#: src/ubuntu_start.py:2770
 msgid "Muted"
 msgstr ""
 
-#: src/ubuntu_start.py:2763
+#: src/ubuntu_start.py:2770
 msgid "Not muted"
 msgstr ""
 
-#: src/ubuntu_start.py:2765
+#: src/ubuntu_start.py:2772
 #, python-brace-format
 msgid "{percent}% · {state}"
 msgstr ""
 
-#: src/ubuntu_start.py:2767
+#: src/ubuntu_start.py:2774
 msgid "Open Sound Settings to unmute this device."
 msgstr ""
 
-#: src/ubuntu_start.py:2770
+#: src/ubuntu_start.py:2777
 msgid "Raise the output volume in Sound Settings."
 msgstr ""
 
-#: src/ubuntu_start.py:2772
+#: src/ubuntu_start.py:2779
 msgid "Raise the input volume in Sound Settings."
 msgstr ""
 
-#: src/ubuntu_start.py:2786
+#: src/ubuntu_start.py:2793
 msgid "NetworkManager command-line tools are not installed."
 msgstr ""
 
-#: src/ubuntu_start.py:2787
+#: src/ubuntu_start.py:2794
 msgid "NetworkManager did not respond in time. Try refreshing again."
 msgstr ""
 
-#: src/ubuntu_start.py:2788
+#: src/ubuntu_start.py:2795
 msgid "Could not read device status from NetworkManager."
 msgstr ""
 
-#: src/ubuntu_start.py:2797
+#: src/ubuntu_start.py:2804
 msgid "NetworkManager reported no network devices."
 msgstr ""
 
-#: src/ubuntu_start.py:2803
+#: src/ubuntu_start.py:2810
 msgid "This is local device status; internet access has not been tested."
 msgstr ""
 
-#: src/ubuntu_start.py:2807
+#: src/ubuntu_start.py:2814
 msgid "Wired"
 msgstr ""
 
-#: src/ubuntu_start.py:2808
+#: src/ubuntu_start.py:2815
 msgid "Mobile broadband"
 msgstr ""
 
-#: src/ubuntu_start.py:2809
+#: src/ubuntu_start.py:2816
 msgid "Bridge"
 msgstr ""
 
-#: src/ubuntu_start.py:2810
+#: src/ubuntu_start.py:2817
 msgid "VPN"
 msgstr ""
 
-#: src/ubuntu_start.py:2813 src/ubuntu_start.py:3205
+#: src/ubuntu_start.py:2820 src/ubuntu_start.py:3225
 msgid "Connected"
 msgstr ""
 
-#: src/ubuntu_start.py:2814 src/ubuntu_start.py:3206
+#: src/ubuntu_start.py:2821 src/ubuntu_start.py:3226
 msgid "Disconnected"
 msgstr ""
 
-#: src/ubuntu_start.py:2815
+#: src/ubuntu_start.py:2822
 msgid "Connecting"
 msgstr ""
 
-#: src/ubuntu_start.py:2817
+#: src/ubuntu_start.py:2824
 msgid "Not managed by NetworkManager"
 msgstr ""
 
-#: src/ubuntu_start.py:2818
+#: src/ubuntu_start.py:2825
 msgid "Unavailable (missing firmware)"
 msgstr ""
 
-#: src/ubuntu_start.py:2830
+#: src/ubuntu_start.py:2837
 #, python-brace-format
 msgid "Hardware ID: {bus} {id}"
 msgstr ""
 
-#: src/ubuntu_start.py:2836
+#: src/ubuntu_start.py:2843
 #, python-brace-format
 msgid "Signal: {dbm} dBm"
 msgstr ""
 
-#: src/ubuntu_start.py:2838
+#: src/ubuntu_start.py:2845
 #, python-brace-format
 msgid "Receive rate: {rate} Mbit/s"
 msgstr ""
 
-#: src/ubuntu_start.py:2840
+#: src/ubuntu_start.py:2847
 #, python-brace-format
 msgid "Transmit rate: {rate} Mbit/s"
 msgstr ""
 
-#: src/ubuntu_start.py:2844
+#: src/ubuntu_start.py:2851
 msgid "IPv4 and IPv6 addresses assigned"
 msgstr ""
 
-#: src/ubuntu_start.py:2846
+#: src/ubuntu_start.py:2853
 msgid "IPv4 address assigned"
 msgstr ""
 
-#: src/ubuntu_start.py:2848
+#: src/ubuntu_start.py:2855
 msgid "IPv6 address assigned"
 msgstr ""
 
-#: src/ubuntu_start.py:2850
+#: src/ubuntu_start.py:2857
 msgid "Only link-local addresses assigned"
 msgstr ""
 
-#: src/ubuntu_start.py:2852
+#: src/ubuntu_start.py:2859
 msgid "No IP address assigned"
 msgstr ""
 
-#: src/ubuntu_start.py:2858
+#: src/ubuntu_start.py:2865
 #, python-brace-format
 msgid "Network status updated: {details}"
 msgstr ""
 
-#: src/ubuntu_start.py:2865
+#: src/ubuntu_start.py:2872
 msgid "Graphics drivers"
 msgstr ""
 
-#: src/ubuntu_start.py:2865
+#: src/ubuntu_start.py:2872
 msgid ""
 "Ubuntu can offer compatible drivers for some graphics hardware. Review the "
 "available choices in Ubuntu’s Additional Drivers tool before installing "
 "anything."
 msgstr ""
 
-#: src/ubuntu_start.py:2866
+#: src/ubuntu_start.py:2873
 msgid "Review available drivers"
 msgstr ""
 
-#: src/ubuntu_start.py:2866
+#: src/ubuntu_start.py:2873
 msgid ""
 "This opens Ubuntu’s driver tool. Read the recommendation and confirm any "
 "changes there."
 msgstr ""
 
-#: src/ubuntu_start.py:2866
+#: src/ubuntu_start.py:2873
 msgid "Open Drivers"
 msgstr ""
 
-#: src/ubuntu_start.py:2867
+#: src/ubuntu_start.py:2874
 msgid "Secure Boot"
 msgstr ""
 
-#: src/ubuntu_start.py:2867
+#: src/ubuntu_start.py:2874
 msgid ""
 "Some drivers need a one-time confirmation during restart when Secure Boot is "
 "enabled. Follow Ubuntu’s on-screen instructions."
 msgstr ""
 
-#: src/ubuntu_start.py:2869
+#: src/ubuntu_start.py:2876
 msgid "Secure Boot status"
 msgstr ""
 
-#: src/ubuntu_start.py:2869
+#: src/ubuntu_start.py:2876
 msgid "Not checked yet."
 msgstr ""
 
-#: src/ubuntu_start.py:2873
+#: src/ubuntu_start.py:2880
 msgid "Check Secure Boot status"
 msgstr ""
 
-#: src/ubuntu_start.py:2883
+#: src/ubuntu_start.py:2890
 msgid ""
 "This read-only check uses mokutil when available. It does not change "
 "firmware settings or enroll keys."
 msgstr ""
 
-#: src/ubuntu_start.py:2891
+#: src/ubuntu_start.py:2898
 msgid "If the graphics adapter has no name"
 msgstr ""
 
-#: src/ubuntu_start.py:2892
+#: src/ubuntu_start.py:2899
 msgid ""
 "Adapter names come from a local PCI database. If only a PCI ID is shown, "
 "keep that ID and the driver name to identify the hardware. Choose drivers "
 "through Ubuntu’s Additional Drivers tool."
 msgstr ""
 
-#: src/ubuntu_start.py:2896
+#: src/ubuntu_start.py:2903
 msgid "Need more detail?"
 msgstr ""
 
-#: src/ubuntu_start.py:2896
+#: src/ubuntu_start.py:2903
 msgid "Ubuntu’s driver guidance explains the supported installation route."
 msgstr ""
 
-#: src/ubuntu_start.py:2896
+#: src/ubuntu_start.py:2903
 msgid "Open Ubuntu help"
 msgstr ""
 
-#: src/ubuntu_start.py:2901
+#: src/ubuntu_start.py:2908
 msgid "Checking Secure Boot status…"
 msgstr ""
 
-#: src/ubuntu_start.py:2914
+#: src/ubuntu_start.py:2921
 msgid ""
 "Enabled. Some third-party drivers may require a one-time key confirmation "
 "during restart."
 msgstr ""
 
-#: src/ubuntu_start.py:2915
+#: src/ubuntu_start.py:2922
 msgid ""
 "Disabled. Review Ubuntu’s driver recommendation before installing a driver."
 msgstr ""
 
-#: src/ubuntu_start.py:2916
+#: src/ubuntu_start.py:2923
 msgid ""
 "The computer is in firmware Setup Mode. Check the manufacturer’s "
 "instructions before changing firmware settings."
 msgstr ""
 
-#: src/ubuntu_start.py:2917
+#: src/ubuntu_start.py:2924
 msgid "Secure Boot status is not available in this boot mode."
 msgstr ""
 
-#: src/ubuntu_start.py:2920
+#: src/ubuntu_start.py:2927
 msgid "mokutil is not installed, so Secure Boot status cannot be read."
 msgstr ""
 
-#: src/ubuntu_start.py:2921
+#: src/ubuntu_start.py:2928
 msgid "The Secure Boot status check could not finish. Try again later."
 msgstr ""
 
-#: src/ubuntu_start.py:2922
+#: src/ubuntu_start.py:2929
 msgid "Could not read Secure Boot status from firmware."
 msgstr ""
 
-#: src/ubuntu_start.py:2927
+#: src/ubuntu_start.py:2934
 #, python-brace-format
 msgid "Secure Boot status: {status}"
 msgstr ""
 
-#: src/ubuntu_start.py:2933 src/ubuntu_start.py:2935
+#: src/ubuntu_start.py:2940 src/ubuntu_start.py:2942
 msgid "Unknown Ubuntu version"
 msgstr ""
 
-#: src/ubuntu_start.py:2945
+#: src/ubuntu_start.py:2952
+msgid "Ubuntu Start version"
+msgstr ""
+
+#: src/ubuntu_start.py:2953
 msgid "Ubuntu version"
 msgstr ""
 
-#: src/ubuntu_start.py:2946
+#: src/ubuntu_start.py:2954
 msgid "Desktop"
 msgstr ""
 
-#: src/ubuntu_start.py:2947
+#: src/ubuntu_start.py:2955
 msgid "Session type"
 msgstr ""
 
-#: src/ubuntu_start.py:2948
+#: src/ubuntu_start.py:2956
 msgid "Desktop connection"
 msgstr ""
 
-#: src/ubuntu_start.py:2960
+#: src/ubuntu_start.py:2968
 msgid "Unknown USB device"
 msgstr ""
 
-#: src/ubuntu_start.py:2961
+#: src/ubuntu_start.py:2969
 msgid "no driver attached"
 msgstr ""
 
-#: src/ubuntu_start.py:2963
+#: src/ubuntu_start.py:2971
 #, python-brace-format
 msgid "{name} [{id}] (driver: {drivers})"
 msgstr ""
 
-#: src/ubuntu_start.py:2990
+#: src/ubuntu_start.py:2998
 msgid ""
 "Find trusted instructions and prepare useful details when you ask others for "
 "help."
 msgstr ""
 
-#: src/ubuntu_start.py:2992
+#: src/ubuntu_start.py:3000
 msgid "Ubuntu Desktop guide"
 msgstr ""
 
-#: src/ubuntu_start.py:2992
+#: src/ubuntu_start.py:3000
 msgid "Official help for settings, accessibility, networks and common tasks."
 msgstr ""
 
-#: src/ubuntu_start.py:2992
+#: src/ubuntu_start.py:3000
 msgid "Open guide"
 msgstr ""
 
-#: src/ubuntu_start.py:2993
+#: src/ubuntu_start.py:3001
 msgid "Ubuntu release lifecycle"
 msgstr ""
 
-#: src/ubuntu_start.py:2993
+#: src/ubuntu_start.py:3001
 msgid "Check standard support periods for LTS and interim releases."
 msgstr ""
 
-#: src/ubuntu_start.py:2993
+#: src/ubuntu_start.py:3001
 msgid "View support periods"
 msgstr ""
 
-#: src/ubuntu_start.py:2995
+#: src/ubuntu_start.py:3003
 msgid "Open Ubuntu release information?"
 msgstr ""
 
-#: src/ubuntu_start.py:2996
+#: src/ubuntu_start.py:3004
 msgid ""
 "This opens Ubuntu’s official release lifecycle page in your browser. The "
 "website receives a normal web request and can see your IP address."
 msgstr ""
 
-#: src/ubuntu_start.py:2998
+#: src/ubuntu_start.py:3006
 msgid "Ask Ubuntu"
 msgstr ""
 
-#: src/ubuntu_start.py:2998
+#: src/ubuntu_start.py:3006
 msgid "Search community answers or ask a focused question about Ubuntu."
 msgstr ""
 
-#: src/ubuntu_start.py:2998
+#: src/ubuntu_start.py:3006
 msgid "Open Ask Ubuntu"
 msgstr ""
 
-#: src/ubuntu_start.py:2999
+#: src/ubuntu_start.py:3007
 msgid "Ubuntu community forum"
 msgstr ""
 
-#: src/ubuntu_start.py:2999
+#: src/ubuntu_start.py:3007
 msgid "Get help from Ubuntu users and community members."
 msgstr ""
 
-#: src/ubuntu_start.py:2999
+#: src/ubuntu_start.py:3007
 msgid "Open forum"
 msgstr ""
 
-#: src/ubuntu_start.py:3002
+#: src/ubuntu_start.py:3010
 msgid "System details"
 msgstr ""
 
-#: src/ubuntu_start.py:3003
+#: src/ubuntu_start.py:3011
 msgid ""
 "These read-only details help explain a problem. They omit your username, "
 "computer name, serial numbers, network addresses, Wi-Fi names and installed "
 "applications."
 msgstr ""
 
-#: src/ubuntu_start.py:3008
+#: src/ubuntu_start.py:3016
 msgid "Copy system details"
 msgstr ""
 
-#: src/ubuntu_start.py:3013
+#: src/ubuntu_start.py:3021
 msgid "Review and save support report"
 msgstr ""
 
-#: src/ubuntu_start.py:3019
+#: src/ubuntu_start.py:3027
 msgid "When asking for help"
 msgstr ""
 
-#: src/ubuntu_start.py:3020
+#: src/ubuntu_start.py:3028
 msgid "Describe what happened"
 msgstr ""
 
-#: src/ubuntu_start.py:3020
+#: src/ubuntu_start.py:3028
 msgid ""
 "Include your Ubuntu version, the device model, the exact error and what you "
 "already tried. Remove passwords and other personal details."
 msgstr ""
 
-#: src/ubuntu_start.py:3027
+#: src/ubuntu_start.py:3035
 msgid ""
 "These are Ubuntu’s default shortcuts. Open Keyboard Settings to review or "
 "change them; key labels can vary by device."
 msgstr ""
 
-#: src/ubuntu_start.py:3030
+#: src/ubuntu_start.py:3038
 msgid "Find apps and settings"
 msgstr ""
 
-#: src/ubuntu_start.py:3030
+#: src/ubuntu_start.py:3038
 msgid "Press the Super key and start typing the name of an app or setting."
 msgstr ""
 
-#: src/ubuntu_start.py:3031
+#: src/ubuntu_start.py:3039
 msgid "Switch between apps"
 msgstr ""
 
-#: src/ubuntu_start.py:3031
+#: src/ubuntu_start.py:3039
 msgid "Press Alt+Tab to move between open apps."
 msgstr ""
 
-#: src/ubuntu_start.py:3032
+#: src/ubuntu_start.py:3040
 msgid "Arrange windows side by side"
 msgstr ""
 
-#: src/ubuntu_start.py:3032
+#: src/ubuntu_start.py:3040
 msgid ""
 "Press Super+Left or Super+Right to place the current window on one side of "
 "the screen."
 msgstr ""
 
-#: src/ubuntu_start.py:3033
+#: src/ubuntu_start.py:3041
 msgid ""
 "Select the system menu at the top-right to reach Wi-Fi, Bluetooth, sound, "
 "brightness and power controls."
 msgstr ""
 
-#: src/ubuntu_start.py:3034
+#: src/ubuntu_start.py:3042
 msgid "Take a screenshot"
 msgstr ""
 
-#: src/ubuntu_start.py:3034
+#: src/ubuntu_start.py:3042
 msgid ""
 "On Ubuntu GNOME, press Print to open the screenshot controls and choose a "
 "screen, window or area."
 msgstr ""
 
-#: src/ubuntu_start.py:3035
+#: src/ubuntu_start.py:3043
 msgid "Show hidden files"
 msgstr ""
 
-#: src/ubuntu_start.py:3035
+#: src/ubuntu_start.py:3043
 msgid ""
 "In Files, press Ctrl+H to show or hide hidden files. Be careful when "
 "changing hidden configuration files."
 msgstr ""
 
-#: src/ubuntu_start.py:3036
+#: src/ubuntu_start.py:3044
 msgid "Create a folder in Files"
 msgstr ""
 
-#: src/ubuntu_start.py:3036
+#: src/ubuntu_start.py:3044
 msgid "Press Ctrl+Shift+N to create a folder in the current location."
 msgstr ""
 
-#: src/ubuntu_start.py:3037
+#: src/ubuntu_start.py:3045
 msgid "Open a location in Files"
 msgstr ""
 
-#: src/ubuntu_start.py:3037
+#: src/ubuntu_start.py:3045
 msgid ""
 "Press Ctrl+L in Files to type a folder path or enter a network address. "
 "Press Enter to open it."
 msgstr ""
 
-#: src/ubuntu_start.py:3038
+#: src/ubuntu_start.py:3046
 msgid "Rename a file"
 msgstr ""
 
-#: src/ubuntu_start.py:3038
+#: src/ubuntu_start.py:3046
 msgid ""
 "Select a file in Files and press F2 to rename it. Check the new name before "
 "pressing Enter."
 msgstr ""
 
-#: src/ubuntu_start.py:3039
+#: src/ubuntu_start.py:3047
 msgid "Undo a file action"
 msgstr ""
 
-#: src/ubuntu_start.py:3039
+#: src/ubuntu_start.py:3047
 msgid ""
 "Press Ctrl+Z in Files to undo a recent file operation when available. Check "
 "the result before continuing."
 msgstr ""
 
-#: src/ubuntu_start.py:3040
+#: src/ubuntu_start.py:3048
 msgid "Keep a backup copy"
 msgstr ""
 
-#: src/ubuntu_start.py:3040
+#: src/ubuntu_start.py:3048
 msgid ""
 "Copy important documents and photos to a separate drive or trusted backup "
 "service. Check occasionally that you can open a backed-up file."
 msgstr ""
 
-#: src/ubuntu_start.py:3041
+#: src/ubuntu_start.py:3049
 msgid "Choose trusted app sources"
 msgstr ""
 
-#: src/ubuntu_start.py:3041
+#: src/ubuntu_start.py:3049
 msgid ""
 "Prefer Ubuntu App Center or the software source recommended by your "
 "organization. Check the publisher before installing an app."
 msgstr ""
 
-#: src/ubuntu_start.py:3042
+#: src/ubuntu_start.py:3050
 msgid "Switch keyboard layouts"
 msgstr ""
 
-#: src/ubuntu_start.py:3042
+#: src/ubuntu_start.py:3050
 msgid ""
 "If you have added more than one layout, press Super+Space to switch between "
 "them."
 msgstr ""
 
-#: src/ubuntu_start.py:3043
+#: src/ubuntu_start.py:3051
 msgid "Lock the screen"
 msgstr ""
 
-#: src/ubuntu_start.py:3043
+#: src/ubuntu_start.py:3051
 msgid "Press Super+L before leaving your computer to lock the screen."
 msgstr ""
 
-#: src/ubuntu_start.py:3044
+#: src/ubuntu_start.py:3052
 msgid ""
 "Ctrl+Alt+T opens Terminal on Ubuntu by default. You can change this shortcut "
 "in Keyboard Settings."
 msgstr ""
 
-#: src/ubuntu_start.py:3050
+#: src/ubuntu_start.py:3058
 msgid "Keyboard shortcuts"
 msgstr ""
 
-#: src/ubuntu_start.py:3051
+#: src/ubuntu_start.py:3059
 msgid "Review or change the shortcuts used by your desktop."
 msgstr ""
 
-#: src/ubuntu_start.py:3052
+#: src/ubuntu_start.py:3060
 msgid "Open Keyboard Settings"
 msgstr ""
 
-#: src/ubuntu_start.py:3060
+#: src/ubuntu_start.py:3068
 msgid "Clipboard is unavailable."
 msgstr ""
 
-#: src/ubuntu_start.py:3064
+#: src/ubuntu_start.py:3072
 msgid "System details copied."
 msgstr ""
 
-#: src/ubuntu_start.py:3081
+#: src/ubuntu_start.py:3090
 msgid "An Ubuntu Desktop guide for first-run setup and device troubleshooting."
 msgstr ""
 
-#: src/ubuntu_start.py:3083
+#: src/ubuntu_start.py:3092
 msgid "Daniel Nylander's website"
 msgstr ""
 
-#: src/ubuntu_start.py:3084
+#: src/ubuntu_start.py:3093
 msgid "GitHub repository"
 msgstr ""
 
-#: src/ubuntu_start.py:3091
+#: src/ubuntu_start.py:3100
 msgid "Review support report"
 msgstr ""
 
-#: src/ubuntu_start.py:3099
+#: src/ubuntu_start.py:3108
 msgid ""
 "Review or edit this report before saving. It stays on this computer unless "
 "you choose to share it. Network addresses, MAC addresses, host names and "
 "serial numbers are omitted."
 msgstr ""
 
-#: src/ubuntu_start.py:3108 src/ubuntu_start.py:3160
+#: src/ubuntu_start.py:3119 src/ubuntu_start.py:3180
 msgid "Close"
 msgstr ""
 
-#: src/ubuntu_start.py:3109
+#: src/ubuntu_start.py:3120
 msgid "Save report"
 msgstr ""
 
-#: src/ubuntu_start.py:3120
+#: src/ubuntu_start.py:3134
 msgid "Save support report"
 msgstr ""
 
-#: src/ubuntu_start.py:3121
+#: src/ubuntu_start.py:3135
 msgid "Save"
 msgstr ""
 
-#: src/ubuntu_start.py:3136
+#: src/ubuntu_start.py:3147
+msgid ""
+"The report must be valid JSON and keep its report version and system "
+"details. Restore those fields, then save again."
+msgstr ""
+
+#: src/ubuntu_start.py:3156
 msgid "Support report saved locally."
 msgstr ""
 
-#: src/ubuntu_start.py:3141
-msgid "The report must be valid JSON and keep its report version and system details. Restore those fields, then save again."
-msgstr ""
-
-#: src/ubuntu_start.py:3159
+#: src/ubuntu_start.py:3179
 msgid "Could not open the requested tool"
 msgstr ""
 
-#: src/ubuntu_start.py:3165
+#: src/ubuntu_start.py:3185
 msgid "Display connection status"
 msgstr ""
 
-#: src/ubuntu_start.py:3166
+#: src/ubuntu_start.py:3186
 msgid ""
 "Read connection and active states reported for display connectors by Linux. "
 "The check does not read monitor identifiers or change display settings. Some "
 "graphics drivers and virtual machines expose limited connector data."
 msgstr ""
 
-#: src/ubuntu_start.py:3171
+#: src/ubuntu_start.py:3191
 msgid "Refresh display status"
 msgstr ""
 
-#: src/ubuntu_start.py:3176
+#: src/ubuntu_start.py:3196
 msgid "Open external display guide"
 msgstr ""
 
-#: src/ubuntu_start.py:3188
+#: src/ubuntu_start.py:3208
 msgid "Reading display connector status…"
 msgstr ""
 
-#: src/ubuntu_start.py:3210
+#: src/ubuntu_start.py:3230
 msgid "Active"
 msgstr ""
 
-#: src/ubuntu_start.py:3211
+#: src/ubuntu_start.py:3231
 msgid "Inactive"
 msgstr ""
 
-#: src/ubuntu_start.py:3220
+#: src/ubuntu_start.py:3240
 #, python-brace-format
 msgid "Display connector {name}"
 msgstr ""
 
-#: src/ubuntu_start.py:3224
+#: src/ubuntu_start.py:3244
 msgid "Display status updated: 1 connector found."
 msgstr ""
 
-#: src/ubuntu_start.py:3226
+#: src/ubuntu_start.py:3246
 #, python-brace-format
 msgid "Display status updated: {count} connectors found."
 msgstr ""
 
-#: src/ubuntu_start.py:3230
+#: src/ubuntu_start.py:3250
 msgid "No display connector status reported by Linux."
 msgstr ""
 
-#: src/ubuntu_start.py:3234
+#: src/ubuntu_start.py:3254
 msgid ""
 "A graphics driver or virtual machine may not expose connector data. Open "
 "Display Settings to check whether a monitor is detected."
 msgstr ""
 
-#: src/ubuntu_start.py:3253
+#: src/ubuntu_start.py:3273
 msgid "Open print queue guide"
 msgstr ""
 
-#: src/ubuntu_start.py:3267
+#: src/ubuntu_start.py:3287
 msgid "Required"
 msgstr ""
 
-#: src/ubuntu_start.py:3268
+#: src/ubuntu_start.py:3288
 msgid "Not required"
 msgstr ""
 
-#: src/ubuntu_start.py:3271
+#: src/ubuntu_start.py:3291
 msgid "Restart required"
 msgstr ""
 
-#: src/ubuntu_start.py:3274
+#: src/ubuntu_start.py:3294
 msgid "Status unknown"
 msgstr ""
 
-#: src/ubuntu_start.py:3276
+#: src/ubuntu_start.py:3296
 msgid "Unfinished job count unavailable"
 msgstr ""
 
-#: src/ubuntu_start.py:3279
+#: src/ubuntu_start.py:3299
 #, python-brace-format
 msgid "{count} unfinished print job"
 msgid_plural "{count} unfinished print jobs"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/ubuntu_start.py:3288 src/ubuntu_start.py:3296
+#: src/ubuntu_start.py:3308 src/ubuntu_start.py:3316
 msgid "Print job is stuck or the queue is paused"
 msgstr ""
 
-#: src/ubuntu_start.py:3297
+#: src/ubuntu_start.py:3317
 msgid "Check the printer itself"
 msgstr ""
 
-#: src/ubuntu_start.py:3297
+#: src/ubuntu_start.py:3317
 msgid ""
 "Check its display or status lights, power, paper, open covers, and ink or "
 "toner before sending the job again."
 msgstr ""
 
-#: src/ubuntu_start.py:3298
+#: src/ubuntu_start.py:3318
 msgid "Refresh the local queue"
 msgstr ""
 
-#: src/ubuntu_start.py:3298
+#: src/ubuntu_start.py:3318
 msgid ""
 "Open Network and hardware and refresh Printer queue status. The queue state "
 "and unfinished-job count can show whether work is waiting or the queue is "
 "paused."
 msgstr ""
 
-#: src/ubuntu_start.py:3299
+#: src/ubuntu_start.py:3319
 msgid "Review the queue in Printer Settings"
 msgstr ""
 
-#: src/ubuntu_start.py:3299
+#: src/ubuntu_start.py:3319
 msgid ""
 "Open Printer Settings and inspect the queue. Cancel only a job you own and "
 "are ready to discard. On a shared printer, ask its owner or administrator "
 "before changing other jobs."
 msgstr ""
 
-#: src/ubuntu_start.py:3300
+#: src/ubuntu_start.py:3320
 msgid "Send one test page"
 msgstr ""
 
-#: src/ubuntu_start.py:3300
+#: src/ubuntu_start.py:3320
 msgid ""
 "After fixing the cause, send one test page. Avoid resending the same "
 "document repeatedly if it does not print."
 msgstr ""
 
-#: src/ubuntu_start.py:3302
+#: src/ubuntu_start.py:3322
 msgid "Wi-Fi is slow or keeps disconnecting"
 msgstr ""
 
-#: src/ubuntu_start.py:3303
+#: src/ubuntu_start.py:3323
 msgid "Compare the connection near the router"
 msgstr ""
 
-#: src/ubuntu_start.py:3303
+#: src/ubuntu_start.py:3323
 msgid ""
 "Move closer to the router and try the same task again. If it works better "
 "nearby, distance or obstacles may be weakening the signal."
 msgstr ""
 
-#: src/ubuntu_start.py:3304
+#: src/ubuntu_start.py:3324
 msgid "Check the active Wi-Fi link"
 msgstr ""
 
-#: src/ubuntu_start.py:3304
+#: src/ubuntu_start.py:3324
 msgid ""
 "Refresh Network status on the Network and hardware page. When available, "
 "signal values closer to 0 dBm are stronger. Receive and transmit rates "
 "describe the Wi-Fi link, not your measured internet speed."
 msgstr ""
 
-#: src/ubuntu_start.py:3305
+#: src/ubuntu_start.py:3325
 msgid "Compare another device or service"
 msgstr ""
 
-#: src/ubuntu_start.py:3305
+#: src/ubuntu_start.py:3325
 msgid ""
 "Try another device on the same Wi-Fi and another app or website. If several "
 "devices have trouble, check the router or ask your internet provider. If "
 "only this computer is affected, check its adapter and Ubuntu updates."
 msgstr ""
 
-#: src/ubuntu_start.py:3306
+#: src/ubuntu_start.py:3326
 msgid "Look for nearby channel overlap"
 msgstr ""
 
-#: src/ubuntu_start.py:3306
+#: src/ubuntu_start.py:3326
 msgid ""
 "The WiFi Analyzer recommendation on the Network and hardware page can help "
 "you review nearby signal levels and channel use. It opens an external "
@@ -5072,36 +5078,36 @@ msgid ""
 "router settings."
 msgstr ""
 
-#: src/ubuntu_start.py:3307
+#: src/ubuntu_start.py:3327
 msgid "Keep private details out of support requests"
 msgstr ""
 
-#: src/ubuntu_start.py:3307
+#: src/ubuntu_start.py:3327
 msgid ""
 "Share the adapter model, hardware ID and driver if you need help. Do not "
 "share the Wi-Fi password or private network details."
 msgstr ""
 
-#: src/ubuntu_start.py:3309
+#: src/ubuntu_start.py:3329
 msgid "Wi-Fi is connected but the internet does not work"
 msgstr ""
 
-#: src/ubuntu_start.py:3310
+#: src/ubuntu_start.py:3330
 msgid "Check whether the problem affects other devices"
 msgstr ""
 
-#: src/ubuntu_start.py:3310
+#: src/ubuntu_start.py:3330
 msgid ""
 "Try another device on the same network and try a different website or app. "
 "If several devices are affected, check the router or contact the internet "
 "provider."
 msgstr ""
 
-#: src/ubuntu_start.py:3311
+#: src/ubuntu_start.py:3331
 msgid "Look for a network sign-in page"
 msgstr ""
 
-#: src/ubuntu_start.py:3311
+#: src/ubuntu_start.py:3331
 msgid ""
 "Public Wi-Fi in places such as hotels, libraries and airports may require a "
 "sign-in page, sometimes called a captive portal. Open a browser and follow "
@@ -5110,22 +5116,22 @@ msgid ""
 "page."
 msgstr ""
 
-#: src/ubuntu_start.py:3312
+#: src/ubuntu_start.py:3332
 msgid "Check the VPN if you use one"
 msgstr ""
 
-#: src/ubuntu_start.py:3312
+#: src/ubuntu_start.py:3332
 msgid ""
 "A VPN or managed work or school policy can affect internet access. Check its "
 "status and ask your administrator for help; do not bypass your "
 "organization's VPN or security policy."
 msgstr ""
 
-#: src/ubuntu_start.py:3313
+#: src/ubuntu_start.py:3333
 msgid "Run the optional connection checks"
 msgstr ""
 
-#: src/ubuntu_start.py:3313
+#: src/ubuntu_start.py:3333
 msgid ""
 "On the Network and hardware page, you can choose Test DNS and gateway or "
 "Test internet connection. Each test asks first and shows its duration. DNS "
@@ -5133,54 +5139,54 @@ msgid ""
 "the internet test contacts ubuntu.com."
 msgstr ""
 
-#: src/ubuntu_start.py:3314
+#: src/ubuntu_start.py:3334
 msgid "Review network settings"
 msgstr ""
 
-#: src/ubuntu_start.py:3314
+#: src/ubuntu_start.py:3334
 msgid ""
 "Open Network Settings and check that the expected Wi-Fi or wired connection "
 "is active. Avoid changing proxy, DNS or manual IP settings unless your "
 "network administrator or provider gives you the correct values."
 msgstr ""
 
-#: src/ubuntu_start.py:3318
+#: src/ubuntu_start.py:3338
 msgid "Use Mouse Keys"
 msgstr ""
 
-#: src/ubuntu_start.py:3319
+#: src/ubuntu_start.py:3339
 msgid "Open Pointing and Clicking"
 msgstr ""
 
-#: src/ubuntu_start.py:3319
+#: src/ubuntu_start.py:3339
 msgid "In Accessibility Settings, open the Pointing and Clicking section."
 msgstr ""
 
-#: src/ubuntu_start.py:3320
+#: src/ubuntu_start.py:3340
 msgid "Turn on Mouse Keys"
 msgstr ""
 
-#: src/ubuntu_start.py:3320
+#: src/ubuntu_start.py:3340
 msgid ""
 "Mouse Keys lets you control the pointer with the numeric keypad. Turn Num "
 "Lock off to use the keypad for pointer movement."
 msgstr ""
 
-#: src/ubuntu_start.py:3321
+#: src/ubuntu_start.py:3341
 msgid "Test it and turn it off if needed"
 msgstr ""
 
-#: src/ubuntu_start.py:3321
+#: src/ubuntu_start.py:3341
 msgid ""
 "Try moving the pointer and clicking a simple target. Return to Pointing and "
 "Clicking to turn Mouse Keys off when you are finished."
 msgstr ""
 
-#: src/ubuntu_start.py:3340
+#: src/ubuntu_start.py:3360
 msgid "Remote desktop"
 msgstr ""
 
-#: src/ubuntu_start.py:3342
+#: src/ubuntu_start.py:3362
 msgid "Local desktop"
 msgstr ""
 

@@ -976,14 +976,15 @@ class AboutDialogTests(unittest.TestCase):
     def test_about_dialog_api_is_available_on_supported_platforms(self):
         properties = {property_.name for property_ in Adw.AboutDialog.list_properties()}
         self.assertTrue({
-            "application-name", "application-icon", "developer-name", "developers",
+            "application-name", "application-icon", "version", "developer-name", "developers",
             "website", "issue-url", "license-type", "comments",
         }.issubset(properties))
         self.assertTrue(hasattr(Adw.AboutDialog, "add_link"))
         self.assertTrue(hasattr(Gtk.License, "GPL_3_0_ONLY"))
 
+    @patch("ubuntu_start.get_application_version", return_value="0.3.30")
     @patch("ubuntu_start.Adw.AboutDialog")
-    def test_lists_developer_and_links_to_personal_site_and_project(self, about_dialog):
+    def test_lists_developer_and_links_to_personal_site_and_project(self, about_dialog, _version):
         app = Mock()
         dialog = about_dialog.return_value
 
@@ -992,6 +993,7 @@ class AboutDialogTests(unittest.TestCase):
         properties = about_dialog.call_args.kwargs
         self.assertEqual(properties["developer_name"], "Daniel Nylander")
         self.assertEqual(properties["developers"], ["Daniel Nylander"])
+        self.assertEqual(properties["version"], "0.3.30")
         self.assertNotIn("website", properties)
         self.assertEqual(dialog.add_link.call_args_list, [
             call("Daniel Nylander's website", "https://www.danielnylander.se"),
@@ -1035,6 +1037,17 @@ class SystemDetailsTests(unittest.TestCase):
         self.assertEqual(desktop_connection_label(True), "Remote desktop")
         self.assertEqual(desktop_connection_label(False), "Local desktop")
         self.assertEqual(desktop_connection_label(None), "Not available")
+
+    @patch("ubuntu_start.get_application_version", return_value="0.3.31-1")
+    @patch("ubuntu_start.read_storage_locations", return_value={})
+    @patch("ubuntu_start.read_hardware_details", return_value={
+        "system_model": None, "processor": None, "memory": None, "graphics": [],
+        "architecture": "x86_64",
+    })
+    @patch("ubuntu_start.platform.freedesktop_os_release", return_value={"PRETTY_NAME": "Ubuntu Test"})
+    def test_system_details_include_ubuntu_start_version(self, *_mocks):
+        details = dict(UbuntuStart.system_details(Mock()))
+        self.assertEqual(details["Ubuntu Start version"], "0.3.31-1")
 
     @patch.dict("ubuntu_start.os.environ", {"XDG_SESSION_TYPE": "wayland"})
     @patch("ubuntu_start.read_remote_session", return_value=True)

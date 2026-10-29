@@ -1353,6 +1353,16 @@ def get_application_version(project_file: str | Path | None = None) -> str:
             try:
                 return metadata.version("ubuntu-start")
             except metadata.PackageNotFoundError:
+                dpkg_query = shutil.which("dpkg-query")
+                if not dpkg_query:
+                    return "unknown"
+                result = _run_local(
+                    [dpkg_query, "-W", "-f=${Version}", "ubuntu-start"], timeout=2.0,
+                )
+                if result and result.returncode == 0:
+                    package_version = result.stdout.strip()
+                    if re.fullmatch(r"[0-9][A-Za-z0-9.+:~-]*", package_version):
+                        return package_version
                 return "unknown"
     try:
         contents = Path(project_file).read_text(encoding="utf-8")

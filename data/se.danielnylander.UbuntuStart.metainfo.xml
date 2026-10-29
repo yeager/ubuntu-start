@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.31" date="2026-10-29">
+      <description>
+        <p>Show the installed Ubuntu Start version in About and local support details, including Debian package installations.</p>
+        <p xml:lang="sv">Visa den installerade versionen av Ubuntu Start i Om och i lokal systeminformation, även för Debian-paket.</p>
+      </description>
+    </release>
     <release version="0.3.30" date="2026-10-29">
       <description>
         <p>Reuse the existing Ubuntu Start window when the app is activated again, instead of opening duplicate windows.</p>

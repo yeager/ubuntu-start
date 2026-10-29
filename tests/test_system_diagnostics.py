@@ -1,6 +1,7 @@
 import subprocess
 import tempfile
 import unittest
+from importlib import metadata
 from types import SimpleNamespace
 from io import BytesIO
 import urllib.error
@@ -91,6 +92,18 @@ class BenchmarkTests(unittest.TestCase):
             project_file = Path(directory) / "pyproject.toml"
             project_file.write_text('[project]\nversion = "4.2.1"\n', encoding="utf-8")
             self.assertEqual(get_application_version(project_file), "4.2.1")
+
+    @patch("system_diagnostics.Path.is_file", return_value=False)
+    @patch("system_diagnostics.metadata.version", side_effect=metadata.PackageNotFoundError)
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/dpkg-query")
+    @patch(
+        "system_diagnostics._run_local",
+        return_value=SimpleNamespace(returncode=0, stdout="0.3.31-1\n"),
+    )
+    def test_application_version_reads_installed_debian_package_version(
+        self, _run, _which, _metadata, _is_file,
+    ):
+        self.assertEqual(get_application_version(), "0.3.31-1")
 
 
 class BackupToolTests(unittest.TestCase):
