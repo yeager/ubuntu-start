@@ -1016,6 +1016,44 @@ class InternetTestResultTests(unittest.TestCase):
         self.assertIn("DNS lookup failed after 75 ms.", message)
         self.assertIn("Next step: check that the network is connected", message)
 
+    def test_dns_timeout_is_distinguished_from_lookup_failure(self):
+        app = Mock()
+        button = Mock()
+        status = Mock()
+        result = {
+            "dns_latency_ms": None,
+            "dns_test_duration_ms": 3000.0,
+            "dns_error": "timeout",
+            "gateway": None,
+            "gateway_latency_ms": None,
+        }
+
+        UbuntuStart.show_network_diagnostic_result(app, button, status, result)
+
+        message = status.set_text.call_args.args[0]
+        self.assertIn("DNS lookup timed out after 3000 ms.", message)
+        self.assertNotIn("DNS lookup failed after", message)
+        self.assertIn("Next step: check that the network is connected", message)
+
+    def test_missing_getent_explains_that_dns_was_not_tested(self):
+        app = Mock()
+        button = Mock()
+        status = Mock()
+        result = {
+            "dns_latency_ms": None,
+            "dns_test_duration_ms": None,
+            "dns_error": "getent-not-installed",
+            "gateway": None,
+            "gateway_latency_ms": None,
+        }
+
+        UbuntuStart.show_network_diagnostic_result(app, button, status, result)
+
+        message = status.set_text.call_args.args[0]
+        self.assertIn("The getent tool is not installed, so DNS could not be tested.", message)
+        self.assertNotIn("DNS lookup failed", message)
+        self.assertNotIn("review its DNS settings", message)
+
     def test_missing_ping_tool_recommends_package_without_blaming_gateway(self):
         app = Mock()
         button = Mock()

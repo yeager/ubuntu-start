@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Ubuntu Start 0.3.5\n"
+"Project-Id-Version: Ubuntu Start 0.3.7\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
 "POT-Creation-Date: 2026-10-29 12:38+0100\n"
 "PO-Revision-Date: 2026-10-28 15:18+0100\n"
@@ -5552,3 +5552,20 @@ msgstr "Kom igång med Ubuntu och felsök anslutna enheter"
 #~ msgstr ""
 #~ "Uppgifterna kan hjälpa andra att förstå ett problem. De innehåller inte "
 #~ "ditt användarnamn, datornamn, nätverksadress eller installerade program."
+
+#: src/ubuntu_start.py:1671
+#, python-brace-format
+msgid ""
+"DNS lookup timed out after {ms} ms. Check the network connection or DNS "
+"server."
+msgstr ""
+"DNS-uppslagningen tog för lång tid efter {ms} ms. Kontrollera nätverks-"
+"anslutningen eller DNS-servern."
+
+#: src/ubuntu_start.py:1673 src/ubuntu_start.py:1678
+msgid ""
+"The getent tool is not installed, so DNS could not be tested. Ask your "
+"administrator to check the system tools."
+msgstr ""
+"Verktyget getent är inte installerat, så DNS kunde inte testas. Be "
+"administratören kontrollera systemverktygen."

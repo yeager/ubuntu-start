@@ -1637,11 +1637,17 @@ def run_network_diagnostics(timeout: float = 3.0) -> dict[str, str | float | Non
         result["gateway_error"] = "no-default-route"
 
     start = time.monotonic()
-    dns = _run_local(["getent", "ahosts", "ubuntu.com"], timeout)
+    getent_command = shutil.which("getent")
+    if not getent_command:
+        result["dns_error"] = "getent-not-installed"
+        return result
+    dns = _run_local([getent_command, "ahosts", "ubuntu.com"], timeout)
     dns_elapsed_ms = round((time.monotonic() - start) * 1000, 1)
     result["dns_test_duration_ms"] = dns_elapsed_ms
     if dns and dns.returncode == 0 and dns.stdout.strip():
         result["dns_latency_ms"] = dns_elapsed_ms
+    elif dns is None:
+        result["dns_error"] = "timeout"
     else:
         result["dns_error"] = "lookup-failed"
     return result

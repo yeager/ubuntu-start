@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.7" date="2026-10-29">
+      <description>
+        <p>Distinguish DNS lookup failures from timeouts and missing system tools in the network diagnostics, with clear next steps. Make the accessibility smoke test independent of previously saved benchmark results.</p>
+        <p xml:lang="sv">Skilj mellan misslyckade DNS-uppslag, tidsgränser som överskrids och systemverktyg som saknas. Nätverksdiagnostiken ger tydligare råd, och tillgänglighetstestet påverkas inte av testresultat från tidigare körningar.</p>
+      </description>
+    </release>
     <release version="0.3.6" date="2026-10-29">
       <description>
         <p>Save the latest CPU and graphics benchmark scores locally to compare results after system changes. Keep comparisons scoped to the same app version and, for graphics, the same desktop session.</p>

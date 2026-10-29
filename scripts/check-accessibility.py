@@ -71,6 +71,7 @@ def main() -> int:
     environment = os.environ.copy()
     environment.update({"GTK_A11Y": "atspi", "GSK_RENDERER": "cairo", "LANGUAGE": "en"})
     benchmark_tools = tempfile.TemporaryDirectory(prefix="ubuntu-start-benchmark-tools-")
+    environment["XDG_STATE_HOME"] = str(Path(benchmark_tools.name, "state"))
     delayed_benchmark_marker = Path(benchmark_tools.name, "delay-once")
     environment["UBUNTU_START_BENCHMARK_DELAY_ONCE"] = str(delayed_benchmark_marker)
     for tool_name in ("glmark2", "glmark2-wayland"):

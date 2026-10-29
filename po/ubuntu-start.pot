@@ -4473,3 +4473,16 @@ msgstr ""
 #: data/se.nylander.UbuntuStart.desktop:3
 msgid "Get started with Ubuntu and troubleshoot devices"
 msgstr ""
+
+#: src/ubuntu_start.py:1671
+#, python-brace-format
+msgid ""
+"DNS lookup timed out after {ms} ms. Check the network connection or DNS "
+"server."
+msgstr ""
+
+#: src/ubuntu_start.py:1673 src/ubuntu_start.py:1678
+msgid ""
+"The getent tool is not installed, so DNS could not be tested. Ask your "
+"administrator to check the system tools."
+msgstr ""
