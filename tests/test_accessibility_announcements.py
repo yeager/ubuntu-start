@@ -460,5 +460,41 @@ class AccessibilityStatusAnnouncementTests(unittest.TestCase):
         )
 
 
+class TimeStatusAnnouncementTests(unittest.TestCase):
+    def test_time_status_lists_local_values_and_announces_refresh(self):
+        app = Mock()
+        status_label = Mock()
+        rows = Mock()
+        UbuntuStart.show_time_status(
+            app, Mock(), status_label, rows,
+            {"timezone": "Europe/Stockholm", "ntp": True, "synchronized": False},
+            None, announce=True,
+        )
+        self.assertEqual(
+            [call_args.args[1:] for call_args in app.row.call_args_list],
+            [
+                ("Time zone", "Europe/Stockholm"),
+                ("Automatic time synchronization", "On"),
+                ("Clock synchronization", "Not synchronized"),
+            ],
+        )
+        status_label.set_text.assert_called_once_with(
+            "Local date and time status read. No settings were changed.",
+        )
+        app.announce_to_screen_reader.assert_called_once_with(
+            status_label, "Local date and time status read. No settings were changed.",
+        )
+
+    def test_time_status_reports_unavailable_read(self):
+        app = Mock()
+        status_label = Mock()
+        UbuntuStart.show_time_status(
+            app, Mock(), status_label, Mock(),
+            {"timezone": None, "ntp": None, "synchronized": None}, "unavailable",
+        )
+        self.assertEqual(app.row.call_count, 3)
+        status_label.set_text.assert_called_once_with("Could not read the local date and time status.")
+
+
 if __name__ == "__main__":
     unittest.main()

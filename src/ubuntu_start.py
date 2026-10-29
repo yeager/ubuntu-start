@@ -12,7 +12,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_interface_ip_status, read_network_devices, read_printer_status, read_storage_locations, read_usb_devices, read_wifi_link_status, run_network_diagnostics
+from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_interface_ip_status, read_network_devices, read_printer_status, read_storage_locations, read_time_status, read_usb_devices, read_wifi_link_status, run_network_diagnostics
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -106,6 +106,12 @@ SYSTEM_GUIDES = [
         (_("Connect the cable"), _("Plug one end into the computer and the other into a router, switch or active wall socket.")),
         (_("Wait for Ubuntu"), _("A wired connection is usually configured automatically. The network menu shows when it is ready.")),
         (_("Check the connection"), _("Open Network Settings and make sure the Wired switch is on. If there is no link light, try another port or cable.")),
+    ]),
+    (_("Check date and time"), ("settings", "datetime"), _("Open Date & Time Settings"), [
+        (_("Check the time zone"), _("Make sure the selected time zone matches your location. A wrong time zone changes the displayed local time.")),
+        (_("Review automatic time"), _("If automatic date and time is available, turn it on so Ubuntu can keep the system clock synchronized.")),
+        (_("Check the network connection"), _("If the clock is not synchronized, check the internet connection and review Date & Time Settings again.")),
+        (_("Ask before changing a managed computer"), _("Work or school computers may control time settings centrally. Ask the administrator if the options are locked.")),
     ]),
     (_("Add a printer"), ("settings", "printers"), _("Open Printer Settings"), [
         (_("Connect the printer"), _("Turn it on and connect it to the same network as your computer, or connect it with USB.")),
@@ -320,6 +326,23 @@ class UbuntuStart(Adw.Application):
         accessibility_box.append(accessibility_rows)
         box.append(accessibility_box)
         self.refresh_accessibility_status(accessibility_refresh, accessibility_status, accessibility_rows)
+        time_box, _time_rows = self.page(
+            _("Date and time status"),
+            _("Read the local time zone and clock synchronization state. This does not change settings or start synchronization."),
+            include_rows=False,
+        )
+        time_status = Gtk.Label(label="", xalign=0, wrap=True)
+        time_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        time_refresh = Gtk.Button(label=_("Refresh date and time status"), halign=Gtk.Align.START)
+        time_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_time_status(time_refresh, time_status, time_rows, announce=True),
+        )
+        time_box.append(time_refresh)
+        time_box.append(time_status)
+        time_box.append(time_rows)
+        box.append(time_box)
+        self.refresh_time_status(time_refresh, time_status, time_rows)
         return box
 
     def open_target(self, target):
@@ -942,6 +965,42 @@ class UbuntuStart(Adw.Application):
             )
 
         threading.Thread(target=read_status, daemon=True).start()
+
+    def refresh_time_status(self, button, status_label, setting_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking date and time status…"))
+        while (child := setting_rows.get_first_child()) is not None:
+            setting_rows.remove(child)
+
+        def read_status():
+            status, error = read_time_status()
+            GLib.idle_add(self.show_time_status, button, status_label, setting_rows, status, error, announce)
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_time_status(self, button, status_label, setting_rows, status, error, announce=False):
+        button.set_sensitive(True)
+        timezone = status.get("timezone")
+        self.row(setting_rows, _("Time zone"), timezone if isinstance(timezone, str) else _("Not available"))
+        ntp = status.get("ntp")
+        self.row(
+            setting_rows,
+            _("Automatic time synchronization"),
+            _("On") if ntp is True else _("Off") if ntp is False else _("Not available"),
+        )
+        synchronized = status.get("synchronized")
+        sync_label = _("Synchronized") if synchronized is True else _("Not synchronized") if synchronized is False else _("Not available")
+        self.row(setting_rows, _("Clock synchronization"), sync_label)
+        errors = {
+            "not-installed": _("The timedatectl tool is not installed."),
+            "timeout": _("The system time service did not respond in time."),
+            "unavailable": _("Could not read the local date and time status."),
+        }
+        message = errors.get(error, _("Local date and time status read. No settings were changed."))
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
 
     def show_accessibility_status(self, button, status_label, setting_rows, settings, error, announce=False):
         button.set_sensitive(True)

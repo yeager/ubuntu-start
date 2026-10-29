@@ -35,6 +35,8 @@ from system_diagnostics import (
     read_printer_status,
     read_storage_status,
     read_storage_locations,
+    parse_time_status,
+    read_time_status,
     read_usb_devices,
     read_wifi_link_status,
     parse_iw_link_status,
@@ -119,6 +121,50 @@ org.gnome.desktop.interface cursor-size 48
         settings, error = read_accessibility_settings()
         self.assertEqual(error, "not-installed")
         self.assertTrue(all(value is None for value in settings.values()))
+
+
+class TimeStatusTests(unittest.TestCase):
+    def test_parses_only_allowlisted_timezone_and_sync_values(self):
+        status = parse_time_status(
+            "Timezone=Europe/Stockholm\nCanNTP=yes\nNTP=no\nNTPSynchronized=yes\n"
+            "LocalRTC=no\nSecret=private\n"
+        )
+        self.assertEqual(status, {
+            "timezone": "Europe/Stockholm", "can_ntp": True, "ntp": False, "synchronized": True,
+        })
+        self.assertNotIn("private", repr(status))
+
+    def test_rejects_invalid_values(self):
+        self.assertEqual(parse_time_status("Timezone=Europe/Stockholm; cat /etc/passwd\nNTP=maybe\n"), {
+            "timezone": None, "can_ntp": None, "ntp": None, "synchronized": None,
+        })
+
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/timedatectl")
+    @patch("system_diagnostics.subprocess.run")
+    def test_reads_only_local_status_and_does_not_trigger_sync(self, run, _which):
+        run.return_value = subprocess.CompletedProcess(
+            [], 0, "Timezone=Europe/Stockholm\nNTP=yes\nNTPSynchronized=yes\n", "",
+        )
+        status, error = read_time_status()
+        self.assertIsNone(error)
+        self.assertEqual(status["timezone"], "Europe/Stockholm")
+        self.assertEqual(run.call_args.args[0], [
+            "/usr/bin/timedatectl", "show", "--property=Timezone", "--property=CanNTP",
+            "--property=NTP", "--property=NTPSynchronized",
+        ])
+        self.assertEqual(run.call_args.kwargs["env"]["LC_ALL"], "C")
+
+    @patch("system_diagnostics.shutil.which", return_value=None)
+    def test_reports_missing_timedatectl(self, _which):
+        status, error = read_time_status()
+        self.assertEqual(error, "not-installed")
+        self.assertTrue(all(value is None for value in status.values()))
+
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/timedatectl")
+    @patch("system_diagnostics.subprocess.run", side_effect=subprocess.TimeoutExpired("timedatectl", 3))
+    def test_reports_timeout(self, _run, _which):
+        _status, error = read_time_status()
+        self.assertEqual(error, "timeout")
 
 
 class ParseNetworkStatusTests(unittest.TestCase):

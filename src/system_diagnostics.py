@@ -370,6 +370,58 @@ def read_accessibility_settings(timeout: float = 1.0) -> tuple[dict[str, bool | 
     return settings, None if any(value is not None for value in settings.values()) else "unavailable"
 
 
+def parse_time_status(output: str) -> dict[str, str | bool | None]:
+    """Parse only timezone and automatic clock synchronization properties."""
+    status: dict[str, str | bool | None] = {
+        "timezone": None, "can_ntp": None, "ntp": None, "synchronized": None,
+    }
+    properties = {
+        "Timezone": "timezone",
+        "CanNTP": "can_ntp",
+        "NTP": "ntp",
+        "NTPSynchronized": "synchronized",
+    }
+    for line in output.splitlines():
+        key, separator, raw_value = line.partition("=")
+        if not separator or key not in properties:
+            continue
+        value = raw_value.strip()
+        if key == "Timezone":
+            if re.fullmatch(r"[A-Za-z0-9_+./-]{1,128}", value):
+                status[properties[key]] = value
+        elif value in {"yes", "no"}:
+            status[properties[key]] = value == "yes"
+    return status
+
+
+def read_time_status(timeout: float = 3.0) -> tuple[dict[str, str | bool | None], str | None]:
+    """Read local timezone and clock-sync state without triggering synchronization."""
+    empty = parse_time_status("")
+    timedatectl = shutil.which("timedatectl")
+    if not timedatectl:
+        return empty, "not-installed"
+    env = os.environ.copy()
+    env.update({"LANG": "C", "LC_ALL": "C"})
+    env.pop("LANGUAGE", None)
+    try:
+        result = subprocess.run(
+            [timedatectl, "show", "--property=Timezone", "--property=CanNTP", "--property=NTP", "--property=NTPSynchronized"],
+            capture_output=True,
+            check=False,
+            text=True,
+            timeout=timeout,
+            env=env,
+        )
+    except subprocess.TimeoutExpired:
+        return empty, "timeout"
+    except OSError:
+        return empty, "unavailable"
+    if result.returncode != 0:
+        return empty, "unavailable"
+    status = parse_time_status(result.stdout)
+    return status, None if any(value is not None for value in status.values()) else "unavailable"
+
+
 def parse_cpu_model(cpuinfo: str) -> str | None:
     """Return a useful CPU model from Linux procfs content."""
     for line in cpuinfo.splitlines():
