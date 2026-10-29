@@ -1104,7 +1104,7 @@ class UbuntuStart(Adw.Application):
         previous_graphics_score = {"value": saved_graphics.get("score")}
         saved_results = []
         if previous_cpu_score["value"] and saved_cpu.get("duration_seconds"):
-            saved_results.append(_("Single-thread CPU baseline: {score} iterations/second ({duration} seconds). Run again after a change to compare.").format(
+            saved_results.append(_("Single-thread CPU baseline: {score} iterations/second (median of three samples; {duration} seconds total). Run again after a change to compare.").format(
                 score=round(previous_cpu_score["value"]),
                 duration=saved_cpu["duration_seconds"],
             ))

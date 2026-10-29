@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Ubuntu Start 0.3.8\n"
+"Project-Id-Version: Ubuntu Start 0.3.9\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 14:31+0100\n"
+"POT-Creation-Date: 2026-10-29 14:46+0100\n"
 "PO-Revision-Date: 2026-10-28 15:18+0100\n"
 "Last-Translator: Ubuntu Start contributors\n"
 "Language-Team: Swedish\n"
@@ -2737,11 +2737,9 @@ msgstr ""
 #: src/ubuntu_start.py:1107
 #, python-brace-format
 msgid ""
-"Single-thread CPU baseline: {score} iterations/second ({duration} seconds). "
-"Run again after a change to compare."
-msgstr ""
-"Utgångsvärde för processortrådstestet: {score} iterationer per sekund "
-"({duration} sekunder). Kör testet igen efter en ändring för att jämföra."
+"Single-thread CPU baseline: {score} iterations/second (median of three "
+"samples; {duration} seconds total). Run again after a change to compare."
+msgstr "Utgångsvärde för processortrådstestet: {score} iterationer per sekund (medianvärdet av tre mätningar; totalt {duration} sekunder). Kör testet igen efter en ändring för att jämföra."
 
 #: src/ubuntu_start.py:1112 src/ubuntu_start.py:1306
 #, python-brace-format
@@ -2900,7 +2898,11 @@ msgid ""
 "measurements and uses their median. It can increase heat and battery use. "
 "Save work first; the result is a relative app-specific score, not a whole-"
 "system rating."
-msgstr "Efter en kort uppvärmning gör testet tre mätningar på en sekund vardera av en processortråd och använder medianvärdet. Datorn kan bli varm och batteriet dras ur snabbare. Spara arbetet först. Resultatet gäller bara appens test och är inget helhetsbetyg på systemet."
+msgstr ""
+"Efter en kort uppvärmning gör testet tre mätningar på en sekund vardera av "
+"en processortråd och använder medianvärdet. Datorn kan bli varm och "
+"batteriet dras ur snabbare. Spara arbetet först. Resultatet gäller bara "
+"appens test och är inget helhetsbetyg på systemet."
 
 #: src/ubuntu_start.py:1196 src/ubuntu_start.py:1243
 msgid "Run benchmark"
@@ -2916,14 +2918,20 @@ msgid ""
 "Single-thread CPU: {score} iterations/second; {change} % since the previous "
 "run (median of three samples). Keep power and temperature conditions similar "
 "when comparing."
-msgstr "Processortrådstest: {score} iterationer per sekund; {change} % jämfört med föregående körning (medianvärdet av tre mätningar). Håll ström- och temperaturförhållandena så lika som möjligt när du jämför."
+msgstr ""
+"Processortrådstest: {score} iterationer per sekund; {change} % jämfört med "
+"föregående körning (medianvärdet av tre mätningar). Håll ström- och "
+"temperaturförhållandena så lika som möjligt när du jämför."
 
 #: src/ubuntu_start.py:1223
 #, python-brace-format
 msgid ""
 "Single-thread CPU baseline: {score} iterations/second (median of three "
 "samples over {duration} seconds). Run again after a change to compare."
-msgstr "Utgångsvärde för processortrådstestet: {score} iterationer per sekund (medianvärdet av tre mätningar under {duration} sekunder). Kör testet igen efter en ändring för att jämföra."
+msgstr ""
+"Utgångsvärde för processortrådstestet: {score} iterationer per sekund "
+"(medianvärdet av tre mätningar under {duration} sekunder). Kör testet igen "
+"efter en ändring för att jämföra."
 
 #: src/ubuntu_start.py:1230 src/ubuntu_start.py:1311
 msgid "This score could not be saved locally for future comparisons."
@@ -5161,6 +5169,14 @@ msgstr ""
 #: data/se.nylander.UbuntuStart.desktop:3
 msgid "Get started with Ubuntu and troubleshoot devices"
 msgstr "Kom igång med Ubuntu och felsök anslutna enheter"
+
+#, python-brace-format
+#~ msgid ""
+#~ "Single-thread CPU baseline: {score} iterations/second ({duration} "
+#~ "seconds). Run again after a change to compare."
+#~ msgstr ""
+#~ "Utgångsvärde för processortrådstestet: {score} iterationer per sekund "
+#~ "({duration} sekunder). Kör testet igen efter en ändring för att jämföra."
 
 #~ msgid ""
 #~ "This runs a one-second, single-threaded CPU workload. It can increase "
