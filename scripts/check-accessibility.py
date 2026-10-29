@@ -176,6 +176,12 @@ def main() -> int:
                         if checklist_controls == checklist_tasks:
                             break
                         time.sleep(0.25)
+                    if checklist_controls != checklist_tasks:
+                        observed_checklist = [
+                            (role, name) for role, name, _node in entries
+                            if name in checklist_tasks or "check" in role.casefold()
+                        ]
+                        print(f"Checklist AT-SPI entries: {observed_checklist!r}", file=sys.stderr)
                     for task in sorted(checklist_tasks - checklist_controls):
                         missing.append(f"accessible checklist checkbox: {task}")
 
