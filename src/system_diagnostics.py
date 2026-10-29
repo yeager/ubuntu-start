@@ -615,6 +615,49 @@ def lookup_pci_device_name(
     return None
 
 
+def read_pci_devices(
+    devices_path: str | Path = "/sys/bus/pci/devices",
+    pci_databases: tuple[str, ...] = (
+        "/usr/share/misc/pci.ids", "/usr/share/hwdata/pci.ids", "/usr/share/pci.ids",
+    ),
+) -> list[dict[str, str | None]]:
+    """Read PCI IDs and bound kernel drivers from sysfs without exposing device paths."""
+    root = Path(devices_path)
+    try:
+        entries = sorted(root.iterdir(), key=lambda path: path.name)
+    except OSError:
+        return []
+
+    devices = []
+    for path in entries:
+        vendor = _read(path / "vendor")
+        device = _read(path / "device")
+        class_code = _read(path / "class")
+        if not vendor or not device or not class_code:
+            continue
+        if not re.fullmatch(r"0x[0-9a-fA-F]{4}", vendor) or not re.fullmatch(r"0x[0-9a-fA-F]{4}", device):
+            continue
+        try:
+            # Class 06 contains host, ISA, PCI and bridge devices, which add little
+            # value to an end-user troubleshooting list.
+            if (int(class_code, 16) >> 16) & 0xFF == 0x06:
+                continue
+        except ValueError:
+            continue
+        try:
+            driver = (path / "driver").resolve(strict=True).name
+        except OSError:
+            driver = None
+        pci_id = f"{vendor[2:].lower()}:{device[2:].lower()}"
+        name = lookup_pci_device_name(vendor, device, pci_databases)
+        devices.append({
+            "id": pci_id,
+            "name": name,
+            "driver": driver,
+        })
+    return devices
+
+
 def _graphics_adapters(
     drm_path: Path,
     pci_databases: tuple[str, ...] = (

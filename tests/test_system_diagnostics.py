@@ -25,6 +25,7 @@ from system_diagnostics import (
     parse_wpctl_volume,
     lookup_oui_vendor,
     lookup_pci_device_name,
+    read_pci_devices,
     read_audio_status,
     read_accessibility_settings,
     parse_apt_upgrade_simulation,
@@ -602,6 +603,42 @@ ABCD  Another Vendor
                 "Example Graphics Corp Fast Display 9000",
             )
             self.assertIsNone(lookup_pci_device_name("invalid", "5678", (str(database),)))
+
+    def test_reads_pci_devices_and_driver_without_listing_bridges(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "devices"
+            root.mkdir()
+            database = Path(temporary) / "pci.ids"
+            database.write_text(
+                "1234  Example Vendor\n\t5678  Example Network Adapter\n",
+                encoding="ascii",
+            )
+            adapter = root / "0000:00:01.0"
+            adapter.mkdir()
+            (adapter / "vendor").write_text("0x1234\n", encoding="ascii")
+            (adapter / "device").write_text("0x5678\n", encoding="ascii")
+            (adapter / "class").write_text("0x020000\n", encoding="ascii")
+            driver = Path(temporary) / "drivers" / "e1000e"
+            driver.mkdir(parents=True)
+            (adapter / "driver").symlink_to(driver)
+
+            bridge = root / "0000:00:02.0"
+            bridge.mkdir()
+            (bridge / "vendor").write_text("0x1234\n", encoding="ascii")
+            (bridge / "device").write_text("0x5678\n", encoding="ascii")
+            (bridge / "class").write_text("0x060400\n", encoding="ascii")
+
+            missing_driver = root / "0000:00:03.0"
+            missing_driver.mkdir()
+            (missing_driver / "vendor").write_text("0xabcd\n", encoding="ascii")
+            (missing_driver / "device").write_text("0x0001\n", encoding="ascii")
+            (missing_driver / "class").write_text("0x010600\n", encoding="ascii")
+            (missing_driver / "serial").write_text("private-serial", encoding="ascii")
+
+            self.assertEqual(read_pci_devices(root, (str(database),)), [
+                {"id": "1234:5678", "name": "Example Vendor Example Network Adapter", "driver": "e1000e"},
+                {"id": "abcd:0001", "name": None, "driver": None},
+            ])
 
     def test_extracts_cpu_model(self):
         self.assertEqual(

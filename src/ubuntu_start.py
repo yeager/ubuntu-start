@@ -12,7 +12,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_devices, read_power_profile, read_printer_status, read_resource_pressure, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
+from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_apt_update_status, read_audio_status, read_battery_status, read_bluetooth_status, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_devices, read_pci_devices, read_power_profile, read_printer_status, read_resource_pressure, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_network_diagnostics
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -86,6 +86,11 @@ GUIDES = [
         (_("Refresh the USB device list"), _("Open Network and hardware and refresh Connected USB devices. If the device appears, note its hardware ID and driver.")),
         (_("Try another port or cable"), _("Use another port or cable. Check whether another device works in the same port.")),
         (_("Use hardware details when asking for help"), _("The hardware ID and driver can help support identify the device. Do not share a serial number.")),
+    ]),
+    (_("PCI device is missing or not working"), "hardware", [
+        (_("Refresh the PCI device list"), _("Open Network and hardware and refresh PCI devices. The list shows hardware IDs and any kernel driver currently attached.")),
+        (_("Check the driver status"), _("A device with no attached driver may need a driver, but this status alone does not prove a fault. Check Ubuntu’s Additional Drivers tool and the device manufacturer’s Ubuntu support information.")),
+        (_("Keep the hardware ID for support"), _("Share the PCI hardware ID and driver name when asking for help. Do not install drivers from an untrusted source.")),
     ]),
     (_("Wired network"), "network", [
         (_("Check the Ethernet cable"), _("Connect the cable firmly to the computer and to a router, switch or wall socket. Look for a link light near the port.")),
@@ -775,6 +780,24 @@ class UbuntuStart(Adw.Application):
             self.row(hardware_rows, label, value or _("Not available"))
         box.append(hardware_box)
 
+        pci_box, _pci_rows = self.page(
+            _("PCI devices"),
+            _("This read-only list shows PCI hardware IDs and attached kernel drivers. Device names are matched against an installed local PCI database when available. Bridge devices are omitted; a missing driver is not by itself proof of a problem."),
+            include_rows=False,
+        )
+        pci_status = Gtk.Label(label="", xalign=0, wrap=True)
+        pci_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        pci_refresh = Gtk.Button(label=_("Refresh PCI device list"), halign=Gtk.Align.START)
+        pci_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_pci_status(pci_refresh, pci_status, pci_rows, announce=True),
+        )
+        pci_box.append(pci_refresh)
+        pci_box.append(pci_status)
+        pci_box.append(pci_rows)
+        box.append(pci_box)
+        self.refresh_pci_status(pci_refresh, pci_status, pci_rows)
+
         memory_box, _memory_rows = self.page(
             _("Memory use"),
             _("Read available RAM and swap from Linux. Compare the values while the computer feels slow. If little memory is available, save your work and close applications you recognize and are not using."),
@@ -883,6 +906,47 @@ class UbuntuStart(Adw.Application):
             )
 
         threading.Thread(target=read_status, daemon=True).start()
+
+    def refresh_pci_status(self, button, status_label, device_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Reading PCI devices…"))
+        while (child := device_rows.get_first_child()) is not None:
+            device_rows.remove(child)
+
+        def read_status():
+            devices = read_pci_devices()
+            GLib.idle_add(
+                self.show_pci_status, button, status_label, device_rows, devices, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_pci_status(self, button, status_label, device_rows, devices, announce=False):
+        button.set_sensitive(True)
+        while (child := device_rows.get_first_child()) is not None:
+            device_rows.remove(child)
+        if devices:
+            for device in devices:
+                name = device["name"] or _("PCI device")
+                title = f"{name} [{device['id']}]"
+                driver = device["driver"]
+                subtitle = (
+                    _("Kernel driver: {driver}").format(driver=driver)
+                    if driver else _("No kernel driver is currently attached.")
+                )
+                self.row(device_rows, title, subtitle)
+            message = (
+                _("PCI device list updated: 1 device found.")
+                if len(devices) == 1
+                else _("PCI device list updated: {count} devices found.").format(count=len(devices))
+            )
+        else:
+            message = _("No PCI devices found")
+            self.row(device_rows, message, _("Linux did not expose any PCI devices to list."))
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
 
     def refresh_video_status(self, button, status_label, device_rows, announce=False):
         button.set_sensitive(False)

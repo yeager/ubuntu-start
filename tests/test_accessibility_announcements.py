@@ -6,6 +6,40 @@ from guide_search import find_guide_matches
 
 
 class AccessibilityAnnouncementTests(unittest.TestCase):
+    def test_pci_status_lists_ids_and_driver_and_announces_summary(self):
+        button = Mock()
+        status = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+
+        UbuntuStart.show_pci_status(
+            self.app, button, status, rows,
+            [{"id": "1234:5678", "name": "Example Adapter", "driver": "example"}],
+            announce=True,
+        )
+
+        self.app.row.assert_called_once_with(
+            rows, "Example Adapter [1234:5678]", "Kernel driver: example",
+        )
+        message = "PCI device list updated: 1 device found."
+        status.set_text.assert_called_once_with(message)
+        self.app.announce_to_screen_reader.assert_called_once_with(status, message)
+
+    def test_pci_status_explains_device_without_driver(self):
+        rows = Mock()
+        rows.get_first_child.return_value = None
+        status = Mock()
+
+        UbuntuStart.show_pci_status(
+            self.app, Mock(), status, rows,
+            [{"id": "1234:5678", "name": None, "driver": None}],
+        )
+
+        self.app.row.assert_called_once_with(
+            rows, "PCI device [1234:5678]", "No kernel driver is currently attached.",
+        )
+        status.set_text.assert_called_once_with("PCI device list updated: 1 device found.")
+
     def test_temperature_status_lists_sensor_values_and_announces_count(self):
         button = Mock()
         status_label = Mock()
@@ -124,6 +158,18 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
 
         self.assertTrue(matches)
         self.assertTrue(all(match[2] == "Computer gets hot or the fan is loud" for match in matches))
+
+    def test_pci_device_help_is_searchable(self):
+        entries = [
+            ("device", index, guide_title, step_title, description)
+            for index, (guide_title, _panel, steps) in enumerate(GUIDES)
+            for step_title, description in steps
+        ]
+
+        matches = find_guide_matches("PCI device driver hardware ID", entries)
+
+        self.assertTrue(matches)
+        self.assertTrue(all(match[2] == "PCI device is missing or not working" for match in matches))
 
     def test_manual_memory_refresh_announces_ram_and_swap_status(self):
         button = Mock()
