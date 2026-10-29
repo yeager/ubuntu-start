@@ -31,12 +31,6 @@
         <p xml:lang="sv">Lägg till en guide för att kontrollera diskens hälsa med SMART i GNOME Diskar, med säkerhetskopiering först.</p>
       </description>
     </release>
-    <release version="0.3.17" date="2026-10-29">
-      <description>
-        <p>Use the se.danielnylander application identifier for Ubuntu Start.</p>
-        <p xml:lang="sv">Byt Ubuntu Starts programidentifierare till se.danielnylander.</p>
-      </description>
-    </release>
     <release version="0.3.16" date="2026-10-29">
       <description>
         <p>Add a safe, step-by-step guide for recovering from interrupted package updates.</p>
