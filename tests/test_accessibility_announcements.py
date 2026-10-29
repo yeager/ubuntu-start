@@ -197,6 +197,18 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.assertTrue(matches)
         self.assertTrue(all(match[2] == "Install Ubuntu updates" for match in matches))
 
+    def test_mouse_keys_accessibility_help_is_searchable(self):
+        entries = [
+            ("system", index, guide_title, step_title, description)
+            for index, (guide_title, _target, _action, steps) in enumerate(SYSTEM_GUIDES)
+            for step_title, description in steps
+        ]
+
+        matches = find_guide_matches("mouse keys numeric keypad pointer", entries)
+
+        self.assertTrue(matches)
+        self.assertTrue(all(match[2] == "Use Mouse Keys" for match in matches))
+
     def test_manual_memory_refresh_announces_ram_and_swap_status(self):
         button = Mock()
         status_label = Mock()
@@ -1029,6 +1041,7 @@ class AccessibilityStatusAnnouncementTests(unittest.TestCase):
             "sticky_keys": False,
             "slow_keys": True,
             "bounce_keys": False,
+            "mouse_keys": True,
             "text_scale": 1.25,
             "cursor_size": 48,
             "visual_bell": True,
@@ -1046,6 +1059,7 @@ class AccessibilityStatusAnnouncementTests(unittest.TestCase):
                 ("Sticky Keys", "Off"),
                 ("Slow Keys", "On"),
                 ("Bounce Keys", "Off"),
+                ("Mouse Keys", "On"),
                 ("Visual sound alerts", "On"),
                 ("Text size", "125%"),
                 ("Pointer size", "48 pixels"),

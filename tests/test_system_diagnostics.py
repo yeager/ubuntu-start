@@ -105,6 +105,7 @@ org.gnome.desktop.a11y.applications unrelated-setting 'private value'
             "keyboard": """org.gnome.desktop.a11y.keyboard stickykeys-enable true
 org.gnome.desktop.a11y.keyboard slowkeys-enable false
 org.gnome.desktop.a11y.keyboard bouncekeys-enable true
+org.gnome.desktop.a11y.keyboard mousekeys-enable false
 """,
             "desktop": """org.gnome.desktop.interface text-scaling-factor 1.25
 org.gnome.desktop.interface cursor-size 48
@@ -119,6 +120,7 @@ org.gnome.desktop.interface cursor-size 48
             "sticky_keys": True,
             "slow_keys": False,
             "bounce_keys": True,
+            "mouse_keys": False,
             "text_scale": 1.25,
             "cursor_size": 48,
             "visual_bell": False,
@@ -136,6 +138,7 @@ org.gnome.desktop.interface cursor-size 48
             subprocess.CompletedProcess([], 0, "true\n", ""),
             subprocess.CompletedProcess([], 0, "false\n", ""),
             subprocess.CompletedProcess([], 0, "true\n", ""),
+            subprocess.CompletedProcess([], 0, "false\n", ""),
             subprocess.CompletedProcess([], 0, "1.0\n", ""),
             subprocess.CompletedProcess([], 0, "32\n", ""),
             subprocess.CompletedProcess([], 0, "false\n", ""),
@@ -147,9 +150,10 @@ org.gnome.desktop.interface cursor-size 48
         self.assertTrue(settings["sticky_keys"])
         self.assertFalse(settings["slow_keys"])
         self.assertTrue(settings["bounce_keys"])
+        self.assertFalse(settings["mouse_keys"])
         self.assertFalse(settings["visual_bell"])
         self.assertEqual(settings["cursor_size"], 32)
-        self.assertEqual(len(run.call_args_list), 10)
+        self.assertEqual(len(run.call_args_list), 11)
         self.assertTrue(all(call.args[0][1] == "get" for call in run.call_args_list))
         self.assertEqual(
             [tuple(call.args[0][2:]) for call in run.call_args_list],

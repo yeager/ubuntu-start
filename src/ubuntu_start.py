@@ -1385,7 +1385,7 @@ class UbuntuStart(Adw.Application):
             ("high_contrast", _("High contrast")),
             ("sticky_keys", _("Sticky Keys")),
             ("slow_keys", _("Slow Keys")),
-            ("bounce_keys", _("Bounce Keys")),
+            ("bounce_keys", _("Bounce Keys")), ("mouse_keys", _("Mouse Keys")),
             ("visual_bell", _("Visual sound alerts")),
         ):
             value = settings.get(key)
@@ -2141,6 +2141,12 @@ GUIDES.extend([
         (_("Keep private details out of support requests"), _("Share the adapter model, hardware ID and driver if you need help. Do not share the Wi-Fi password or private network details.")),
     ]),
 ])
+
+SYSTEM_GUIDES.append((_("Use Mouse Keys"), ("settings", "universal-access"), _("Open Accessibility Settings"), [
+    (_("Open Pointing & Clicking"), _("In Accessibility Settings, open the Pointing & Clicking section.")),
+    (_("Turn on Mouse Keys"), _("Mouse Keys lets you control the pointer with the numeric keypad. Turn Num Lock off to use the keypad for pointer movement.")),
+    (_("Test it and turn it off if needed"), _("Try moving the pointer and clicking a simple target. Return to Pointing & Clicking to turn Mouse Keys off when you are finished.")),
+]))
 
 
 def format_milliseconds(value: int | float) -> str:

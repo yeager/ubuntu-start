@@ -140,6 +140,23 @@ def main() -> int:
                 if not select_page("Get started"):
                     missing.append("selectable Get started page")
                 else:
+                    accessibility_deadline = time.monotonic() + 5
+                    mouse_keys_status = None
+                    while time.monotonic() < accessibility_deadline:
+                        entries = accessible_tree(app)
+                        mouse_keys_status = next(
+                            (
+                                node for _role, name, node in entries
+                                if name == "Mouse Keys"
+                            ),
+                            None,
+                        )
+                        if mouse_keys_status:
+                            break
+                        time.sleep(0.25)
+                    if mouse_keys_status is None:
+                        missing.append("Mouse Keys status row on Get started")
+
                     time_guide_deadline = time.monotonic() + 5
                     time_guide_button = None
                     while time.monotonic() < time_guide_deadline:
@@ -330,7 +347,7 @@ def main() -> int:
                 )
                 if search_entry and search_entry.get_state_set().contains(Atspi.StateType.FOCUSED):
                     print(
-                        "AT-SPI verified guide names, About, USB, PCI, Bluetooth, date/time, video, memory, system-pressure, service-status, temperature and package-health controls, and the labeled search entry; "
+                        "AT-SPI verified guide names, About, Mouse Keys, USB, PCI, Bluetooth, date/time, video, memory, system-pressure, service-status, temperature and package-health controls, and the labeled search entry; "
                         "Ctrl+F moved focus to search."
                     )
                     return 0
@@ -343,7 +360,7 @@ def main() -> int:
         observed_controls = [
             (role, name)
             for role, name, _node in entries
-            if name in {"About", "Refresh USB device list", "Refresh PCI device list", "Open Bluetooth pairing guide", "Open date and time guide", "Refresh video device status", "Open camera guide", "Refresh memory status", "Refresh system pressure", "Refresh system service status", "Refresh temperature status", "Check package health", "Search all guides and steps"}
+            if name in {"About", "Mouse Keys", "Refresh USB device list", "Refresh PCI device list", "Open Bluetooth pairing guide", "Open date and time guide", "Refresh video device status", "Open camera guide", "Refresh memory status", "Refresh system pressure", "Refresh system service status", "Refresh temperature status", "Check package health", "Search all guides and steps"}
         ]
         if observed_controls:
             print(f"Observed accessible roles and names: {observed_controls!r}", file=sys.stderr)
