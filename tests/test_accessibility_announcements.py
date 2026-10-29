@@ -744,15 +744,21 @@ class TimeStatusAnnouncementTests(unittest.TestCase):
         rows = Mock()
         UbuntuStart.show_time_status(
             app, Mock(), status_label, rows,
-            {"timezone": "Europe/Stockholm", "ntp": True, "synchronized": False},
+            {"timezone": "Europe/Stockholm", "can_ntp": True, "ntp": True, "synchronized": False},
             None, announce=True,
         )
         self.assertEqual(
             [call_args.args[1:] for call_args in app.row.call_args_list],
             [
                 ("Time zone", "Europe/Stockholm"),
+                ("Automatic time synchronization available", "Available"),
                 ("Automatic time synchronization", "On"),
                 ("Clock synchronization", "Not synchronized"),
+                (
+                    "Next step",
+                    "Automatic time synchronization is on, but the clock is not synchronized. "
+                    "Check the network connection and Date & Time Settings.",
+                ),
             ],
         )
         status_label.set_text.assert_called_once_with(
@@ -762,6 +768,19 @@ class TimeStatusAnnouncementTests(unittest.TestCase):
             status_label, "Local date and time status read. No settings were changed.",
         )
 
+    def test_time_status_suggests_admin_help_when_automatic_sync_is_unavailable(self):
+        app = Mock()
+        rows = Mock()
+        UbuntuStart.show_time_status(
+            app, Mock(), Mock(), rows,
+            {"timezone": "Etc/UTC", "can_ntp": False, "ntp": False, "synchronized": False},
+            None,
+        )
+        app.row.assert_any_call(
+            rows, "Next step",
+            "Automatic time synchronization is unavailable on this system. If this is a managed computer, ask your administrator how its clock is maintained.",
+        )
+
     def test_time_status_reports_unavailable_read(self):
         app = Mock()
         status_label = Mock()
@@ -769,7 +788,7 @@ class TimeStatusAnnouncementTests(unittest.TestCase):
             app, Mock(), status_label, Mock(),
             {"timezone": None, "ntp": None, "synchronized": None}, "unavailable",
         )
-        self.assertEqual(app.row.call_count, 3)
+        self.assertEqual(app.row.call_count, 4)
         status_label.set_text.assert_called_once_with("Could not read the local date and time status.")
 
 

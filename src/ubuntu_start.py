@@ -351,7 +351,7 @@ class UbuntuStart(Adw.Application):
         self.refresh_accessibility_status(accessibility_refresh, accessibility_status, accessibility_rows)
         time_box, _time_rows = self.page(
             _("Date and time status"),
-            _("Read the local time zone and clock synchronization state. This does not change settings or start synchronization."),
+            _("Read the local time zone, whether automatic time synchronization is supported and enabled, and whether the clock is synchronized. The app suggests what to check but does not change settings or start synchronization."),
             include_rows=False,
         )
         time_status = Gtk.Label(label="", xalign=0, wrap=True)
@@ -1232,6 +1232,14 @@ class UbuntuStart(Adw.Application):
         button.set_sensitive(True)
         timezone = status.get("timezone")
         self.row(setting_rows, _("Time zone"), timezone if isinstance(timezone, str) else _("Not available"))
+        can_ntp = status.get("can_ntp")
+        self.row(
+            setting_rows,
+            _("Automatic time synchronization available"),
+            _("Available") if can_ntp is True
+            else _("Unavailable") if can_ntp is False
+            else _("Not available"),
+        )
         ntp = status.get("ntp")
         self.row(
             setting_rows,
@@ -1239,8 +1247,30 @@ class UbuntuStart(Adw.Application):
             _("On") if ntp is True else _("Off") if ntp is False else _("Not available"),
         )
         synchronized = status.get("synchronized")
-        sync_label = _("Synchronized") if synchronized is True else _("Not synchronized") if synchronized is False else _("Not available")
+        sync_label = (
+            _("Synchronized") if synchronized is True
+            else _("Not synchronized") if synchronized is False
+            else _("Not available")
+        )
         self.row(setting_rows, _("Clock synchronization"), sync_label)
+        guidance = None
+        if can_ntp is False:
+            guidance = _(
+                "Automatic time synchronization is unavailable on this system. If this is a "
+                "managed computer, ask your administrator how its clock is maintained."
+            )
+        elif ntp is False:
+            guidance = _(
+                "Automatic time synchronization is off. Open Date & Time Settings and turn on "
+                "automatic date and time if the option is available."
+            )
+        elif ntp is True and synchronized is False:
+            guidance = _(
+                "Automatic time synchronization is on, but the clock is not synchronized. Check "
+                "the network connection and Date & Time Settings."
+            )
+        if guidance:
+            self.row(setting_rows, _("Next step"), guidance)
         errors = {
             "not-installed": _("The timedatectl tool is not installed."),
             "timeout": _("The system time service did not respond in time."),
