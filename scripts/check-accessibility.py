@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
 import tempfile
@@ -72,6 +73,44 @@ def accessible_tree(
                 include_unnamed=include_unnamed,
             ))
     return entries
+
+
+def version_detail_is_exposed(app, page_name: str, label: str) -> bool:
+    entries = accessible_tree(app)
+    sidebar = next(
+        (node for role, name, node in entries if (role, name) == ("list", "Sidebar")),
+        None,
+    )
+    if sidebar is None:
+        return False
+    selection = sidebar.get_selection_iface()
+    page_index = next(
+        (
+            index for index in range(sidebar.get_child_count())
+            if (item := sidebar.get_child_at_index(index))
+            and item.get_name() == page_name
+        ),
+        None,
+    )
+    if not selection or page_index is None or not selection.select_child(page_index):
+        return False
+
+    try:
+        project = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    except OSError:
+        return False
+    version_match = re.search(r'(?m)^version\s*=\s*"([^"\n]+)"\s*$', project)
+    if not version_match:
+        return False
+    expected_version = version_match.group(1)
+
+    deadline = time.monotonic() + 5
+    while time.monotonic() < deadline:
+        names = {name for _role, name, _node in accessible_tree(app)}
+        if label in names and expected_version in names:
+            return True
+        time.sleep(0.25)
+    return False
 
 
 def main() -> int:
@@ -174,10 +213,14 @@ def main() -> int:
             )
             if about_button is None:
                 missing.append("button: Om")
+            if not version_detail_is_exposed(
+                app, "Hjälp och support", "Ubuntu Starts version",
+            ):
+                missing.append("Ubuntu Starts version and value in Swedish system details")
             if missing:
                 print(f"Missing Swedish AT-SPI entries: {missing}", file=sys.stderr)
                 return 1
-            print("Swedish application labels are exposed through AT-SPI.")
+            print("Swedish application labels and the Ubuntu Start version row are exposed through AT-SPI.")
             return 0
 
         if not missing:
@@ -210,6 +253,11 @@ def main() -> int:
                     return bool(
                         selection and page_index is not None and selection.select_child(page_index)
                     )
+
+                if not version_detail_is_exposed(
+                    app, "Help and support", "Ubuntu Start version",
+                ):
+                    missing.append("Ubuntu Start version and value in system details")
 
                 if not select_page("Get started"):
                     missing.append("selectable Get started page")
@@ -787,7 +835,7 @@ def main() -> int:
                 )
                 if search_entry and search_entry.get_state_set().contains(Atspi.StateType.FOCUSED):
                     print(
-                        "AT-SPI verified guide names, About, Mouse Keys, Accessibility Settings, USB, PCI, Bluetooth pairing and audio, wireless-radio, Wi-Fi, sound, startup timing, startup-chain control and result, battery, backup-app controls, date/time, video, displays, printer queue guide, memory, benchmark readiness, graphics benchmark result and cancellation, system-pressure, service-status, temperature, package-health and Secure Boot controls, and the labeled search entry; "
+                        "AT-SPI verified guide names, About, the Ubuntu Start version row, Mouse Keys, Accessibility Settings, USB, PCI, Bluetooth pairing and audio, wireless-radio, Wi-Fi, sound, startup timing, startup-chain control and result, battery, backup-app controls, date/time, video, displays, printer queue guide, memory, benchmark readiness, graphics benchmark result and cancellation, system-pressure, service-status, temperature, package-health and Secure Boot controls, and the labeled search entry; "
                         "Ctrl+F moved focus to search."
                     )
                     return 0
