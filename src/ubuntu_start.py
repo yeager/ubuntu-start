@@ -198,11 +198,11 @@ SYSTEM_GUIDES = [
         (_("Check storage again"), _("Return to the storage overview after cleaning up. If you need space for Ubuntu updates, run Software Updater again when enough space is available.")),
     ]),
     (_("Set up backups"), ("external", "https://help.ubuntu.com/stable/ubuntu-help/backup-why.html.en"), _("Open Ubuntu backup help"), [
-        (_("Choose what matters most"), _("Start with personal files that would be difficult or impossible to replace, such as documents, photos and videos.")),
-        (_("Choose a separate destination"), _("Use an external drive or a trusted backup service with enough free space. A backup on the same computer may be lost if the computer fails or is stolen.")),
-        (_("Use a backup application or Files"), _("If a backup app is available, follow its instructions to choose folders and a destination. You can also copy files you recognize to an external drive with Files.")),
-        (_("Protect the backup"), _("If you enable encryption, keep the recovery password somewhere safe. Without it, you may not be able to restore your files.")),
-        (_("Check that recovery works"), _("After the first backup, check that it completed and restore or open a non-critical file. Repeat backups regularly, especially after important changes.")),
+        # Keep the guide concise so the action remains visible in the default window.
+
+        (_("Choose what you cannot replace"), _("Focus on personal files that would be difficult to recreate. Use the Backups app if it is available, or copy files you recognize with Files.")),
+        (_("Store the backup separately"), _("Choose a separate external drive or trusted online service with enough free space. If you encrypt it, keep the recovery password safe so you can restore your files.")),
+        (_("Verify and repeat"), _("Check that the first backup finishes and restore or open a non-critical file. Repeat backups regularly, especially after important changes.")),
     ]),
     (_("Install Ubuntu updates"), ("app", "update-manager"), _("Open Software Updater"), [
         (_("Open Software Updater"), _("Ubuntu checks for updates when Software Updater opens. Select Check if it does not start checking.")),

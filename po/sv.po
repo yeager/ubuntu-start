@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ubuntu Start 0.3.1\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 04:32+0100\n"
+"POT-Creation-Date: 2026-10-29 04:39+0100\n"
 "PO-Revision-Date: 2026-10-28 15:18+0100\n"
 "Last-Translator: Ubuntu Start contributors\n"
 "Language-Team: Swedish\n"
@@ -1390,56 +1390,44 @@ msgstr "Ställ in säkerhetskopiering"
 msgid "Open Ubuntu backup help"
 msgstr "Öppna Ubuntus hjälp om säkerhetskopiering"
 
-#: src/ubuntu_start.py:201
-msgid "Choose what matters most"
-msgstr "Välj det viktigaste"
-
-#: src/ubuntu_start.py:201
-msgid ""
-"Start with personal files that would be difficult or impossible to replace, "
-"such as documents, photos and videos."
-msgstr "Börja med personliga filer som skulle vara svåra eller omöjliga att återskapa, till exempel dokument, foton och videor."
-
-#: src/ubuntu_start.py:202
-msgid "Choose a separate destination"
-msgstr "Välj en separat lagringsplats"
-
-#: src/ubuntu_start.py:202
-msgid ""
-"Use an external drive or a trusted backup service with enough free space. A "
-"backup on the same computer may be lost if the computer fails or is stolen."
-msgstr "Använd en extern enhet eller en betrodd säkerhetskopieringstjänst med tillräckligt mycket ledigt utrymme. En säkerhetskopia på samma dator kan gå förlorad om datorn går sönder eller blir stulen."
-
 #: src/ubuntu_start.py:203
-msgid "Use a backup application or Files"
-msgstr "Använd ett säkerhetskopieringsprogram eller Filer"
+msgid "Choose what you cannot replace"
+msgstr "Välj det du inte kan återskapa"
 
 #: src/ubuntu_start.py:203
 msgid ""
-"If a backup app is available, follow its instructions to choose folders and "
-"a destination. You can also copy files you recognize to an external drive "
-"with Files."
-msgstr "Om det finns ett säkerhetskopieringsprogram kan du följa dess anvisningar för att välja mappar och lagringsplats. Du kan också kopiera filer du känner igen till en extern enhet med Filer."
+"Focus on personal files that would be difficult to recreate. Use the Backups "
+"app if it is available, or copy files you recognize with Files."
+msgstr ""
+"Prioritera personliga filer som är svåra att återskapa. Använd appen "
+"Säkerhetskopior om den finns, eller kopiera filer du känner igen med Filer."
 
 #: src/ubuntu_start.py:204
-msgid "Protect the backup"
-msgstr "Skydda säkerhetskopian"
+msgid "Store the backup separately"
+msgstr "Förvara säkerhetskopian separat"
 
 #: src/ubuntu_start.py:204
 msgid ""
-"If you enable encryption, keep the recovery password somewhere safe. Without "
-"it, you may not be able to restore your files."
-msgstr "Om du aktiverar kryptering bör du förvara återställningslösenordet på en säker plats. Utan det kanske du inte kan återställa filerna."
+"Choose a separate external drive or trusted online service with enough free "
+"space. If you encrypt it, keep the recovery password safe so you can restore "
+"your files."
+msgstr ""
+"Välj en separat extern enhet eller en betrodd onlinetjänst med tillräckligt "
+"mycket ledigt utrymme. Om du krypterar säkerhetskopian bör du förvara "
+"återställningslösenordet säkert så att du kan återställa filerna."
 
 #: src/ubuntu_start.py:205
-msgid "Check that recovery works"
-msgstr "Kontrollera att återställningen fungerar"
+msgid "Verify and repeat"
+msgstr "Kontrollera och upprepa"
 
 #: src/ubuntu_start.py:205
 msgid ""
-"After the first backup, check that it completed and restore or open a non-"
-"critical file. Repeat backups regularly, especially after important changes."
-msgstr "Kontrollera efter den första säkerhetskopieringen att den slutfördes och återställ eller öppna en fil som inte är viktig. Säkerhetskopiera regelbundet, särskilt efter viktiga ändringar."
+"Check that the first backup finishes and restore or open a non-critical "
+"file. Repeat backups regularly, especially after important changes."
+msgstr ""
+"Kontrollera att den första säkerhetskopieringen slutförs och återställ eller "
+"öppna en fil som inte är viktig. Säkerhetskopiera regelbundet, särskilt "
+"efter viktiga ändringar."
 
 #: src/ubuntu_start.py:207
 msgid "Install Ubuntu updates"
@@ -1854,7 +1842,9 @@ msgstr "Öppna Ubuntus hjälp om säkerhetskopiering?"
 msgid ""
 "This opens Ubuntu’s backup documentation in your browser. The website will "
 "receive a normal web request and can see your IP address."
-msgstr "Det här öppnar Ubuntus dokumentation om säkerhetskopiering i webbläsaren. Webbplatsen tar emot en vanlig webbförfrågan och kan se din IP-adress."
+msgstr ""
+"Det här öppnar Ubuntus dokumentation om säkerhetskopiering i webbläsaren. "
+"Webbplatsen tar emot en vanlig webbförfrågan och kan se din IP-adress."
 
 #: src/ubuntu_start.py:425
 msgid "Open Ubuntu App Center?"
@@ -3625,6 +3615,62 @@ msgstr "Det gick inte att öppna verktyget"
 #: data/se.nylander.UbuntuStart.desktop:3
 msgid "Get started with Ubuntu and troubleshoot devices"
 msgstr "Kom igång med Ubuntu och felsök anslutna enheter"
+
+#~ msgid "Choose what matters most"
+#~ msgstr "Välj det viktigaste"
+
+#~ msgid ""
+#~ "Start with personal files that would be difficult or impossible to "
+#~ "replace, such as documents, photos and videos."
+#~ msgstr ""
+#~ "Börja med personliga filer som skulle vara svåra eller omöjliga att "
+#~ "återskapa, till exempel dokument, foton och videor."
+
+#~ msgid "Choose a separate destination"
+#~ msgstr "Välj en separat lagringsplats"
+
+#~ msgid ""
+#~ "Use an external drive or a trusted backup service with enough free space. "
+#~ "A backup on the same computer may be lost if the computer fails or is "
+#~ "stolen."
+#~ msgstr ""
+#~ "Använd en extern enhet eller en betrodd säkerhetskopieringstjänst med "
+#~ "tillräckligt mycket ledigt utrymme. En säkerhetskopia på samma dator kan "
+#~ "gå förlorad om datorn går sönder eller blir stulen."
+
+#~ msgid "Use a backup application or Files"
+#~ msgstr "Använd ett säkerhetskopieringsprogram eller Filer"
+
+#~ msgid ""
+#~ "If a backup app is available, follow its instructions to choose folders "
+#~ "and a destination. You can also copy files you recognize to an external "
+#~ "drive with Files."
+#~ msgstr ""
+#~ "Om det finns ett säkerhetskopieringsprogram kan du följa dess anvisningar "
+#~ "för att välja mappar och lagringsplats. Du kan också kopiera filer du "
+#~ "känner igen till en extern enhet med Filer."
+
+#~ msgid "Protect the backup"
+#~ msgstr "Skydda säkerhetskopian"
+
+#~ msgid ""
+#~ "If you enable encryption, keep the recovery password somewhere safe. "
+#~ "Without it, you may not be able to restore your files."
+#~ msgstr ""
+#~ "Om du aktiverar kryptering bör du förvara återställningslösenordet på en "
+#~ "säker plats. Utan det kanske du inte kan återställa filerna."
+
+#~ msgid "Check that recovery works"
+#~ msgstr "Kontrollera att återställningen fungerar"
+
+#~ msgid ""
+#~ "After the first backup, check that it completed and restore or open a non-"
+#~ "critical file. Repeat backups regularly, especially after important "
+#~ "changes."
+#~ msgstr ""
+#~ "Kontrollera efter den första säkerhetskopieringen att den slutfördes och "
+#~ "återställ eller öppna en fil som inte är viktig. Säkerhetskopiera "
+#~ "regelbundet, särskilt efter viktiga ändringar."
 
 #~ msgid ""
 #~ "NetworkManager device states help show whether Ubuntu sees a wired or "

@@ -664,6 +664,7 @@ class SystemGuideTests(unittest.TestCase):
         self.assertEqual(action, "Open Ubuntu backup help")
         step_text = " ".join(f"{step} {description}" for step, description in steps)
         self.assertIn("external drive", step_text)
+        self.assertIn("Backups app", step_text)
         self.assertIn("recovery password", step_text)
         self.assertIn("restore", step_text)
 

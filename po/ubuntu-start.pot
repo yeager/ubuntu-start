@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ubuntu Start 0.3.1\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-29 04:32+0100\n"
+"POT-Creation-Date: 2026-10-29 04:39+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1189,55 +1189,35 @@ msgstr ""
 msgid "Open Ubuntu backup help"
 msgstr ""
 
-#: src/ubuntu_start.py:201
-msgid "Choose what matters most"
-msgstr ""
-
-#: src/ubuntu_start.py:201
-msgid ""
-"Start with personal files that would be difficult or impossible to replace, "
-"such as documents, photos and videos."
-msgstr ""
-
-#: src/ubuntu_start.py:202
-msgid "Choose a separate destination"
-msgstr ""
-
-#: src/ubuntu_start.py:202
-msgid ""
-"Use an external drive or a trusted backup service with enough free space. A "
-"backup on the same computer may be lost if the computer fails or is stolen."
-msgstr ""
-
 #: src/ubuntu_start.py:203
-msgid "Use a backup application or Files"
+msgid "Choose what you cannot replace"
 msgstr ""
 
 #: src/ubuntu_start.py:203
 msgid ""
-"If a backup app is available, follow its instructions to choose folders and "
-"a destination. You can also copy files you recognize to an external drive "
-"with Files."
+"Focus on personal files that would be difficult to recreate. Use the Backups "
+"app if it is available, or copy files you recognize with Files."
 msgstr ""
 
 #: src/ubuntu_start.py:204
-msgid "Protect the backup"
+msgid "Store the backup separately"
 msgstr ""
 
 #: src/ubuntu_start.py:204
 msgid ""
-"If you enable encryption, keep the recovery password somewhere safe. Without "
-"it, you may not be able to restore your files."
+"Choose a separate external drive or trusted online service with enough free "
+"space. If you encrypt it, keep the recovery password safe so you can restore "
+"your files."
 msgstr ""
 
 #: src/ubuntu_start.py:205
-msgid "Check that recovery works"
+msgid "Verify and repeat"
 msgstr ""
 
 #: src/ubuntu_start.py:205
 msgid ""
-"After the first backup, check that it completed and restore or open a non-"
-"critical file. Repeat backups regularly, especially after important changes."
+"Check that the first backup finishes and restore or open a non-critical "
+"file. Repeat backups regularly, especially after important changes."
 msgstr ""
 
 #: src/ubuntu_start.py:207
