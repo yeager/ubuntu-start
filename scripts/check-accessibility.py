@@ -124,15 +124,39 @@ def main() -> int:
                 missing.append("sidebar")
             else:
                 selection = sidebar.get_selection_iface()
-                welcome_index = next(
-                    (
-                        index for index in range(sidebar.get_child_count())
-                        if (item := sidebar.get_child_at_index(index))
-                        and item.get_name() == "Welcome"
-                    ),
-                    None,
-                )
-                if selection is None or welcome_index is None or not selection.select_child(welcome_index):
+                def select_page(page_name: str) -> bool:
+                    page_index = next(
+                        (
+                            index for index in range(sidebar.get_child_count())
+                            if (item := sidebar.get_child_at_index(index))
+                            and item.get_name() == page_name
+                        ),
+                        None,
+                    )
+                    return bool(
+                        selection and page_index is not None and selection.select_child(page_index)
+                    )
+
+                if not select_page("Network and hardware"):
+                    missing.append("selectable Network and hardware guide")
+                else:
+                    usb_deadline = time.monotonic() + 5
+                    usb_refresh_button = None
+                    while time.monotonic() < usb_deadline:
+                        entries = accessible_tree(app)
+                        usb_refresh_button = next(
+                            (
+                                node for role, name, node in entries
+                                if role in BUTTON_ROLES and name == "Refresh USB device list"
+                            ),
+                            None,
+                        )
+                        if usb_refresh_button:
+                            break
+                        time.sleep(0.25)
+                    if usb_refresh_button is None:
+                        missing.append("button: Refresh USB device list on Network and hardware")
+                if not select_page("Welcome"):
                     missing.append("selectable Welcome guide before Ctrl+F")
 
         if not missing:
@@ -163,7 +187,7 @@ def main() -> int:
                 )
                 if search_entry and search_entry.get_state_set().contains(Atspi.StateType.FOCUSED):
                     print(
-                        "AT-SPI verified the guide names, About button and labeled search entry; "
+                        "AT-SPI verified guide names, About and USB refresh buttons, and the labeled search entry; "
                         "Ctrl+F moved focus to search."
                     )
                     return 0
@@ -176,7 +200,7 @@ def main() -> int:
         observed_controls = [
             (role, name)
             for role, name, _node in entries
-            if name in {"About", "Search all guides and steps"}
+            if name in {"About", "Refresh USB device list", "Search all guides and steps"}
         ]
         if observed_controls:
             print(f"Observed accessible roles and names: {observed_controls!r}", file=sys.stderr)

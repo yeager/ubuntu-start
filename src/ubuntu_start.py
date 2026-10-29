@@ -12,7 +12,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import build_support_report, check_internet_connection, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_network_devices, read_storage_locations, read_wifi_link_status, run_network_diagnostics
+from system_diagnostics import build_support_report, check_internet_connection, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_network_devices, read_storage_locations, read_usb_devices, read_wifi_link_status, run_network_diagnostics
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -80,6 +80,12 @@ GUIDES = [
         (_("Check the camera"), _("Open its privacy shutter or switch, reconnect it if external and make sure its indicator light turns on.")),
         (_("Check app permissions"), _("Review camera access in Privacy Settings. A managed work or school computer may restrict access.")),
         (_("Close other camera apps"), _("Quit video calls and other apps that may already be using the camera, then try again.")),
+    ]),
+    (_("USB devices"), "hardware", [
+        (_("Check the USB connection"), _("Make sure the device is powered on. Reconnect it directly to the computer if possible, without a hub.")),
+        (_("Refresh the USB device list"), _("Open Network and hardware and refresh Connected USB devices. If the device appears, note its hardware ID and driver.")),
+        (_("Try another port or cable"), _("Use another port or cable. Check whether another device works in the same port.")),
+        (_("Use hardware details when asking for help"), _("The hardware ID and driver can help support identify the device. Do not share a serial number.")),
     ]),
     (_("Wired network"), "network", [
         (_("Check the Ethernet cable"), _("Connect the cable firmly to the computer and to a router, switch or wall socket. Look for a link light near the port.")),
@@ -392,10 +398,15 @@ class UbuntuStart(Adw.Application):
         open_button = Gtk.Button(label=_("Open related Settings"), halign=Gtk.Align.START)
         browse.append(open_button)
 
-        def update_guide(*_):
+        def update_guide(*_args):
             selected = chooser.get_selected()
             if selected < len(GUIDES):
                 steps_stack.set_visible_child_name(f"guide-{selected}")
+                open_button.set_label(
+                    _("Open hardware overview")
+                    if GUIDES[selected][1] == "hardware"
+                    else _("Open related Settings")
+                )
 
         def update_search(*_args):
             query = search.get_text().strip().casefold()
@@ -420,8 +431,17 @@ class UbuntuStart(Adw.Application):
         chooser.connect("notify::selected", update_guide)
         search.connect("changed", update_search)
         update_guide()
-        open_button.connect("clicked", lambda *_: self.open_app("gnome-control-center", GUIDES[chooser.get_selected()][1]))
+        open_button.connect(
+            "clicked",
+            lambda *_: self.open_device_target(GUIDES[chooser.get_selected()][1]),
+        )
         return box
+
+    def open_device_target(self, target):
+        if target == "hardware":
+            self.main_stack.set_visible_child_name(_("Network and hardware"))
+        else:
+            self.open_app("gnome-control-center", target)
 
     def make_system_guides(self):
         box, _rows = self.page(
@@ -588,7 +608,70 @@ class UbuntuStart(Adw.Application):
         for label, value in values:
             self.row(hardware_rows, label, value or _("Not available"))
         box.append(hardware_box)
+
+        usb_box, _usb_rows = self.page(
+            _("Connected USB devices"),
+            _("This local list reads USB device names and bound kernel drivers. Serial numbers are not read."),
+            include_rows=False,
+        )
+        usb_status = Gtk.Label(label="", xalign=0, wrap=True)
+        usb_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        usb_refresh = Gtk.Button(label=_("Refresh USB device list"), halign=Gtk.Align.START)
+        usb_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_usb_status(usb_refresh, usb_status, usb_rows, announce=True),
+        )
+        usb_box.append(usb_refresh)
+        usb_box.append(usb_status)
+        usb_box.append(usb_rows)
+        self.refresh_usb_status(usb_refresh, usb_status, usb_rows)
+        box.append(usb_box)
         return box
+
+    def refresh_usb_status(self, button, status_label, device_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Reading USB devices…"))
+
+        def read_status():
+            devices = read_usb_devices()
+            GLib.idle_add(
+                self.show_usb_status, button, status_label, device_rows, devices, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_usb_status(self, button, status_label, device_rows, devices, announce=False):
+        button.set_sensitive(True)
+        while (child := device_rows.get_first_child()) is not None:
+            device_rows.remove(child)
+
+        if not devices:
+            message = _("No external USB devices detected")
+            self.row(
+                device_rows, message,
+                _("Connect a USB device and refresh the list."),
+            )
+        else:
+            summaries = []
+            for device in devices:
+                device_name = device["name"]
+                title = (
+                    f"{device_name} [{device['id']}]" if device_name
+                    else _("USB device ({id})").format(id=device["id"])
+                )
+                drivers = device["drivers"]
+                subtitle = (
+                    _("Kernel driver: {drivers}").format(drivers=", ".join(drivers))
+                    if drivers else _("No kernel driver is currently attached.")
+                )
+                self.row(device_rows, title, subtitle)
+                summaries.append(title)
+            message = _("USB device list updated: {devices}").format(devices="; ".join(summaries))
+
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
 
     def confirm_internet_test(self, button, status_label):
         dialog = Adw.AlertDialog(

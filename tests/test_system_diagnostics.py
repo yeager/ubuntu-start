@@ -27,6 +27,7 @@ from system_diagnostics import (
     read_network_devices,
     read_storage_status,
     read_storage_locations,
+    read_usb_devices,
     read_wifi_link_status,
     parse_iw_link_status,
     run_network_diagnostics,
@@ -300,7 +301,64 @@ ABCD  Another Vendor
         self.assertEqual(result["graphics"], [
             "Example Graphics Corp Example Adapter [0x1234:0xabcd] (example_gpu)",
         ])
+        self.assertEqual(result["usb_devices"], [])
         self.assertNotIn("DO-NOT-READ", repr(result))
+
+    def test_reads_usb_descriptors_and_interface_driver_without_serial_numbers(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            devices_root = Path(temporary)
+            device = devices_root / "1-2"
+            device.mkdir()
+            (device / "idVendor").write_text("046d\n", encoding="ascii")
+            (device / "idProduct").write_text("c534\n", encoding="ascii")
+            (device / "bDeviceClass").write_text("00\n", encoding="ascii")
+            (device / "manufacturer").write_text("Logitech\n", encoding="utf-8")
+            (device / "product").write_text("USB Receiver\n", encoding="utf-8")
+            (device / "serial").write_text("DO-NOT-READ\n", encoding="ascii")
+            interface = devices_root / "1-2:1.0"
+            interface.mkdir()
+            driver = devices_root / "drivers" / "usbhid"
+            driver.mkdir(parents=True)
+            (interface / "driver").symlink_to(driver)
+
+            root_hub = devices_root / "usb1"
+            root_hub.mkdir()
+            (root_hub / "idVendor").write_text("1d6b\n", encoding="ascii")
+            (root_hub / "idProduct").write_text("0002\n", encoding="ascii")
+            (root_hub / "bDeviceClass").write_text("09\n", encoding="ascii")
+            (root_hub / "serial").write_text("ROOT-HUB-SERIAL\n", encoding="ascii")
+
+            result = read_usb_devices(devices_root)
+
+        self.assertEqual(result, [{
+            "id": "046d:c534",
+            "name": "Logitech USB Receiver",
+            "drivers": ["usbhid"],
+        }])
+        self.assertNotIn("DO-NOT-READ", repr(result))
+        self.assertNotIn("ROOT-HUB-SERIAL", repr(result))
+
+    def test_ignores_malformed_usb_hardware_ids(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            device = Path(temporary) / "1-1"
+            device.mkdir()
+            (device / "idVendor").write_text("not-an-id\n", encoding="ascii")
+            (device / "idProduct").write_text("0001\n", encoding="ascii")
+
+            self.assertEqual(read_usb_devices(temporary), [])
+
+    def test_avoids_repeating_manufacturer_in_usb_product_name(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            device = Path(temporary) / "1-1"
+            device.mkdir()
+            (device / "idVendor").write_text("0627\n", encoding="ascii")
+            (device / "idProduct").write_text("0001\n", encoding="ascii")
+            (device / "manufacturer").write_text("QEMU\n", encoding="utf-8")
+            (device / "product").write_text("QEMU USB Tablet\n", encoding="utf-8")
+
+            result = read_usb_devices(temporary)
+
+        self.assertEqual(result[0]["name"], "QEMU USB Tablet")
 
 
 class LocalDiagnosticsTests(unittest.TestCase):

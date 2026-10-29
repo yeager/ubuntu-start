@@ -228,6 +228,61 @@ class SystemDetailsTests(unittest.TestCase):
         self.assertFalse(any(label == "Home folder filesystem" for label, _value in details))
 
 
+class USBStatusTests(unittest.TestCase):
+    def setUp(self):
+        self.app = Mock()
+        self.app.row = Mock()
+
+    def test_shows_detected_device_id_and_bound_driver(self):
+        button = Mock()
+        status = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+
+        UbuntuStart.show_usb_status(self.app, button, status, rows, [{
+            "id": "046d:c534", "name": "Logitech USB Receiver", "drivers": ["usbhid"],
+        }])
+
+        self.app.row.assert_called_once_with(
+            rows, "Logitech USB Receiver [046d:c534]", "Kernel driver: usbhid",
+        )
+        status.set_text.assert_called_once_with(
+            "USB device list updated: Logitech USB Receiver [046d:c534]",
+        )
+        self.app.announce_to_screen_reader.assert_not_called()
+
+    def test_empty_device_list_explains_how_to_refresh(self):
+        button = Mock()
+        status = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+
+        UbuntuStart.show_usb_status(self.app, button, status, rows, [], announce=True)
+
+        self.app.row.assert_called_once_with(
+            rows, "No external USB devices detected", "Connect a USB device and refresh the list.",
+        )
+        self.app.announce_to_screen_reader.assert_called_once_with(
+            status, "No external USB devices detected",
+        )
+
+    def test_usb_guide_opens_the_hardware_overview(self):
+        app = Mock()
+        app.main_stack = Mock()
+
+        UbuntuStart.open_device_target(app, "hardware")
+
+        app.main_stack.set_visible_child_name.assert_called_once_with("Network and hardware")
+        app.open_app.assert_not_called()
+
+    def test_other_device_guides_open_their_settings_panel(self):
+        app = Mock()
+
+        UbuntuStart.open_device_target(app, "wifi")
+
+        app.open_app.assert_called_once_with("gnome-control-center", "wifi")
+
+
 class DriverGuideTests(unittest.TestCase):
     def test_unknown_adapter_help_links_to_hardware_overview(self):
         app = Mock()

@@ -275,6 +275,66 @@ def _graphics_adapters(
     return adapters
 
 
+def read_usb_devices(
+    devices_path: str | Path = "/sys/bus/usb/devices",
+) -> list[dict[str, str | list[str] | None]]:
+    """Read connected USB descriptors and bound interface drivers, never serials."""
+    devices_root = Path(devices_path)
+    if not devices_root.is_dir():
+        return []
+
+    devices = []
+    try:
+        entries = sorted(devices_root.iterdir(), key=lambda path: path.name)
+    except OSError:
+        return []
+
+    drivers_by_device: dict[str, set[str]] = {}
+    for interface in entries:
+        device_name, separator, _interface_id = interface.name.partition(":")
+        if not separator:
+            continue
+        try:
+            driver = (interface / "driver").resolve(strict=True).name
+        except OSError:
+            continue
+        drivers_by_device.setdefault(device_name, set()).add(driver)
+
+    for device_path in entries:
+        if ":" in device_path.name:
+            continue  # USB interface entries are not devices.
+        vendor_id = _read(device_path / "idVendor")
+        product_id = _read(device_path / "idProduct")
+        if not vendor_id or not product_id:
+            continue
+        if not re.fullmatch(r"[0-9a-fA-F]{4}", vendor_id) or not re.fullmatch(r"[0-9a-fA-F]{4}", product_id):
+            continue
+        if vendor_id.casefold() == "1d6b" and _read(device_path / "bDeviceClass") == "09":
+            continue  # The Linux host-controller root hub is not a peripheral.
+
+        descriptors = []
+        for field in ("manufacturer", "product"):
+            value = _read(device_path / field)
+            if value:
+                cleaned = " ".join(
+                    "".join(character if character.isprintable() else " " for character in value).split()
+                )[:120]
+                if cleaned and cleaned not in descriptors:
+                    descriptors.append(cleaned)
+
+        if len(descriptors) == 2 and descriptors[1].casefold().startswith(
+            f"{descriptors[0].casefold()} "
+        ):
+            descriptors.pop(0)
+
+        devices.append({
+            "id": f"{vendor_id.lower()}:{product_id.lower()}",
+            "name": " ".join(descriptors) or None,
+            "drivers": sorted(drivers_by_device.get(device_path.name, set())),
+        })
+    return devices
+
+
 def read_hardware_details(
     cpuinfo_path: str | Path = "/proc/cpuinfo",
     meminfo_path: str | Path = "/proc/meminfo",
@@ -298,6 +358,7 @@ def read_hardware_details(
         "processor": parse_cpu_model(cpuinfo),
         "memory": memory,
         "graphics": _graphics_adapters(sys_root / "class/drm", pci_databases),
+        "usb_devices": read_usb_devices(sys_root / "bus/usb/devices"),
         "architecture": platform.machine(),
     }
 
