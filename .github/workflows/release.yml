@@ -29,7 +29,7 @@ jobs:
           assert tag_version == project_version == appstream_version, (tag_version, project_version, appstream_version)
           PY
       - name: Install build dependencies
-        run: sudo apt-get update && sudo apt-get install -y appstream gettext libadwaita-1-dev meson ninja-build python3-gi gir1.2-adw-1 gir1.2-gtk-4.0
+        run: sudo apt-get update && sudo apt-get install -y appstream at-spi2-core gettext gir1.2-atspi-2.0 gir1.2-adw-1 gir1.2-gtk-4.0 libadwaita-1-dev meson ninja-build python3-gi xdotool xvfb
       - name: Check Python syntax and GTK imports
         run: |
           python3 -m compileall -q src tests scripts
@@ -49,6 +49,10 @@ jobs:
         run: appstreamcli validate data/se.nylander.UbuntuStart.metainfo.xml
       - name: Run unit tests
         run: PYTHONPATH=src python3 -m unittest discover -s tests -v
+      - name: Check app accessibility and keyboard focus
+        run: xvfb-run -a dbus-run-session -- python3 scripts/check-accessibility.py
+      - name: Check Swedish app localization through AT-SPI
+        run: xvfb-run -a dbus-run-session -- python3 scripts/check-accessibility.py --localized-smoke sv
       - name: Build and verify staged installation
         run: |
           meson setup build --prefix=/usr
