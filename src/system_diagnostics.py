@@ -4,6 +4,7 @@ from __future__ import annotations
 import os
 import ipaddress
 import json
+import math
 import platform
 from pathlib import Path
 import re
@@ -245,6 +246,79 @@ def read_printer_status(timeout: float = 3.0) -> tuple[list[tuple[str, str]], st
         return [], "unavailable"
     printers = parse_printer_status(result.stdout)
     return printers, None if printers else "no-printers"
+
+
+ACCESSIBILITY_SETTINGS = {
+    ("org.gnome.desktop.a11y.applications", "screen-reader-enabled"): ("screen_reader", "boolean"),
+    ("org.gnome.desktop.a11y.applications", "screen-magnifier-enabled"): ("screen_magnifier", "boolean"),
+    ("org.gnome.desktop.a11y.applications", "screen-keyboard-enabled"): ("screen_keyboard", "boolean"),
+    ("org.gnome.desktop.a11y.interface", "high-contrast"): ("high_contrast", "boolean"),
+    ("org.gnome.desktop.interface", "text-scaling-factor"): ("text_scale", "float"),
+    ("org.gnome.desktop.interface", "cursor-size"): ("cursor_size", "integer"),
+}
+
+
+def parse_accessibility_settings(outputs: dict[str, str]) -> dict[str, bool | float | int | None]:
+    """Parse only the allowlisted, read-only GNOME accessibility preferences."""
+    settings: dict[str, bool | float | int | None] = {
+        value[0]: None for value in ACCESSIBILITY_SETTINGS.values()
+    }
+    for schema_output in outputs.values():
+        for line in schema_output.splitlines():
+            fields = line.split(None, 2)
+            if len(fields) != 3:
+                continue
+            schema, key, raw_value = fields
+            spec = ACCESSIBILITY_SETTINGS.get((schema, key))
+            if not spec:
+                continue
+            name, kind = spec
+            value = raw_value.strip()
+            if kind == "boolean" and value in {"true", "false"}:
+                settings[name] = value == "true"
+            elif kind == "integer":
+                try:
+                    parsed = int(value)
+                except ValueError:
+                    continue
+                if 1 <= parsed <= 256:
+                    settings[name] = parsed
+            elif kind == "float":
+                try:
+                    parsed = float(value)
+                except ValueError:
+                    continue
+                if math.isfinite(parsed) and 0 < parsed <= 10:
+                    settings[name] = parsed
+    return settings
+
+
+def read_accessibility_settings(timeout: float = 1.0) -> tuple[dict[str, bool | float | int | None], str | None]:
+    """Read selected GNOME accessibility settings without changing them."""
+    empty = parse_accessibility_settings({})
+    gsettings = shutil.which("gsettings")
+    if not gsettings:
+        return empty, "not-installed"
+    env = os.environ.copy()
+    env.update({"LANG": "C", "LC_ALL": "C"})
+    env.pop("LANGUAGE", None)
+    outputs = {}
+    for schema, key in ACCESSIBILITY_SETTINGS:
+        try:
+            result = subprocess.run(
+                [gsettings, "get", schema, key],
+                capture_output=True,
+                check=False,
+                text=True,
+                timeout=timeout,
+                env=env,
+            )
+        except (OSError, subprocess.TimeoutExpired):
+            continue
+        if result.returncode == 0:
+            outputs[schema] = outputs.get(schema, "") + f"{schema} {key} {result.stdout.strip()}\n"
+    settings = parse_accessibility_settings(outputs)
+    return settings, None if any(value is not None for value in settings.values()) else "unavailable"
 
 
 def parse_cpu_model(cpuinfo: str) -> str | None:

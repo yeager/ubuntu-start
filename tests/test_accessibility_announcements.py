@@ -407,5 +407,40 @@ class PrinterStatusAnnouncementTests(unittest.TestCase):
         status_label.set_text.assert_called_once_with("CUPS printer tools are not installed.")
 
 
+class AccessibilityStatusAnnouncementTests(unittest.TestCase):
+    def test_accessibility_status_lists_local_values_and_announces_refresh(self):
+        app = Mock()
+        status_label = Mock()
+        rows = Mock()
+        settings = {
+            "screen_reader": True,
+            "screen_magnifier": False,
+            "screen_keyboard": None,
+            "high_contrast": True,
+            "text_scale": 1.25,
+            "cursor_size": 48,
+        }
+
+        UbuntuStart.show_accessibility_status(app, Mock(), status_label, rows, settings, None, announce=True)
+
+        self.assertEqual(
+            [call_args.args[1:] for call_args in app.row.call_args_list],
+            [
+                ("Screen reader", "On"),
+                ("Screen magnifier", "Off"),
+                ("On-screen keyboard", "Not available"),
+                ("High contrast", "On"),
+                ("Text size", "125%"),
+                ("Pointer size", "48 pixels"),
+            ],
+        )
+        status_label.set_text.assert_called_once_with(
+            "GNOME accessibility settings read. No settings were changed.",
+        )
+        app.announce_to_screen_reader.assert_called_once_with(
+            status_label, "GNOME accessibility settings read. No settings were changed.",
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -12,7 +12,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import build_support_report, check_internet_connection, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_network_devices, read_printer_status, read_storage_locations, read_usb_devices, read_wifi_link_status, run_network_diagnostics
+from system_diagnostics import build_support_report, check_internet_connection, read_accessibility_settings, read_audio_status, read_battery_status, read_bluetooth_status, read_hardware_details, read_network_devices, read_printer_status, read_storage_locations, read_usb_devices, read_wifi_link_status, run_network_diagnostics
 from guide_search import find_guide_matches
 
 APP_ID = "se.nylander.UbuntuStart"
@@ -300,6 +300,26 @@ class UbuntuStart(Adw.Application):
             (_("Accessibility"), _("Adjust text size, magnification, screen reader and keyboard access."), ("settings", "universal-access")),
         ]:
             self.row(rows, title, subtitle, _("Open Settings"), lambda t=target: self.open_target(t))
+        accessibility_box, _accessibility_rows = self.page(
+            _("Accessibility status"),
+            _("Read selected GNOME accessibility settings. Ubuntu Start does not change them."),
+            include_rows=False,
+        )
+        self.accessibility_box = accessibility_box
+        accessibility_status = Gtk.Label(label="", xalign=0, wrap=True)
+        accessibility_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        accessibility_refresh = Gtk.Button(label=_("Refresh accessibility status"), halign=Gtk.Align.START)
+        accessibility_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_accessibility_status(
+                accessibility_refresh, accessibility_status, accessibility_rows, announce=True,
+            ),
+        )
+        accessibility_box.append(accessibility_refresh)
+        accessibility_box.append(accessibility_status)
+        accessibility_box.append(accessibility_rows)
+        box.append(accessibility_box)
+        self.refresh_accessibility_status(accessibility_refresh, accessibility_status, accessibility_rows)
         return box
 
     def open_target(self, target):
@@ -898,6 +918,55 @@ class UbuntuStart(Adw.Application):
             )
 
         threading.Thread(target=read_status, daemon=True).start()
+
+    def refresh_accessibility_status(self, button, status_label, setting_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking accessibility settings…"))
+        while (child := setting_rows.get_first_child()) is not None:
+            setting_rows.remove(child)
+
+        def read_status():
+            settings, error = read_accessibility_settings()
+            GLib.idle_add(
+                self.show_accessibility_status, button, status_label, setting_rows,
+                settings, error, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_accessibility_status(self, button, status_label, setting_rows, settings, error, announce=False):
+        button.set_sensitive(True)
+        for key, title in (
+            ("screen_reader", _("Screen reader")),
+            ("screen_magnifier", _("Screen magnifier")),
+            ("screen_keyboard", _("On-screen keyboard")),
+            ("high_contrast", _("High contrast")),
+        ):
+            value = settings.get(key)
+            state = _("On") if value is True else _("Off") if value is False else _("Not available")
+            self.row(setting_rows, title, state)
+
+        text_scale = settings.get("text_scale")
+        scale_label = _("Not available")
+        if isinstance(text_scale, (int, float)):
+            scale_label = _("{percent}%").format(percent=round(text_scale * 100))
+        self.row(setting_rows, _("Text size"), scale_label)
+
+        cursor_size = settings.get("cursor_size")
+        cursor_label = _("Not available")
+        if isinstance(cursor_size, int):
+            cursor_label = _("{pixels} pixels").format(pixels=cursor_size)
+        self.row(setting_rows, _("Pointer size"), cursor_label)
+
+        errors = {
+            "not-installed": _("GNOME Settings tools are not installed."),
+            "unavailable": _("Could not read GNOME accessibility settings."),
+        }
+        message = errors.get(error, _("GNOME accessibility settings read. No settings were changed."))
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
 
     def show_printer_status(self, button, status_label, printer_rows, printers, error, announce=False):
         button.set_sensitive(True)

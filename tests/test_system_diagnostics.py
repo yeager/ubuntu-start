@@ -8,6 +8,8 @@ from pathlib import Path
 from unittest.mock import patch
 
 from system_diagnostics import (
+    ACCESSIBILITY_SETTINGS,
+    parse_accessibility_settings,
     build_support_report,
     parse_cpu_model,
     parse_bluetooth_controller_status,
@@ -23,6 +25,7 @@ from system_diagnostics import (
     lookup_oui_vendor,
     lookup_pci_device_name,
     read_audio_status,
+    read_accessibility_settings,
     read_battery_status,
     read_bluetooth_status,
     read_hardware_details,
@@ -60,6 +63,60 @@ class SupportReportTests(unittest.TestCase):
         report = build_support_report([("Architecture", "x86_64")])
         self.assertIn("system", report)
         self.assertNotIn("network_checks", report)
+
+
+class AccessibilitySettingsTests(unittest.TestCase):
+    def test_parses_only_allowlisted_gnome_accessibility_values(self):
+        outputs = {
+            "applications": """org.gnome.desktop.a11y.applications screen-reader-enabled true
+org.gnome.desktop.a11y.applications screen-magnifier-enabled false
+org.gnome.desktop.a11y.applications screen-keyboard-enabled true
+org.gnome.desktop.a11y.applications unrelated-setting 'private value'
+""",
+            "interface": "org.gnome.desktop.a11y.interface high-contrast true\n",
+            "desktop": """org.gnome.desktop.interface text-scaling-factor 1.25
+org.gnome.desktop.interface cursor-size 48
+""",
+        }
+        self.assertEqual(parse_accessibility_settings(outputs), {
+            "screen_reader": True,
+            "screen_magnifier": False,
+            "screen_keyboard": True,
+            "high_contrast": True,
+            "text_scale": 1.25,
+            "cursor_size": 48,
+        })
+        self.assertNotIn("private value", repr(parse_accessibility_settings(outputs)))
+
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/gsettings")
+    @patch("system_diagnostics.subprocess.run")
+    def test_reads_only_allowlisted_gnome_keys_without_writing_settings(self, run, _which):
+        run.side_effect = [
+            subprocess.CompletedProcess([], 0, "true\n", ""),
+            subprocess.CompletedProcess([], 0, "false\n", ""),
+            subprocess.CompletedProcess([], 0, "true\n", ""),
+            subprocess.CompletedProcess([], 0, "false\n", ""),
+            subprocess.CompletedProcess([], 0, "1.0\n", ""),
+            subprocess.CompletedProcess([], 0, "32\n", ""),
+        ]
+        settings, error = read_accessibility_settings()
+        self.assertIsNone(error)
+        self.assertTrue(settings["screen_reader"])
+        self.assertFalse(settings["high_contrast"])
+        self.assertEqual(settings["cursor_size"], 32)
+        self.assertEqual(len(run.call_args_list), 6)
+        self.assertTrue(all(call.args[0][1] == "get" for call in run.call_args_list))
+        self.assertEqual(
+            [tuple(call.args[0][2:]) for call in run.call_args_list],
+            list(ACCESSIBILITY_SETTINGS),
+        )
+        self.assertEqual(run.call_args_list[0].kwargs["env"]["LC_ALL"], "C")
+
+    @patch("system_diagnostics.shutil.which", return_value=None)
+    def test_handles_missing_gsettings(self, _which):
+        settings, error = read_accessibility_settings()
+        self.assertEqual(error, "not-installed")
+        self.assertTrue(all(value is None for value in settings.values()))
 
 
 class ParseNetworkStatusTests(unittest.TestCase):
