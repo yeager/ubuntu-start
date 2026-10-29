@@ -415,7 +415,10 @@ class UbuntuStart(Adw.Application):
         return box, rows
 
     def row(self, parent, title, subtitle, action_label=None, callback=None):
-        row = Adw.ActionRow(title=title, subtitle=subtitle)
+        row = Adw.ActionRow(
+            title=GLib.markup_escape_text(str(title)),
+            subtitle=GLib.markup_escape_text(str(subtitle)),
+        )
         if action_label and callback:
             button = Gtk.Button(label=action_label, valign=Gtk.Align.CENTER)
             button.connect("clicked", lambda *_: callback())

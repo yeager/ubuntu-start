@@ -1421,6 +1421,19 @@ class DriverGuideTests(unittest.TestCase):
 
 
 class SystemGuideTests(unittest.TestCase):
+    @patch("ubuntu_start.Adw.ActionRow")
+    def test_action_rows_escape_ampersands_for_pango_markup(self, action_row):
+        app = Mock()
+        parent = Mock()
+
+        UbuntuStart.row(app, parent, "Privacy & Security", "Open Settings & review access")
+
+        action_row.assert_called_once_with(
+            title="Privacy &amp; Security",
+            subtitle="Open Settings &amp; review access",
+        )
+        parent.append.assert_called_once_with(action_row.return_value)
+
     def test_startup_chain_result_is_shown_and_announced(self):
         app = Mock()
         button = Mock()

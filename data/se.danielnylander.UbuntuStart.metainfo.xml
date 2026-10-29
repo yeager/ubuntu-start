@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.27" date="2026-10-29">
+      <description>
+        <p>Escape plain text used in GNOME preference rows so ampersands display correctly. Extend AT-SPI coverage to activate the graphical startup-chain check and verify its result is exposed.</p>
+        <p xml:lang="sv">Escapa vanlig text i GNOME-inställningsrader så att &amp;-tecken visas korrekt. Utöka AT-SPI-kontrollen så att den aktiverar granskningen av den grafiska startkedjan och verifierar att resultatet visas.</p>
+      </description>
+    </release>
     <release version="0.3.26" date="2026-10-29">
       <description>
         <p>Strengthen startup-chain accessibility coverage with screen-reader announcement tests and an AT-SPI check for the inspection control.</p>

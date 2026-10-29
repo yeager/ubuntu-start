@@ -687,6 +687,56 @@ def main() -> int:
                             time.sleep(0.25)
                         if not startup_status_updated:
                             missing.append("startup time result was not exposed to AT-SPI")
+                    chain_button = next(
+                        (
+                            node for role, name, node in entries
+                            if role in BUTTON_ROLES and name == "Inspect graphical startup chain"
+                        ),
+                        None,
+                    )
+                    try:
+                        chain_activated = bool(
+                            chain_button
+                            and chain_button.get_n_actions() > 0
+                            and chain_button.do_action(0)
+                        )
+                    except Exception:
+                        chain_activated = False
+                    if not chain_activated:
+                        missing.append("graphical startup chain check could not be activated")
+                    else:
+                        chain_deadline = time.monotonic() + 7
+                        chain_status = None
+                        chain_output_visible = False
+                        while time.monotonic() < chain_deadline:
+                            entries = accessible_tree(app)
+                            chain_status = next(
+                                (
+                                    name for role, name, _node in entries
+                                    if role == "label" and name.startswith((
+                                        "Systemd's critical chain to graphical.target is shown.",
+                                        "systemd-analyze is not installed.",
+                                        "Could not read the graphical startup chain.",
+                                    ))
+                                ),
+                                None,
+                            )
+                            chain_output_visible = any(
+                                role in {"label", "text"} and "graphical.target @" in name
+                                for role, name, _node in entries
+                            )
+                            if chain_status:
+                                break
+                            time.sleep(0.25)
+                        if not chain_status:
+                            missing.append("graphical startup chain result was not exposed to AT-SPI")
+                        elif chain_status.startswith("Systemd's critical chain") and not chain_output_visible:
+                            missing.append("graphical startup chain output was not exposed to AT-SPI")
+                            print(
+                                "Observed graphical-target accessibility nodes: "
+                                f"{[(role, name) for role, name, _node in entries if 'target' in name.casefold()]!r}",
+                                file=sys.stderr,
+                            )
                 if not select_page("Drivers"):
                     missing.append("selectable Drivers page")
                 else:
@@ -737,7 +787,7 @@ def main() -> int:
                 )
                 if search_entry and search_entry.get_state_set().contains(Atspi.StateType.FOCUSED):
                     print(
-                        "AT-SPI verified guide names, About, Mouse Keys, Accessibility Settings, USB, PCI, Bluetooth pairing and audio, wireless-radio, Wi-Fi, sound, startup-time and startup-chain controls, battery, backup-app controls, date/time, video, displays, printer queue guide, memory, benchmark readiness, graphics benchmark result and cancellation, system-pressure, service-status, temperature, package-health and Secure Boot controls, and the labeled search entry; "
+                        "AT-SPI verified guide names, About, Mouse Keys, Accessibility Settings, USB, PCI, Bluetooth pairing and audio, wireless-radio, Wi-Fi, sound, startup timing, startup-chain control and result, battery, backup-app controls, date/time, video, displays, printer queue guide, memory, benchmark readiness, graphics benchmark result and cancellation, system-pressure, service-status, temperature, package-health and Secure Boot controls, and the labeled search entry; "
                         "Ctrl+F moved focus to search."
                     )
                     return 0
