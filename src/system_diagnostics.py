@@ -1769,6 +1769,14 @@ def parse_default_route(output: str) -> tuple[str, str] | None:
     return None
 
 
+def parse_ping_latency(output: str) -> tuple[float | None, bool]:
+    """Return ping RTT and whether its printed value is an upper bound."""
+    match = re.search(r"\btime([=<])([0-9]+(?:\.[0-9]+)?)\s*ms\b", output)
+    if not match:
+        return None, False
+    return float(match.group(2)), match.group(1) == "<"
+
+
 def _normalize_unicast_mac(value: str | None) -> str | None:
     """Return a canonical unicast MAC address, or None for invalid addresses."""
     if not isinstance(value, str):
@@ -1898,7 +1906,7 @@ def run_network_diagnostics(timeout: float = 3.0) -> dict[str, str | float | Non
         "dns_latency_ms": None, "dns_test_duration_ms": None, "dns_error": None,
         "gateway": None, "gateway_interface": None,
         "gateway_latency_ms": None, "gateway_test_duration_ms": None,
-        "gateway_error": None,
+        "gateway_latency_is_upper_bound": False, "gateway_error": None,
         "gateway_mac": None, "gateway_vendor": None,
     }
     ip_command = shutil.which("ip")
@@ -1926,9 +1934,10 @@ def run_network_diagnostics(timeout: float = 3.0) -> dict[str, str | float | Non
                 result["gateway_error"] = "timeout"
                 result["gateway_test_duration_ms"] = round((time.monotonic() - start) * 1000, 1)
             elif ping.returncode == 0:
-                timing = re.search(r"time[=<]([0-9.]+)\s*ms", ping.stdout)
+                latency, is_upper_bound = parse_ping_latency(ping.stdout)
                 elapsed_ms = round((time.monotonic() - start) * 1000, 1)
-                result["gateway_latency_ms"] = float(timing.group(1)) if timing else elapsed_ms
+                result["gateway_latency_ms"] = latency if latency is not None else elapsed_ms
+                result["gateway_latency_is_upper_bound"] = is_upper_bound
                 result["gateway_test_duration_ms"] = elapsed_ms
             else:
                 result["gateway_error"] = "no-response"
@@ -1976,6 +1985,9 @@ def build_support_report(
             "dns_latency_ms": diagnostics.get("dns_latency_ms"),
             "dns_test_duration_ms": diagnostics.get("dns_test_duration_ms"),
             "gateway_latency_ms": diagnostics.get("gateway_latency_ms"),
+            "gateway_latency_is_upper_bound": bool(
+                diagnostics.get("gateway_latency_is_upper_bound", False)
+            ),
             "gateway_test_duration_ms": diagnostics.get("gateway_test_duration_ms"),
             # A missed ping may mean ICMP is filtered, not that the gateway is down.
             "gateway_reachable": True if diagnostics.get("gateway_latency_ms") is not None else None,

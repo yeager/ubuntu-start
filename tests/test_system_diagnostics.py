@@ -16,6 +16,7 @@ from system_diagnostics import (
     parse_cpu_model,
     parse_bluetooth_controller_status,
     parse_default_route,
+    parse_ping_latency,
     parse_memory_kib,
     parse_neighbor_mac,
     parse_nmcli_device_status,
@@ -386,6 +387,7 @@ class SupportReportTests(unittest.TestCase):
                 "dns_latency_ms": 12.3,
                 "dns_test_duration_ms": 18.7,
                 "gateway_latency_ms": 0.8,
+                "gateway_latency_is_upper_bound": True,
                 "gateway_test_duration_ms": 2.1,
                 "gateway": "192.168.1.1",
                 "gateway_interface": "wlan0",
@@ -397,6 +399,7 @@ class SupportReportTests(unittest.TestCase):
         self.assertIn('"dns_latency_ms": 12.3', report)
         self.assertIn('"dns_test_duration_ms": 18.7', report)
         self.assertIn('"gateway_test_duration_ms": 2.1', report)
+        self.assertIn('"gateway_latency_is_upper_bound": true', report)
         self.assertIn('"gateway_reachable": true', report)
         for private_value in ("192.168.1.1", "wlan0", "AA:BB:CC:DD:EE:FF", "Example Vendor"):
             self.assertNotIn(private_value, report)
@@ -1481,6 +1484,11 @@ class DisplayConnectorTests(unittest.TestCase):
 
 
 class LocalDiagnosticsTests(unittest.TestCase):
+    def test_parses_ping_time_as_an_upper_bound_when_less_than_is_reported(self):
+        self.assertEqual(parse_ping_latency("64 bytes from router: time=0.42 ms"), (0.42, False))
+        self.assertEqual(parse_ping_latency("64 bytes from router: time<1 ms"), (1.0, True))
+        self.assertEqual(parse_ping_latency("unexpected ping output"), (None, False))
+
     @patch("system_diagnostics.shutil.which", side_effect=lambda command: "/usr/bin/resolvectl" if command == "resolvectl" else None)
     @patch("system_diagnostics._run_local")
     @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 1.025])
@@ -1917,6 +1925,7 @@ Inst package-two [2.0] (2.1 repo [amd64])
         result = run_network_diagnostics()
         self.assertEqual(result["gateway"], "192.168.1.1")
         self.assertEqual(result["gateway_latency_ms"], 0.42)
+        self.assertFalse(result["gateway_latency_is_upper_bound"])
         self.assertEqual(result["gateway_test_duration_ms"], 50.0)
         self.assertEqual(result["gateway_mac"], "00:11:22:33:44:55")
         self.assertEqual(result["gateway_vendor"], "Example Router Co.")
@@ -2060,6 +2069,23 @@ Inst package-two [2.0] (2.1 repo [amd64])
         self.assertEqual(result["gateway_error"], "no-response")
         self.assertIsNone(result["gateway_latency_ms"])
         self.assertEqual(result["gateway_test_duration_ms"], 1500.0)
+
+    @patch("system_diagnostics.shutil.which", side_effect=lambda command: f"/usr/bin/{command}")
+    @patch("system_diagnostics.lookup_oui_vendor", return_value=None)
+    @patch("system_diagnostics._run_local")
+    @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 1.001, 2.0, 2.01])
+    def test_preserves_less_than_ping_latency_as_an_upper_bound(self, _clock, run, _vendor, _which):
+        run.side_effect = [
+            subprocess.CompletedProcess([], 0, "default via 192.168.1.1 dev eth0\n", ""),
+            subprocess.CompletedProcess([], 0, "64 bytes from 192.168.1.1: time<1 ms\n", ""),
+            subprocess.CompletedProcess([], 0, "192.168.1.1 dev eth0 lladdr 00:11:22:33:44:55 REACHABLE\n", ""),
+            subprocess.CompletedProcess([], 0, "93.184.216.34 STREAM ubuntu.com\n", ""),
+        ]
+
+        result = run_network_diagnostics()
+
+        self.assertEqual(result["gateway_latency_ms"], 1.0)
+        self.assertTrue(result["gateway_latency_is_upper_bound"])
 
 
 class DpkgAuditTests(unittest.TestCase):

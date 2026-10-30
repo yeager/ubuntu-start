@@ -1340,6 +1340,20 @@ class InternetTestResultTests(unittest.TestCase):
         self.assertIn("Gateway response: 1,2 ms", message)
         self.assertIn("Ping test completed in 50 ms", message)
 
+    def test_reports_ping_latency_as_less_than_when_it_is_a_rounding_bound(self):
+        app = Mock()
+        button = Mock()
+        status = Mock()
+        result = {
+            "gateway": "192.168.1.1",
+            "gateway_latency_ms": 1.0,
+            "gateway_latency_is_upper_bound": True,
+        }
+
+        UbuntuStart.show_network_diagnostic_result(app, button, status, result)
+
+        self.assertIn("Gateway response: less than 1 ms", status.set_text.call_args.args[0])
+
     def test_network_diagnostics_run_only_after_confirmation(self):
         app = Mock()
         button = Mock()

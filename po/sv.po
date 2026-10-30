@@ -4227,6 +4227,11 @@ msgstr ""
 msgid "Gateway: {address}"
 msgstr "Gateway: {address}"
 
+#: src/ubuntu_start.py:1904
+#, python-brace-format
+msgid "Gateway response: less than {ms} ms"
+msgstr "Svar från gateway: under {ms} ms"
+
 #: src/ubuntu_start.py:1882
 #, python-brace-format
 msgid "Gateway response: {ms} ms"

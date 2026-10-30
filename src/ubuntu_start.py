@@ -1899,7 +1899,11 @@ class UbuntuStart(Adw.Application):
         if gateway:
             lines.append(_("Gateway: {address}").format(address=gateway))
             if result.get("gateway_latency_ms") is not None:
-                lines.append(_("Gateway response: {ms} ms").format(ms=format_milliseconds(result["gateway_latency_ms"])))
+                latency = format_milliseconds(result["gateway_latency_ms"])
+                if result.get("gateway_latency_is_upper_bound"):
+                    lines.append(_("Gateway response: less than {ms} ms").format(ms=latency))
+                else:
+                    lines.append(_("Gateway response: {ms} ms").format(ms=latency))
                 duration = result.get("gateway_test_duration_ms")
                 if duration is not None:
                     lines.append(_("Ping test completed in {ms} ms").format(ms=format_milliseconds(duration)))
