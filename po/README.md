@@ -27,13 +27,14 @@ Keep `po/ubuntu-start.pot` in version control. It is used by `msgmerge` to bring
 Run these commands from the repository root:
 
 ```sh
+APP_VERSION=$(sed -n "s/^project('ubuntu-start', version: '\\([^']*\\)'.*/\\1/p" meson.build)
 xgettext --from-code=UTF-8 --language=Python --keyword=_ --keyword=_n:1,2 \
-  --package-name="Ubuntu Start" --package-version=0.3.54 \
+  --package-name="Ubuntu Start" --package-version="$APP_VERSION" \
   --copyright-holder="Ubuntu Start contributors" \
   --msgid-bugs-address=https://github.com/yeager/ubuntu-start/issues \
   --output=po/ubuntu-start.pot src/ubuntu_start.py
 xgettext --from-code=UTF-8 --language=Desktop --join-existing \
-  --package-name="Ubuntu Start" --package-version=0.3.54 \
+  --package-name="Ubuntu Start" --package-version="$APP_VERSION" \
   --copyright-holder="Ubuntu Start contributors" \
   --msgid-bugs-address=https://github.com/yeager/ubuntu-start/issues \
   --output=po/ubuntu-start.pot data/se.danielnylander.UbuntuStart.desktop
@@ -41,7 +42,7 @@ msgmerge --update --backup=none --no-fuzzy-matching \
   po/sv.po po/ubuntu-start.pot
 ```
 
-If the project version changes, update `--package-version` to match `meson.build`. Repeat the `msgmerge` command for every `.po` file listed in `po/LINGUAS`. Edit only the `msgstr` values in a translation catalog. Keep each translation next to its `msgid`, and check that placeholders and punctuation still match the sentence.
+The command reads the current version from `meson.build`, so the template metadata stays in sync after a release. Repeat the `msgmerge` command for every `.po` file listed in `po/LINGUAS`. Edit only the `msgstr` values in a translation catalog. Keep each translation next to its `msgid`, and check that placeholders and punctuation still match the sentence.
 
 ## Add another language
 
