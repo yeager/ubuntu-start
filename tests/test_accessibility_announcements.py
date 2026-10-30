@@ -435,6 +435,21 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.assertIn("A passed test cannot guarantee", text)
         self.assertIn("Missing SMART data does not prove", text)
 
+    def test_firmware_update_guide_is_searchable_and_warns_against_interruption(self):
+        guide = next(guide for guide in GUIDES if guide[0] == "Update firmware safely")
+        entries = [
+            ("device", index, guide[0], title, description)
+            for index, (title, description) in enumerate(guide[2])
+        ]
+        matches = find_guide_matches("firmware update battery power", entries)
+        text = " ".join(" ".join(step) for step in guide[2])
+
+        self.assertTrue(matches)
+        self.assertTrue(all(match[2] == "Update firmware safely" for match in matches))
+        self.assertIn("appear only when", text)
+        self.assertIn("check with the administrator first", text)
+        self.assertIn("Do not close the lid, unplug power or force a restart", text)
+
     def test_slow_or_unstable_wifi_help_is_searchable(self):
         entries = [
             ("device", index, guide_title, step_title, description)

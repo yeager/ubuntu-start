@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.55" date="2026-10-30">
+      <description>
+        <p>Adds a searchable guide to checking and installing Ubuntu firmware updates safely.</p>
+        <p xml:lang="sv">Lägger till en sökbar guide om hur du kontrollerar och installerar uppdateringar av fast programvara på ett säkert sätt.</p>
+      </description>
+    </release>
     <release version="0.3.54" date="2026-10-30">
       <description>
         <p>Adds clear advice for spotting and avoiding unsolicited remote-support scams.</p>

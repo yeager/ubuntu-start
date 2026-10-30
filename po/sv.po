@@ -742,6 +742,62 @@ msgstr ""
 "Installera inte drivrutiner från källor du inte litar på."
 
 #: src/ubuntu_start.py:149
+msgid "Update firmware safely"
+msgstr "Uppdatera fast programvara på ett säkert sätt"
+
+#: src/ubuntu_start.py:150
+msgid "Check for updates in Ubuntu"
+msgstr "Sök efter uppdateringar i Ubuntu"
+
+#: src/ubuntu_start.py:150
+msgid ""
+"Open the Software app and check its Updates section. Firmware updates appear "
+"only when the computer or connected device supports them and a trusted "
+"update is available."
+msgstr "Öppna appen Programvara och sök efter uppdateringar. Uppdateringar av fast programvara visas bara om datorn eller den anslutna enheten har stöd för det och en tillförlitlig uppdatering finns tillgänglig."
+
+#: src/ubuntu_start.py:151
+msgid "Confirm the device and release notes"
+msgstr "Kontrollera enheten och versionsinformationen"
+
+#: src/ubuntu_start.py:151
+msgid ""
+"Read the update description and confirm it matches your computer or device. "
+"For a work or school computer, check with the administrator first."
+msgstr "Läs beskrivningen av uppdateringen och kontrollera att den gäller din dator eller enhet. Fråga administratören först om det är en arbets- eller skoldator."
+
+#: src/ubuntu_start.py:152
+msgid "Prepare before installing"
+msgstr "Förbered dig före installationen"
+
+#: src/ubuntu_start.py:152
+msgid ""
+"Back up important files, connect a laptop to its power adapter and make sure "
+"the battery is charged. Close your work before starting."
+msgstr "Säkerhetskopiera viktiga filer, anslut en bärbar dator till nätadaptern och se till att batteriet är laddat. Spara och stäng ditt arbete innan du börjar."
+
+#: src/ubuntu_start.py:153
+msgid "Do not interrupt an update"
+msgstr "Avbryt inte en uppdatering"
+
+#: src/ubuntu_start.py:153
+msgid ""
+"Follow Ubuntu’s prompts and keep the device powered on until it finishes. Do "
+"not close the lid, unplug power or force a restart during a firmware update."
+msgstr "Följ anvisningarna från Ubuntu och låt enheten vara på tills uppdateringen är klar. Stäng inte locket, koppla inte ur strömmen och framtvinga inte en omstart under en uppdatering av fast programvara."
+
+#: src/ubuntu_start.py:154
+msgid "Check again after restarting"
+msgstr "Kontrollera igen efter omstarten"
+
+#: src/ubuntu_start.py:154
+msgid ""
+"Restart if Ubuntu asks, then check that the device works as expected. If the "
+"update fails or the device will not start, contact the computer or device "
+"manufacturer for recovery instructions."
+msgstr "Starta om om Ubuntu ber dig och kontrollera sedan att enheten fungerar som den ska. Om uppdateringen misslyckas eller enheten inte startar kontaktar du datorns eller enhetens tillverkare för återställningsanvisningar."
+
+#: src/ubuntu_start.py:149
 msgid "Check whether a storage drive is healthy"
 msgstr "Kontrollera diskens hälsa"
 

@@ -630,6 +630,62 @@ msgid ""
 msgstr ""
 
 #: src/ubuntu_start.py:149
+msgid "Update firmware safely"
+msgstr ""
+
+#: src/ubuntu_start.py:150
+msgid "Check for updates in Ubuntu"
+msgstr ""
+
+#: src/ubuntu_start.py:150
+msgid ""
+"Open the Software app and check its Updates section. Firmware updates appear "
+"only when the computer or connected device supports them and a trusted "
+"update is available."
+msgstr ""
+
+#: src/ubuntu_start.py:151
+msgid "Confirm the device and release notes"
+msgstr ""
+
+#: src/ubuntu_start.py:151
+msgid ""
+"Read the update description and confirm it matches your computer or device. "
+"For a work or school computer, check with the administrator first."
+msgstr ""
+
+#: src/ubuntu_start.py:152
+msgid "Prepare before installing"
+msgstr ""
+
+#: src/ubuntu_start.py:152
+msgid ""
+"Back up important files, connect a laptop to its power adapter and make sure "
+"the battery is charged. Close your work before starting."
+msgstr ""
+
+#: src/ubuntu_start.py:153
+msgid "Do not interrupt an update"
+msgstr ""
+
+#: src/ubuntu_start.py:153
+msgid ""
+"Follow Ubuntu’s prompts and keep the device powered on until it finishes. Do "
+"not close the lid, unplug power or force a restart during a firmware update."
+msgstr ""
+
+#: src/ubuntu_start.py:154
+msgid "Check again after restarting"
+msgstr ""
+
+#: src/ubuntu_start.py:154
+msgid ""
+"Restart if Ubuntu asks, then check that the device works as expected. If the "
+"update fails or the device will not start, contact the computer or device "
+"manufacturer for recovery instructions."
+msgstr ""
+
+#: src/ubuntu_start.py:149
 msgid "Check whether a storage drive is healthy"
 msgstr ""
 

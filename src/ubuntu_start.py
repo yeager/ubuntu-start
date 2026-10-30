@@ -146,6 +146,13 @@ GUIDES = [
         (_("Check the driver status"), _("A device with no attached driver may need a driver, but this status alone does not prove a fault. Check Ubuntu’s Additional Drivers tool and the device manufacturer’s Ubuntu support information.")),
         (_("Keep the hardware ID for support"), _("Share the PCI hardware ID and driver name when asking for help. Do not install drivers from an untrusted source.")),
     ]),
+    (_("Update firmware safely"), "hardware", [
+        (_("Check for updates in Ubuntu"), _("Open the Software app and check its Updates section. Firmware updates appear only when the computer or connected device supports them and a trusted update is available.")),
+        (_("Confirm the device and release notes"), _("Read the update description and confirm it matches your computer or device. For a work or school computer, check with the administrator first.")),
+        (_("Prepare before installing"), _("Back up important files, connect a laptop to its power adapter and make sure the battery is charged. Close your work before starting.")),
+        (_("Do not interrupt an update"), _("Follow Ubuntu’s prompts and keep the device powered on until it finishes. Do not close the lid, unplug power or force a restart during a firmware update.")),
+        (_("Check again after restarting"), _("Restart if Ubuntu asks, then check that the device works as expected. If the update fails or the device will not start, contact the computer or device manufacturer for recovery instructions.")),
+    ]),
     (_("Check whether a storage drive is healthy"), "disks", [
         (_("Back up important files first"), _("If you hear unusual noises from the disk, see read errors or suspect that the drive is failing, back up important files to another drive or a trusted backup service before testing. Avoid benchmarks for now.")),
         (_("Open Disks and select the drive"), _("Open Disks from the Activities overview and select the physical drive by its model and capacity. Check carefully that you selected the drive you intend to inspect.")),

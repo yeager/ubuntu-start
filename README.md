@@ -122,6 +122,8 @@ NetworkManager, Bluetooth, audio, storage, battery and hardware summaries use lo
 
 ## Validation
 
+Version `0.3.55` adds a searchable guide to checking and installing Ubuntu firmware updates safely. It covers device support, administrator approval for managed computers, backups, laptop power and avoiding interruptions. All 382 unit tests passed on `trv2` with Ubuntu 26.10.
+
 Version `0.3.54` adds advice about avoiding unsolicited remote-support scams.
 
 Version `0.3.53` shows checklist completion as a percentage beside the progress bar in both English and Swedish.
