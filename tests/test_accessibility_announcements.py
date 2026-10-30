@@ -131,7 +131,8 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
             rows.append((title, action_label, callback))
 
         app.row.side_effect = capture_row
-        UbuntuStart.make_help(app)
+        with patch("ubuntu_start.Gtk.Label"), patch("ubuntu_start.Gtk.Button"):
+            UbuntuStart.make_help(app)
 
         expected_urls = {
             "Ubuntu automatic security updates": "https://documentation.ubuntu.com/security/security-updates/",
