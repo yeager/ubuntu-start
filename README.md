@@ -6,7 +6,7 @@ An Ubuntu Desktop guide for first-run setup and device troubleshooting.
 
 ![Ubuntu Start welcome screen in English](screenshots/welcome-en.png)
 
-[Swedish welcome screen](screenshots/welcome-sv.png) · [More screenshots](screenshots/) · [benchmark guide (EN)](screenshots/benchmark-guide-en.png) · [benchmarkguiden (SV)](screenshots/benchmark-guide-sv.png) · [benchmark results example (EN)](screenshots/benchmark-results-en.png) · [exempel på benchmarkresultat (SV)](screenshots/benchmark-results-sv.png)
+[Swedish welcome screen](screenshots/welcome-sv.png) · [first-run checklist (SV)](screenshots/first-run-checklist-sv.png) · [More screenshots](screenshots/) · [benchmark guide (EN)](screenshots/benchmark-guide-en.png) · [benchmarkguiden (SV)](screenshots/benchmark-guide-sv.png) · [benchmark results example (EN)](screenshots/benchmark-results-en.png) · [exempel på benchmarkresultat (SV)](screenshots/benchmark-results-sv.png)
 
 ![Search results for printer troubleshooting](screenshots/search-en.png)
 
@@ -184,7 +184,7 @@ Tagged versions (`v*`) are built by GitHub Actions. Releases include a source ar
 
 ## Screenshots
 
-The screenshots show the welcome page, first-run checklist, printer troubleshooting and queue status, backup setup and accessibility instructions. Additional English and Swedish screenshots include Wi-Fi, VPN and backup guides, update and restart status, live accessibility and date/time status, storage, safe disk cleanup guidance, battery, support-report system details and connected USB hardware.
+The screenshots show the welcome page, English and Swedish first-run checklists, printer troubleshooting and queue status, backup setup and accessibility instructions. Additional English and Swedish screenshots include Wi-Fi, VPN and backup guides, update and restart status, live accessibility and date/time status, storage, safe disk cleanup guidance, battery, support-report system details and connected USB hardware.
 
 
 ## License
