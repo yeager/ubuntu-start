@@ -15,6 +15,14 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Verify release commit is on main
+        env:
+          RELEASE_COMMIT: ${{ github.sha }}
+        run: |
+          git fetch --no-tags origin main
+          git merge-base --is-ancestor "$RELEASE_COMMIT" origin/main
       - name: Verify release tag matches project metadata
         env:
           RELEASE_TAG: ${{ github.ref_name }}
