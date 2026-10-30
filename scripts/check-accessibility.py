@@ -116,7 +116,7 @@ def open_security_guide_and_check_buttons(
         time.sleep(0.25)
     problems = [f"security guide button: {name}" for name in missing]
     if screenshot and not problems:
-        capture_application_screenshot(screenshot)
+        capture_application_screenshot(screenshot, scroll_steps=6)
     page_name = "Kom igång" if "Kontrollera brandväggsstatus" in button_names else "Get started"
     if not select_sidebar_page(app, page_name):
         problems.append(f"could not return to {page_name}")
@@ -182,7 +182,7 @@ def select_sidebar_page(app, page_name: str) -> bool:
     return bool(selection and page_index is not None and selection.select_child(page_index))
 
 
-def capture_application_screenshot(path: Path) -> None:
+def capture_application_screenshot(path: Path, scroll_steps: int = 0) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     window_search = subprocess.run(
         ["xdotool", "search", "--onlyvisible", "--name", "^Ubuntu Start$"],
@@ -193,6 +193,15 @@ def capture_application_screenshot(path: Path) -> None:
         ["xdotool", "windowsize", "--sync", window_id, "1000", "1050"],
         check=True,
     )
+    if scroll_steps:
+        subprocess.run(
+            ["xdotool", "mousemove", "--window", window_id, "700", "700"],
+            check=True,
+        )
+        subprocess.run(
+            ["xdotool", "click", "--repeat", str(scroll_steps), "--delay", "100", "5"],
+            check=True,
+        )
     time.sleep(1)
     subprocess.run(["import", "-window", window_id, str(path)], check=True)
     print(f"Captured live application screenshot: {path}")
