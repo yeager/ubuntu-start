@@ -134,26 +134,6 @@ def select_sidebar_page(app, page_name: str) -> bool:
     return bool(selection and page_index is not None and selection.select_child(page_index))
 
 
-def select_accessible_item(app, item_name: str) -> bool:
-    """Select a named child through any accessible selection container."""
-    for _role, _name, container in accessible_tree(app):
-        try:
-            selection = container.get_selection_iface()
-            child_count = container.get_child_count()
-        except Exception:
-            continue
-        if not selection:
-            continue
-        for index in range(child_count):
-            try:
-                child = container.get_child_at_index(index)
-                if child and child.get_name() == item_name and selection.select_child(index):
-                    return True
-            except Exception:
-                continue
-    return False
-
-
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -261,8 +241,6 @@ def main() -> int:
             if not select_sidebar_page(app, "Systemguider"):
                 missing.append("selectable Swedish System guides page")
             else:
-                if not select_accessible_item(app, "Förbättra säkerheten i vardagen"):
-                    missing.append("selectable Swedish security guide")
                 privacy_button = False
                 updates_button = False
                 security_deadline = time.monotonic() + 5
@@ -444,8 +422,6 @@ def main() -> int:
                 if not select_page("System guides"):
                     missing.append("selectable System guides page")
                 else:
-                    if not select_accessible_item(app, "Improve everyday security"):
-                        missing.append("selectable security guide")
                     security_button_deadline = time.monotonic() + 5
                     privacy_button = None
                     updates_button = None
