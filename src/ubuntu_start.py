@@ -1905,8 +1905,12 @@ class UbuntuStart(Adw.Application):
             else:
                 lines.append(_("Gateway MAC address is not available in the local neighbor table."))
         else:
-            lines.append(_("No default gateway was found."))
-            lines.append(_("Next step: check Wi-Fi or wired connection in Settings. On a managed network, ask the administrator before changing route settings."))
+            if result.get("gateway_error") == "ip-not-installed":
+                lines.append(_("The iproute2 package is not installed, so the default gateway could not be checked."))
+                lines.append(_("Ask your administrator to install iproute2, then run the network test again."))
+            else:
+                lines.append(_("No default gateway was found."))
+                lines.append(_("Next step: check Wi-Fi or wired connection in Settings. On a managed network, ask the administrator before changing route settings."))
         if result.get("dns_latency_ms") is None and result.get("dns_error") != "resolvectl-not-available":
             lines.append(_("Next step: check that the network is connected and review its DNS settings."))
         if (result.get("gateway") and result.get("gateway_latency_ms") is None

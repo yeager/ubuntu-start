@@ -1901,11 +1901,16 @@ def run_network_diagnostics(timeout: float = 3.0) -> dict[str, str | float | Non
         "gateway_error": None,
         "gateway_mac": None, "gateway_vendor": None,
     }
-    route = _run_local(["ip", "route", "show", "default"], timeout)
-    default = parse_default_route(route.stdout) if route and route.returncode == 0 else None
-    if not default:
-        route = _run_local(["ip", "-6", "route", "show", "default"], timeout)
+    ip_command = shutil.which("ip")
+    default = None
+    if ip_command:
+        route = _run_local(["ip", "route", "show", "default"], timeout)
         default = parse_default_route(route.stdout) if route and route.returncode == 0 else None
+        if not default:
+            route = _run_local(["ip", "-6", "route", "show", "default"], timeout)
+            default = parse_default_route(route.stdout) if route and route.returncode == 0 else None
+    else:
+        result["gateway_error"] = "ip-not-installed"
     if default:
         gateway, interface = default
         family = "-6" if ipaddress.ip_address(gateway).version == 6 else "-4"
@@ -1928,11 +1933,12 @@ def run_network_diagnostics(timeout: float = 3.0) -> dict[str, str | float | Non
             else:
                 result["gateway_error"] = "no-response"
                 result["gateway_test_duration_ms"] = round((time.monotonic() - start) * 1000, 1)
-        neighbor = _run_local(["ip", family, "neigh", "show", "to", gateway, "dev", interface], timeout)
-        mac = parse_neighbor_mac(neighbor.stdout) if neighbor and neighbor.returncode == 0 else None
-        result["gateway_mac"] = mac
-        result["gateway_vendor"] = lookup_oui_vendor(mac)
-    else:
+        if ip_command:
+            neighbor = _run_local(["ip", family, "neigh", "show", "to", gateway, "dev", interface], timeout)
+            mac = parse_neighbor_mac(neighbor.stdout) if neighbor and neighbor.returncode == 0 else None
+            result["gateway_mac"] = mac
+            result["gateway_vendor"] = lookup_oui_vendor(mac)
+    elif result["gateway_error"] != "ip-not-installed":
         result["gateway_error"] = "no-default-route"
 
     start = time.monotonic()

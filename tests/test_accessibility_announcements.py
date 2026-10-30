@@ -852,6 +852,20 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         button.set_sensitive.assert_called_once_with(True)
         self.app.announce_to_screen_reader.assert_called_once_with(status, message)
 
+    def test_missing_iproute2_is_not_described_as_no_default_gateway(self):
+        button = Mock()
+        status = Mock()
+
+        UbuntuStart.show_network_diagnostic_result(
+            self.app, button, status,
+            {"dns_latency_ms": 14.2, "gateway": None, "gateway_error": "ip-not-installed"},
+        )
+
+        message = status.set_text.call_args.args[0]
+        self.assertIn("The iproute2 package is not installed", message)
+        self.assertIn("install iproute2", message)
+        self.assertNotIn("No default gateway was found", message)
+
     def test_manual_audio_refresh_announces_both_endpoints_once(self):
         output = Mock()
         output.get_title.return_value = "Speaker output"

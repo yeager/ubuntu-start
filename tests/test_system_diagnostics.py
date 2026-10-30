@@ -1481,6 +1481,20 @@ class DisplayConnectorTests(unittest.TestCase):
 
 
 class LocalDiagnosticsTests(unittest.TestCase):
+    @patch("system_diagnostics.shutil.which", side_effect=lambda command: "/usr/bin/resolvectl" if command == "resolvectl" else None)
+    @patch("system_diagnostics._run_local")
+    @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 1.025])
+    def test_missing_iproute2_is_not_reported_as_a_missing_gateway(self, _clock, run, _which):
+        run.return_value = subprocess.CompletedProcess([], 0, "93.184.216.34 STREAM ubuntu.com\n", "")
+
+        result = run_network_diagnostics()
+
+        self.assertEqual(result["gateway_error"], "ip-not-installed")
+        self.assertIsNone(result["gateway"])
+        self.assertEqual(result["dns_latency_ms"], 25.0)
+        self.assertEqual(run.call_count, 1)
+        self.assertEqual(run.call_args.args[0][-2:], ["query", "ubuntu.com"])
+
     def test_parses_upgrade_and_held_back_counts_from_apt_simulation(self):
         output = """NOTE: This is only a simulation!
 Inst package-one [1.0] (1.1 repo [amd64])
@@ -1914,7 +1928,7 @@ Inst package-two [2.0] (2.1 repo [amd64])
             "--type=A", "query", "ubuntu.com",
         ])
 
-    @patch("system_diagnostics.shutil.which", side_effect=lambda command: "/usr/bin/resolvectl" if command == "resolvectl" else None)
+    @patch("system_diagnostics.shutil.which", side_effect=lambda command: f"/usr/bin/{command}" if command in {"resolvectl", "ip"} else None)
     @patch("system_diagnostics.lookup_oui_vendor", return_value=None)
     @patch("system_diagnostics._run_local")
     @patch("system_diagnostics.time.monotonic", side_effect=[5.0, 5.075])
@@ -1953,7 +1967,7 @@ Inst package-two [2.0] (2.1 repo [amd64])
         self.assertEqual(result["dns_test_duration_ms"], 80.0)
         self.assertIsNone(result["dns_latency_ms"])
 
-    @patch("system_diagnostics.shutil.which", side_effect=lambda command: "/usr/bin/ping" if command == "ping" else None)
+    @patch("system_diagnostics.shutil.which", side_effect=lambda command: f"/usr/bin/{command}" if command in {"ping", "ip"} else None)
     @patch("system_diagnostics.lookup_oui_vendor", return_value=None)
     @patch("system_diagnostics._run_local")
     @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 2.0, 2.02, 2.02])
@@ -1994,7 +2008,7 @@ Inst package-two [2.0] (2.1 repo [amd64])
             "--type=A", "query", "ubuntu.com",
         ])
 
-    @patch("system_diagnostics.shutil.which", return_value=None)
+    @patch("system_diagnostics.shutil.which", side_effect=lambda command: "/usr/bin/ip" if command == "ip" else None)
     @patch("system_diagnostics.lookup_oui_vendor", return_value=None)
     @patch("system_diagnostics._run_local")
     @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 1.03])

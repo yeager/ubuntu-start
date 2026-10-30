@@ -3629,6 +3629,14 @@ msgid "Gateway MAC address is not available in the local neighbor table."
 msgstr ""
 
 #: src/ubuntu_start.py:1905
+msgid "The iproute2 package is not installed, so the default gateway could not be checked."
+msgstr ""
+
+#: src/ubuntu_start.py:1906
+msgid "Ask your administrator to install iproute2, then run the network test again."
+msgstr ""
+
+#: src/ubuntu_start.py:1908
 msgid "No default gateway was found."
 msgstr ""
 

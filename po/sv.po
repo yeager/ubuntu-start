@@ -4292,6 +4292,14 @@ msgid "Gateway MAC address is not available in the local neighbor table."
 msgstr "Gatewayens MAC-adress finns inte i den lokala grannlistan."
 
 #: src/ubuntu_start.py:1905
+msgid "The iproute2 package is not installed, so the default gateway could not be checked."
+msgstr "Paketet iproute2 är inte installerat, så det gick inte att kontrollera standardgatewayen."
+
+#: src/ubuntu_start.py:1906
+msgid "Ask your administrator to install iproute2, then run the network test again."
+msgstr "Be administratören installera iproute2 och kör sedan nätverkstestet igen."
+
+#: src/ubuntu_start.py:1908
 msgid "No default gateway was found."
 msgstr "Hittade ingen standardgateway."
 
