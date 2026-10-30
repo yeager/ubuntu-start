@@ -2,7 +2,8 @@ import unittest
 from unittest.mock import Mock, call, patch
 
 from ubuntu_start import (
-    Adw, Gdk, GLib, Gtk, GUIDES, SYSTEM_GUIDES, UbuntuStart,
+    Adw, Gdk, GLib, Gtk, FIRST_RUN_TASKS, FIRST_RUN_TASK_IDS, GUIDES,
+    SYSTEM_GUIDES, UbuntuStart,
     add_benchmark_comparison_note, desktop_connection_label, format_milliseconds,
 )
 from guide_search import find_guide_matches
@@ -37,6 +38,7 @@ class BackupAppAnnouncementTests(unittest.TestCase):
         open_button.set_sensitive.assert_called_once_with(True)
         app.announce_to_screen_reader.assert_called_once_with(status, message)
 
+
     def test_installed_backup_without_launcher_disables_open_button(self):
         app = Mock()
         status = Mock()
@@ -66,6 +68,45 @@ class BackupAppAnnouncementTests(unittest.TestCase):
         )
         status.set_text.assert_called_once_with(message)
         app.announce_to_screen_reader.assert_called_once_with(status, message)
+
+
+class FirstRunBackupChecklistTests(unittest.TestCase):
+    def test_checklist_entries_match_persisted_task_ids(self):
+        self.assertEqual({task[0] for task in FIRST_RUN_TASKS}, FIRST_RUN_TASK_IDS)
+
+    def test_backup_setup_is_in_the_first_run_checklist_and_opens_internal_guide(self):
+        task = next(task for task in FIRST_RUN_TASKS if task[0] == "backups")
+        self.assertEqual(task[1], "Set up backups")
+        self.assertEqual(task[3], ("guide", "Set up backups"))
+
+        app = Mock()
+        app.system_guide_chooser = Mock()
+        app.main_stack = Mock()
+        UbuntuStart.open_target(app, task[3])
+
+        expected_index = next(
+            index for index, guide in enumerate(SYSTEM_GUIDES)
+            if guide[0] == "Set up backups"
+        )
+        app.system_guide_chooser.set_selected.assert_called_once_with(expected_index)
+        app.main_stack.set_visible_child_name.assert_called_once_with("System guides")
+
+    def test_security_advice_is_in_the_first_run_checklist_and_opens_internal_guide(self):
+        task = next(task for task in FIRST_RUN_TASKS if task[0] == "security")
+        self.assertEqual(task[1], "Improve everyday security")
+        self.assertEqual(task[3], ("guide", "Improve everyday security"))
+
+        app = Mock()
+        app.system_guide_chooser = Mock()
+        app.main_stack = Mock()
+        UbuntuStart.open_target(app, task[3])
+
+        expected_index = next(
+            index for index, guide in enumerate(SYSTEM_GUIDES)
+            if guide[0] == "Improve everyday security"
+        )
+        app.system_guide_chooser.set_selected.assert_called_once_with(expected_index)
+        app.main_stack.set_visible_child_name.assert_called_once_with("System guides")
 
 
 class AccessibilityAnnouncementTests(unittest.TestCase):

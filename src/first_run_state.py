@@ -12,6 +12,8 @@ TASK_IDS = frozenset({
     "language-keyboard",
     "network",
     "updates",
+    "backups",
+    "security",
     "sound-display",
     "privacy",
     "accessibility",

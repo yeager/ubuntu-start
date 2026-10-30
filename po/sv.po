@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Ubuntu Start 0.3.42\n"
+"Project-Id-Version: Ubuntu Start 0.3.46\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
 "POT-Creation-Date: 2026-10-30 08:30+0100\n"
 "PO-Revision-Date: 2026-10-28 15:18+0100\n"
@@ -6384,6 +6384,22 @@ msgstr "Lokalt skrivbord"
 #: data/se.danielnylander.UbuntuStart.desktop:3
 msgid "Get started with Ubuntu and troubleshoot devices"
 msgstr "Kom igång med Ubuntu och felsök anslutna enheter"
+
+#: src/ubuntu_start.py
+msgid "Choose a separate backup location and make sure you can restore a file."
+msgstr "Välj en separat plats för säkerhetskopian och kontrollera att du kan återställa en fil."
+
+#: src/ubuntu_start.py
+msgid "Open the backup setup guide"
+msgstr "Öppna guiden om säkerhetskopiering"
+
+#: src/ubuntu_start.py
+msgid "Review updates, account protection, app permissions and safe browsing."
+msgstr "Se över uppdateringar, kontoskydd, appbehörigheter och säker surfning."
+
+#: src/ubuntu_start.py
+msgid "Open the everyday security guide"
+msgstr "Öppna guiden om säkerhet i vardagen"
 
 #~ msgid ""
 #~ "Open the drive menu and choose SMART Data & Self-Tests. Read the overall "

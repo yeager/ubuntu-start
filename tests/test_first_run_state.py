@@ -16,9 +16,9 @@ class FirstRunStateTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "state" / "first-run.json"
 
-            self.assertTrue(save_completed_tasks({"network", "accessibility"}, path))
+            self.assertTrue(save_completed_tasks({"network", "backups", "security", "accessibility"}, path))
 
-            self.assertEqual(load_completed_tasks(path), {"network", "accessibility"})
+            self.assertEqual(load_completed_tasks(path), {"network", "backups", "security", "accessibility"})
             self.assertEqual(path.stat().st_mode & 0o777, 0o600)
             self.assertEqual(path.parent.stat().st_mode & 0o777, 0o700)
 

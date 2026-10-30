@@ -29,6 +29,47 @@ gettext.bindtextdomain(DOMAIN, LOCALEDIR)
 gettext.textdomain(DOMAIN)
 _ = gettext.gettext
 
+FIRST_RUN_TASKS = [
+    (
+        "language-keyboard", _("Language and keyboard"),
+        _("Choose your display language, region and keyboard layout."),
+        ("settings", "keyboard"),
+    ),
+    (
+        "network", _("Internet connection"),
+        _("Connect to Wi-Fi or a wired network."), ("settings", "wifi"),
+    ),
+    (
+        "updates", _("Updates"),
+        _("Check for system updates and restart if Ubuntu asks you to."),
+        ("app", "update-manager"),
+    ),
+    (
+        "backups", _("Set up backups"),
+        _("Choose a separate backup location and make sure you can restore a file."),
+        ("guide", "Set up backups"),
+    ),
+    (
+        "security", _("Improve everyday security"),
+        _("Review updates, account protection, app permissions and safe browsing."),
+        ("guide", "Improve everyday security"),
+    ),
+    (
+        "sound-display", _("Sound and display"),
+        _("Choose speakers, microphone and monitor settings."), ("settings", "sound"),
+    ),
+    (
+        "privacy", _("Privacy and screen lock"),
+        _("Review app permissions and automatic screen locking."),
+        ("settings", "privacy"),
+    ),
+    (
+        "accessibility", _("Accessibility"),
+        _("Adjust text size, magnification, screen reader and keyboard access."),
+        ("settings", "universal-access"),
+    ),
+]
+
 GUIDES = [
     (_("Sound and microphones"), "sound", [
         (_("Choose the right devices"), _("Open Sound Settings and select the speakers or headphones you want to use.")),
@@ -468,37 +509,7 @@ class UbuntuStart(Adw.Application):
             _("Work through these steps at your own pace. Your checklist is saved privately on this computer."),
             include_rows=False,
         )
-        tasks = [
-            (
-                "language-keyboard", _("Language and keyboard"),
-                _("Choose your display language, region and keyboard layout."),
-                ("settings", "keyboard"),
-            ),
-            (
-                "network", _("Internet connection"),
-                _("Connect to Wi-Fi or a wired network."), ("settings", "wifi"),
-            ),
-            (
-                "updates", _("Updates"),
-                _("Check for system updates and restart if Ubuntu asks you to."),
-                ("app", "update-manager"),
-            ),
-            (
-                "sound-display", _("Sound and display"),
-                _("Choose speakers, microphone and monitor settings."),
-                ("settings", "sound"),
-            ),
-            (
-                "privacy", _("Privacy and screen lock"),
-                _("Review app permissions and automatic screen locking."),
-                ("settings", "privacy"),
-            ),
-            (
-                "accessibility", _("Accessibility"),
-                _("Adjust text size, magnification, screen reader and keyboard access."),
-                ("settings", "universal-access"),
-            ),
-        ]
+        tasks = FIRST_RUN_TASKS
         self.first_run_completed = load_completed_tasks() & FIRST_RUN_TASK_IDS
         self.first_run_tasks = tasks
         self.first_run_checks = {}
@@ -532,6 +543,12 @@ class UbuntuStart(Adw.Application):
                 _("Open Software Updater")
                 if target == ("app", "update-manager") else _("Open Settings")
             )
+            if target[0] == "guide":
+                button_label = (
+                    _("Open the backup setup guide")
+                    if value == "Set up backups"
+                    else _("Open the everyday security guide")
+                )
             button = Gtk.Button(label=button_label, valign=Gtk.Align.CENTER)
             button.connect("clicked", lambda *_args, selected=target: self.open_target(selected))
             task_content.append(button)
@@ -639,6 +656,8 @@ class UbuntuStart(Adw.Application):
             self.open_terminal()
         elif kind == "app-center":
             self.confirm_app_center()
+        elif kind == "guide":
+            self.open_system_guide(value)
         elif kind == "external":
             self.confirm_external_link(
                 value,
@@ -1880,13 +1899,19 @@ class UbuntuStart(Adw.Application):
         self.system_guide_chooser.set_selected(guide_index)
         self.main_stack.set_visible_child_name(_("System guides"))
 
-    def open_security_guide(self):
+    def open_system_guide(self, guide_title):
         guide_index = next(
-            index for index, (title, _target, _action, _steps) in enumerate(SYSTEM_GUIDES)
-            if title == _("Improve everyday security")
+            (index for index, (title, _target, _action, _steps) in enumerate(SYSTEM_GUIDES)
+             if title == _(guide_title)),
+            None,
         )
+        if guide_index is None:
+            return
         self.system_guide_chooser.set_selected(guide_index)
         self.main_stack.set_visible_child_name(_("System guides"))
+
+    def open_security_guide(self):
+        self.open_system_guide("Improve everyday security")
 
     def open_security_documentation(self):
         self.confirm_external_link(
