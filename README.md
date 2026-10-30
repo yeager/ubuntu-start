@@ -124,6 +124,8 @@ NetworkManager, Bluetooth, audio, storage, battery and hardware summaries use lo
 
 ## Validation
 
+Version `0.3.56` matches saved CPU benchmark results to the processor and architecture, so scores are compared only with the same hardware. The stored fingerprint is a hash and does not contain raw CPU model text.
+
 Version `0.3.55` adds a searchable guide to checking and installing Ubuntu firmware updates safely. It covers device support, administrator approval for managed computers, backups, laptop power and avoiding interruptions. All 382 unit tests passed on `trv2` with Ubuntu 26.10.
 
 Version `0.3.54` adds advice about avoiding unsolicited remote-support scams.
