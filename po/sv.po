@@ -1867,6 +1867,17 @@ msgid ""
 "available. Never share passwords or sign-in codes."
 msgstr "Använd ett långt och unikt lösenord för datorn och en lösenordshanterare för dina konton. Aktivera flerfaktorsinloggning för konton på nätet när det erbjuds. Dela aldrig lösenord eller inloggningskoder."
 
+#: src/ubuntu_start.py:232
+msgid "Prepare account recovery"
+msgstr "Förbered kontoåterställning"
+
+#: src/ubuntu_start.py:232
+msgid "For online accounts, keep recovery details up to date and store any "
+"multi-factor backup codes somewhere private and secure. Use the service’s "
+"official recovery process; never share recovery codes with someone who "
+"contacts you."
+msgstr "Håll återställningsuppgifterna för onlinekonton aktuella och förvara reservkoder för flerfaktorsinloggning privat och säkert. Följ tjänstens officiella återställningsrutin. Dela aldrig återställningskoder med någon som kontaktar dig."
+
 #: src/ubuntu_start.py:234
 msgid "Lock the screen when you step away"
 msgstr "Lås skärmen när du går ifrån datorn"

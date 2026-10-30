@@ -1554,6 +1554,17 @@ msgid ""
 "available. Never share passwords or sign-in codes."
 msgstr ""
 
+#: src/ubuntu_start.py:232
+msgid "Prepare account recovery"
+msgstr ""
+
+#: src/ubuntu_start.py:232
+msgid "For online accounts, keep recovery details up to date and store any "
+"multi-factor backup codes somewhere private and secure. Use the service’s "
+"official recovery process; never share recovery codes with someone who "
+"contacts you."
+msgstr ""
+
 #: src/ubuntu_start.py:234
 msgid "Lock the screen when you step away"
 msgstr ""
