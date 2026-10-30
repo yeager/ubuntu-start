@@ -1641,6 +1641,12 @@ msgstr ""
 msgid "From a trusted device, change the affected account password, sign out other sessions and review recovery details and recent sign-ins. Contact your organization's administrator for a work account. If you suspect the Ubuntu computer itself is compromised, disconnect it from networks and seek trusted technical help before entering more passwords."
 msgstr ""
 
+msgid "If you suspect malware or ransomware"
+msgstr ""
+
+msgid "Stop using the affected computer for online accounts and disconnect it from Wi-Fi or wired networks if you can do so safely. Do not delete files, run cleanup tools, pay a ransom or connect backup drives. Use a separate trusted device to contact your organization's administrator or a reputable support professional. Restore files only from a known-good backup after the computer has been checked."
+msgstr ""
+
 #: src/ubuntu_start.py:238
 msgid ""
 "Check unexpected messages and download links through a separate trusted "

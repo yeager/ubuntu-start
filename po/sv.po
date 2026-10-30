@@ -1951,6 +1951,12 @@ msgstr "Secure Boot kan bidra till att hindra opålitliga startprogram från att
 msgid "If you suspect an account was compromised"
 msgstr "Om du misstänker att ett konto har kapats"
 
+msgid "If you suspect malware or ransomware"
+msgstr "Om du misstänker skadlig kod eller utpressningsprogram"
+
+msgid "Stop using the affected computer for online accounts and disconnect it from Wi-Fi or wired networks if you can do so safely. Do not delete files, run cleanup tools, pay a ransom or connect backup drives. Use a separate trusted device to contact your organization's administrator or a reputable support professional. Restore files only from a known-good backup after the computer has been checked."
+msgstr "Sluta använda den drabbade datorn för onlinekonton och koppla bort den från wifi eller trådbundna nätverk om det kan göras säkert. Radera inga filer, kör inga rensningsverktyg, betala ingen lösensumma och anslut inga säkerhetskopior. Använd en annan betrodd enhet för att kontakta organisationens administratör eller en ansedd supporttekniker. Återställ filer från en säkerhetskopia som du vet är ren först efter att datorn har kontrollerats."
+
 msgid "From a trusted device, change the affected account password, sign out other sessions and review recovery details and recent sign-ins. Contact your organization's administrator for a work account. If you suspect the Ubuntu computer itself is compromised, disconnect it from networks and seek trusted technical help before entering more passwords."
 msgstr "Byt lösenord för det berörda kontot från en betrodd enhet, logga ut övriga sessioner och kontrollera återställningsuppgifter och senaste inloggningar. Kontakta organisationens administratör om det gäller ett arbetskonto. Om du misstänker att själva Ubuntu-datorn har utsatts för intrång bör du koppla bort nätverket och söka hjälp från en betrodd tekniker innan du skriver in fler lösenord."
 
