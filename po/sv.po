@@ -1864,8 +1864,10 @@ msgstr "Skydda ditt konto"
 msgid ""
 "Use a long, unique password for your computer and a password manager for "
 "accounts. Turn on multi-factor authentication for online accounts when "
-"available. Never share passwords or sign-in codes."
-msgstr "Använd ett långt och unikt lösenord för datorn och en lösenordshanterare för dina konton. Aktivera flerfaktorsinloggning för konton på nätet när det erbjuds. Dela aldrig lösenord eller inloggningskoder."
+"available. For important accounts, prefer phishing-resistant sign-in such "
+"as passkeys or security keys when supported. Never share passwords or "
+"sign-in codes."
+msgstr "Använd ett långt och unikt lösenord för datorn och en lösenordshanterare för konton. Aktivera flerfaktorsinloggning för onlinekonton när det går. För viktiga konton väljer du helst en inloggningsmetod som står emot nätfiske, till exempel passnyckel eller säkerhetsnyckel, om tjänsten stöder den. Dela aldrig lösenord eller inloggningskoder."
 
 #: src/ubuntu_start.py:232
 msgid "Prepare account recovery"

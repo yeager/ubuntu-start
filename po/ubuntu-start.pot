@@ -1551,7 +1551,9 @@ msgstr ""
 msgid ""
 "Use a long, unique password for your computer and a password manager for "
 "accounts. Turn on multi-factor authentication for online accounts when "
-"available. Never share passwords or sign-in codes."
+"available. For important accounts, prefer phishing-resistant sign-in such "
+"as passkeys or security keys when supported. Never share passwords or "
+"sign-in codes."
 msgstr ""
 
 #: src/ubuntu_start.py:232
