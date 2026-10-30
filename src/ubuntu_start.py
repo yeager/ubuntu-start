@@ -227,6 +227,16 @@ SYSTEM_GUIDES = [
         (_("Test the lock and sign-in"), _("Press Super+L to lock the screen, then unlock it using your usual sign-in method. Keep your account password available in case another sign-in method is unavailable.")),
         (_("Know what screen locking protects"), _("Locking protects an open session when you step away; it does not sign you out, and it does not encrypt files on the disk. Keep backups, and use disk encryption when you need protection for files on a powered-off or lost computer.")),
     ]),
+    (_("Improve everyday security"), ("settings", "privacy"), _("Open Privacy & Security Settings"), [
+        (_("Install Ubuntu security updates"), _("Open Software Updater regularly, review the proposed changes and install updates from Ubuntu. Check Software & Updates for automatic security update settings; available options and names can vary by release.")),
+        (_("Choose software carefully"), _("Prefer Ubuntu App Center or official Ubuntu repositories. Check the publisher and requested permissions before installing an app. Avoid installers and drivers from websites you do not trust.")),
+        (_("Protect your account"), _("Use a long, unique password for your computer and a password manager for accounts. Turn on multi-factor authentication for online accounts when available. Never share passwords or sign-in codes.")),
+        (_("Lock the screen when you step away"), _("Press Super+L to lock your session and set a practical automatic lock delay in Settings. Screen locking protects an open session, but it does not encrypt files on a powered-off or lost computer.")),
+        (_("Review privacy and sharing settings"), _("Open Privacy & Security in Settings and review app permissions, location access, remote desktop and file sharing. Turn off access you do not use. Panel names vary between Ubuntu releases; ask your administrator before changing a managed computer.")),
+        (_("Back up important files"), _("Keep a current backup on a separate drive or trusted backup service, and check that you can restore a file. Disk encryption can protect files on a powered-off or lost computer; plan it before installation, and do not try to enable it on an existing system without a verified backup and trusted instructions.")),
+        (_("Understand the firewall before changing it"), _("Ubuntu’s ufw firewall tool may be disabled by default. Do not enable firewall rules blindly: they can affect remote desktop, SSH, file sharing or printers. Review Ubuntu’s firewall guide or ask your administrator before changing network access.")),
+        (_("Treat links and terminal commands with care"), _("Check unexpected messages and download links through a separate trusted route. Do not run commands or installers you do not understand, especially commands that ask for sudo or change security settings.")),
+    ]),
     (_("Magnify part of the screen"), ("settings", "universal-access"), _("Open Accessibility Settings"), [
         (_("Open the Zoom section"), _("In Settings, choose Accessibility, then open Zoom.")),
         (_("Turn on Desktop Zoom"), _("Switch on Desktop Zoom and move the pointer to the screen edge to explore the magnified area.")),
@@ -1752,6 +1762,14 @@ class UbuntuStart(Adw.Application):
         self.system_guide_chooser.set_selected(guide_index)
         self.main_stack.set_visible_child_name(_("System guides"))
 
+    def open_security_guide(self):
+        guide_index = next(
+            index for index, (title, _target, _action, _steps) in enumerate(SYSTEM_GUIDES)
+            if title == _("Improve everyday security")
+        )
+        self.system_guide_chooser.set_selected(guide_index)
+        self.main_stack.set_visible_child_name(_("System guides"))
+
     def show_usb_status(self, button, status_label, device_rows, devices, announce=False):
         button.set_sensitive(True)
         while (child := device_rows.get_first_child()) is not None:
@@ -3040,6 +3058,12 @@ class UbuntuStart(Adw.Application):
             _("Find trusted instructions and prepare useful details when you ask others for help."),
         )
         self.row(rows, _("Ubuntu Desktop guide"), _("Official help for settings, accessibility, networks and common tasks."), _("Open guide"), lambda: self.open_uri("https://help.ubuntu.com/stable/ubuntu-help/"))
+        self.row(rows, _("Security and privacy guide"), _("Practical steps for updates, trusted apps, account protection, backups and network access."), _("Read security guide"), lambda: self.open_security_guide())
+        self.row(rows, _("Ubuntu security documentation"), _("Official guidance on security updates, firewalls and Ubuntu security features."), _("Open security documentation"), lambda: self.confirm_external_link(
+            "https://ubuntu.com/security",
+            _("Open Ubuntu security documentation?"),
+            _("This opens Ubuntu’s official security website in your browser. The website receives a normal web request and can see your IP address."),
+        ))
         self.row(rows, _("Ubuntu release lifecycle"), _("Check standard support periods for LTS and interim releases."), _("View support periods"), lambda: self.confirm_external_link(
             "https://ubuntu.com/about/release-cycle",
             _("Open Ubuntu release information?"),
