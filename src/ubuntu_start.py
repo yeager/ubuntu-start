@@ -515,9 +515,14 @@ class UbuntuStart(Adw.Application):
         self.first_run_tasks = tasks
         self.first_run_checks = {}
         self.first_run_progress = Gtk.Label(xalign=0, wrap=True)
+        self.first_run_progress_bar = Gtk.ProgressBar(hexpand=True)
+        self.first_run_progress_bar.update_property(
+            [Gtk.AccessibleProperty.LABEL], [_("Checklist progress")],
+        )
         self.first_run_save_status = Gtk.Label(xalign=0, wrap=True)
         checklist_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
         box.append(self.first_run_progress)
+        box.append(self.first_run_progress_bar)
         box.append(checklist_rows)
         for task_id, title, subtitle, target in tasks:
             row = Gtk.ListBoxRow()
@@ -618,6 +623,7 @@ class UbuntuStart(Adw.Application):
             completed=completed, total=total,
         )
         self.first_run_progress.set_text(message)
+        self.first_run_progress_bar.set_fraction(completed / total if total else 0.0)
         if announce:
             self.announce_to_screen_reader(self.first_run_progress, message)
 

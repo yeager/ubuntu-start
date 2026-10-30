@@ -72,6 +72,22 @@ class BackupAppAnnouncementTests(unittest.TestCase):
 
 
 class FirstRunBackupChecklistTests(unittest.TestCase):
+    def test_checklist_progress_updates_text_and_visual_fraction(self):
+        app = Mock()
+        app.first_run_completed = {"network", "security"}
+        app.first_run_tasks = [None] * 8
+        app.first_run_progress = Mock()
+        app.first_run_progress_bar = Mock()
+
+        UbuntuStart.update_first_run_progress(app, announce=True)
+
+        message = "Setup progress: 2 of 8 steps complete."
+        app.first_run_progress.set_text.assert_called_once_with(message)
+        app.first_run_progress_bar.set_fraction.assert_called_once_with(0.25)
+        app.announce_to_screen_reader.assert_called_once_with(
+            app.first_run_progress, message,
+        )
+
     def test_checklist_entries_match_persisted_task_ids(self):
         self.assertEqual({task[0] for task in FIRST_RUN_TASKS}, FIRST_RUN_TASK_IDS)
 

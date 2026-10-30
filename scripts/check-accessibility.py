@@ -380,6 +380,11 @@ def main() -> int:
                     missing.append(f"Swedish accessible checklist checkbox: {task}")
                 for button_name in sorted(checklist_buttons - checklist_button_controls):
                     missing.append(f"Swedish checklist guide button: {button_name}")
+                if not any(
+                    role == "progress bar" and name == "Framsteg i checklistan"
+                    for role, name, _node in entries
+                ):
+                    missing.append("Swedish checklist progress bar")
             if missing:
                 print(f"Missing Swedish AT-SPI entries: {missing}", file=sys.stderr)
                 return 1
@@ -474,6 +479,11 @@ def main() -> int:
                         )
                     for task in sorted(checklist_tasks - checklist_controls):
                         missing.append(f"accessible checklist checkbox: {task}")
+                    if not any(
+                        role == "progress bar" and name == "Checklist progress"
+                        for role, name, _node in entries
+                    ):
+                        missing.append("accessible checklist progress bar")
 
                     checklist_guide_buttons = {
                         "Open the everyday security guide",
