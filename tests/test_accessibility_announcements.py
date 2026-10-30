@@ -5,6 +5,7 @@ from ubuntu_start import (
     Adw, Gdk, GLib, Gtk, FIRST_RUN_TASKS, FIRST_RUN_TASK_IDS, GUIDES,
     SYSTEM_GUIDES, UbuntuStart,
     add_benchmark_comparison_note, desktop_connection_label, format_milliseconds,
+    cpu_sample_range_note,
 )
 from guide_search import find_guide_matches
 
@@ -1747,6 +1748,20 @@ class InternetTestResultTests(unittest.TestCase):
 
 
 class BenchmarkResultInterpretationTests(unittest.TestCase):
+    def test_cpu_result_explains_variation_between_the_three_samples(self):
+        self.assertEqual(
+            cpu_sample_range_note({
+                "samples": 3,
+                "sample_min_iterations_per_second": 900,
+                "sample_max_iterations_per_second": 1100,
+            }),
+            "The three CPU sample scores ranged from 900 to 1100 iterations/second. "
+            "If the range is wide, repeat under similar conditions before comparing.",
+        )
+
+    def test_cpu_sample_range_note_is_omitted_when_measurements_are_incomplete(self):
+        self.assertEqual(cpu_sample_range_note({"samples": 2}), "")
+
     def test_comparison_note_asks_users_to_compare_multiple_runs(self):
         self.assertEqual(
             add_benchmark_comparison_note("CPU score: +1.0 %"),

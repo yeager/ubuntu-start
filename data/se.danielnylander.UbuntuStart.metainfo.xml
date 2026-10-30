@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.51" date="2026-10-30">
+      <description>
+        <p>Shows the minimum and maximum of the three CPU benchmark samples, helping users spot an inconsistent run before comparing scores.</p>
+        <p xml:lang="sv">Visar lägsta och högsta CPU-resultatet bland de tre mätningarna. Då ser du om körningen varierade mycket och bör upprepas före en jämförelse.</p>
+      </description>
+    </release>
     <release version="0.3.50" date="2026-10-30">
       <description>
         <p>Adds a direct shortcut to Network Settings beneath the DNS and gateway diagnostic results.</p>

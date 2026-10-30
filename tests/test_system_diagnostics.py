@@ -243,6 +243,11 @@ class BackupToolTests(unittest.TestCase):
         self.assertGreater(result["iterations"], 0)
         self.assertGreater(result["duration_seconds"], 0)
         self.assertGreater(result["iterations_per_second"], 0)
+        self.assertGreater(result["sample_min_iterations_per_second"], 0)
+        self.assertGreaterEqual(
+            result["sample_max_iterations_per_second"],
+            result["sample_min_iterations_per_second"],
+        )
         self.assertEqual(result["samples"], 3)
 
     @patch("system_diagnostics._run_cpu_benchmark_sample")
@@ -258,6 +263,8 @@ class BackupToolTests(unittest.TestCase):
 
         self.assertEqual(result["iterations"], 800)
         self.assertEqual(result["iterations_per_second"], 2000)
+        self.assertEqual(result["sample_min_iterations_per_second"], 1000)
+        self.assertEqual(result["sample_max_iterations_per_second"], 5000)
         self.assertEqual(result["samples"], 3)
         self.assertEqual(run_sample.call_count, 4)
 

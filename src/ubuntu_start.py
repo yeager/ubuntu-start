@@ -1507,6 +1507,9 @@ class UbuntuStart(Adw.Application):
                 message = add_benchmark_comparison_note(message)
             else:
                 message = _("Single-thread CPU baseline: {score} iterations/second (median of three samples over {duration} seconds). Run again after a change to compare.").format(score=score, duration=result["duration_seconds"])
+            sample_note = cpu_sample_range_note(result)
+            if sample_note:
+                message += "\n" + sample_note
             previous_cpu_score["value"] = score
             saved = save_benchmark_baseline(
                 "cpu", score, result["duration_seconds"],
@@ -3801,6 +3804,22 @@ def add_benchmark_comparison_note(message: str) -> str:
     return message + "\n" + _(
         "Results can vary between runs. Compare several runs under similar conditions before drawing conclusions."
     )
+
+
+def cpu_sample_range_note(result: dict[str, float | int]) -> str:
+    """Describe the range of the three internal CPU samples, when available."""
+    low = result.get("sample_min_iterations_per_second")
+    high = result.get("sample_max_iterations_per_second")
+    if (
+        result.get("samples") != 3
+        or not isinstance(low, (int, float)) or isinstance(low, bool) or low <= 0
+        or not isinstance(high, (int, float)) or isinstance(high, bool) or high < low
+    ):
+        return ""
+    return _(
+        "The three CPU sample scores ranged from {low} to {high} iterations/second. "
+        "If the range is wide, repeat under similar conditions before comparing."
+    ).format(low=round(low), high=round(high))
 
 
 def format_milliseconds(value: int | float) -> str:

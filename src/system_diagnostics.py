@@ -1386,6 +1386,8 @@ def run_cpu_benchmark(duration_seconds: float = 1.0) -> dict[str, float | int]:
         "iterations": iterations,
         "duration_seconds": round(warmup_elapsed + measured_elapsed, 3),
         "iterations_per_second": round(statistics.median(sample_rates)) if sample_rates else 0,
+        "sample_min_iterations_per_second": round(min(sample_rates)) if sample_rates else 0,
+        "sample_max_iterations_per_second": round(max(sample_rates)) if sample_rates else 0,
         "samples": len(sample_rates),
     }
 
