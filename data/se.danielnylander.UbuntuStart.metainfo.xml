@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.53" date="2026-10-30">
+      <description>
+        <p>Displays checklist completion as a percentage inside the progress bar so it remains visible even when no steps are complete.</p>
+        <p xml:lang="sv">Visar checklistans förlopp i procent i förloppsindikatorn, så att det syns även när inga steg är klara.</p>
+      </description>
+    </release>
     <release version="0.3.52" date="2026-10-30">
       <description>
         <p>Adds a visual progress bar to the first-run checklist.</p>

@@ -515,7 +515,7 @@ class UbuntuStart(Adw.Application):
         self.first_run_tasks = tasks
         self.first_run_checks = {}
         self.first_run_progress = Gtk.Label(xalign=0, wrap=True)
-        self.first_run_progress_bar = Gtk.ProgressBar(hexpand=True)
+        self.first_run_progress_bar = Gtk.ProgressBar(hexpand=True, show_text=True)
         self.first_run_progress_bar.update_property(
             [Gtk.AccessibleProperty.LABEL], [_("Checklist progress")],
         )
@@ -623,7 +623,9 @@ class UbuntuStart(Adw.Application):
             completed=completed, total=total,
         )
         self.first_run_progress.set_text(message)
-        self.first_run_progress_bar.set_fraction(completed / total if total else 0.0)
+        fraction = completed / total if total else 0.0
+        self.first_run_progress_bar.set_fraction(fraction)
+        self.first_run_progress_bar.set_text(f"{round(fraction * 100)}%")
         if announce:
             self.announce_to_screen_reader(self.first_run_progress, message)
 

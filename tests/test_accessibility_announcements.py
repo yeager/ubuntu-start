@@ -84,6 +84,7 @@ class FirstRunBackupChecklistTests(unittest.TestCase):
         message = "Setup progress: 2 of 8 steps complete."
         app.first_run_progress.set_text.assert_called_once_with(message)
         app.first_run_progress_bar.set_fraction.assert_called_once_with(0.25)
+        app.first_run_progress_bar.set_text.assert_called_once_with("25%")
         app.announce_to_screen_reader.assert_called_once_with(
             app.first_run_progress, message,
         )
