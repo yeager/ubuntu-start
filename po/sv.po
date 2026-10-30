@@ -4232,6 +4232,11 @@ msgstr "Gateway: {address}"
 msgid "Gateway response: {ms} ms"
 msgstr "Svar från gateway: {ms} ms"
 
+#: src/ubuntu_start.py:1885
+#, python-brace-format
+msgid "Ping test completed in {ms} ms"
+msgstr "Pingtestet slutfördes på {ms} ms"
+
 #: src/ubuntu_start.py:1884
 msgid ""
 "The ping tool is not installed. Check that the iputils-ping package is "
