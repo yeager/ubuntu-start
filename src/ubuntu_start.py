@@ -238,7 +238,7 @@ SYSTEM_GUIDES = [
         (_("Lock the screen when you step away"), _("Press Super+L to lock your session and set a practical automatic lock delay in Settings. Screen locking protects an open session, but it does not encrypt files on a powered-off or lost computer.")),
         (_("Review privacy and sharing settings"), _("Open Privacy & Security in Settings and review app permissions, location access, remote desktop and file sharing. Turn off access you do not use. Panel names vary between Ubuntu releases; ask your administrator before changing a managed computer.")),
         (_("Back up important files"), _("Keep a current backup on a separate drive or trusted backup service, and check that you can restore a file. Disconnect a backup drive when it is not in use, so mistakes or malware cannot immediately affect it. Disk encryption can protect files on a powered-off or lost computer; plan it before installation, and do not try to enable it on an existing system without a verified backup and trusted instructions.")),
-        (_("Understand the firewall before changing it"), _("Ubuntu’s ufw firewall tool may be disabled by default. Do not enable firewall rules blindly: they can affect remote desktop, SSH, file sharing or printers. Review Ubuntu’s firewall guide or ask your administrator before changing network access.")),
+        (_("Understand the firewall before changing it"), _("Ubuntu Desktop does not always include a firewall management tool, and UFW may not be installed or enabled. This app checks UFW only; it cannot tell whether another firewall is active. Do not install or enable a firewall blindly: rules can affect remote desktop, SSH, file sharing or printers. Read Ubuntu’s firewall guide or ask your administrator before changing network access.")),
         (_("Treat links and terminal commands with care"), _("Check unexpected messages and download links through a separate trusted route. Do not run commands or installers you do not understand, especially commands that ask for sudo or change security settings.")),
         (_("Spot suspicious messages and sign-in pages"), _("Be cautious of unexpected urgency, payment requests, attachments and links asking you to sign in. Open the service using a bookmark or by typing its known address yourself. Check the address carefully, and never ignore a browser certificate warning to continue.")),
         (_("Check Secure Boot status"), _("Secure Boot can help prevent untrusted boot software from loading. Check its status in the Security section of Network and hardware. If it is off, consult your computer manufacturer or administrator before changing firmware settings; some drivers or managed setups may need extra steps.")),
@@ -3322,6 +3322,21 @@ class UbuntuStart(Adw.Application):
         self.row(rows, _("Ubuntu Desktop guide"), _("Official help for settings, accessibility, networks and common tasks."), _("Open guide"), lambda: self.open_uri("https://help.ubuntu.com/stable/ubuntu-help/"))
         self.row(rows, _("Security and privacy guide"), _("Practical steps for updates, trusted apps, account protection, backups and network access."), _("Read security guide"), lambda: self.open_security_guide())
         self.row(rows, _("Ubuntu security documentation"), _("Official guidance on security updates, firewalls and Ubuntu security features."), _("Open security documentation"), lambda: self.open_security_documentation())
+        self.row(rows, _("Ubuntu automatic security updates"), _("How Ubuntu installs security updates automatically and how to review the settings."), _("Read update guidance"), lambda: self.confirm_external_link(
+            "https://documentation.ubuntu.com/security/security-updates/",
+            _("Open Ubuntu update guidance?"),
+            _("This opens Ubuntu’s official security update documentation in your browser. The website receives a normal web request and can see your IP address."),
+        ))
+        self.row(rows, _("Ubuntu guide to staying safe online"), _("Learn about safer web browsing, suspicious messages and network access."), _("Read online safety guide"), lambda: self.confirm_external_link(
+            "https://help.ubuntu.com/stable/ubuntu-help/net-security.html.en",
+            _("Open Ubuntu online safety guidance?"),
+            _("This opens Ubuntu’s official desktop help in your browser. The website receives a normal web request and can see your IP address."),
+        ))
+        self.row(rows, _("Ubuntu firewall help"), _("Understand when firewall rules may be needed and how they affect network services."), _("Read firewall guide"), lambda: self.confirm_external_link(
+            "https://help.ubuntu.com/stable/ubuntu-help/net-firewall-on-off.html.en",
+            _("Open Ubuntu firewall guidance?"),
+            _("This opens Ubuntu’s official desktop help in your browser. The website receives a normal web request and can see your IP address."),
+        ))
         self.row(rows, _("Ubuntu release lifecycle"), _("Check standard support periods for LTS and interim releases."), _("View support periods"), lambda: self.confirm_external_link(
             "https://ubuntu.com/about/release-cycle",
             _("Open Ubuntu release information?"),

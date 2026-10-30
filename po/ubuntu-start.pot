@@ -1622,10 +1622,7 @@ msgstr ""
 
 #: src/ubuntu_start.py:237
 msgid ""
-"Ubuntu’s ufw firewall tool may be disabled by default. Do not enable "
-"firewall rules blindly: they can affect remote desktop, SSH, file sharing or "
-"printers. Review Ubuntu’s firewall guide or ask your administrator before "
-"changing network access."
+"Ubuntu Desktop does not always include a firewall management tool, and UFW may not be installed or enabled. This app checks UFW only; it cannot tell whether another firewall is active. Do not install or enable a firewall blindly: rules can affect remote desktop, SSH, file sharing or printers. Read Ubuntu’s firewall guide or ask your administrator before changing network access."
 msgstr ""
 
 #: src/ubuntu_start.py:238
@@ -5721,4 +5718,68 @@ msgstr ""
 
 #: src/ubuntu_start.py:921
 msgid "Firewall status: {status}"
+msgstr ""
+
+#: src/ubuntu_start.py:3325
+msgid "Ubuntu automatic security updates"
+msgstr ""
+
+#: src/ubuntu_start.py:3325
+msgid ""
+"How Ubuntu installs security updates automatically and how to review the "
+"settings."
+msgstr ""
+
+#: src/ubuntu_start.py:3325
+msgid "Read update guidance"
+msgstr ""
+
+#: src/ubuntu_start.py:3327
+msgid "Open Ubuntu update guidance?"
+msgstr ""
+
+#: src/ubuntu_start.py:3328
+msgid ""
+"This opens Ubuntu’s official security update documentation in your browser. "
+"The website receives a normal web request and can see your IP address."
+msgstr ""
+
+#: src/ubuntu_start.py:3330
+msgid "Ubuntu guide to staying safe online"
+msgstr ""
+
+#: src/ubuntu_start.py:3330
+msgid "Learn about safer web browsing, suspicious messages and network access."
+msgstr ""
+
+#: src/ubuntu_start.py:3330
+msgid "Read online safety guide"
+msgstr ""
+
+#: src/ubuntu_start.py:3332
+msgid "Open Ubuntu online safety guidance?"
+msgstr ""
+
+#: src/ubuntu_start.py:3333 src/ubuntu_start.py:3338
+msgid ""
+"This opens Ubuntu’s official desktop help in your browser. The website "
+"receives a normal web request and can see your IP address."
+msgstr ""
+
+#: src/ubuntu_start.py:3335
+msgid "Ubuntu firewall help"
+msgstr ""
+
+#: src/ubuntu_start.py:3335
+msgid ""
+"Understand when firewall rules may be needed and how they affect network "
+"services."
+msgstr ""
+
+#: src/ubuntu_start.py:3335
+msgid "Read firewall guide"
+msgstr ""
+
+#: src/ubuntu_start.py:3337
+msgid "Open Ubuntu firewall guidance?"
 msgstr ""

@@ -93,7 +93,9 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
                 self.assertTrue(find_guide_matches(query, entries))
 
         step_text = " ".join(f"{step_title} {description}" for step_title, description in steps)
-        self.assertIn("Do not enable firewall rules blindly", step_text)
+        self.assertIn("Ubuntu Desktop does not always include a firewall management tool", step_text)
+        self.assertIn("This app checks UFW only; it cannot tell whether another firewall is active", step_text)
+        self.assertIn("Do not install or enable a firewall blindly", step_text)
         self.assertIn("Never share passwords or sign-in codes", step_text)
         self.assertIn("do not try to enable it on an existing system", step_text)
         self.assertIn("Disconnect a backup drive when it is not in use", step_text)

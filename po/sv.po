@@ -1935,11 +1935,8 @@ msgstr "Förstå brandväggen innan du ändrar den"
 
 #: src/ubuntu_start.py:237
 msgid ""
-"Ubuntu’s ufw firewall tool may be disabled by default. Do not enable "
-"firewall rules blindly: they can affect remote desktop, SSH, file sharing or "
-"printers. Review Ubuntu’s firewall guide or ask your administrator before "
-"changing network access."
-msgstr "Ubuntus brandväggsverktyg ufw kan vara inaktiverat från början. Aktivera inte regler på måfå: de kan påverka fjärrskrivbord, SSH, fildelning och skrivare. Läs Ubuntus brandväggsguide eller fråga administratören innan du ändrar nätverksåtkomsten."
+"Ubuntu Desktop does not always include a firewall management tool, and UFW may not be installed or enabled. This app checks UFW only; it cannot tell whether another firewall is active. Do not install or enable a firewall blindly: rules can affect remote desktop, SSH, file sharing or printers. Read Ubuntu’s firewall guide or ask your administrator before changing network access."
+msgstr "Ubuntus skrivbordsversion har inte alltid ett verktyg för att hantera brandväggen, och UFW kanske inte är installerat eller aktiverat. Appen kontrollerar bara UFW och kan inte avgöra om en annan brandvägg är aktiv. Installera eller aktivera inte en brandvägg på måfå: regler kan påverka fjärrskrivbord, SSH, fildelning och skrivare. Läs Ubuntus brandväggsguide eller fråga administratören innan du ändrar nätverksåtkomsten."
 
 #: src/ubuntu_start.py:238
 msgid "Treat links and terminal commands with care"
@@ -7040,3 +7037,67 @@ msgstr "Det gick inte att läsa UFW-statusen."
 
 msgid "Firewall status: {status}"
 msgstr "Brandväggsstatus: {status}"
+
+#: src/ubuntu_start.py:3325
+msgid "Ubuntu automatic security updates"
+msgstr "Automatiska säkerhetsuppdateringar i Ubuntu"
+
+#: src/ubuntu_start.py:3325
+msgid ""
+"How Ubuntu installs security updates automatically and how to review the "
+"settings."
+msgstr "Läs om hur Ubuntu installerar säkerhetsuppdateringar automatiskt och hur du granskar inställningarna."
+
+#: src/ubuntu_start.py:3325
+msgid "Read update guidance"
+msgstr "Läs om uppdateringar"
+
+#: src/ubuntu_start.py:3327
+msgid "Open Ubuntu update guidance?"
+msgstr "Öppna Ubuntus information om uppdateringar?"
+
+#: src/ubuntu_start.py:3328
+msgid ""
+"This opens Ubuntu’s official security update documentation in your browser. "
+"The website receives a normal web request and can see your IP address."
+msgstr "Det här öppnar Ubuntus officiella dokumentation om säkerhetsuppdateringar i webbläsaren. Webbplatsen tar emot en vanlig webbförfrågan och kan se din IP-adress."
+
+#: src/ubuntu_start.py:3330
+msgid "Ubuntu guide to staying safe online"
+msgstr "Ubuntus guide till säkrare internetanvändning"
+
+#: src/ubuntu_start.py:3330
+msgid "Learn about safer web browsing, suspicious messages and network access."
+msgstr "Läs om säkrare webbsurfning, misstänkta meddelanden och nätverksåtkomst."
+
+#: src/ubuntu_start.py:3330
+msgid "Read online safety guide"
+msgstr "Läs säkerhetsråden"
+
+#: src/ubuntu_start.py:3332
+msgid "Open Ubuntu online safety guidance?"
+msgstr "Öppna Ubuntus säkerhetsråd för internet?"
+
+#: src/ubuntu_start.py:3333 src/ubuntu_start.py:3338
+msgid ""
+"This opens Ubuntu’s official desktop help in your browser. The website "
+"receives a normal web request and can see your IP address."
+msgstr "Det här öppnar Ubuntus officiella skrivbordshjälp i webbläsaren. Webbplatsen tar emot en vanlig webbförfrågan och kan se din IP-adress."
+
+#: src/ubuntu_start.py:3335
+msgid "Ubuntu firewall help"
+msgstr "Ubuntus brandväggshjälp"
+
+#: src/ubuntu_start.py:3335
+msgid ""
+"Understand when firewall rules may be needed and how they affect network "
+"services."
+msgstr "Läs när brandväggsregler kan behövas och hur de påverkar nätverkstjänster."
+
+#: src/ubuntu_start.py:3335
+msgid "Read firewall guide"
+msgstr "Läs brandväggsguiden"
+
+#: src/ubuntu_start.py:3337
+msgid "Open Ubuntu firewall guidance?"
+msgstr "Öppna Ubuntus brandväggsråd?"
