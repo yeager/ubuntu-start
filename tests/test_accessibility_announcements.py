@@ -82,6 +82,7 @@ class FirstRunBackupChecklistTests(unittest.TestCase):
         app = Mock()
         app.system_guide_chooser = Mock()
         app.main_stack = Mock()
+        app.open_system_guide = lambda title: UbuntuStart.open_system_guide(app, title)
         UbuntuStart.open_target(app, task[3])
 
         expected_index = next(
@@ -99,6 +100,7 @@ class FirstRunBackupChecklistTests(unittest.TestCase):
         app = Mock()
         app.system_guide_chooser = Mock()
         app.main_stack = Mock()
+        app.open_system_guide = lambda title: UbuntuStart.open_system_guide(app, title)
         UbuntuStart.open_target(app, task[3])
 
         expected_index = next(

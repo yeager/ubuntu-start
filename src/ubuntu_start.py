@@ -1911,7 +1911,7 @@ class UbuntuStart(Adw.Application):
         self.main_stack.set_visible_child_name(_("System guides"))
 
     def open_security_guide(self):
-        self.open_system_guide("Improve everyday security")
+        UbuntuStart.open_system_guide(self, "Improve everyday security")
 
     def open_security_documentation(self):
         self.confirm_external_link(
