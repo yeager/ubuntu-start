@@ -31,7 +31,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contributor guidance and the maintain
 
 - First steps for language, networking, updates, sound, display and privacy.
 - Everyday tips for search, window management and Files, plus guidance on backups and choosing trusted app sources.
-- A security and privacy guide covering updates, trusted software, account safety, phishing, lost devices, backups, firewall basics and what to do if you suspect malware or ransomware.
+- A security and privacy guide covering updates, trusted software, account safety, phishing, public Wi-Fi, lost devices, backups, firewall basics and what to do if you suspect malware or ransomware.
 - A first-run checklist for language and keyboard, network, updates, security, backups, sound and display, privacy and accessibility. Security and backup steps open their in-app guides. Users mark steps complete themselves; progress is saved locally in a private file and can be reset at any time.
 - Search device checks and step-by-step system guides together, then open a matching guide directly. Topics include sound, Bluetooth, batteries, USB devices, printers, displays/graphics, keyboards, touchpads, Wi-Fi, Ethernet, VPNs, cameras, storage, fingerprint readers, accessibility and Terminal basics.
 - A searchable PCI troubleshooting guide and local PCI device list show hardware IDs and attached kernel drivers; PCI bridges are omitted and a missing driver is not presented as a confirmed fault.
@@ -131,6 +131,8 @@ Version `0.3.38` shows filesystem-reported available file entries, which can hel
 Version `0.3.37` lists supported resolutions reported by Linux for connected displays, without suggesting which resolution or refresh rate is active.
 
 Version `0.3.46` adds security and backup steps to the first-run checklist, each opening its guide inside Ubuntu Start.
+
+Version `0.3.47` adds practical public Wi-Fi advice, including checking hotspot details, choosing a safer connection for sensitive tasks and reviewing sharing settings.
 
 Version `0.3.45` expands everyday security guidance and reports when the daily automatic-upgrade timer last ran.
 

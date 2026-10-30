@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Ubuntu Start 0.3.46\n"
+"Project-Id-Version: Ubuntu Start 0.3.47\n"
 "Report-Msgid-Bugs-To: https://github.com/yeager/ubuntu-start/issues\n"
-"POT-Creation-Date: 2026-10-30 10:10+0100\n"
+"POT-Creation-Date: 2026-10-30 14:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1673,6 +1673,14 @@ msgstr ""
 
 #: src/ubuntu_start.py:239
 msgid "Be cautious of unexpected urgency, payment requests, attachments and links asking you to sign in. Open the service using a bookmark or by typing its known address yourself. Check the address carefully, and never ignore a browser certificate warning to continue."
+msgstr ""
+
+#: src/ubuntu_start.py:287
+msgid "Use public Wi-Fi carefully"
+msgstr ""
+
+#: src/ubuntu_start.py:287
+msgid "Confirm the network name and sign-in steps with the venue; look-alike hotspots can be misleading. For sensitive tasks, prefer your own mobile hotspot or a VPN from your organization or a provider you trust. A VPN does not make a fake hotspot or sign-in page trustworthy. In Settings, review Sharing and turn off remote desktop or file sharing you do not need."
 msgstr ""
 
 #: src/ubuntu_start.py:241

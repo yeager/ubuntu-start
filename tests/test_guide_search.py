@@ -109,7 +109,7 @@ class SecurityGuideSearchTests(unittest.TestCase):
             "password account", "administrator prompts", "passkey requests",
             "firewall", "backup", "privacy sharing", "Secure Boot",
             "compromised account", "suspicious messages", "computer stolen",
-            "malware ransomware",
+            "malware ransomware", "public Wi-Fi hotspot VPN",
         ):
             with self.subTest(query=query):
                 self.assertTrue(find_guide_matches(query, self.entries))
@@ -132,6 +132,10 @@ class SecurityGuideSearchTests(unittest.TestCase):
             "disconnect it from Wi-Fi or wired networks",
             "Do not delete files, run cleanup tools, pay a ransom or connect backup drives",
             "Restore files only from a known-good backup",
+            "Confirm the network name and sign-in steps with the venue",
+            "prefer your own mobile hotspot or a VPN from your organization",
+            "A VPN does not make a fake hotspot or sign-in page trustworthy",
+            "turn off remote desktop or file sharing you do not need",
         )
         for advice in expected_advice:
             with self.subTest(advice=advice):
