@@ -70,6 +70,16 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contributor guidance and the maintain
 - A read-only Secure Boot check uses `mokutil` when installed and explains how firmware state can affect some third-party drivers. Ubuntu Start does not change firmware settings or enroll keys.
 - gettext-based localization with English source strings and a complete Swedish (`sv`) catalog.
 
+## Install from a release
+
+Download the latest `ubuntu-start_<version>-1_all.deb` package from
+[GitHub Releases](https://github.com/yeager/ubuntu-start/releases/latest), then
+install it with APT:
+
+```sh
+sudo apt install ./ubuntu-start_*_all.deb
+```
+
 ## Build and run on Ubuntu
 
 Install the platform dependencies, then build with Meson:
@@ -81,7 +91,7 @@ meson compile -C build
 sudo meson install -C build
 ```
 
-To build an installable Debian package after installing the dependencies, run `scripts/build-deb.sh`. It creates `build/packages/ubuntu-start_0.3.18-1_all.deb`. Install it with `sudo apt install ./build/packages/ubuntu-start_0.3.18-1_all.deb`; APT resolves the declared GTK and Python runtime dependencies.
+To build an installable Debian package after installing the dependencies, run `scripts/build-deb.sh`. It creates `build/packages/ubuntu-start_<version>-1_all.deb`, using the project version from `meson.build`. Install it with `sudo apt install ./build/packages/ubuntu-start_*_all.deb`; APT resolves the declared GTK and Python runtime dependencies.
 
 The wheel and source distribution are published on [PyPI](https://pypi.org/project/ubuntu-start/). Install the GTK platform dependencies with APT first, then install the package in an isolated environment that can access system PyGObject bindings:
 
