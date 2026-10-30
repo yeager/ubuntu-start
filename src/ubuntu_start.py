@@ -3433,7 +3433,7 @@ GUIDES.extend([
         (_("Compare the connection near the router"), _("Move closer to the router and try the same task again. If it works better nearby, distance or obstacles may be weakening the signal.")),
         (_("Check the active Wi-Fi link"), _("Refresh Network status on the Network and hardware page. When available, signal values closer to 0 dBm are stronger. Receive and transmit rates describe the Wi-Fi link, not your measured internet speed.")),
         (_("Compare another device or service"), _("Try another device on the same Wi-Fi and another app or website. If several devices have trouble, check the router or ask your internet provider. If only this computer is affected, check its adapter and Ubuntu updates.")),
-        (_("Look for nearby channel overlap"), _("The WiFi Analyzer recommendation on the Network and hardware page can help you review nearby signal levels and channel use. It opens an external project page after confirmation; ask the network owner before changing router settings.")),
+        (_("Look for nearby channel overlap"), _("The Wi-Fi guide links to WiFi Analyzer, a separate project for comparing nearby signal levels and channel use. Select View on GitHub to read about it; this opens an external project page after confirmation. Ask the network owner before changing router settings.")),
         (_("Keep private details out of support requests"), _("Share the adapter model, hardware ID and driver if you need help. Do not share the Wi-Fi password or private network details.")),
     ]),
     (_("Wi-Fi is connected but the internet does not work"), "network", [

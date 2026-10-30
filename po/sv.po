@@ -6144,15 +6144,15 @@ msgstr "Undersök störningar från närliggande kanaler"
 
 #: src/ubuntu_start.py:3404
 msgid ""
-"The WiFi Analyzer recommendation on the Network and hardware page can help "
-"you review nearby signal levels and channel use. It opens an external "
-"project page after confirmation; ask the network owner before changing "
-"router settings."
+"The Wi-Fi guide links to WiFi Analyzer, a separate project for comparing "
+"nearby signal levels and channel use. Select View on GitHub to read about "
+"it; this opens an external project page after confirmation. Ask the network "
+"owner before changing router settings."
 msgstr ""
-"WiFi Analyzer-tipset på sidan Nätverk och maskinvara kan hjälpa dig att "
-"undersöka signalstyrka och kanalval i närheten. Efter en bekräftelse öppnas "
-"projektets externa webbsida. Fråga den som ansvarar för nätverket innan du "
-"ändrar routerinställningarna."
+"Wi-Fi-guiden länkar till WiFi Analyzer, ett separat projekt för att jämföra "
+"signalstyrka och kanalval i närheten. Välj Visa på GitHub om du vill läsa "
+"om det. Efter en bekräftelse öppnas projektets webbsida. Fråga "
+"nätverksansvarig innan du ändrar inställningar i routern."
 
 #: src/ubuntu_start.py:3405
 msgid "Keep private details out of support requests"

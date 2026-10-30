@@ -5317,10 +5317,10 @@ msgstr ""
 
 #: src/ubuntu_start.py:3431
 msgid ""
-"The WiFi Analyzer recommendation on the Network and hardware page can help "
-"you review nearby signal levels and channel use. It opens an external "
-"project page after confirmation; ask the network owner before changing "
-"router settings."
+"The Wi-Fi guide links to WiFi Analyzer, a separate project for comparing "
+"nearby signal levels and channel use. Select View on GitHub to read about "
+"it; this opens an external project page after confirmation. Ask the network "
+"owner before changing router settings."
 msgstr ""
 
 #: src/ubuntu_start.py:3432

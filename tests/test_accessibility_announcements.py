@@ -344,9 +344,13 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         ]
 
         matches = find_guide_matches("slow Wi-Fi disconnecting signal channel", entries)
+        text = " ".join(" ".join(entry) for entry in entries)
 
         self.assertTrue(matches)
         self.assertTrue(all(match[2] == "Wi-Fi is slow or keeps disconnecting" for match in matches))
+        self.assertIn("The Wi-Fi guide links to WiFi Analyzer", text)
+        self.assertIn("Select View on GitHub to read about it", text)
+        self.assertIn("Ask the network owner before changing router settings", text)
 
     def test_connected_wifi_without_internet_help_is_searchable(self):
         entries = [
