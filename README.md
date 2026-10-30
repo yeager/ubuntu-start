@@ -122,6 +122,26 @@ NetworkManager, Bluetooth, audio, storage, battery and hardware summaries use lo
 
 ## Validation
 
+Version `0.3.54` adds advice about avoiding unsolicited remote-support scams.
+
+Version `0.3.53` shows checklist completion as a percentage beside the progress bar in both English and Swedish.
+
+Version `0.3.52` adds a visual progress bar to the first-run checklist.
+
+Version `0.3.51` shows the minimum and maximum of the three CPU benchmark samples, helping users spot an inconsistent run before comparing scores.
+
+Version `0.3.50` adds an Open Network Settings shortcut below DNS and gateway test results, so users can review their connection settings after a check.
+
+Version `0.3.49` adds direct security-guide shortcuts to check firewall, root filesystem encryption and Secure Boot status. These checks are read-only and explain where users can review the results in Ubuntu.
+
+Version `0.3.48` adds a shortcut from the automatic security-update status card to Software & Updates, where users can review the update settings.
+
+Version `0.3.47` adds practical public Wi-Fi advice, including checking hotspot details, choosing a safer connection for sensitive tasks and reviewing sharing settings.
+
+Version `0.3.46` adds security and backup steps to the first-run checklist, each opening its guide inside Ubuntu Start.
+
+Version `0.3.45` expands everyday security guidance and reports when the daily automatic-upgrade timer last ran.
+
 Version `0.3.41` explains why performance scores can vary between runs and strengthens release checks across supported Ubuntu versions.
 
 Version `0.3.40` sends the optional DNS test through systemd-resolved with its cache and local host synthesis disabled. This checks the configured DNS resolver instead of accepting a cached result or an `/etc/hosts` entry.
@@ -131,14 +151,6 @@ Version `0.3.39` includes filesystem-reported file-entry availability in support
 Version `0.3.38` shows filesystem-reported available file entries, which can help explain why files cannot be created despite free byte space.
 
 Version `0.3.37` lists supported resolutions reported by Linux for connected displays, without suggesting which resolution or refresh rate is active.
-
-Version `0.3.46` adds security and backup steps to the first-run checklist, each opening its guide inside Ubuntu Start.
-
-Version `0.3.47` adds practical public Wi-Fi advice, including checking hotspot details, choosing a safer connection for sensitive tasks and reviewing sharing settings.
-
-Version `0.3.54` adds advice about avoiding unsolicited remote-support scams. Version `0.3.53` shows checklist completion as a percentage beside the progress bar in both English and Swedish. Version `0.3.52` adds a visual progress bar to the first-run checklist. Version `0.3.51` shows the minimum and maximum of the three CPU benchmark samples, helping users spot an inconsistent run before comparing scores. Version `0.3.50` adds an Open Network Settings shortcut below DNS and gateway test results, so users can review their connection settings after a check. Version `0.3.49` adds direct security-guide shortcuts to check firewall, root filesystem encryption and Secure Boot status. These checks are read-only and explain where users can review the results in Ubuntu.
-
-Version `0.3.45` expands everyday security guidance and reports when the daily automatic-upgrade timer last ran.
 
 Version `0.3.36` reports battery charging thresholds when Linux exposes them, with read-only guidance for diagnosing a charge limit.
 
@@ -158,8 +170,33 @@ Version `0.3.29` keeps support-report JSON errors inside the editor and announce
 
 Version `0.3.28` validates edited support reports before saving so invalid JSON is not stored with a `.json` extension.
 
-Version `0.3.27` escapes Pango markup in preference-row text so labels containing ampersands display correctly. The AT-SPI check now activates the graphical startup-chain control and verifies that the returned chain is exposed. On `trv2` with Ubuntu 26.10, all 311 unit tests and English and Swedish Xvfb/AT-SPI checks passed for version `0.3.27`. Version `0.3.25` adds an optional, read-only view of systemd's dependency chain to `graphical.target`. It explains the `@` activation time and `+` startup duration, and notes that the chain is one dependency path and service names may reveal installed software. On `trv2` with Ubuntu 26.10, all 308 unit tests, English and Swedish Xvfb/AT-SPI checks, staged installation, Debian package build, 1,079-message Swedish catalog validation and AppStream validation passed for version `0.3.25`. Version `0.3.24` adds a read-only systemd startup timing check and a guide explaining the reported boot phases, what the measurement omits after sign-in, and why one result is not a reason to disable services. On `trv2` with Ubuntu 26.10, all 304 unit tests, English and Swedish Xvfb/AT-SPI checks, staged installation, Debian package build, 1,071-message Swedish catalog validation and AppStream validation passed for version `0.3.24`. Version `0.3.23` adds a searchable Bluetooth audio guide with headset output selection, microphone checks for calls and a plain-language explanation of audio profile changes. On `trv2` with Ubuntu 26.10, all 295 unit tests, English and Swedish Xvfb/AT-SPI checks, staged installation, Debian package build, 1,051-message Swedish catalog validation and AppStream validation passed for version `0.3.23`. Version `0.3.22` adds a guide to automatic screen locking and explains how session locking differs from disk encryption. On `trv2` with Ubuntu 26.10, all 293 unit tests, English and Swedish Xvfb/AT-SPI checks, staged installation, Debian package build, 1,039-message Swedish catalog validation and AppStream validation passed for version `0.3.22`. Version `0.3.21` adds a searchable guide to restore files from Déjà Dup, with a separate-folder-first workflow and advice to verify restored files before replacing current copies. On `trv2` with Ubuntu 26.10, all 292 unit tests, English and Swedish Xvfb/AT-SPI checks, staged installation, Debian package build, 1,028-message Swedish catalog validation and AppStream validation passed for version `0.3.21`. Version `0.3.20` adds a local check for Ubuntu’s Déjà Dup Backups app, with direct next steps while preserving backup privacy. On `trv2` with Ubuntu 26.10, all 291 unit tests, English and Swedish Xvfb/AT-SPI checks, staged installation, Debian package build, 1,017-message Swedish catalog validation and AppStream validation passed for version `0.3.20`. Version `0.3.19` adds a searchable fingerprint-reader guide with GNOME enrollment steps, safe sign-in testing, password fallback and guidance for unsupported readers. Version `0.3.18` added a searchable guide for checking storage-drive health with SMART in GNOME Disks, including backup-first advice, device limitations and next steps for warnings. Version `0.3.17` updates the app, desktop launcher, icon and AppStream identifiers to `se.danielnylander.UbuntuStart`; the Debian package name and local user-data paths remain stable. Version `0.3.16` adds safe, step-by-step guidance for recovering from interrupted package updates, including reviewing APT's proposed changes before confirming them. Version `0.3.15` added beginner-friendly guidance for searching command history with Ctrl+R and clearing the terminal view with Ctrl+L, with a warning not to put secrets in commands. On Ubuntu 26.10, all 277 unit tests, English and Swedish Xvfb/AT-SPI checks, staged installation checks, Debian package build, Swedish catalog validation and AppStream validation passed for version `0.3.15`. Version `0.3.14` adds local/remote desktop-session status to system details and the optional support report, without including remote host details. On Ubuntu 26.10 machine `trv2`, the live logind check identified the active GNOME Wayland session as remote. All 276 unit tests and both English and Swedish Xvfb/AT-SPI checks passed for version `0.3.14`. Version `0.3.13` added step-by-step instructions for inspecting a failed system service and reviewing recent log messages safely. The prior `0.3.13-1` package installed with clean `dpkg --audit` and `apt-get check` results. A live-session check confirmed GNOME Wayland over RDP with Ubuntu Start running in that session. AT-SPI exposed the `Ubuntu Start` frame and reported it as visible. Pixel-level display rendering and physical device behavior remain unverified.
+Version `0.3.27` escapes Pango markup in preference-row text so labels containing ampersands display correctly. The AT-SPI check now activates the graphical startup-chain control and verifies that the returned chain is exposed. On `trv2` with Ubuntu 26.10, all 311 unit tests and English and Swedish Xvfb/AT-SPI checks passed for version `0.3.27`.
 
+Version `0.3.25` adds an optional, read-only view of systemd's dependency chain to `graphical.target`. It explains the `@` activation time and `+` startup duration, and notes that the chain is one dependency path and service names may reveal installed software. On `trv2` with Ubuntu 26.10, all 308 unit tests, English and Swedish Xvfb/AT-SPI checks, staged installation, Debian package build, 1,079-message Swedish catalog validation and AppStream validation passed for version `0.3.25`.
+
+Version `0.3.24` adds a read-only systemd startup timing check and a guide explaining the reported boot phases, what the measurement omits after sign-in, and why one result is not a reason to disable services. On `trv2` with Ubuntu 26.10, all 304 unit tests, English and Swedish Xvfb/AT-SPI checks, staged installation, Debian package build, 1,071-message Swedish catalog validation and AppStream validation passed for version `0.3.24`.
+
+Version `0.3.23` adds a searchable Bluetooth audio guide with headset output selection, microphone checks for calls and a plain-language explanation of audio profile changes. On `trv2` with Ubuntu 26.10, all 295 unit tests, English and Swedish Xvfb/AT-SPI checks, staged installation, Debian package build, 1,051-message Swedish catalog validation and AppStream validation passed for version `0.3.23`.
+
+Version `0.3.22` adds a guide to automatic screen locking and explains how session locking differs from disk encryption. On `trv2` with Ubuntu 26.10, all 293 unit tests, English and Swedish Xvfb/AT-SPI checks, staged installation, Debian package build, 1,039-message Swedish catalog validation and AppStream validation passed for version `0.3.22`.
+
+Version `0.3.21` adds a searchable guide to restore files from Déjà Dup, with a separate-folder-first workflow and advice to verify restored files before replacing current copies. On `trv2` with Ubuntu 26.10, all 292 unit tests, English and Swedish Xvfb/AT-SPI checks, staged installation, Debian package build, 1,028-message Swedish catalog validation and AppStream validation passed for version `0.3.21`.
+
+Version `0.3.20` adds a local check for Ubuntu’s Déjà Dup Backups app, with direct next steps while preserving backup privacy. On `trv2` with Ubuntu 26.10, all 291 unit tests, English and Swedish Xvfb/AT-SPI checks, staged installation, Debian package build, 1,017-message Swedish catalog validation and AppStream validation passed for version `0.3.20`.
+
+Version `0.3.19` adds a searchable fingerprint-reader guide with GNOME enrollment steps, safe sign-in testing, password fallback and guidance for unsupported readers.
+
+Version `0.3.18` added a searchable guide for checking storage-drive health with SMART in GNOME Disks, including backup-first advice, device limitations and next steps for warnings.
+
+Version `0.3.17` updates the app, desktop launcher, icon and AppStream identifiers to `se.danielnylander.UbuntuStart`; the Debian package name and local user-data paths remain stable.
+
+Version `0.3.16` adds safe, step-by-step guidance for recovering from interrupted package updates, including reviewing APT's proposed changes before confirming them.
+
+Version `0.3.15` added beginner-friendly guidance for searching command history with Ctrl+R and clearing the terminal view with Ctrl+L, with a warning not to put secrets in commands. On Ubuntu 26.10, all 277 unit tests, English and Swedish Xvfb/AT-SPI checks, staged installation checks, Debian package build, Swedish catalog validation and AppStream validation passed for version `0.3.15`.
+
+Version `0.3.14` adds local/remote desktop-session status to system details and the optional support report, without including remote host details. On Ubuntu 26.10 machine `trv2`, the live logind check identified the active GNOME Wayland session as remote. All 276 unit tests and both English and Swedish Xvfb/AT-SPI checks passed for version `0.3.14`.
+
+Version `0.3.13` added step-by-step instructions for inspecting a failed system service and reviewing recent log messages safely. The prior `0.3.13-1` package installed with clean `dpkg --audit` and `apt-get check` results. A live-session check confirmed GNOME Wayland over RDP with Ubuntu Start running in that session. AT-SPI exposed the `Ubuntu Start` frame and reported it as visible. Pixel-level display rendering and physical device behavior remain unverified.
 The CI workflow launches the application under Xvfb and checks its AT-SPI tree. On Ubuntu 24.04, 26.04 and 26.10, it verifies that all eight guide pages are named list items, the English and Swedish system-details pages expose the Ubuntu Start version, the root filesystem encryption check button and status row are exposed on the system overview in both languages, the About, USB, video and display controls are named buttons, the Mouse Keys status row is exposed, and Ctrl+F moves keyboard focus to the named guide-search entry; Orca 51 also lists the app on `trv2`. The released app has also passed a local GTK smoke test on Ubuntu 26.10. Earlier checks confirmed search behavior in a live GTK session and the Bluetooth, Wi-Fi, printer, display, privacy, sound and keyboard panel identifiers in GNOME Control Center. The two Ubuntu driver/update utilities were installed with `dpkg -i`; Additional Drivers and Update Manager opened in Swedish, and `dpkg --audit` and `apt-get check` reported no package errors. Those device and utility checks apply to the earlier revision. Xvfb does not verify physical-device behavior, hardware acceleration or GNOME/Wayland rendering.
 
 ## Localization
@@ -196,6 +233,3 @@ The screenshots show the welcome page, English and Swedish first-run checklists,
 ## License
 
 Ubuntu Start is licensed under the GNU General Public License version 3. See [LICENSE](LICENSE).
-
-
-Version `0.3.48` adds a shortcut from the automatic security-update status card to Software & Updates, where users can review the update settings.
