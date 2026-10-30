@@ -121,6 +121,34 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.app.system_guide_chooser.set_selected.assert_called_once_with(expected_index)
         self.app.main_stack.set_visible_child_name.assert_called_once_with("System guides")
 
+    def test_help_security_references_require_confirmation_before_external_access(self):
+        app = Mock()
+        app.page.return_value = (Mock(), Mock())
+        app.system_details.return_value = []
+        rows = []
+
+        def capture_row(_parent, title, _subtitle, action_label=None, callback=None):
+            rows.append((title, action_label, callback))
+
+        app.row.side_effect = capture_row
+        UbuntuStart.make_help(app)
+
+        expected_urls = {
+            "Ubuntu automatic security updates": "https://documentation.ubuntu.com/security/security-updates/",
+            "Ubuntu guide to staying safe online": "https://help.ubuntu.com/stable/ubuntu-help/net-security.html.en",
+            "Ubuntu firewall help": "https://help.ubuntu.com/stable/ubuntu-help/net-firewall-on-off.html.en",
+        }
+        for title, url in expected_urls.items():
+            with self.subTest(title=title):
+                callback = next(callback for row_title, _action, callback in rows if row_title == title)
+                self.assertIsNotNone(callback)
+                app.reset_mock()
+                callback()
+                app.confirm_external_link.assert_called_once()
+                self.assertEqual(app.confirm_external_link.call_args.args[0], url)
+                self.assertIn("can see your IP address", app.confirm_external_link.call_args.args[2])
+                app.open_uri.assert_not_called()
+
     def test_open_security_documentation_requires_confirmation_and_discloses_ip_request(self):
         app = Mock()
 
