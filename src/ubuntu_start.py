@@ -96,6 +96,7 @@ GUIDES = [
     (_("USB devices"), "hardware", [
         (_("Check the USB connection"), _("Make sure the device is powered on. Reconnect it directly to the computer if possible, without a hub.")),
         (_("Refresh the USB device list"), _("Open Network and hardware and refresh Connected USB devices. If the device appears, note its hardware ID and driver.")),
+        (_("Use unknown USB storage carefully"), _("Do not connect a USB drive you found or received unexpectedly. If you must inspect an untrusted drive, avoid opening files or shortcuts and ask a trusted technician to check it in an isolated environment. Ubuntu Start does not scan USB storage for malware.")),
         (_("Try another port or cable"), _("Use another port or cable. Check whether another device works in the same port.")),
         (_("Use hardware details when asking for help"), _("The hardware ID and driver can help support identify the device. Do not share a serial number.")),
     ]),

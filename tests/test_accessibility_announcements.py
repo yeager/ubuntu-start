@@ -69,6 +69,14 @@ class BackupAppAnnouncementTests(unittest.TestCase):
 
 
 class AccessibilityAnnouncementTests(unittest.TestCase):
+    def test_usb_guide_warns_about_untrusted_storage(self):
+        guide = next(guide for guide in GUIDES if guide[0] == "USB devices")
+        _title, _target, steps = guide
+        text = " ".join(f"{title} {description}" for title, description in steps)
+
+        self.assertIn("Do not connect a USB drive you found or received unexpectedly", text)
+        self.assertIn("Ubuntu Start does not scan USB storage for malware", text)
+
     def test_security_guide_is_searchable_and_covers_core_actions(self):
         guide_index, guide = next(
             (index, guide) for index, guide in enumerate(SYSTEM_GUIDES)

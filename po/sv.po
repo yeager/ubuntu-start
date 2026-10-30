@@ -584,6 +584,12 @@ msgstr ""
 msgid "Refresh the USB device list"
 msgstr "Uppdatera listan över USB-enheter"
 
+msgid "Use unknown USB storage carefully"
+msgstr "Var försiktig med okänd USB-lagring"
+
+msgid "Do not connect a USB drive you found or received unexpectedly. If you must inspect an untrusted drive, avoid opening files or shortcuts and ask a trusted technician to check it in an isolated environment. Ubuntu Start does not scan USB storage for malware."
+msgstr "Anslut inte ett USB-minne som du har hittat eller fått oväntat. Om du måste undersöka en USB-enhet som du inte litar på bör du undvika att öppna filer och genvägar och be en betrodd tekniker kontrollera den i en isolerad miljö. Ubuntu Start söker inte igenom USB-lagring efter skadlig kod."
+
 #: src/ubuntu_start.py:98
 msgid ""
 "Open Network and hardware and refresh Connected USB devices. If the device "
