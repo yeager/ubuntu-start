@@ -546,7 +546,7 @@ class UbuntuStart(Adw.Application):
             if target[0] == "guide":
                 button_label = (
                     _("Open the backup setup guide")
-                    if value == "Set up backups"
+                    if target[1] == "Set up backups"
                     else _("Open the everyday security guide")
                 )
             button = Gtk.Button(label=button_label, valign=Gtk.Align.CENTER)
