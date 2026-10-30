@@ -853,6 +853,15 @@ class UbuntuStart(Adw.Application):
             open_button = Gtk.Button(label=action, halign=Gtk.Align.START)
             open_button.connect("clicked", lambda *_args, t=target: self.open_target(t))
             guide_box.append(open_button)
+            if title == _("Improve everyday security"):
+                security_help_button = Gtk.Button(
+                    label=_("Open security documentation"),
+                    halign=Gtk.Align.START,
+                )
+                security_help_button.connect(
+                    "clicked", lambda *_args: self.open_security_documentation(),
+                )
+                guide_box.append(security_help_button)
             guide_stack.add_named(guide_box, f"system-guide-{index}")
         box.append(guide_stack)
 
@@ -1773,6 +1782,13 @@ class UbuntuStart(Adw.Application):
         )
         self.system_guide_chooser.set_selected(guide_index)
         self.main_stack.set_visible_child_name(_("System guides"))
+
+    def open_security_documentation(self):
+        self.confirm_external_link(
+            "https://ubuntu.com/security",
+            _("Open Ubuntu security documentation?"),
+            _("This opens Ubuntu’s official security website in your browser. The website receives a normal web request and can see your IP address."),
+        )
 
     def show_usb_status(self, button, status_label, device_rows, devices, announce=False):
         button.set_sensitive(True)
@@ -3070,11 +3086,7 @@ class UbuntuStart(Adw.Application):
         )
         self.row(rows, _("Ubuntu Desktop guide"), _("Official help for settings, accessibility, networks and common tasks."), _("Open guide"), lambda: self.open_uri("https://help.ubuntu.com/stable/ubuntu-help/"))
         self.row(rows, _("Security and privacy guide"), _("Practical steps for updates, trusted apps, account protection, backups and network access."), _("Read security guide"), lambda: self.open_security_guide())
-        self.row(rows, _("Ubuntu security documentation"), _("Official guidance on security updates, firewalls and Ubuntu security features."), _("Open security documentation"), lambda: self.confirm_external_link(
-            "https://ubuntu.com/security",
-            _("Open Ubuntu security documentation?"),
-            _("This opens Ubuntu’s official security website in your browser. The website receives a normal web request and can see your IP address."),
-        ))
+        self.row(rows, _("Ubuntu security documentation"), _("Official guidance on security updates, firewalls and Ubuntu security features."), _("Open security documentation"), lambda: self.open_security_documentation())
         self.row(rows, _("Ubuntu release lifecycle"), _("Check standard support periods for LTS and interim releases."), _("View support periods"), lambda: self.confirm_external_link(
             "https://ubuntu.com/about/release-cycle",
             _("Open Ubuntu release information?"),

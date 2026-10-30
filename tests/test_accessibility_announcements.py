@@ -103,6 +103,19 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.app.system_guide_chooser.set_selected.assert_called_once_with(expected_index)
         self.app.main_stack.set_visible_child_name.assert_called_once_with("System guides")
 
+    def test_open_security_documentation_requires_confirmation_and_discloses_ip_request(self):
+        app = Mock()
+
+        UbuntuStart.open_security_documentation(app)
+
+        app.confirm_external_link.assert_called_once_with(
+            "https://ubuntu.com/security",
+            "Open Ubuntu security documentation?",
+            "This opens Ubuntu’s official security website in your browser. "
+            "The website receives a normal web request and can see your IP address.",
+        )
+        app.open_uri.assert_not_called()
+
     def test_failed_service_guide_explains_read_only_status_and_log_commands(self):
         guide = next(guide for guide in GUIDES if guide[0] == "A system service is marked failed")
         entries = [
