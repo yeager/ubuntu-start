@@ -262,6 +262,19 @@ def main() -> int:
             if not select_sidebar_page(app, "Nätverk och maskinvara"):
                 missing.append("selectable Swedish Network and hardware page")
             else:
+                settings_button = False
+                settings_deadline = time.monotonic() + 5
+                while time.monotonic() < settings_deadline:
+                    entries = accessible_tree(app)
+                    settings_button = any(
+                        role in BUTTON_ROLES and name == "Öppna Programvara och uppdateringar"
+                        for role, name, _node in entries
+                    )
+                    if settings_button:
+                        break
+                    time.sleep(0.25)
+                if not settings_button:
+                    missing.append("Swedish Software & Updates shortcut on Network and hardware")
                 encryption_button = False
                 encryption_title = False
                 encryption_deadline = time.monotonic() + 5
@@ -475,6 +488,19 @@ def main() -> int:
                 if not select_page("Network and hardware"):
                     missing.append("selectable Network and hardware guide")
                 else:
+                    settings_button = False
+                    settings_deadline = time.monotonic() + 5
+                    while time.monotonic() < settings_deadline:
+                        entries = accessible_tree(app)
+                        settings_button = any(
+                            role in BUTTON_ROLES and name == "Open Software & Updates"
+                            for role, name, _node in entries
+                        )
+                        if settings_button:
+                            break
+                        time.sleep(0.25)
+                    if not settings_button:
+                        missing.append("button: Open Software & Updates on Network and hardware")
                     encryption_button = False
                     encryption_title = False
                     encryption_deadline = time.monotonic() + 5

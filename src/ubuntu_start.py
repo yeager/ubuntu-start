@@ -1180,7 +1180,14 @@ class UbuntuStart(Adw.Application):
                 announce=True,
             ),
         )
+        automatic_updates_open_settings = Gtk.Button(
+            label=_("Open Software & Updates"), halign=Gtk.Align.START,
+        )
+        automatic_updates_open_settings.connect(
+            "clicked", lambda *_: self.open_app("software-properties-gtk"),
+        )
         automatic_updates_box.append(automatic_updates_refresh)
+        automatic_updates_box.append(automatic_updates_open_settings)
         automatic_updates_box.append(automatic_updates_status)
         automatic_updates_box.append(automatic_updates_rows)
         box.append(automatic_updates_box)
