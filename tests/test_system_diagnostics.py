@@ -1,3 +1,4 @@
+import json
 import subprocess
 import tempfile
 import unittest
@@ -431,6 +432,26 @@ class SupportReportTests(unittest.TestCase):
                     {"gateway_error": error, "gateway_latency_ms": None},
                 )
                 self.assertIn('"gateway_reachable": null', report)
+
+    def test_report_rejects_non_finite_negative_and_non_numeric_latencies(self):
+        for value in (float("nan"), float("inf"), -1, True, "12 ms"):
+            with self.subTest(value=value):
+                report = build_support_report(
+                    [("Architecture", "x86_64")],
+                    {
+                        "dns_latency_ms": value,
+                        "dns_test_duration_ms": value,
+                        "gateway_latency_ms": value,
+                        "gateway_test_duration_ms": value,
+                    },
+                )
+                parsed = json.loads(report)
+                checks = parsed["network_checks"]
+                self.assertIsNone(checks["dns_latency_ms"])
+                self.assertIsNone(checks["dns_test_duration_ms"])
+                self.assertIsNone(checks["gateway_latency_ms"])
+                self.assertIsNone(checks["gateway_test_duration_ms"])
+                self.assertIsNone(checks["gateway_reachable"])
 
 
 class AccessibilitySettingsTests(unittest.TestCase):

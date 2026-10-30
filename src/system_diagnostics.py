@@ -2167,19 +2167,27 @@ def build_support_report(
         "system": {label: value for label, value in system_details},
     }
     if diagnostics is not None:
+        def finite_latency(key: str) -> float | None:
+            value = diagnostics.get(key)
+            if isinstance(value, bool) or not isinstance(value, (int, float)):
+                return None
+            numeric = float(value)
+            return numeric if math.isfinite(numeric) and numeric >= 0 else None
+
         # Exclude gateway addresses, interface names and MAC addresses by design.
+        gateway_latency = finite_latency("gateway_latency_ms")
         report["network_checks"] = {
-            "dns_latency_ms": diagnostics.get("dns_latency_ms"),
-            "dns_test_duration_ms": diagnostics.get("dns_test_duration_ms"),
-            "gateway_latency_ms": diagnostics.get("gateway_latency_ms"),
+            "dns_latency_ms": finite_latency("dns_latency_ms"),
+            "dns_test_duration_ms": finite_latency("dns_test_duration_ms"),
+            "gateway_latency_ms": gateway_latency,
             "gateway_latency_is_upper_bound": bool(
                 diagnostics.get("gateway_latency_is_upper_bound", False)
             ),
-            "gateway_test_duration_ms": diagnostics.get("gateway_test_duration_ms"),
+            "gateway_test_duration_ms": finite_latency("gateway_test_duration_ms"),
             # A missed ping may mean ICMP is filtered, not that the gateway is down.
-            "gateway_reachable": True if diagnostics.get("gateway_latency_ms") is not None else None,
+            "gateway_reachable": True if gateway_latency is not None else None,
         }
-    return json.dumps(report, ensure_ascii=False, indent=2) + "\n"
+    return json.dumps(report, ensure_ascii=False, indent=2, allow_nan=False) + "\n"
 
 
 def is_valid_support_report(report_text: str) -> bool:
