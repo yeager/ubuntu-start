@@ -3937,6 +3937,10 @@ msgid ""
 "installed or ask your administrator."
 msgstr ""
 
+#: src/ubuntu_start.py:2100
+msgid "To add it yourself, open Ubuntu App Center, search for iputils-ping, and install it from your configured Ubuntu source."
+msgstr ""
+
 #: src/ubuntu_start.py:2096
 #, python-brace-format
 msgid ""
@@ -3982,12 +3986,12 @@ msgid ""
 "checked."
 msgstr ""
 
-#: src/ubuntu_start.py:2115
-msgid ""
-"Ask your administrator to install iproute2, then run the network test again."
+
+#: src/ubuntu_start.py:2123
+msgid "To add it yourself, open Ubuntu App Center, search for iproute2, and install it from your configured Ubuntu source."
 msgstr ""
 
-#: src/ubuntu_start.py:2117
+#: src/ubuntu_start.py:2125
 msgid "No default gateway was found."
 msgstr ""
 

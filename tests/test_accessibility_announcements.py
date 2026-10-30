@@ -1101,7 +1101,7 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
 
         message = status.set_text.call_args.args[0]
         self.assertIn("The iproute2 package is not installed", message)
-        self.assertIn("install iproute2", message)
+        self.assertIn("open Ubuntu App Center, search for iproute2", message)
         self.assertNotIn("No default gateway was found", message)
 
     def test_manual_audio_refresh_announces_both_endpoints_once(self):
@@ -1667,7 +1667,7 @@ class InternetTestResultTests(unittest.TestCase):
 
         message = status.set_text.call_args.args[0]
         self.assertIn("The ping tool is not installed.", message)
-        self.assertIn("iputils-ping", message)
+        self.assertIn("open Ubuntu App Center, search for iputils-ping", message)
         self.assertNotIn("Gateway did not answer the ping.", message)
         self.assertNotIn("Next step: check the local connection.", message)
 

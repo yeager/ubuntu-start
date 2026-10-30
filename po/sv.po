@@ -4709,6 +4709,10 @@ msgstr ""
 "Pingverktyget är inte installerat. Kontrollera att paketet iputils-ping är "
 "installerat eller fråga systemadministratören."
 
+#: src/ubuntu_start.py:2100
+msgid "To add it yourself, open Ubuntu App Center, search for iputils-ping, and install it from your configured Ubuntu source."
+msgstr "Om du vill lägga till det själv öppnar du Ubuntu App Center, söker efter iputils-ping och installerar det från en konfigurerad Ubuntu-källa."
+
 #: src/ubuntu_start.py:2096
 #, python-brace-format
 msgid ""
@@ -4763,13 +4767,12 @@ msgstr ""
 "Paketet iproute2 är inte installerat, så det gick inte att kontrollera "
 "standardgatewayen."
 
-#: src/ubuntu_start.py:2115
-msgid ""
-"Ask your administrator to install iproute2, then run the network test again."
-msgstr ""
-"Be administratören installera iproute2 och kör sedan nätverkstestet igen."
 
-#: src/ubuntu_start.py:2117
+#: src/ubuntu_start.py:2123
+msgid "To add it yourself, open Ubuntu App Center, search for iproute2, and install it from your configured Ubuntu source."
+msgstr "Om du vill lägga till det själv öppnar du Ubuntu App Center, söker efter iproute2 och installerar det från en konfigurerad Ubuntu-källa."
+
+#: src/ubuntu_start.py:2125
 msgid "No default gateway was found."
 msgstr "Hittade ingen standardgateway."
 

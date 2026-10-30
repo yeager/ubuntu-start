@@ -2097,6 +2097,7 @@ class UbuntuStart(Adw.Application):
                     lines.append(_("Ping test completed in {ms} ms").format(ms=format_milliseconds(duration)))
             elif result.get("gateway_error") == "ping-not-installed":
                 lines.append(_("The ping tool is not installed. Check that the iputils-ping package is installed or ask your administrator."))
+                lines.append(_("To add it yourself, open Ubuntu App Center, search for iputils-ping, and install it from your configured Ubuntu source."))
             elif result.get("gateway_error") == "timeout":
                 elapsed = result.get("gateway_test_duration_ms")
                 if elapsed is not None:
@@ -2119,7 +2120,7 @@ class UbuntuStart(Adw.Application):
         else:
             if result.get("gateway_error") == "ip-not-installed":
                 lines.append(_("The iproute2 package is not installed, so the default gateway could not be checked."))
-                lines.append(_("Ask your administrator to install iproute2, then run the network test again."))
+                lines.append(_("To add it yourself, open Ubuntu App Center, search for iproute2, and install it from your configured Ubuntu source."))
             else:
                 lines.append(_("No default gateway was found."))
                 lines.append(_("Next step: check Wi-Fi or wired connection in Settings. On a managed network, ask the administrator before changing route settings."))
