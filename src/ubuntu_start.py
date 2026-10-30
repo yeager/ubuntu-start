@@ -867,6 +867,11 @@ class UbuntuStart(Adw.Application):
             open_button.connect("clicked", lambda *_args, t=target: self.open_target(t))
             guide_box.append(open_button)
             if title == _("Improve everyday security"):
+                updates_button = Gtk.Button(
+                    label=_("Check automatic update setup"), halign=Gtk.Align.START,
+                )
+                updates_button.connect("clicked", lambda *_: self.open_automatic_updates_status())
+                guide_box.append(updates_button)
                 security_help_button = Gtk.Button(
                     label=_("Open security documentation"),
                     halign=Gtk.Align.START,
@@ -1149,6 +1154,9 @@ class UbuntuStart(Adw.Application):
         automatic_updates_box.append(automatic_updates_status)
         automatic_updates_box.append(automatic_updates_rows)
         box.append(automatic_updates_box)
+        self.automatic_updates_status = automatic_updates_status
+        self.automatic_updates_rows = automatic_updates_rows
+        self.automatic_updates_refresh = automatic_updates_refresh
 
         package_box, _package_rows = self.page(
             _("Package installation health"),
@@ -2532,6 +2540,15 @@ class UbuntuStart(Adw.Application):
             )
 
         threading.Thread(target=read_status, daemon=True).start()
+
+    def open_automatic_updates_status(self):
+        self.main_stack.set_visible_child_name(_("Network and hardware"))
+        self.refresh_automatic_update_status(
+            self.automatic_updates_refresh,
+            self.automatic_updates_status,
+            self.automatic_updates_rows,
+            announce=True,
+        )
 
     def refresh_automatic_update_status(self, button, status_label, update_rows, announce=False):
         button.set_sensitive(False)
