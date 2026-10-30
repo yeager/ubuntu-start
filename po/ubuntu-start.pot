@@ -1525,6 +1525,12 @@ msgstr ""
 msgid "Install Ubuntu security updates"
 msgstr ""
 
+msgid "Check whether updates are waiting"
+msgstr ""
+
+msgid "On Network and hardware, run the cached package update check. If packages are ready to upgrade, open Software Updater to refresh the lists, review the proposed changes and install trusted Ubuntu updates. The check does not refresh lists or install packages."
+msgstr ""
+
 #: src/ubuntu_start.py:231
 msgid ""
 "Open Software Updater regularly, review the proposed changes and install "
@@ -4398,7 +4404,10 @@ msgid "Package lists last updated"
 msgstr ""
 
 #: src/ubuntu_start.py:2733
-msgid "Local package update check complete. No packages were changed."
+msgid "{count} package updates appear in the cached lists. Open Software Updater to refresh the lists and review available updates. Nothing was installed."
+msgstr ""
+
+msgid "No package updates appear in the cached lists. The lists may be out of date; open Software Updater to check for current updates. Nothing was installed."
 msgstr ""
 
 #: src/ubuntu_start.py:2746

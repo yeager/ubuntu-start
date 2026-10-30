@@ -229,6 +229,7 @@ SYSTEM_GUIDES = [
     ]),
     (_("Improve everyday security"), ("settings", "privacy"), _("Open Privacy & Security Settings"), [
         (_("Install Ubuntu security updates"), _("Open Software Updater regularly, review the proposed changes and install updates from Ubuntu. Check Software & Updates for automatic security update settings; available options and names can vary by release.")),
+        (_("Check whether updates are waiting"), _("On Network and hardware, run the cached package update check. If packages are ready to upgrade, open Software Updater to refresh the lists, review the proposed changes and install trusted Ubuntu updates. The check does not refresh lists or install packages.")),
         (_("Choose software carefully"), _("Prefer Ubuntu App Center or official Ubuntu repositories. Check the publisher and requested permissions before installing an app. Avoid installers and drivers from websites you do not trust.")),
         (_("Protect your account"), _("Use a long, unique password for your computer and a password manager for accounts. Turn on multi-factor authentication for online accounts when available. For important accounts, prefer phishing-resistant sign-in such as passkeys or security keys when supported. Never share passwords or sign-in codes.")),
         (_("Prepare account recovery"), _("For online accounts, keep recovery details up to date and store any multi-factor backup codes somewhere private and secure. Use the service’s official recovery process; never share recovery codes with someone who contacts you.")),
@@ -2737,7 +2738,10 @@ class UbuntuStart(Adw.Application):
             else:
                 updated_text = GLib.DateTime.new_from_unix_local(last_updated).format("%x %H:%M")
             self.row(update_rows, _("Package lists last updated"), updated_text)
-            message = _("Local package update check complete. No packages were changed.")
+            if status["upgradeable"]:
+                message = _("{count} package updates appear in the cached lists. Open Software Updater to refresh the lists and review available updates. Nothing was installed.").format(count=status["upgradeable"])
+            else:
+                message = _("No package updates appear in the cached lists. The lists may be out of date; open Software Updater to check for current updates. Nothing was installed.")
 
         status_label.set_text(message)
         if announce:

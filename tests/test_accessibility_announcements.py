@@ -80,7 +80,7 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
             for step_title, description in steps
         ]
 
-        for query in ("security updates", "password account", "firewall", "backup", "privacy sharing", "Secure Boot", "compromised account"):
+        for query in ("security updates", "waiting updates", "password account", "firewall", "backup", "privacy sharing", "Secure Boot", "compromised account"):
             with self.subTest(query=query):
                 self.assertTrue(find_guide_matches(query, entries))
 
@@ -541,10 +541,11 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.app.row.assert_any_call(rows, "Package lists last updated", "Not available")
         self.app.row.assert_any_call(rows, "Restart required", "Required")
         status_label.set_text.assert_called_once_with(
-            "Local package update check complete. No packages were changed.",
+            "4 package updates appear in the cached lists. Open Software Updater to refresh the lists and review available updates. Nothing was installed.",
         )
         self.app.announce_to_screen_reader.assert_called_once_with(
-            status_label, "Local package update check complete. No packages were changed.",
+            status_label,
+            "4 package updates appear in the cached lists. Open Software Updater to refresh the lists and review available updates. Nothing was installed.",
         )
 
     def test_background_apt_update_check_does_not_announce(self):
@@ -561,6 +562,25 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
             "The local package check took too long. Try again later.",
         )
         self.app.announce_to_screen_reader.assert_not_called()
+
+    def test_manual_apt_update_check_with_empty_cache_suggests_refresh(self):
+        button = Mock()
+        status_label = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+        self.app.reset_update_status.side_effect = lambda button, update_rows, required: (
+            UbuntuStart.reset_update_status(self.app, button, update_rows, required)
+        )
+
+        UbuntuStart.show_apt_update_status(
+            self.app, button, status_label, rows,
+            {"upgradeable": 0, "held_back": 0, "last_updated": None}, None,
+            announce=True,
+        )
+
+        status_label.set_text.assert_called_once_with(
+            "No package updates appear in the cached lists. The lists may be out of date; open Software Updater to check for current updates. Nothing was installed.",
+        )
 
     def test_package_health_lists_findings_and_announces_summary(self):
         button = Mock()

@@ -1838,6 +1838,12 @@ msgstr "Öppna integritets- och säkerhetsinställningarna"
 msgid "Install Ubuntu security updates"
 msgstr "Installera säkerhetsuppdateringar för Ubuntu"
 
+msgid "Check whether updates are waiting"
+msgstr "Kontrollera om uppdateringar väntar"
+
+msgid "On Network and hardware, run the cached package update check. If packages are ready to upgrade, open Software Updater to refresh the lists, review the proposed changes and install trusted Ubuntu updates. The check does not refresh lists or install packages."
+msgstr "Kör kontrollen av cachade paketuppdateringar på sidan Nätverk och maskinvara. Om paket kan uppgraderas öppnar du Programuppdatering för att uppdatera paketlistorna, granska ändringarna och installera betrodda Ubuntu-uppdateringar. Kontrollen uppdaterar inte listorna och installerar inga paket."
+
 #: src/ubuntu_start.py:231
 msgid ""
 "Open Software Updater regularly, review the proposed changes and install "
@@ -5113,8 +5119,11 @@ msgid "Package lists last updated"
 msgstr "Paketlistorna uppdaterades senast"
 
 #: src/ubuntu_start.py:2702
-msgid "Local package update check complete. No packages were changed."
-msgstr "Kontrollen av lokala paket är klar. Inga paket har ändrats."
+msgid "{count} package updates appear in the cached lists. Open Software Updater to refresh the lists and review available updates. Nothing was installed."
+msgstr "Enligt de cachade listorna kan {count} paket uppdateras. Öppna Programuppdatering för att uppdatera listorna och granska tillgängliga uppdateringar. Inget installerades."
+
+msgid "No package updates appear in the cached lists. The lists may be out of date; open Software Updater to check for current updates. Nothing was installed."
+msgstr "De cachade listorna visar inga paketuppdateringar. Listorna kan vara inaktuella. Öppna Programuppdatering för att söka efter aktuella uppdateringar. Inget installerades."
 
 #: src/ubuntu_start.py:2715
 msgid "Charging"
