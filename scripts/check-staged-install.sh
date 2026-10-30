@@ -30,6 +30,12 @@ if ! grep -Fqx 'Exec=python3 /usr/libexec/ubuntu-start/ubuntu_start.py' \
     exit 1
 fi
 
+launcher_path=/usr/libexec/ubuntu-start/ubuntu_start.py
+if [ ! -f "$stage_dir$launcher_path" ]; then
+    printf 'Desktop launcher target is not installed: %s\n' "$launcher_path" >&2
+    exit 1
+fi
+
 if ! grep -Fqx "APP_ID = \"$app_id\"" \
     "$stage_dir/usr/libexec/ubuntu-start/ubuntu_start.py"; then
     printf 'Installed application ID does not match the desktop identifier.\n' >&2

@@ -78,6 +78,19 @@ class StagedInstallTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("does not point to the installed application", result.stderr)
 
+    def test_rejects_launcher_when_it_targets_an_uninstalled_script(self):
+        (self.stage / "usr/libexec/ubuntu-start/ubuntu_start.py").write_text(
+            f'APP_ID = "{APP_ID}"\n', encoding="utf-8",
+        )
+        (self.stage / DESKTOP_FILE).write_text(
+            f"[Desktop Entry]\nExec=python3 /usr/libexec/ubuntu-start/launcher.py\n"
+            f"{ICON}\n{SWEDISH_COMMENT}\n",
+            encoding="utf-8",
+        )
+        result = self.run_checker()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Desktop launcher does not point", result.stderr)
+
     def test_rejects_mismatched_python_application_id(self):
         (self.stage / "usr/libexec/ubuntu-start/ubuntu_start.py").write_text(
             'APP_ID = "se.old.UbuntuStart"\n', encoding="utf-8"
