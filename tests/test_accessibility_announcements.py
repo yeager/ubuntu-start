@@ -1103,6 +1103,7 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.assertIn("The iproute2 package is not installed", message)
         self.assertIn("open Ubuntu App Center, search for iproute2", message)
         self.assertNotIn("No default gateway was found", message)
+        self.app.network_tools_app_center_button.set_visible.assert_called_once_with(True)
 
     def test_manual_audio_refresh_announces_both_endpoints_once(self):
         output = Mock()
@@ -1670,6 +1671,22 @@ class InternetTestResultTests(unittest.TestCase):
         self.assertIn("open Ubuntu App Center, search for iputils-ping", message)
         self.assertNotIn("Gateway did not answer the ping.", message)
         self.assertNotIn("Next step: check the local connection.", message)
+        app.network_tools_app_center_button.set_visible.assert_called_once_with(True)
+
+    def test_available_ping_tool_hides_app_center_action(self):
+        app = Mock()
+        button = Mock()
+        status = Mock()
+        result = {
+            "dns_latency_ms": 12.3,
+            "gateway": "192.168.1.1",
+            "gateway_latency_ms": 8.0,
+            "gateway_error": None,
+        }
+
+        UbuntuStart.show_network_diagnostic_result(app, button, status, result)
+
+        app.network_tools_app_center_button.set_visible.assert_called_once_with(False)
 
     def test_ping_timeout_is_explained_without_claiming_network_is_down(self):
         app = Mock()

@@ -1168,6 +1168,14 @@ class UbuntuStart(Adw.Application):
         diagnostic_button.connect("clicked", lambda *_: self.confirm_network_diagnostics(diagnostic_button, diagnostic_status))
         diagnostic_box.append(diagnostic_button)
         diagnostic_box.append(diagnostic_status)
+        self.network_tools_app_center_button = Gtk.Button(
+            label=_("Open Ubuntu App Center"), halign=Gtk.Align.START,
+        )
+        self.network_tools_app_center_button.set_visible(False)
+        self.network_tools_app_center_button.connect(
+            "clicked", lambda *_: self.confirm_app_center(),
+        )
+        diagnostic_box.append(self.network_tools_app_center_button)
         network_settings_button = Gtk.Button(
             label=_("Open Network Settings"), halign=Gtk.Align.START,
         )
@@ -2066,6 +2074,9 @@ class UbuntuStart(Adw.Application):
     def show_network_diagnostic_result(self, button, status_label, result):
         button.set_sensitive(True)
         self.last_network_diagnostics = result
+        self.network_tools_app_center_button.set_visible(
+            result.get("gateway_error") in ("ip-not-installed", "ping-not-installed"),
+        )
         lines = []
         if result.get("dns_latency_ms") is not None:
             lines.append(_("DNS lookup: {ms} ms").format(ms=format_milliseconds(result["dns_latency_ms"])))
