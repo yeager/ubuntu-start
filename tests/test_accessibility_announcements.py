@@ -88,7 +88,7 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
             for step_title, description in steps
         ]
 
-        for query in ("security updates", "waiting updates", "password account", "firewall", "backup", "privacy sharing", "Secure Boot", "compromised account"):
+        for query in ("security updates", "waiting updates", "password account", "firewall", "backup", "privacy sharing", "Secure Boot", "compromised account", "suspicious messages", "computer stolen"):
             with self.subTest(query=query):
                 self.assertTrue(find_guide_matches(query, entries))
 
@@ -99,6 +99,8 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.assertIn("Disconnect a backup drive when it is not in use", step_text)
         self.assertIn("If it is off, consult your computer manufacturer or administrator", step_text)
         self.assertIn("From a trusted device, change the affected account password", step_text)
+        self.assertIn("Check the address carefully, and never ignore a browser certificate warning", step_text)
+        self.assertIn("screen locking alone does not encrypt its storage", step_text)
         self.assertEqual(title, "Improve everyday security")
 
     def test_open_security_guide_selects_the_security_steps(self):

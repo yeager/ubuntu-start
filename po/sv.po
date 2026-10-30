@@ -1961,6 +1961,22 @@ msgid ""
 "commands that ask for sudo or change security settings."
 msgstr "Kontrollera oväntade meddelanden och nedladdningslänkar via en annan betrodd kanal. Kör inte kommandon eller installationsprogram du inte förstår, särskilt sådana som kräver sudo eller ändrar säkerhetsinställningar."
 
+#: src/ubuntu_start.py:239
+msgid "Spot suspicious messages and sign-in pages"
+msgstr "Känn igen misstänkta meddelanden och inloggningssidor"
+
+#: src/ubuntu_start.py:239
+msgid "Be cautious of unexpected urgency, payment requests, attachments and links asking you to sign in. Open the service using a bookmark or by typing its known address yourself. Check the address carefully, and never ignore a browser certificate warning to continue."
+msgstr "Var vaksam på oväntade brådskande uppmaningar, betalningskrav, bilagor och länkar som ber dig logga in. Öppna tjänsten via ett bokmärke eller genom att själv skriva in dess kända adress. Kontrollera adressen noga och ignorera aldrig en certifikatvarning i webbläsaren."
+
+#: src/ubuntu_start.py:241
+msgid "If your computer is lost or stolen"
+msgstr "Om datorn kommer bort eller blir stulen"
+
+#: src/ubuntu_start.py:241
+msgid "From another trusted device, use the official account recovery and device-management services available to you. Change passwords for important accounts, revoke sessions and report a work or school device to its administrator. Disk encryption can help protect data on a powered-off device, but screen locking alone does not encrypt its storage."
+msgstr "Använd en annan betrodd enhet för att komma åt de officiella kontoåterställnings- och enhetshanteringstjänster som finns tillgängliga. Byt lösenord för viktiga konton, återkalla sessioner och anmäl en arbets- eller skoldator till administratören. Diskkryptering kan bidra till att skydda data på en avstängd enhet, men skärmlås krypterar inte lagringen."
+
 #: src/ubuntu_start.py:240
 msgid "Magnify part of the screen"
 msgstr "Förstora en del av skärmen"
