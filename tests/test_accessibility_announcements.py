@@ -88,6 +88,7 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.assertIn("Do not enable firewall rules blindly", step_text)
         self.assertIn("Never share passwords or sign-in codes", step_text)
         self.assertIn("do not try to enable it on an existing system", step_text)
+        self.assertIn("Disconnect a backup drive when it is not in use", step_text)
         self.assertIn("If it is off, consult your computer manufacturer or administrator", step_text)
         self.assertIn("From a trusted device, change the affected account password", step_text)
         self.assertEqual(title, "Improve everyday security")

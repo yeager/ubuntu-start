@@ -1916,11 +1916,12 @@ msgstr "Säkerhetskopiera viktiga filer"
 #: src/ubuntu_start.py:236
 msgid ""
 "Keep a current backup on a separate drive or trusted backup service, and "
-"check that you can restore a file. Disk encryption can protect files on a "
-"powered-off or lost computer; plan it before installation, and do not try to "
-"enable it on an existing system without a verified backup and trusted "
-"instructions."
-msgstr "Ha en aktuell säkerhetskopia på en separat disk eller i en betrodd säkerhetskopieringstjänst. Kontrollera att du kan återställa en fil. Diskkryptering kan skydda filer på en avstängd eller borttappad dator. Planera krypteringen före installationen. Försök inte aktivera den på ett befintligt system utan en verifierad säkerhetskopia och tillförlitliga instruktioner."
+"check that you can restore a file. Disconnect a backup drive when it is not "
+"in use, so mistakes or malware cannot immediately affect it. Disk encryption "
+"can protect files on a powered-off or lost computer; plan it before "
+"installation, and do not try to enable it on an existing system without a "
+"verified backup and trusted instructions."
+msgstr "Ha en aktuell säkerhetskopia på en separat disk eller i en betrodd säkerhetskopieringstjänst. Kontrollera att du kan återställa en fil. Koppla bort backupdisken när den inte används, så att misstag eller skadlig kod inte genast påverkar kopian. Diskkryptering kan skydda filer på en avstängd eller borttappad dator. Planera krypteringen före installationen. Försök inte aktivera den på ett befintligt system utan en verifierad säkerhetskopia och tillförlitliga instruktioner."
 
 #: src/ubuntu_start.py:237
 msgid "Understand the firewall before changing it"

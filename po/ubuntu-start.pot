@@ -1603,10 +1603,11 @@ msgstr ""
 #: src/ubuntu_start.py:236
 msgid ""
 "Keep a current backup on a separate drive or trusted backup service, and "
-"check that you can restore a file. Disk encryption can protect files on a "
-"powered-off or lost computer; plan it before installation, and do not try to "
-"enable it on an existing system without a verified backup and trusted "
-"instructions."
+"check that you can restore a file. Disconnect a backup drive when it is not "
+"in use, so mistakes or malware cannot immediately affect it. Disk encryption "
+"can protect files on a powered-off or lost computer; plan it before "
+"installation, and do not try to enable it on an existing system without a "
+"verified backup and trusted instructions."
 msgstr ""
 
 #: src/ubuntu_start.py:237
