@@ -1968,7 +1968,9 @@ def build_support_report(
         # Exclude gateway addresses, interface names and MAC addresses by design.
         report["network_checks"] = {
             "dns_latency_ms": diagnostics.get("dns_latency_ms"),
+            "dns_test_duration_ms": diagnostics.get("dns_test_duration_ms"),
             "gateway_latency_ms": diagnostics.get("gateway_latency_ms"),
+            "gateway_test_duration_ms": diagnostics.get("gateway_test_duration_ms"),
             # A missed ping may mean ICMP is filtered, not that the gateway is down.
             "gateway_reachable": True if diagnostics.get("gateway_latency_ms") is not None else None,
         }

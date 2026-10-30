@@ -384,7 +384,9 @@ class SupportReportTests(unittest.TestCase):
             [("Ubuntu version", "Ubuntu 24.04"), ("Architecture", "x86_64")],
             {
                 "dns_latency_ms": 12.3,
+                "dns_test_duration_ms": 18.7,
                 "gateway_latency_ms": 0.8,
+                "gateway_test_duration_ms": 2.1,
                 "gateway": "192.168.1.1",
                 "gateway_interface": "wlan0",
                 "gateway_mac": "AA:BB:CC:DD:EE:FF",
@@ -393,6 +395,8 @@ class SupportReportTests(unittest.TestCase):
         )
         self.assertIn("Ubuntu 24.04", report)
         self.assertIn('"dns_latency_ms": 12.3', report)
+        self.assertIn('"dns_test_duration_ms": 18.7', report)
+        self.assertIn('"gateway_test_duration_ms": 2.1', report)
         self.assertIn('"gateway_reachable": true', report)
         for private_value in ("192.168.1.1", "wlan0", "AA:BB:CC:DD:EE:FF", "Example Vendor"):
             self.assertNotIn(private_value, report)
