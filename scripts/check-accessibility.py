@@ -141,6 +141,11 @@ def main() -> int:
         choices=("sv",),
         help="check that a localized UI exposes translated labels through AT-SPI",
     )
+    parser.add_argument(
+        "--screenshot",
+        type=Path,
+        help="capture the live Ubuntu Start window after opening Get started",
+    )
     args = parser.parse_args()
 
     if not os.environ.get("DISPLAY") or not os.environ.get("DBUS_SESSION_BUS_ADDRESS"):
@@ -347,6 +352,24 @@ def main() -> int:
                     }
                     for button_name in sorted(checklist_guide_buttons - checklist_guide_controls):
                         missing.append(f"button: {button_name} on Get started")
+
+                    if args.screenshot:
+                        args.screenshot.parent.mkdir(parents=True, exist_ok=True)
+                        window_search = subprocess.run(
+                            ["xdotool", "search", "--onlyvisible", "--name", "^Ubuntu Start$"],
+                            check=True, capture_output=True, text=True,
+                        )
+                        window_id = window_search.stdout.splitlines()[0]
+                        subprocess.run(
+                            ["xdotool", "windowsize", "--sync", window_id, "1000", "1050"],
+                            check=True,
+                        )
+                        time.sleep(1)
+                        subprocess.run(
+                            ["import", "-window", window_id, str(args.screenshot)],
+                            check=True,
+                        )
+                        print(f"Captured live application screenshot: {args.screenshot}")
 
                     reset_checklist = next(
                         (

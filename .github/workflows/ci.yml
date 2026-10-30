@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Install build dependencies
-        run: sudo apt-get update && sudo apt-get install -y appstream at-spi2-core gettext gir1.2-atspi-2.0 gir1.2-adw-1 gir1.2-gtk-4.0 libadwaita-1-dev meson ninja-build python3-gi xdotool xvfb
+        run: sudo apt-get update && sudo apt-get install -y appstream at-spi2-core gettext gir1.2-atspi-2.0 gir1.2-adw-1 gir1.2-gtk-4.0 imagemagick libadwaita-1-dev meson ninja-build python3-gi xdotool xvfb
       - name: Check Python syntax and GTK imports
         run: |
           python3 -m compileall -q src tests scripts
@@ -42,7 +42,14 @@ jobs:
       - name: Run unit tests
         run: PYTHONPATH=src python3 -m unittest discover -s tests -v
       - name: Check app accessibility and keyboard focus
-        run: xvfb-run -a dbus-run-session -- python3 scripts/check-accessibility.py
+        run: xvfb-run -a dbus-run-session -- python3 scripts/check-accessibility.py --screenshot build/first-run-checklist.png
+      - name: Upload first-run checklist screenshot
+        if: matrix.ubuntu == '26.04'
+        uses: actions/upload-artifact@v7
+        with:
+          name: first-run-checklist-screenshot
+          path: build/first-run-checklist.png
+          if-no-files-found: error
       - name: Check Swedish app localization through AT-SPI
         run: xvfb-run -a dbus-run-session -- python3 scripts/check-accessibility.py --localized-smoke sv
       - name: Build with Meson
