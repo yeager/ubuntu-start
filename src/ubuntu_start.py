@@ -521,6 +521,7 @@ class UbuntuStart(Adw.Application):
         )
         self.first_run_progress_percent = Gtk.Label(xalign=1)
         progress_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        progress_box.set_margin_end(12)
         progress_box.append(self.first_run_progress_bar)
         progress_box.append(self.first_run_progress_percent)
         self.first_run_save_status = Gtk.Label(xalign=0, wrap=True)
