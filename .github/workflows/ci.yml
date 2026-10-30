@@ -26,6 +26,8 @@ jobs:
           PYTHONPATH=src python3 -c "import ubuntu_start"
       - name: Check source translation coverage
         run: python3 scripts/check-translations.py
+      - name: Check README screenshots
+        run: python3 scripts/check-readme-images.py
       - name: Check configured translations
         run: |
           while IFS= read -r language || [ -n "$language" ]; do
