@@ -1266,6 +1266,7 @@ class InternetTestResultTests(unittest.TestCase):
             "dns_latency_ms": 12.3,
             "gateway": "192.168.1.1",
             "gateway_latency_ms": 1.2,
+            "gateway_test_duration_ms": 50.0,
             "gateway_mac": None,
             "gateway_vendor": None,
         }
@@ -1276,6 +1277,7 @@ class InternetTestResultTests(unittest.TestCase):
         message = status.set_text.call_args.args[0]
         self.assertIn("DNS lookup: 12,3 ms", message)
         self.assertIn("Gateway response: 1,2 ms", message)
+        self.assertIn("Ping test completed in 50 ms", message)
 
     def test_network_diagnostics_run_only_after_confirmation(self):
         app = Mock()

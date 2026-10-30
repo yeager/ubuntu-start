@@ -1880,6 +1880,9 @@ class UbuntuStart(Adw.Application):
             lines.append(_("Gateway: {address}").format(address=gateway))
             if result.get("gateway_latency_ms") is not None:
                 lines.append(_("Gateway response: {ms} ms").format(ms=format_milliseconds(result["gateway_latency_ms"])))
+                duration = result.get("gateway_test_duration_ms")
+                if duration is not None:
+                    lines.append(_("Ping test completed in {ms} ms").format(ms=format_milliseconds(duration)))
             elif result.get("gateway_error") == "ping-not-installed":
                 lines.append(_("The ping tool is not installed. Check that the iputils-ping package is installed or ask your administrator."))
             elif result.get("gateway_error") == "timeout":
