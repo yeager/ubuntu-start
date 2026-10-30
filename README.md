@@ -134,7 +134,7 @@ Version `0.3.46` adds security and backup steps to the first-run checklist, each
 
 Version `0.3.47` adds practical public Wi-Fi advice, including checking hotspot details, choosing a safer connection for sensitive tasks and reviewing sharing settings.
 
-Version `0.3.48` adds a shortcut from the automatic security-update status card to Software & Updates, where users can review the update settings.
+Version `0.3.49` adds direct security-guide shortcuts to check firewall, root filesystem encryption and Secure Boot status. These checks are read-only and explain where users can review the results in Ubuntu.
 
 Version `0.3.45` expands everyday security guidance and reports when the daily automatic-upgrade timer last ran.
 
@@ -194,3 +194,6 @@ The screenshots show the welcome page, English and Swedish first-run checklists,
 ## License
 
 Ubuntu Start is licensed under the GNU General Public License version 3. See [LICENSE](LICENSE).
+
+
+Version `0.3.48` adds a shortcut from the automatic security-update status card to Software & Updates, where users can review the update settings.

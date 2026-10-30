@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.49" date="2026-10-30">
+      <description>
+        <p>Adds direct shortcuts from the everyday security guide to read-only firewall, root filesystem encryption and Secure Boot checks.</p>
+        <p xml:lang="sv">Lägg till genvägar från säkerhetsguiden till skrivskyddade kontroller av brandvägg, rotfilsystemskryptering och Secure Boot.</p>
+      </description>
+    </release>
     <release version="0.3.48" date="2026-10-30">
       <description>
         <p>Adds a shortcut from automatic security-update status to Software &amp; Updates for reviewing update settings.</p>

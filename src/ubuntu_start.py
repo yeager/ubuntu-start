@@ -902,6 +902,25 @@ class UbuntuStart(Adw.Application):
                 )
                 updates_button.connect("clicked", lambda *_: self.open_automatic_updates_status())
                 guide_box.append(updates_button)
+                firewall_button = Gtk.Button(
+                    label=_("Check firewall status"), halign=Gtk.Align.START,
+                )
+                firewall_button.connect("clicked", lambda *_: self.open_firewall_status())
+                guide_box.append(firewall_button)
+                encryption_button = Gtk.Button(
+                    label=_("Check root filesystem encryption"), halign=Gtk.Align.START,
+                )
+                encryption_button.connect(
+                    "clicked", lambda *_: self.open_root_encryption_status(),
+                )
+                guide_box.append(encryption_button)
+                secure_boot_button = Gtk.Button(
+                    label=_("Check Secure Boot status"), halign=Gtk.Align.START,
+                )
+                secure_boot_button.connect(
+                    "clicked", lambda *_: self.open_secure_boot_status(),
+                )
+                guide_box.append(secure_boot_button)
                 security_help_button = Gtk.Button(
                     label=_("Open security documentation"),
                     halign=Gtk.Align.START,
@@ -2591,6 +2610,24 @@ class UbuntuStart(Adw.Application):
             self.automatic_updates_status,
             self.automatic_updates_rows,
             announce=True,
+        )
+
+    def open_firewall_status(self):
+        self.main_stack.set_visible_child_name(_("Network and hardware"))
+        self.refresh_firewall_status(
+            self.firewall_refresh_button, self.firewall_status_row, announce=True,
+        )
+
+    def open_root_encryption_status(self):
+        self.main_stack.set_visible_child_name(_("Network and hardware"))
+        self.refresh_root_encryption_status(
+            self.root_encryption_refresh_button, self.root_encryption_row, announce=True,
+        )
+
+    def open_secure_boot_status(self):
+        self.main_stack.set_visible_child_name(_("Drivers"))
+        self.refresh_secure_boot_status(
+            self.secure_boot_refresh_button, self.secure_boot_status_row, announce=True,
         )
 
     def refresh_automatic_update_status(self, button, status_label, update_rows, announce=False):

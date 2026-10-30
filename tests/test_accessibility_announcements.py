@@ -112,6 +112,28 @@ class FirstRunBackupChecklistTests(unittest.TestCase):
 
 
 class AccessibilityAnnouncementTests(unittest.TestCase):
+    def test_security_guide_status_shortcuts_open_the_matching_read_only_checks(self):
+        app = Mock()
+        app.main_stack = Mock()
+
+        UbuntuStart.open_firewall_status(app)
+        app.main_stack.set_visible_child_name.assert_called_with("Network and hardware")
+        app.refresh_firewall_status.assert_called_once_with(
+            app.firewall_refresh_button, app.firewall_status_row, announce=True,
+        )
+
+        app.refresh_firewall_status.reset_mock()
+        UbuntuStart.open_root_encryption_status(app)
+        app.refresh_root_encryption_status.assert_called_once_with(
+            app.root_encryption_refresh_button, app.root_encryption_row, announce=True,
+        )
+
+        UbuntuStart.open_secure_boot_status(app)
+        app.main_stack.set_visible_child_name.assert_called_with("Drivers")
+        app.refresh_secure_boot_status.assert_called_once_with(
+            app.secure_boot_refresh_button, app.secure_boot_status_row, announce=True,
+        )
+
     def test_usb_guide_warns_about_untrusted_storage(self):
         guide = next(guide for guide in GUIDES if guide[0] == "USB devices")
         _title, _target, steps = guide
