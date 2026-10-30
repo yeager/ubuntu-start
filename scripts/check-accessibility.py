@@ -385,6 +385,8 @@ def main() -> int:
                     for role, name, _node in entries
                 ):
                     missing.append("Swedish checklist progress bar")
+                if not any(name == "0%" for _role, name, _node in entries):
+                    missing.append("Swedish checklist progress percentage")
             if missing:
                 print(f"Missing Swedish AT-SPI entries: {missing}", file=sys.stderr)
                 return 1
@@ -484,6 +486,8 @@ def main() -> int:
                         for role, name, _node in entries
                     ):
                         missing.append("accessible checklist progress bar")
+                    if not any(name == "0%" for _role, name, _node in entries):
+                        missing.append("accessible checklist progress percentage")
 
                     checklist_guide_buttons = {
                         "Open the everyday security guide",

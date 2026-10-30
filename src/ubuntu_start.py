@@ -515,14 +515,18 @@ class UbuntuStart(Adw.Application):
         self.first_run_tasks = tasks
         self.first_run_checks = {}
         self.first_run_progress = Gtk.Label(xalign=0, wrap=True)
-        self.first_run_progress_bar = Gtk.ProgressBar(hexpand=True, show_text=True)
+        self.first_run_progress_bar = Gtk.ProgressBar(hexpand=True)
         self.first_run_progress_bar.update_property(
             [Gtk.AccessibleProperty.LABEL], [_("Checklist progress")],
         )
+        self.first_run_progress_percent = Gtk.Label(xalign=1)
+        progress_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        progress_box.append(self.first_run_progress_bar)
+        progress_box.append(self.first_run_progress_percent)
         self.first_run_save_status = Gtk.Label(xalign=0, wrap=True)
         checklist_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
         box.append(self.first_run_progress)
-        box.append(self.first_run_progress_bar)
+        box.append(progress_box)
         box.append(checklist_rows)
         for task_id, title, subtitle, target in tasks:
             row = Gtk.ListBoxRow()
@@ -625,7 +629,7 @@ class UbuntuStart(Adw.Application):
         self.first_run_progress.set_text(message)
         fraction = completed / total if total else 0.0
         self.first_run_progress_bar.set_fraction(fraction)
-        self.first_run_progress_bar.set_text(f"{round(fraction * 100)}%")
+        self.first_run_progress_percent.set_text(f"{round(fraction * 100)}%")
         if announce:
             self.announce_to_screen_reader(self.first_run_progress, message)
 

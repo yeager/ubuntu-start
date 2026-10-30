@@ -21,8 +21,8 @@
   <releases>
     <release version="0.3.53" date="2026-10-30">
       <description>
-        <p>Displays checklist completion as a percentage inside the progress bar so it remains visible even when no steps are complete.</p>
-        <p xml:lang="sv">Visar checklistans förlopp i procent i förloppsindikatorn, så att det syns även när inga steg är klara.</p>
+        <p>Shows checklist completion as a separate percentage label next to the progress bar.</p>
+        <p xml:lang="sv">Visar checklistans förlopp i procent bredvid förloppsindikatorn.</p>
       </description>
     </release>
     <release version="0.3.52" date="2026-10-30">
