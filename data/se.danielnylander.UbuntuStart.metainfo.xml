@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.41" date="2026-10-30">
+      <description>
+        <p>Clarify why performance scores vary between runs and strengthen release checks for supported Ubuntu versions.</p>
+        <p xml:lang="sv">Förklara varför resultatet från prestandatestet kan variera mellan körningar och skärp kontrollerna för Ubuntu-versionerna som stöds.</p>
+      </description>
+    </release>
     <release version="0.3.40" date="2026-10-30">
       <description>
         <p>Make the optional DNS diagnostic send a DNS A-record query through systemd-resolved with cache and local host synthesis disabled, so the result checks the configured DNS resolver.</p>

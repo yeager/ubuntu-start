@@ -107,6 +107,8 @@ NetworkManager, Bluetooth, audio, storage, battery and hardware summaries use lo
 
 ## Validation
 
+Version `0.3.41` explains why performance scores can vary between runs and strengthens release checks across supported Ubuntu versions.
+
 Version `0.3.40` sends the optional DNS test through systemd-resolved with its cache and local host synthesis disabled. This checks the configured DNS resolver instead of accepting a cached result or an `/etc/hosts` entry.
 
 Version `0.3.39` includes filesystem-reported file-entry availability in support details and checks every temperature sensor with a reported critical limit for benchmark thermal warnings.
