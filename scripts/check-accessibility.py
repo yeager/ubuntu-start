@@ -134,6 +134,22 @@ def select_sidebar_page(app, page_name: str) -> bool:
     return bool(selection and page_index is not None and selection.select_child(page_index))
 
 
+def capture_application_screenshot(path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    window_search = subprocess.run(
+        ["xdotool", "search", "--onlyvisible", "--name", "^Ubuntu Start$"],
+        check=True, capture_output=True, text=True,
+    )
+    window_id = window_search.stdout.splitlines()[0]
+    subprocess.run(
+        ["xdotool", "windowsize", "--sync", window_id, "1000", "1050"],
+        check=True,
+    )
+    time.sleep(1)
+    subprocess.run(["import", "-window", window_id, str(path)], check=True)
+    print(f"Captured live application screenshot: {path}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -263,9 +279,13 @@ def main() -> int:
                     missing.append("Swedish root filesystem encryption check button")
                 if not encryption_title:
                     missing.append("Swedish root filesystem encryption status row")
+            if args.screenshot and not select_sidebar_page(app, "Kom igång"):
+                missing.append("selectable Swedish Get started page for screenshot")
             if missing:
                 print(f"Missing Swedish AT-SPI entries: {missing}", file=sys.stderr)
                 return 1
+            if args.screenshot:
+                capture_application_screenshot(args.screenshot)
             print("Swedish application labels and the Ubuntu Start version row are exposed through AT-SPI.")
             return 0
 
@@ -354,22 +374,7 @@ def main() -> int:
                         missing.append(f"button: {button_name} on Get started")
 
                     if args.screenshot:
-                        args.screenshot.parent.mkdir(parents=True, exist_ok=True)
-                        window_search = subprocess.run(
-                            ["xdotool", "search", "--onlyvisible", "--name", "^Ubuntu Start$"],
-                            check=True, capture_output=True, text=True,
-                        )
-                        window_id = window_search.stdout.splitlines()[0]
-                        subprocess.run(
-                            ["xdotool", "windowsize", "--sync", window_id, "1000", "1050"],
-                            check=True,
-                        )
-                        time.sleep(1)
-                        subprocess.run(
-                            ["import", "-window", window_id, str(args.screenshot)],
-                            check=True,
-                        )
-                        print(f"Captured live application screenshot: {args.screenshot}")
+                        capture_application_screenshot(args.screenshot)
 
                     reset_checklist = next(
                         (

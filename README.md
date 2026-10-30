@@ -14,7 +14,7 @@ An Ubuntu Desktop guide for first-run setup and device troubleshooting.
 
 ![Accessibility instructions for larger text](screenshots/accessibility-en.png)
 
-![English guide for troubleshooting failed system services](screenshots/service-status-en.png)
+[Service troubleshooting guide (EN)](screenshots/service-status-en.png) · ![Ubuntu Start first-run checklist with security and backup guides (EN)](screenshots/first-run-checklist-en.png)
 
 [SMART drive health guide (EN)](screenshots/smart-health-en.png) · [diskhälsoguiden (SV)](screenshots/smart-health-sv.png) · [fingerprint guide (EN)](screenshots/fingerprint-en.png) · [fingeravtrycksguiden (SV)](screenshots/fingerprint-sv.png) · [More screenshots: Wi-Fi setup guide (EN)](screenshots/system-guides-en.png) · [failed service guide (SV)](screenshots/service-status-sv.png) · [interrupted package recovery (EN)](screenshots/package-recovery-en.png) · [återställning av avbruten paketuppdatering (SV)](screenshots/package-recovery-sv.png) · [network and hardware overview (EN)](screenshots/network-hardware-en.png) · [VPN setup guide (EN)](screenshots/vpn-en.png) · [VPN-guide (SV)](screenshots/vpn-sv.png) · [backup setup guide (SV)](screenshots/backups-sv.png) · [network diagnostics (EN)](screenshots/network-diagnostics-en.png) · [audio status (EN)](screenshots/audio-status-en.png) · [printer queues (EN)](screenshots/printer-status-en.png) · [update and restart status (EN)](screenshots/update-status-en.png) · [accessibility status (EN)](screenshots/accessibility-status-en.png) · [expanded accessibility status (EN)](screenshots/accessibility-status-en-expanded.png) · [storage and battery (EN)](screenshots/storage-en.png) · [free-space guide (EN)](screenshots/storage-guide-en.png) · [system details and storage (EN)](screenshots/copy-system-details-en.png) · [USB hardware (EN)](screenshots/hardware-usb-en.png) · [Terminal guide (EN)](screenshots/terminal-guide-en.png) · [WiFi Analyzer recommendation (EN)](screenshots/wifi-analyzer-en.png) · [help page (EN)](screenshots/help-en.png) · [hardware summary (EN)](screenshots/help-hardware-en.png) · [date and time status (EN)](screenshots/date-time-en-detail.png)
 
@@ -184,7 +184,7 @@ Tagged versions (`v*`) are built by GitHub Actions. Releases include a source ar
 
 ## Screenshots
 
-The screenshots show the welcome page, printer troubleshooting and queue status, backup setup, accessibility instructions and network status. Additional English and Swedish screenshots include Wi-Fi, VPN and backup guides, update and restart status, live accessibility and date/time status, storage, safe disk cleanup guidance, battery, support-report system details and connected USB hardware.
+The screenshots show the welcome page, first-run checklist, printer troubleshooting and queue status, backup setup and accessibility instructions. Additional English and Swedish screenshots include Wi-Fi, VPN and backup guides, update and restart status, live accessibility and date/time status, storage, safe disk cleanup guidance, battery, support-report system details and connected USB hardware.
 
 
 ## License
