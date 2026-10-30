@@ -279,14 +279,49 @@ def main() -> int:
                     missing.append("Swedish root filesystem encryption check button")
                 if not encryption_title:
                     missing.append("Swedish root filesystem encryption status row")
-            if args.screenshot and not select_sidebar_page(app, "Kom igång"):
-                missing.append("selectable Swedish Get started page for screenshot")
+            if not select_sidebar_page(app, "Kom igång"):
+                missing.append("selectable Swedish Get started page")
+            else:
+                checklist_tasks = {
+                    "Språk och tangentbord",
+                    "Internetanslutning",
+                    "Uppdateringar",
+                    "Förbättra säkerheten i vardagen",
+                    "Ställ in säkerhetskopiering",
+                    "Ljud och skärm",
+                    "Sekretess och skärmlås",
+                    "Hjälpmedel",
+                }
+                checklist_buttons = {
+                    "Öppna guiden om säkerhet i vardagen",
+                    "Öppna guiden om säkerhetskopiering",
+                }
+                checklist_deadline = time.monotonic() + 5
+                checklist_controls = set()
+                checklist_button_controls = set()
+                while time.monotonic() < checklist_deadline:
+                    entries = accessible_tree(app, include_unnamed=True)
+                    checklist_controls = {
+                        name for role, name, _node in entries
+                        if role in CHECKBOX_ROLES and name in checklist_tasks
+                    }
+                    checklist_button_controls = {
+                        name for role, name, _node in entries
+                        if role in BUTTON_ROLES and name in checklist_buttons
+                    }
+                    if checklist_controls == checklist_tasks and checklist_button_controls == checklist_buttons:
+                        break
+                    time.sleep(0.25)
+                for task in sorted(checklist_tasks - checklist_controls):
+                    missing.append(f"Swedish accessible checklist checkbox: {task}")
+                for button_name in sorted(checklist_buttons - checklist_button_controls):
+                    missing.append(f"Swedish checklist guide button: {button_name}")
             if missing:
                 print(f"Missing Swedish AT-SPI entries: {missing}", file=sys.stderr)
                 return 1
             if args.screenshot:
                 capture_application_screenshot(args.screenshot)
-            print("Swedish application labels and the Ubuntu Start version row are exposed through AT-SPI.")
+            print("Swedish application labels, checklist controls and the Ubuntu Start version row are exposed through AT-SPI.")
             return 0
 
         if not missing:
