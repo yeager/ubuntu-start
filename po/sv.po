@@ -3647,6 +3647,10 @@ msgstr ""
 "föregående körning (medianvärdet av tre mätningar). Håll ström- och "
 "temperaturförhållandena så lika som möjligt när du jämför."
 
+#: src/ubuntu_start.py:3402
+msgid "Results can vary between runs. Compare several runs under similar conditions before drawing conclusions."
+msgstr "Resultaten kan skilja sig mellan körningar. Jämför flera körningar under liknande förhållanden innan du drar slutsatser."
+
 #: src/ubuntu_start.py:1338
 #, python-brace-format
 msgid ""

@@ -3,7 +3,7 @@ from unittest.mock import Mock, call, patch
 
 from ubuntu_start import (
     Adw, Gdk, GLib, Gtk, GUIDES, SYSTEM_GUIDES, UbuntuStart,
-    desktop_connection_label, format_milliseconds,
+    add_benchmark_comparison_note, desktop_connection_label, format_milliseconds,
 )
 from guide_search import find_guide_matches
 
@@ -1488,6 +1488,15 @@ class InternetTestResultTests(unittest.TestCase):
         status.set_text.assert_called_once_with(
             "Could not reach ubuntu.com after 5000 ms. Check the router, "
             "network sign-in page, DNS settings or firewall.",
+        )
+
+
+class BenchmarkResultInterpretationTests(unittest.TestCase):
+    def test_comparison_note_asks_users_to_compare_multiple_runs(self):
+        self.assertEqual(
+            add_benchmark_comparison_note("CPU score: +1.0 %"),
+            "CPU score: +1.0 %\nResults can vary between runs. Compare several runs "
+            "under similar conditions before drawing conclusions.",
         )
 
 

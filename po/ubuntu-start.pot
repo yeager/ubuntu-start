@@ -3063,6 +3063,10 @@ msgid ""
 "when comparing."
 msgstr ""
 
+#: src/ubuntu_start.py:3402
+msgid "Results can vary between runs. Compare several runs under similar conditions before drawing conclusions."
+msgstr ""
+
 #: src/ubuntu_start.py:1338
 #, python-brace-format
 msgid ""

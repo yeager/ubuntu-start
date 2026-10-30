@@ -1323,6 +1323,7 @@ class UbuntuStart(Adw.Application):
             change = benchmark_score_change_percent(score, previous) if previous else None
             if change is not None:
                 message = _("Single-thread CPU: {score} iterations/second; {change} % since the previous run (median of three samples). Keep power and temperature conditions similar when comparing.").format(score=score, change=f"{change:+.1f}")
+                message = add_benchmark_comparison_note(message)
             else:
                 message = _("Single-thread CPU baseline: {score} iterations/second (median of three samples over {duration} seconds). Run again after a change to compare.").format(score=score, duration=result["duration_seconds"])
             previous_cpu_score["value"] = score
@@ -1410,6 +1411,7 @@ class UbuntuStart(Adw.Application):
                         message = _("Graphics baseline: {score}. Run again later to compare with the same settings.").format(score=score)
                     else:
                         message = _("Graphics score: {score}; {change} % since the previous run. Keep the display, driver and session the same when comparing.").format(score=score, change=f"{change:+.1f}")
+                        message = add_benchmark_comparison_note(message)
                     previous_graphics_score["value"] = score
                     if not save_benchmark_baseline("graphics", score):
                         message += "\n" + _("This score could not be saved locally for future comparisons.")
@@ -3392,6 +3394,13 @@ SYSTEM_GUIDES.append((_("Use Mouse Keys"), ("settings", "universal-access"), _("
     (_("Turn on Mouse Keys"), _("Mouse Keys lets you control the pointer with the numeric keypad. Turn Num Lock off to use the keypad for pointer movement.")),
     (_("Test it and turn it off if needed"), _("Try moving the pointer and clicking a simple target. Return to Pointing and Clicking to turn Mouse Keys off when you are finished.")),
 ]))
+
+
+def add_benchmark_comparison_note(message: str) -> str:
+    """Explain why one result should not be treated as a definitive change."""
+    return message + "\n" + _(
+        "Results can vary between runs. Compare several runs under similar conditions before drawing conclusions."
+    )
 
 
 def format_milliseconds(value: int | float) -> str:
