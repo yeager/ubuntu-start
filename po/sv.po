@@ -6834,3 +6834,103 @@ msgstr "Kom igång med Ubuntu och felsök anslutna enheter"
 #~ msgstr ""
 #~ "Uppgifterna kan hjälpa andra att förstå ett problem. De innehåller inte "
 #~ "ditt användarnamn, datornamn, nätverksadress eller installerade program."
+
+#: src/ubuntu_start.py:1078
+msgid "Automatic security updates"
+msgstr "Automatiska säkerhetsuppdateringar"
+
+#: src/ubuntu_start.py:1079
+msgid ""
+"Read the merged APT setting, the unattended-upgrades package and its daily "
+"systemd timer. This local check does not contact a network or change "
+"settings, and it cannot confirm that an update ran successfully or which "
+"repositories are allowed."
+msgstr "Läs APT-inställningen för automatiska uppgraderingar, kontrollera om paketet unattended-upgrades finns och om den dagliga systemd-timern är aktiverad. Kontrollen sker lokalt utan nätverk eller ändringar. Den visar inte om uppdateringar har installerats eller vilka paketkällor som omfattas."
+
+#: src/ubuntu_start.py:1082
+msgid "Automatic update setup has not been checked yet."
+msgstr "Konfigurationen för automatiska uppdateringar har inte kontrollerats än."
+
+#: src/ubuntu_start.py:1084
+msgid "Check automatic update setup"
+msgstr "Kontrollera konfigurationen för automatiska uppdateringar"
+
+#: src/ubuntu_start.py:2453
+msgid "Checking automatic update setup…"
+msgstr "Kontrollerar konfigurationen för automatiska uppdateringar…"
+
+#: src/ubuntu_start.py:2794
+msgid "APT configuration tools are not installed."
+msgstr "APT:s konfigurationsverktyg saknas."
+
+#: src/ubuntu_start.py:2795
+msgid "Could not read the local automatic update configuration."
+msgstr "Det gick inte att läsa den lokala konfigurationen för automatiska uppdateringar."
+
+#: src/ubuntu_start.py:2800
+msgid "Enabled"
+msgstr "Aktiverad"
+
+#: src/ubuntu_start.py:2804
+msgid "APT automatic upgrade setting"
+msgstr "Inställning för automatiska APT-uppgraderingar"
+
+#: src/ubuntu_start.py:2806
+msgid "Installed"
+msgstr "Installerat"
+
+#: src/ubuntu_start.py:2807
+msgid "Not installed"
+msgstr "Inte installerat"
+
+#: src/ubuntu_start.py:2810
+msgid "unattended-upgrades package"
+msgstr "Paketet unattended-upgrades"
+
+#: src/ubuntu_start.py:2811
+msgid "Daily upgrade timer"
+msgstr "Daglig uppdateringstimer"
+
+#: src/ubuntu_start.py:2814
+msgid ""
+"Automatic APT upgrades are disabled in the merged configuration. Review "
+"Software & Updates or ask your administrator."
+msgstr "Automatiska APT-uppgraderingar är avstängda i den sammanslagna konfigurationen. Granska Programvara och uppdateringar eller fråga administratören."
+
+#: src/ubuntu_start.py:2816
+msgid ""
+"APT is configured for automatic upgrades, but the unattended-upgrades "
+"package is not installed. Review Software & Updates or ask your "
+"administrator."
+msgstr "APT är inställt på automatiska uppgraderingar, men paketet unattended-upgrades saknas. Granska Programvara och uppdateringar eller fråga administratören."
+
+#: src/ubuntu_start.py:2818
+msgid ""
+"APT is configured for automatic upgrades, but the daily systemd timer is not "
+"enabled. Review Software & Updates or ask your administrator."
+msgstr "APT är inställt på automatiska uppgraderingar, men den dagliga systemd-timern är inte aktiverad. Granska Programvara och uppdateringar eller fråga administratören."
+
+#: src/ubuntu_start.py:2820
+msgid ""
+"APT automatic upgrades are configured and the daily timer is enabled. This "
+"does not confirm a successful recent run or which repositories are allowed."
+msgstr "APT är konfigurerat för automatiska uppgraderingar och den dagliga timern är aktiverad. Kontrollen visar inte om uppdateringar nyligen har installerats eller vilka paketkällor som omfattas."
+
+#: src/ubuntu_start.py:2822
+msgid ""
+"Could not confirm the full automatic update setup. Review Software & Updates "
+"or ask your administrator."
+msgstr "Det gick inte att bekräfta hela konfigurationen för automatiska uppdateringar. Granska Programvara och uppdateringar eller fråga administratören."
+
+#: src/ubuntu_start.py:233
+msgid "Check the automatic security update setup"
+msgstr "Kontrollera konfigurationen för automatiska säkerhetsuppdateringar"
+
+#: src/ubuntu_start.py:233
+msgid ""
+"On Network and hardware, choose Check automatic update setup to read APT's "
+"setting, the unattended-upgrades package and the daily systemd timer. If one "
+"is disabled or missing, review Software & Updates or ask your administrator. "
+"This check cannot confirm a successful recent run or which repositories are "
+"included."
+msgstr "På sidan Nätverk och maskinvara väljer du Kontrollera konfigurationen för automatiska uppdateringar för att läsa av APT-inställningen, paketet unattended-upgrades och den dagliga systemd-timern. Om något saknas eller är avstängt granskar du Programvara och uppdateringar eller frågar administratören. Kontrollen visar inte om uppdateringar nyligen har installerats eller vilka paketkällor som omfattas."

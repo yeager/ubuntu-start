@@ -42,6 +42,8 @@ from system_diagnostics import (
     battery_is_discharging,
     battery_power_status_unknown,
     read_apt_update_status,
+    parse_automatic_upgrade_setting,
+    read_automatic_upgrade_status,
     read_reboot_required,
     read_power_profile,
     run_cpu_benchmark,
@@ -1539,6 +1541,53 @@ Inst package-two [2.0] (2.1 repo [amd64])
         self.assertEqual(status, {"upgradeable": 1, "held_back": 2, "last_updated": 1})
         self.assertEqual(run_local.call_args.args[:2], (["/usr/bin/apt-get", "-s", "upgrade"], 15.0))
         self.assertEqual(run_local.call_args.kwargs["env"]["LC_ALL"], "C")
+
+    def test_parses_merged_automatic_upgrade_setting(self):
+        self.assertTrue(parse_automatic_upgrade_setting('APT::Periodic::Unattended-Upgrade "1";'))
+        self.assertFalse(parse_automatic_upgrade_setting('APT::Periodic::Unattended-Upgrade "0";'))
+        self.assertTrue(parse_automatic_upgrade_setting('APT::Periodic::Unattended-Upgrade "true";'))
+        self.assertIsNone(parse_automatic_upgrade_setting('APT::Periodic::Unattended-Upgrade "maybe";'))
+        self.assertIsNone(parse_automatic_upgrade_setting('APT::Periodic::Update-Package-Lists "1";'))
+
+    @patch("system_diagnostics._run_local")
+    @patch("system_diagnostics.shutil.which", side_effect=lambda name: {
+        "apt-config": "/usr/bin/apt-config",
+        "dpkg-query": "/usr/bin/dpkg-query",
+        "systemctl": "/usr/bin/systemctl",
+    }.get(name))
+    def test_reads_automatic_update_setting_package_and_timer_without_changes(self, _which, run_local):
+        run_local.side_effect = [
+            SimpleNamespace(returncode=0, stdout='APT::Periodic::Unattended-Upgrade "1";\n'),
+            SimpleNamespace(returncode=0, stdout="installed\n"),
+            SimpleNamespace(returncode=0, stdout="enabled\n"),
+        ]
+        status, error = read_automatic_upgrade_status()
+        self.assertIsNone(error)
+        self.assertEqual(status, {"configured": True, "package_installed": True, "timer_enabled": True})
+        self.assertEqual(
+            [invocation.args[0] for invocation in run_local.call_args_list],
+            [
+                ["/usr/bin/apt-config", "dump", "APT::Periodic::Unattended-Upgrade"],
+                ["/usr/bin/dpkg-query", "-W", "-f=${db:Status-Status}", "unattended-upgrades"],
+                ["/usr/bin/systemctl", "is-enabled", "apt-daily-upgrade.timer"],
+            ],
+        )
+
+    @patch("system_diagnostics._run_local")
+    @patch("system_diagnostics.shutil.which", side_effect=lambda name: {
+        "apt-config": "/usr/bin/apt-config",
+        "dpkg-query": "/usr/bin/dpkg-query",
+        "systemctl": "/usr/bin/systemctl",
+    }.get(name))
+    def test_reports_missing_unattended_upgrades_package_and_disabled_timer(self, _which, run_local):
+        run_local.side_effect = [
+            SimpleNamespace(returncode=0, stdout='APT::Periodic::Unattended-Upgrade "1";\n'),
+            SimpleNamespace(returncode=1, stdout=""),
+            SimpleNamespace(returncode=1, stdout="disabled\n"),
+        ]
+        status, error = read_automatic_upgrade_status()
+        self.assertIsNone(error)
+        self.assertEqual(status, {"configured": True, "package_installed": False, "timer_enabled": False})
 
     def test_reads_storage_capacity(self):
         result = read_storage_status("/")

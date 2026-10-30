@@ -88,7 +88,7 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
             for step_title, description in steps
         ]
 
-        for query in ("security updates", "waiting updates", "password account", "firewall", "backup", "privacy sharing", "Secure Boot", "compromised account", "suspicious messages", "computer stolen"):
+        for query in ("security updates", "automatic unattended", "waiting updates", "password account", "firewall", "backup", "privacy sharing", "Secure Boot", "compromised account", "suspicious messages", "computer stolen"):
             with self.subTest(query=query):
                 self.assertTrue(find_guide_matches(query, entries))
 
@@ -592,6 +592,38 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         status_label.set_text.assert_called_once_with(
             "No package updates appear in the cached lists. The lists may be out of date; open Software Updater to check for current updates. Nothing was installed.",
         )
+
+    def test_automatic_update_status_distinguishes_enabled_setting_from_missing_package(self):
+        button = Mock()
+        status_label = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+
+        UbuntuStart.show_automatic_update_status(
+            self.app, button, status_label, rows,
+            {"configured": True, "package_installed": False, "timer_enabled": True},
+            None, announce=True,
+        )
+
+        self.app.row.assert_any_call(rows, "APT automatic upgrade setting", "Enabled")
+        self.app.row.assert_any_call(rows, "unattended-upgrades package", "Not installed")
+        self.app.row.assert_any_call(rows, "Daily upgrade timer", "Enabled")
+        message = "APT is configured for automatic upgrades, but the unattended-upgrades package is not installed. Review Software & Updates or ask your administrator."
+        status_label.set_text.assert_called_once_with(message)
+        self.app.announce_to_screen_reader.assert_called_once_with(status_label, message)
+
+    def test_automatic_update_status_does_not_claim_a_recent_success(self):
+        status_label = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+
+        UbuntuStart.show_automatic_update_status(
+            self.app, Mock(), status_label, rows,
+            {"configured": True, "package_installed": True, "timer_enabled": True}, None,
+        )
+
+        self.assertIn("does not confirm a successful recent run", status_label.set_text.call_args.args[0])
+        self.app.announce_to_screen_reader.assert_not_called()
 
     def test_package_health_lists_findings_and_announces_summary(self):
         button = Mock()

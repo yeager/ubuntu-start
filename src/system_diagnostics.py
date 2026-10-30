@@ -1683,6 +1683,73 @@ def read_apt_update_status(
     return {"upgradeable": counts[0], "held_back": counts[1], "last_updated": last_updated}, None
 
 
+def parse_automatic_upgrade_setting(output: str) -> bool | None:
+    """Read APT's merged unattended-upgrade setting without exposing other config."""
+    if not isinstance(output, str):
+        return None
+    for line in output.splitlines():
+        match = re.fullmatch(
+            r'\s*APT::Periodic::Unattended-Upgrade\s+"?([^";]+)"?;\s*', line,
+        )
+        if not match:
+            continue
+        value = match.group(1).strip().casefold()
+        if value in {"1", "true", "yes", "always"}:
+            return True
+        if value in {"0", "false", "no", "never"}:
+            return False
+        return None
+    return None
+
+
+def read_automatic_upgrade_status(
+    timeout: float = 3.0,
+) -> tuple[dict[str, bool | None] | None, str | None]:
+    """Read APT's unattended-upgrade setting, package and daily timer; make no changes."""
+    apt_config = shutil.which("apt-config")
+    if not apt_config:
+        return None, "not-installed"
+    config_result = _run_local(
+        [apt_config, "dump", "APT::Periodic::Unattended-Upgrade"], timeout,
+        env={**os.environ, "LC_ALL": "C"},
+    )
+    if config_result is None or config_result.returncode != 0:
+        return None, "unavailable"
+
+    unattended_enabled = parse_automatic_upgrade_setting(config_result.stdout)
+    package_installed = None
+    dpkg_query = shutil.which("dpkg-query")
+    if dpkg_query:
+        package_result = _run_local(
+            [dpkg_query, "-W", "-f=${db:Status-Status}", "unattended-upgrades"],
+            timeout, env={**os.environ, "LC_ALL": "C"},
+        )
+        if package_result and package_result.returncode == 0:
+            package_installed = package_result.stdout.strip() == "installed"
+        elif package_result and package_result.returncode == 1:
+            package_installed = False
+
+    timer_enabled = None
+    systemctl = shutil.which("systemctl")
+    if systemctl:
+        timer_result = _run_local(
+            [systemctl, "is-enabled", "apt-daily-upgrade.timer"], timeout,
+            env={**os.environ, "LC_ALL": "C"},
+        )
+        if timer_result:
+            timer_state = timer_result.stdout.strip().casefold()
+            if timer_state in {"enabled", "enabled-runtime", "linked", "linked-runtime"}:
+                timer_enabled = True
+            elif timer_state in {"disabled", "masked"}:
+                timer_enabled = False
+
+    return {
+        "configured": unattended_enabled,
+        "package_installed": package_installed,
+        "timer_enabled": timer_enabled,
+    }, None
+
+
 def read_reboot_required(path: str | Path = "/run/reboot-required") -> bool | None:
     """Read Ubuntu's local reboot-required marker without changing system state."""
     try:

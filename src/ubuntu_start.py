@@ -13,7 +13,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import battery_is_discharging, battery_power_status_unknown, benchmark_score_change_percent, build_support_report, check_internet_connection, clear_benchmark_baselines, find_benchmark_tool, find_graphics_benchmark_tool, get_application_version, is_valid_support_report, load_benchmark_baselines, normalize_desktop_name, normalize_session_type, parse_glmark2_score, pressure_threshold_exceeded, read_accessibility_settings, read_apt_update_status, read_audio_status, read_backup_tool_status, read_battery_status, read_bluetooth_status, read_boot_critical_chain, read_boot_timing, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_remote_session, read_reboot_required, read_resource_pressure, read_rfkill_status, read_secure_boot_status, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_cpu_benchmark, run_network_diagnostics, save_benchmark_baseline, sensor_near_critical_limit
+from system_diagnostics import battery_is_discharging, battery_power_status_unknown, benchmark_score_change_percent, build_support_report, check_internet_connection, clear_benchmark_baselines, find_benchmark_tool, find_graphics_benchmark_tool, get_application_version, is_valid_support_report, load_benchmark_baselines, normalize_desktop_name, normalize_session_type, parse_glmark2_score, pressure_threshold_exceeded, read_accessibility_settings, read_apt_update_status, read_automatic_upgrade_status, read_audio_status, read_backup_tool_status, read_battery_status, read_bluetooth_status, read_boot_critical_chain, read_boot_timing, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_remote_session, read_reboot_required, read_resource_pressure, read_rfkill_status, read_secure_boot_status, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_cpu_benchmark, run_network_diagnostics, save_benchmark_baseline, sensor_near_critical_limit
 from guide_search import find_guide_matches
 from first_run_state import TASK_IDS as FIRST_RUN_TASK_IDS, load_completed_tasks, save_completed_tasks
 
@@ -230,6 +230,7 @@ SYSTEM_GUIDES = [
     ]),
     (_("Improve everyday security"), ("settings", "privacy"), _("Open Privacy & Security Settings"), [
         (_("Install Ubuntu security updates"), _("Open Software Updater regularly, review the proposed changes and install updates from Ubuntu. Check Software & Updates for automatic security update settings; available options and names can vary by release.")),
+        (_("Check the automatic security update setup"), _("On Network and hardware, choose Check automatic update setup to read APT's setting, the unattended-upgrades package and the daily systemd timer. If one is disabled or missing, review Software & Updates or ask your administrator. This check cannot confirm a successful recent run or which repositories are included.")),
         (_("Check whether updates are waiting"), _("On Network and hardware, run the cached package update check. If packages are ready to upgrade, open Software Updater to refresh the lists, review the proposed changes and install trusted Ubuntu updates. The check does not refresh lists or install packages.")),
         (_("Choose software carefully"), _("Prefer Ubuntu App Center or official Ubuntu repositories. Check the publisher and requested permissions before installing an app. Avoid installers and drivers from websites you do not trust.")),
         (_("Protect your account"), _("Use a long, unique password for your computer and a password manager for accounts. Turn on multi-factor authentication for online accounts when available. For important accounts, prefer phishing-resistant sign-in such as passkeys or security keys when supported. Never share passwords or sign-in codes.")),
@@ -1073,6 +1074,26 @@ class UbuntuStart(Adw.Application):
         updates_box.append(updates_rows)
         box.append(updates_box)
         self.refresh_apt_update_status(updates_refresh, updates_status, updates_rows)
+
+        automatic_updates_box, _automatic_updates_rows = self.page(
+            _("Automatic security updates"),
+            _("Read the merged APT setting, the unattended-upgrades package and its daily systemd timer. This local check does not contact a network or change settings, and it cannot confirm that an update ran successfully or which repositories are allowed."),
+            include_rows=False,
+        )
+        automatic_updates_status = Gtk.Label(label=_("Automatic update setup has not been checked yet."), xalign=0, wrap=True)
+        automatic_updates_rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
+        automatic_updates_refresh = Gtk.Button(label=_("Check automatic update setup"), halign=Gtk.Align.START)
+        automatic_updates_refresh.connect(
+            "clicked",
+            lambda *_: self.refresh_automatic_update_status(
+                automatic_updates_refresh, automatic_updates_status, automatic_updates_rows,
+                announce=True,
+            ),
+        )
+        automatic_updates_box.append(automatic_updates_refresh)
+        automatic_updates_box.append(automatic_updates_status)
+        automatic_updates_box.append(automatic_updates_rows)
+        box.append(automatic_updates_box)
 
         package_box, _package_rows = self.page(
             _("Package installation health"),
@@ -2428,6 +2449,19 @@ class UbuntuStart(Adw.Application):
 
         threading.Thread(target=read_status, daemon=True).start()
 
+    def refresh_automatic_update_status(self, button, status_label, update_rows, announce=False):
+        button.set_sensitive(False)
+        status_label.set_text(_("Checking automatic update setup…"))
+
+        def read_status():
+            status, error = read_automatic_upgrade_status()
+            GLib.idle_add(
+                self.show_automatic_update_status, button, status_label, update_rows,
+                status, error, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
     def refresh_package_health(self, button, status_label, package_rows, announce=False):
         button.set_sensitive(False)
         status_label.set_text(_("Checking package installation health…"))
@@ -2745,6 +2779,48 @@ class UbuntuStart(Adw.Application):
                 message = _("{count} package updates appear in the cached lists. Open Software Updater to refresh the lists and review available updates. Nothing was installed.").format(count=status["upgradeable"])
             else:
                 message = _("No package updates appear in the cached lists. The lists may be out of date; open Software Updater to check for current updates. Nothing was installed.")
+
+        status_label.set_text(message)
+        if announce:
+            self.announce_to_screen_reader(status_label, message)
+        return GLib.SOURCE_REMOVE
+
+    def show_automatic_update_status(self, button, status_label, update_rows, status, error, announce=False):
+        button.set_sensitive(True)
+        while (child := update_rows.get_first_child()) is not None:
+            update_rows.remove(child)
+
+        if error or not status:
+            errors = {
+                "not-installed": _("APT configuration tools are not installed."),
+                "unavailable": _("Could not read the local automatic update configuration."),
+            }
+            message = errors.get(error, errors["unavailable"])
+        else:
+            labels = {
+                True: _("Enabled"),
+                False: _("Disabled"),
+                None: _("Not available"),
+            }
+            self.row(update_rows, _("APT automatic upgrade setting"), labels[status["configured"]])
+            package_labels = {
+                True: _("Installed"),
+                False: _("Not installed"),
+                None: _("Not available"),
+            }
+            self.row(update_rows, _("unattended-upgrades package"), package_labels[status["package_installed"]])
+            self.row(update_rows, _("Daily upgrade timer"), labels[status["timer_enabled"]])
+
+            if status["configured"] is False:
+                message = _("Automatic APT upgrades are disabled in the merged configuration. Review Software & Updates or ask your administrator.")
+            elif status["configured"] is True and status["package_installed"] is False:
+                message = _("APT is configured for automatic upgrades, but the unattended-upgrades package is not installed. Review Software & Updates or ask your administrator.")
+            elif status["configured"] is True and status["timer_enabled"] is False:
+                message = _("APT is configured for automatic upgrades, but the daily systemd timer is not enabled. Review Software & Updates or ask your administrator.")
+            elif all(status[key] is True for key in ("configured", "package_installed", "timer_enabled")):
+                message = _("APT automatic upgrades are configured and the daily timer is enabled. This does not confirm a successful recent run or which repositories are allowed.")
+            else:
+                message = _("Could not confirm the full automatic update setup. Review Software & Updates or ask your administrator.")
 
         status_label.set_text(message)
         if announce:

@@ -5507,3 +5507,103 @@ msgstr ""
 #: data/se.danielnylander.UbuntuStart.desktop:3
 msgid "Get started with Ubuntu and troubleshoot devices"
 msgstr ""
+
+#: src/ubuntu_start.py:1078
+msgid "Automatic security updates"
+msgstr ""
+
+#: src/ubuntu_start.py:1079
+msgid ""
+"Read the merged APT setting, the unattended-upgrades package and its daily "
+"systemd timer. This local check does not contact a network or change "
+"settings, and it cannot confirm that an update ran successfully or which "
+"repositories are allowed."
+msgstr ""
+
+#: src/ubuntu_start.py:1082
+msgid "Automatic update setup has not been checked yet."
+msgstr ""
+
+#: src/ubuntu_start.py:1084
+msgid "Check automatic update setup"
+msgstr ""
+
+#: src/ubuntu_start.py:2453
+msgid "Checking automatic update setup…"
+msgstr ""
+
+#: src/ubuntu_start.py:2794
+msgid "APT configuration tools are not installed."
+msgstr ""
+
+#: src/ubuntu_start.py:2795
+msgid "Could not read the local automatic update configuration."
+msgstr ""
+
+#: src/ubuntu_start.py:2800
+msgid "Enabled"
+msgstr ""
+
+#: src/ubuntu_start.py:2804
+msgid "APT automatic upgrade setting"
+msgstr ""
+
+#: src/ubuntu_start.py:2806
+msgid "Installed"
+msgstr ""
+
+#: src/ubuntu_start.py:2807
+msgid "Not installed"
+msgstr ""
+
+#: src/ubuntu_start.py:2810
+msgid "unattended-upgrades package"
+msgstr ""
+
+#: src/ubuntu_start.py:2811
+msgid "Daily upgrade timer"
+msgstr ""
+
+#: src/ubuntu_start.py:2814
+msgid ""
+"Automatic APT upgrades are disabled in the merged configuration. Review "
+"Software & Updates or ask your administrator."
+msgstr ""
+
+#: src/ubuntu_start.py:2816
+msgid ""
+"APT is configured for automatic upgrades, but the unattended-upgrades "
+"package is not installed. Review Software & Updates or ask your "
+"administrator."
+msgstr ""
+
+#: src/ubuntu_start.py:2818
+msgid ""
+"APT is configured for automatic upgrades, but the daily systemd timer is not "
+"enabled. Review Software & Updates or ask your administrator."
+msgstr ""
+
+#: src/ubuntu_start.py:2820
+msgid ""
+"APT automatic upgrades are configured and the daily timer is enabled. This "
+"does not confirm a successful recent run or which repositories are allowed."
+msgstr ""
+
+#: src/ubuntu_start.py:2822
+msgid ""
+"Could not confirm the full automatic update setup. Review Software & Updates "
+"or ask your administrator."
+msgstr ""
+
+#: src/ubuntu_start.py:233
+msgid "Check the automatic security update setup"
+msgstr ""
+
+#: src/ubuntu_start.py:233
+msgid ""
+"On Network and hardware, choose Check automatic update setup to read APT's "
+"setting, the unattended-upgrades package and the daily systemd timer. If one "
+"is disabled or missing, review Software & Updates or ask your administrator. "
+"This check cannot confirm a successful recent run or which repositories are "
+"included."
+msgstr ""
