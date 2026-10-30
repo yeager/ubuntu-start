@@ -134,7 +134,7 @@ Version `0.3.46` adds security and backup steps to the first-run checklist, each
 
 Version `0.3.47` adds practical public Wi-Fi advice, including checking hotspot details, choosing a safer connection for sensitive tasks and reviewing sharing settings.
 
-Version `0.3.49` adds direct security-guide shortcuts to check firewall, root filesystem encryption and Secure Boot status. These checks are read-only and explain where users can review the results in Ubuntu.
+Version `0.3.50` adds an Open Network Settings shortcut below DNS and gateway test results, so users can review their connection settings after a check. Version `0.3.49` adds direct security-guide shortcuts to check firewall, root filesystem encryption and Secure Boot status. These checks are read-only and explain where users can review the results in Ubuntu.
 
 Version `0.3.45` expands everyday security guidance and reports when the daily automatic-upgrade timer last ran.
 

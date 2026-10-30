@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.50" date="2026-10-30">
+      <description>
+        <p>Adds a direct shortcut to Network Settings beneath the DNS and gateway diagnostic results.</p>
+        <p xml:lang="sv">Lägg till en direkt genväg till nätverksinställningarna under resultatet från DNS- och gatewaykontrollen.</p>
+      </description>
+    </release>
     <release version="0.3.49" date="2026-10-30">
       <description>
         <p>Adds direct shortcuts from the everyday security guide to read-only firewall, root filesystem encryption and Secure Boot checks.</p>

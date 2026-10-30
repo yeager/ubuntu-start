@@ -1147,6 +1147,13 @@ class UbuntuStart(Adw.Application):
         diagnostic_button.connect("clicked", lambda *_: self.confirm_network_diagnostics(diagnostic_button, diagnostic_status))
         diagnostic_box.append(diagnostic_button)
         diagnostic_box.append(diagnostic_status)
+        network_settings_button = Gtk.Button(
+            label=_("Open Network Settings"), halign=Gtk.Align.START,
+        )
+        network_settings_button.connect(
+            "clicked", lambda *_: self.open_target(("settings", "network")),
+        )
+        diagnostic_box.append(network_settings_button)
         box.append(diagnostic_box)
 
         internet_box, _internet_rows = self.page(
