@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.45" date="2026-10-30">
+      <description>
+        <p>Expand everyday security guidance and show the last scheduled automatic upgrade timer trigger.</p>
+        <p xml:lang="sv">Utöka säkerhetsråden för vardagen och visa när timern för automatiska uppgraderingar senast utlöstes.</p>
+      </description>
+    </release>
     <release version="0.3.44" date="2026-10-30">
       <description>
         <p>Add practical guidance for phishing and lost devices, plus a read-only check of automatic security update configuration, package availability and its daily timer.</p>
