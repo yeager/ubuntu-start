@@ -1343,14 +1343,14 @@ class InternetTestResultTests(unittest.TestCase):
         self.assertNotIn("DNS lookup failed after", message)
         self.assertIn("Next step: check that the network is connected", message)
 
-    def test_missing_getent_explains_that_dns_was_not_tested(self):
+    def test_missing_resolvectl_explains_that_dns_was_not_tested(self):
         app = Mock()
         button = Mock()
         status = Mock()
         result = {
             "dns_latency_ms": None,
             "dns_test_duration_ms": None,
-            "dns_error": "getent-not-installed",
+            "dns_error": "resolvectl-not-available",
             "gateway": None,
             "gateway_latency_ms": None,
         }
@@ -1358,7 +1358,7 @@ class InternetTestResultTests(unittest.TestCase):
         UbuntuStart.show_network_diagnostic_result(app, button, status, result)
 
         message = status.set_text.call_args.args[0]
-        self.assertIn("The getent tool is not installed, so DNS could not be tested.", message)
+        self.assertIn("systemd-resolved is not available, so a DNS query could not be made.", message)
         self.assertNotIn("DNS lookup failed", message)
         self.assertNotIn("review its DNS settings", message)
 

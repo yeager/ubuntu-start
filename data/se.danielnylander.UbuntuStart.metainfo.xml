@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.40" date="2026-10-30">
+      <description>
+        <p>Make the optional DNS diagnostic send a DNS A-record query through systemd-resolved with cache and local host synthesis disabled, so the result checks the configured DNS resolver.</p>
+        <p xml:lang="sv">Låt den valfria DNS-kontrollen skicka en DNS-fråga efter en A-post via systemd-resolved, utan cache eller lokal värdsyntes. Resultatet visar därmed om den konfigurerade DNS-resolvern fungerar.</p>
+      </description>
+    </release>
     <release version="0.3.39" date="2026-10-30">
       <description>
         <p>Include filesystem-reported file-entry availability in support details, and check every temperature sensor with a reported critical limit when showing benchmark thermal warnings.</p>

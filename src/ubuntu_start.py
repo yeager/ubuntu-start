@@ -1846,13 +1846,13 @@ class UbuntuStart(Adw.Application):
             elapsed = format_milliseconds(result["dns_test_duration_ms"])
             if dns_error == "timeout":
                 lines.append(_("DNS lookup timed out after {ms} ms. Check the network connection or DNS server.").format(ms=elapsed))
-            elif dns_error == "getent-not-installed":
-                lines.append(_("The getent tool is not installed, so DNS could not be tested. Ask your administrator to check the system tools."))
+            elif dns_error == "resolvectl-not-available":
+                lines.append(_("systemd-resolved is not available, so a DNS query could not be made. Ask your administrator to check the system DNS service."))
             else:
                 lines.append(_("DNS lookup failed after {ms} ms. Check DNS settings or the network connection.").format(ms=elapsed))
         else:
-            if result.get("dns_error") == "getent-not-installed":
-                lines.append(_("The getent tool is not installed, so DNS could not be tested. Ask your administrator to check the system tools."))
+            if result.get("dns_error") == "resolvectl-not-available":
+                lines.append(_("systemd-resolved is not available, so a DNS query could not be made. Ask your administrator to check the system DNS service."))
             else:
                 lines.append(_("DNS lookup failed. Check DNS settings or the network connection."))
         gateway = result.get("gateway")
@@ -1884,7 +1884,7 @@ class UbuntuStart(Adw.Application):
         else:
             lines.append(_("No default gateway was found."))
             lines.append(_("Next step: check Wi-Fi or wired connection in Settings. On a managed network, ask the administrator before changing route settings."))
-        if result.get("dns_latency_ms") is None and result.get("dns_error") != "getent-not-installed":
+        if result.get("dns_latency_ms") is None and result.get("dns_error") != "resolvectl-not-available":
             lines.append(_("Next step: check that the network is connected and review its DNS settings."))
         if (result.get("gateway") and result.get("gateway_latency_ms") is None
                 and result.get("gateway_error") != "ping-not-installed"):

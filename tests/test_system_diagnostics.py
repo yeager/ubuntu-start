@@ -1904,9 +1904,12 @@ Inst package-two [2.0] (2.1 repo [amd64])
         self.assertEqual(result["dns_latency_ms"], 30.0)
         self.assertEqual(run.call_args_list[1].args[0][-1], "192.168.1.1")
         self.assertEqual(run.call_args_list[2].args[0], ["ip", "-4", "neigh", "show", "to", "192.168.1.1", "dev", "wlp2s0"])
-        self.assertEqual(run.call_args_list[3].args[0], ["/usr/bin/getent", "ahosts", "ubuntu.com"])
+        self.assertEqual(run.call_args_list[3].args[0], [
+            "/usr/bin/resolvectl", "--protocol=dns", "--cache=no", "--synthesize=no",
+            "--type=A", "query", "ubuntu.com",
+        ])
 
-    @patch("system_diagnostics.shutil.which", side_effect=lambda command: "/usr/bin/getent" if command == "getent" else None)
+    @patch("system_diagnostics.shutil.which", side_effect=lambda command: "/usr/bin/resolvectl" if command == "resolvectl" else None)
     @patch("system_diagnostics.lookup_oui_vendor", return_value=None)
     @patch("system_diagnostics._run_local")
     @patch("system_diagnostics.time.monotonic", side_effect=[5.0, 5.075])
@@ -1922,9 +1925,12 @@ Inst package-two [2.0] (2.1 repo [amd64])
         self.assertEqual(result["dns_error"], "lookup-failed")
         self.assertIsNone(result["dns_latency_ms"])
         self.assertEqual(result["dns_test_duration_ms"], 75.0)
-        self.assertEqual(run.call_args_list[-1].args[0], ["/usr/bin/getent", "ahosts", "ubuntu.com"])
+        self.assertEqual(run.call_args_list[-1].args[0], [
+            "/usr/bin/resolvectl", "--protocol=dns", "--cache=no", "--synthesize=no",
+            "--type=A", "query", "ubuntu.com",
+        ])
 
-    @patch("system_diagnostics.shutil.which", side_effect=lambda command: "/usr/bin/ping" if command == "ping" else "/usr/bin/getent")
+    @patch("system_diagnostics.shutil.which", side_effect=lambda command: f"/usr/bin/{command}")
     @patch("system_diagnostics.lookup_oui_vendor", return_value=None)
     @patch("system_diagnostics._run_local")
     @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 2.0, 2.08])
@@ -1946,7 +1952,7 @@ Inst package-two [2.0] (2.1 repo [amd64])
     @patch("system_diagnostics.lookup_oui_vendor", return_value=None)
     @patch("system_diagnostics._run_local")
     @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 2.0, 2.02])
-    def test_reports_missing_getent_without_claiming_dns_failure(self, _clock, run, _vendor, _which):
+    def test_reports_missing_resolvectl_without_claiming_dns_failure(self, _clock, run, _vendor, _which):
         run.side_effect = [
             subprocess.CompletedProcess([], 0, "default via 192.168.1.1 dev eth0\n", ""),
             subprocess.CompletedProcess([], 0, "64 bytes from 192.168.1.1: time=0.4 ms\n", ""),
@@ -1955,7 +1961,7 @@ Inst package-two [2.0] (2.1 repo [amd64])
 
         result = run_network_diagnostics()
 
-        self.assertEqual(result["dns_error"], "getent-not-installed")
+        self.assertEqual(result["dns_error"], "resolvectl-not-available")
         self.assertIsNone(result["dns_latency_ms"])
         self.assertIsNone(result["dns_test_duration_ms"])
         self.assertEqual(run.call_count, 3)
@@ -1978,7 +1984,10 @@ Inst package-two [2.0] (2.1 repo [amd64])
         self.assertEqual(run.call_args_list[2].args[0][:2], ["/usr/bin/ping", "-6"])
         self.assertEqual(run.call_args_list[2].args[0][2:4], ["-I", "enp1s0"])
         self.assertEqual(run.call_args_list[3].args[0][:3], ["ip", "-6", "neigh"])
-        self.assertEqual(run.call_args_list[4].args[0], ["/usr/bin/getent", "ahosts", "ubuntu.com"])
+        self.assertEqual(run.call_args_list[4].args[0], [
+            "/usr/bin/resolvectl", "--protocol=dns", "--cache=no", "--synthesize=no",
+            "--type=A", "query", "ubuntu.com",
+        ])
 
     @patch("system_diagnostics.shutil.which", return_value=None)
     @patch("system_diagnostics.lookup_oui_vendor", return_value=None)

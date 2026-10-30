@@ -1934,11 +1934,14 @@ def run_network_diagnostics(timeout: float = 3.0) -> dict[str, str | float | Non
         result["gateway_error"] = "no-default-route"
 
     start = time.monotonic()
-    getent_command = shutil.which("getent")
-    if not getent_command:
-        result["dns_error"] = "getent-not-installed"
+    resolvectl_command = shutil.which("resolvectl")
+    if not resolvectl_command:
+        result["dns_error"] = "resolvectl-not-available"
         return result
-    dns = _run_local([getent_command, "ahosts", "ubuntu.com"], timeout)
+    dns = _run_local([
+        resolvectl_command, "--protocol=dns", "--cache=no", "--synthesize=no",
+        "--type=A", "query", "ubuntu.com",
+    ], timeout)
     dns_elapsed_ms = round((time.monotonic() - start) * 1000, 1)
     result["dns_test_duration_ms"] = dns_elapsed_ms
     if dns and dns.returncode == 0 and dns.stdout.strip():

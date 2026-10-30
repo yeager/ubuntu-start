@@ -3406,10 +3406,10 @@ msgid ""
 "server."
 msgstr ""
 
-#: src/ubuntu_start.py:1832 src/ubuntu_start.py:1837
+#: src/ubuntu_start.py:1850 src/ubuntu_start.py:1855
 msgid ""
-"The getent tool is not installed, so DNS could not be tested. Ask your "
-"administrator to check the system tools."
+"systemd-resolved is not available, so a DNS query could not be made. Ask "
+"your administrator to check the system DNS service."
 msgstr ""
 
 #: src/ubuntu_start.py:1834
