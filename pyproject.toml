@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ubuntu-start"
-version = "0.3.43"
+version = "0.3.44"
 description = "Ubuntu Desktop first-run and device troubleshooting guide"
 readme = "README.md"
 requires-python = ">=3.10"

@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.44" date="2026-10-30">
+      <description>
+        <p>Add practical guidance for phishing and lost devices, plus a read-only check of automatic security update configuration, package availability and its daily timer.</p>
+        <p xml:lang="sv">Lägg till råd om nätfiske och borttappade datorer samt en skrivskyddad kontroll av konfigurationen för automatiska säkerhetsuppdateringar, paketet och den dagliga timern.</p>
+      </description>
+    </release>
     <release version="0.3.43" date="2026-10-30">
       <description>
         <p>Show the total time taken by gateway ping tests and include DNS and gateway test durations in local support reports.</p>
