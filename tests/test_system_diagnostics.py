@@ -1823,6 +1823,12 @@ Inst package-two [2.0] (2.1 repo [amd64])
         self.assertEqual(parse_root_encryption_status(partial), "partial")
         self.assertIsNone(parse_root_encryption_status('{"blockdevices":[]}'))
         self.assertIsNone(parse_root_encryption_status("not json"))
+        self.assertIsNone(parse_root_encryption_status(
+            '{"blockdevices":[{"type":"disk","children":[{"type":"part","fstype":"ext4","mountpoints":["/"]}]},null]}'
+        ))
+        self.assertIsNone(parse_root_encryption_status(
+            '{"blockdevices":[{"type":"disk","children":"truncated","mountpoints":["/"]}]}'
+        ))
 
     @patch("system_diagnostics._run_local")
     @patch("system_diagnostics.shutil.which", return_value="/usr/bin/lsblk")

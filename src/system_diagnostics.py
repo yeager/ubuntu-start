@@ -1660,12 +1660,17 @@ def parse_root_encryption_status(output: str) -> str | None:
     if not isinstance(devices, list):
         return None
     root_paths: list[bool] = []
+    malformed = False
 
     def visit(node: object, encrypted_ancestor: bool = False, depth: int = 0) -> None:
+        nonlocal malformed
         if depth > 64 or not isinstance(node, dict):
+            malformed = True
             return
         kind = node.get("type")
         filesystem = node.get("fstype")
+        if not isinstance(kind, str) or not kind or (filesystem is not None and not isinstance(filesystem, str)):
+            malformed = True
         encrypted = encrypted_ancestor or kind == "crypt" or (
             isinstance(filesystem, str) and filesystem.casefold().startswith("crypto_luks")
         )
@@ -1673,19 +1678,26 @@ def parse_root_encryption_status(output: str) -> str | None:
         if isinstance(mountpoints, str):
             mounted_at_root = mountpoints == "/"
         elif isinstance(mountpoints, list):
+            if any(point is not None and not isinstance(point, str) for point in mountpoints):
+                malformed = True
             mounted_at_root = "/" in mountpoints
+        elif mountpoints is None:
+            mounted_at_root = False
         else:
+            malformed = True
             mounted_at_root = False
         if mounted_at_root:
             root_paths.append(encrypted)
         children = node.get("children", [])
-        if isinstance(children, list):
-            for child in children:
-                visit(child, encrypted, depth + 1)
+        if not isinstance(children, list):
+            malformed = True
+            return
+        for child in children:
+            visit(child, encrypted, depth + 1)
 
     for device in devices:
         visit(device)
-    if not root_paths:
+    if malformed or not root_paths:
         return None
     if all(root_paths):
         return "encrypted"
