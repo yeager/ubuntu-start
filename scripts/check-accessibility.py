@@ -75,6 +75,50 @@ def accessible_tree(
     return entries
 
 
+def open_security_guide_and_check_buttons(app, button_names: set[str]) -> list[str]:
+    """Open the first-run security guide and verify its named status shortcuts."""
+    entries = accessible_tree(app)
+    guide_button_name = (
+        "Öppna guiden om säkerhet i vardagen"
+        if "Kontrollera brandväggsstatus" in button_names
+        else "Open the everyday security guide"
+    )
+    guide_button = next(
+        (
+            node for role, name, node in entries
+            if role in BUTTON_ROLES and name == guide_button_name
+        ),
+        None,
+    )
+    try:
+        activated = bool(
+            guide_button
+            and guide_button.get_n_actions() > 0
+            and guide_button.do_action(0)
+        )
+    except Exception:
+        activated = False
+    if not activated:
+        return [f"could not activate {guide_button_name}"]
+
+    deadline = time.monotonic() + 5
+    while time.monotonic() < deadline:
+        entries = accessible_tree(app)
+        visible_buttons = {
+            name for role, name, _node in entries
+            if role in BUTTON_ROLES
+        }
+        missing = sorted(button_names - visible_buttons)
+        if not missing:
+            break
+        time.sleep(0.25)
+    problems = [f"security guide button: {name}" for name in missing]
+    page_name = "Kom igång" if "Kontrollera brandväggsstatus" in button_names else "Get started"
+    if not select_sidebar_page(app, page_name):
+        problems.append(f"could not return to {page_name}")
+    return problems
+
+
 def version_detail_is_exposed(app, page_name: str, label: str) -> bool:
     entries = accessible_tree(app)
     sidebar = next(
@@ -334,7 +378,21 @@ def main() -> int:
                 return 1
             if args.screenshot:
                 capture_application_screenshot(args.screenshot)
-            print("Swedish application labels, checklist controls and the Ubuntu Start version row are exposed through AT-SPI.")
+            security_buttons = {
+                "Kontrollera brandväggsstatus",
+                "Kontrollera kryptering av rotfilsystemet",
+                "Kontrollera Secure Boot-status",
+            }
+            missing_security_buttons = open_security_guide_and_check_buttons(
+                app, security_buttons,
+            )
+            if missing_security_buttons:
+                print(
+                    f"Missing Swedish security-guide controls: {missing_security_buttons}",
+                    file=sys.stderr,
+                )
+                return 1
+            print("Swedish application labels, checklist controls, security shortcuts and the Ubuntu Start version row are exposed through AT-SPI.")
             return 0
 
         if not missing:
@@ -420,6 +478,11 @@ def main() -> int:
                     }
                     for button_name in sorted(checklist_guide_buttons - checklist_guide_controls):
                         missing.append(f"button: {button_name} on Get started")
+                    missing.extend(open_security_guide_and_check_buttons(app, {
+                        "Check firewall status",
+                        "Check root filesystem encryption",
+                        "Check Secure Boot status",
+                    }))
 
                     if args.screenshot:
                         capture_application_screenshot(args.screenshot)
