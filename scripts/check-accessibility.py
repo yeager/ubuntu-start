@@ -238,6 +238,29 @@ def main() -> int:
                 app, "Hjälp och support", "Ubuntu Starts version",
             ):
                 missing.append("Ubuntu Starts version and value in Swedish system details")
+            if not select_sidebar_page(app, "Systemguider"):
+                missing.append("selectable Swedish System guides page")
+            else:
+                privacy_button = False
+                updates_button = False
+                security_deadline = time.monotonic() + 5
+                while time.monotonic() < security_deadline:
+                    entries = accessible_tree(app)
+                    privacy_button = any(
+                        role in BUTTON_ROLES and name == "Granska sekretess- och delningsinställningar"
+                        for role, name, _node in entries
+                    )
+                    updates_button = any(
+                        role in BUTTON_ROLES and name == "Kontrollera inställningar för automatiska uppdateringar"
+                        for role, name, _node in entries
+                    )
+                    if privacy_button and updates_button:
+                        break
+                    time.sleep(0.25)
+                if not privacy_button:
+                    missing.append("Swedish privacy and sharing settings button in security guide")
+                if not updates_button:
+                    missing.append("Swedish automatic update setup button in security guide")
             if not select_sidebar_page(app, "Nätverk och maskinvara"):
                 missing.append("selectable Swedish Network and hardware page")
             else:
@@ -395,6 +418,36 @@ def main() -> int:
                         time.sleep(0.25)
                     if time_guide_button is None:
                         missing.append("button: Open date and time guide on Get started")
+
+                if not select_page("System guides"):
+                    missing.append("selectable System guides page")
+                else:
+                    security_button_deadline = time.monotonic() + 5
+                    privacy_button = None
+                    updates_button = None
+                    while time.monotonic() < security_button_deadline:
+                        entries = accessible_tree(app)
+                        privacy_button = next(
+                            (
+                                node for role, name, node in entries
+                                if role in BUTTON_ROLES and name == "Review privacy and sharing settings"
+                            ),
+                            None,
+                        )
+                        updates_button = next(
+                            (
+                                node for role, name, node in entries
+                                if role in BUTTON_ROLES and name == "Check automatic update setup"
+                            ),
+                            None,
+                        )
+                        if privacy_button and updates_button:
+                            break
+                        time.sleep(0.25)
+                    if privacy_button is None:
+                        missing.append("button: Review privacy and sharing settings in security guide")
+                    if updates_button is None:
+                        missing.append("button: Check automatic update setup in security guide")
 
                 if not select_page("Network and hardware"):
                     missing.append("selectable Network and hardware guide")
