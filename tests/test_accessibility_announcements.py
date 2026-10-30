@@ -77,39 +77,6 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.assertIn("Do not connect a USB drive you found or received unexpectedly", text)
         self.assertIn("Ubuntu Start does not scan USB storage for malware", text)
 
-    def test_security_guide_is_searchable_and_covers_core_actions(self):
-        guide_index, guide = next(
-            (index, guide) for index, guide in enumerate(SYSTEM_GUIDES)
-            if guide[0] == "Improve everyday security"
-        )
-        title, _target, _action, steps = guide
-        entries = [
-            ("system", guide_index, "Security and privacy guide", step_title, description)
-            for step_title, description in steps
-        ]
-
-        for query in ("security updates", "automatic unattended", "waiting updates", "password account", "administrator prompts", "passkey requests", "firewall", "backup", "privacy sharing", "Secure Boot", "compromised account", "suspicious messages", "computer stolen", "malware ransomware"):
-            with self.subTest(query=query):
-                self.assertTrue(find_guide_matches(query, entries))
-
-        step_text = " ".join(f"{step_title} {description}" for step_title, description in steps)
-        self.assertIn("Ubuntu Desktop does not always include a firewall management tool", step_text)
-        self.assertIn("This app checks UFW only; it cannot tell whether another firewall is active", step_text)
-        self.assertIn("Do not install or enable a firewall blindly", step_text)
-        self.assertIn("Never share passwords or sign-in codes", step_text)
-        self.assertIn("Use a standard, non-administrator account for everyday tasks", step_text)
-        self.assertIn("Cancel unexpected prompts", step_text)
-        self.assertIn("do not try to enable it on an existing system", step_text)
-        self.assertIn("Disconnect a backup drive when it is not in use", step_text)
-        self.assertIn("If it is off, consult your computer manufacturer or administrator", step_text)
-        self.assertIn("From a trusted device, change the affected account password", step_text)
-        self.assertIn("Check the address carefully, and never ignore a browser certificate warning", step_text)
-        self.assertIn("screen locking alone does not encrypt its storage", step_text)
-        self.assertIn("disconnect it from Wi-Fi or wired networks", step_text)
-        self.assertIn("Do not delete files, run cleanup tools, pay a ransom or connect backup drives", step_text)
-        self.assertIn("Restore files only from a known-good backup", step_text)
-        self.assertEqual(title, "Improve everyday security")
-
     def test_open_security_guide_selects_the_security_steps(self):
         self.app.system_guide_chooser = Mock()
         self.app.main_stack = Mock()

@@ -1,6 +1,19 @@
 import unittest
+import ast
+from pathlib import Path
 
 from guide_search import find_guide_matches
+
+
+def load_system_guides_without_gtk():
+    source = Path(__file__).resolve().parents[1] / "src" / "ubuntu_start.py"
+    tree = ast.parse(source.read_text(encoding="utf-8"))
+    assignment = next(
+        node for node in tree.body
+        if isinstance(node, ast.Assign)
+        and any(isinstance(target, ast.Name) and target.id == "SYSTEM_GUIDES" for target in node.targets)
+    )
+    return eval(compile(ast.Expression(assignment.value), str(source), "eval"), {"__builtins__": {}, "_": lambda value: value})
 
 
 class GuideSearchTests(unittest.TestCase):
@@ -75,6 +88,55 @@ class GuideSearchTests(unittest.TestCase):
 
     def test_empty_query_has_no_results(self):
         self.assertEqual(find_guide_matches("  \t ", self.entries), [])
+
+
+class SecurityGuideSearchTests(unittest.TestCase):
+    def setUp(self):
+        guides = load_system_guides_without_gtk()
+        self.guide_index, self.guide = next(
+            (index, guide) for index, guide in enumerate(guides)
+            if guide[0] == "Improve everyday security"
+        )
+        self.title, _target, _action, self.steps = self.guide
+        self.entries = [
+            ("system", self.guide_index, "Security and privacy guide", step_title, description)
+            for step_title, description in self.steps
+        ]
+
+    def test_core_security_topics_are_searchable(self):
+        for query in (
+            "security updates", "automatic unattended", "waiting updates",
+            "password account", "administrator prompts", "passkey requests",
+            "firewall", "backup", "privacy sharing", "Secure Boot",
+            "compromised account", "suspicious messages", "computer stolen",
+            "malware ransomware",
+        ):
+            with self.subTest(query=query):
+                self.assertTrue(find_guide_matches(query, self.entries))
+
+    def test_core_security_advice_remains_specific_and_cautious(self):
+        text = " ".join(f"{step_title} {description}" for step_title, description in self.steps)
+        expected_advice = (
+            "Ubuntu Desktop does not always include a firewall management tool",
+            "This app checks UFW only; it cannot tell whether another firewall is active",
+            "Do not install or enable a firewall blindly",
+            "Never share passwords or sign-in codes",
+            "Use a standard, non-administrator account for everyday tasks",
+            "Cancel unexpected prompts",
+            "do not try to enable it on an existing system",
+            "Disconnect a backup drive when it is not in use",
+            "If it is off, consult your computer manufacturer or administrator",
+            "From a trusted device, change the affected account password",
+            "Check the address carefully, and never ignore a browser certificate warning",
+            "screen locking alone does not encrypt its storage",
+            "disconnect it from Wi-Fi or wired networks",
+            "Do not delete files, run cleanup tools, pay a ransom or connect backup drives",
+            "Restore files only from a known-good backup",
+        )
+        for advice in expected_advice:
+            with self.subTest(advice=advice):
+                self.assertIn(advice, text)
+        self.assertEqual(self.title, "Improve everyday security")
 
 
 if __name__ == "__main__":
