@@ -20,6 +20,8 @@ An Ubuntu Desktop guide for first-run setup and device troubleshooting.
 
 [Swedish system guides](screenshots/system-guides-sv.png) · [återställning av avbruten paketuppdatering](screenshots/package-recovery-sv.png) · [network and hardware overview](screenshots/network-hardware-sv.png) · [network diagnostics](screenshots/network-diagnostics-sv.png) · [audio status](screenshots/audio-status-sv.png) · [printer queues](screenshots/printer-status-sv.png) · [uppdaterings- och omstartsstatus](screenshots/update-status-sv.png) · [accessibility status](screenshots/accessibility-status-sv.png) · [utökad tillgänglighetsstatus](screenshots/accessibility-status-sv-expanded.png) · [storage and battery](screenshots/storage-sv.png) · [free-space guide](screenshots/storage-guide-sv.png) · [system details and storage](screenshots/copy-system-details-sv.png) · [USB hardware](screenshots/hardware-usb-sv.png) · [Terminal guide](screenshots/terminal-guide-sv.png) · [WiFi Analyzer recommendation](screenshots/wifi-analyzer-sv.png) · [help page](screenshots/help-sv.png) · [hardware summary](screenshots/help-hardware-sv.png) · [accessibility settings](screenshots/accessibility-panel-en.png) · [datum- och tidsstatus](screenshots/date-time-sv-detail.png)
 
+[Everyday security guide (EN)](screenshots/security-guide-en.png) · [Säkerhetsguide (SV)](screenshots/security-guide-sv.png)
+
 
 Ubuntu Start combines a first-run guide with practical device troubleshooting for Ubuntu Desktop. It is a GTK 4/libadwaita application intended for Ubuntu GNOME.
 
@@ -31,7 +33,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contributor guidance and the maintain
 
 - First steps for language, networking, updates, sound, display and privacy.
 - Everyday tips for search, window management and Files, plus guidance on backups and choosing trusted app sources.
-- A security and privacy guide covering updates, trusted software, account safety, phishing, public Wi-Fi, lost devices, backups, firewall basics and what to do if you suspect malware or ransomware.
+- A security and privacy guide covering updates, trusted software, account safety, phishing and remote-support scams, public Wi-Fi, lost devices, backups, firewall basics and what to do if you suspect malware or ransomware.
 - A first-run checklist for language and keyboard, network, updates, security, backups, sound and display, privacy and accessibility. Security and backup steps open their in-app guides. Users mark steps complete themselves; progress is saved locally in a private file and can be reset at any time.
 - Search device checks and step-by-step system guides together, then open a matching guide directly. Topics include sound, Bluetooth, batteries, USB devices, printers, displays/graphics, keyboards, touchpads, Wi-Fi, Ethernet, VPNs, cameras, storage, fingerprint readers, accessibility and Terminal basics.
 - A searchable PCI troubleshooting guide and local PCI device list show hardware IDs and attached kernel drivers; PCI bridges are omitted and a missing driver is not presented as a confirmed fault.
@@ -134,7 +136,7 @@ Version `0.3.46` adds security and backup steps to the first-run checklist, each
 
 Version `0.3.47` adds practical public Wi-Fi advice, including checking hotspot details, choosing a safer connection for sensitive tasks and reviewing sharing settings.
 
-Version `0.3.53` shows checklist completion as a percentage beside the progress bar in both English and Swedish. Version `0.3.52` adds a visual progress bar to the first-run checklist. Version `0.3.51` shows the minimum and maximum of the three CPU benchmark samples, helping users spot an inconsistent run before comparing scores. Version `0.3.50` adds an Open Network Settings shortcut below DNS and gateway test results, so users can review their connection settings after a check. Version `0.3.49` adds direct security-guide shortcuts to check firewall, root filesystem encryption and Secure Boot status. These checks are read-only and explain where users can review the results in Ubuntu.
+Version `0.3.54` adds advice about avoiding unsolicited remote-support scams. Version `0.3.53` shows checklist completion as a percentage beside the progress bar in both English and Swedish. Version `0.3.52` adds a visual progress bar to the first-run checklist. Version `0.3.51` shows the minimum and maximum of the three CPU benchmark samples, helping users spot an inconsistent run before comparing scores. Version `0.3.50` adds an Open Network Settings shortcut below DNS and gateway test results, so users can review their connection settings after a check. Version `0.3.49` adds direct security-guide shortcuts to check firewall, root filesystem encryption and Secure Boot status. These checks are read-only and explain where users can review the results in Ubuntu.
 
 Version `0.3.45` expands everyday security guidance and reports when the daily automatic-upgrade timer last ran.
 

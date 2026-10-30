@@ -42,15 +42,15 @@ jobs:
       - name: Run unit tests
         run: PYTHONPATH=src python3 -m unittest discover -s tests -v
       - name: Check app accessibility and keyboard focus
-        run: xvfb-run -a dbus-run-session -- python3 scripts/check-accessibility.py --screenshot build/screenshots/first-run-checklist-en.png
+        run: xvfb-run -a dbus-run-session -- python3 scripts/check-accessibility.py --screenshot build/screenshots/first-run-checklist-en.png --security-screenshot build/screenshots/security-guide-en.png
       - name: Check Swedish app localization through AT-SPI
-        run: xvfb-run -a dbus-run-session -- python3 scripts/check-accessibility.py --localized-smoke sv --screenshot build/screenshots/first-run-checklist-sv.png
-      - name: Upload first-run checklist screenshots
+        run: xvfb-run -a dbus-run-session -- python3 scripts/check-accessibility.py --localized-smoke sv --screenshot build/screenshots/first-run-checklist-sv.png --security-screenshot build/screenshots/security-guide-sv.png
+      - name: Upload application screenshots
         if: matrix.ubuntu == '26.04'
         uses: actions/upload-artifact@v7
         with:
-          name: first-run-checklist-screenshots
-          path: build/screenshots/first-run-checklist-*.png
+          name: ubuntu-start-screenshots
+          path: build/screenshots/*.png
           if-no-files-found: error
       - name: Build with Meson
         run: |

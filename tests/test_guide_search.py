@@ -110,6 +110,7 @@ class SecurityGuideSearchTests(unittest.TestCase):
             "firewall", "backup", "privacy sharing", "Secure Boot",
             "compromised account", "suspicious messages", "computer stolen",
             "malware ransomware", "public Wi-Fi hotspot VPN",
+            "unsolicited remote support scam",
         ):
             with self.subTest(query=query):
                 self.assertTrue(find_guide_matches(query, self.entries))
@@ -136,6 +137,9 @@ class SecurityGuideSearchTests(unittest.TestCase):
             "prefer your own mobile hotspot or a VPN from your organization",
             "A VPN does not make a fake hotspot or sign-in page trustworthy",
             "turn off remote desktop or file sharing you do not need",
+            "pressure you to install remote-access software, share sign-in codes or run terminal commands",
+            "reach support through the organisation’s official website or a phone number you already trust",
+            "Never grant remote access or share a one-time code because someone contacted you",
         )
         for advice in expected_advice:
             with self.subTest(advice=advice):

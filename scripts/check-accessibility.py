@@ -75,7 +75,9 @@ def accessible_tree(
     return entries
 
 
-def open_security_guide_and_check_buttons(app, button_names: set[str]) -> list[str]:
+def open_security_guide_and_check_buttons(
+    app, button_names: set[str], screenshot: Path | None = None,
+) -> list[str]:
     """Open the first-run security guide and verify its named status shortcuts."""
     entries = accessible_tree(app)
     guide_button_name = (
@@ -113,6 +115,8 @@ def open_security_guide_and_check_buttons(app, button_names: set[str]) -> list[s
             break
         time.sleep(0.25)
     problems = [f"security guide button: {name}" for name in missing]
+    if screenshot and not problems:
+        capture_application_screenshot(screenshot)
     page_name = "Kom igång" if "Kontrollera brandväggsstatus" in button_names else "Get started"
     if not select_sidebar_page(app, page_name):
         problems.append(f"could not return to {page_name}")
@@ -205,6 +209,11 @@ def main() -> int:
         "--screenshot",
         type=Path,
         help="capture the live Ubuntu Start window after opening Get started",
+    )
+    parser.add_argument(
+        "--security-screenshot",
+        type=Path,
+        help="capture the everyday security guide after checking its controls",
     )
     args = parser.parse_args()
 
@@ -398,7 +407,7 @@ def main() -> int:
                 "Kontrollera Secure Boot-status",
             }
             missing_security_buttons = open_security_guide_and_check_buttons(
-                app, security_buttons,
+                app, security_buttons, args.security_screenshot,
             )
             if missing_security_buttons:
                 print(
@@ -503,7 +512,7 @@ def main() -> int:
                         "Check firewall status",
                         "Check root filesystem encryption",
                         "Check Secure Boot status",
-                    }))
+                    }, args.security_screenshot))
 
                     if args.screenshot:
                         capture_application_screenshot(args.screenshot)
