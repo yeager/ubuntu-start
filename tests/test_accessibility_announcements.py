@@ -1155,6 +1155,26 @@ class SupportReportDialogTests(unittest.TestCase):
 
 
 class SystemDetailsTests(unittest.TestCase):
+    @patch("ubuntu_start.Adw.AlertDialog")
+    def test_system_details_are_previewed_before_copying(self, alert_dialog):
+        app = Mock()
+        app.system_details.return_value = [("Ubuntu", "24.04"), ("Memory", "16 GiB")]
+        status = Mock()
+
+        UbuntuStart.review_system_details(app, status)
+
+        dialog = alert_dialog.return_value
+        self.assertEqual(dialog.add_response.call_args_list, [
+            call("cancel", "Cancel"), call("copy", "Copy"),
+        ])
+        dialog.set_default_response.assert_called_once_with("cancel")
+        self.assertIn("Ubuntu: 24.04\nMemory: 16 GiB", alert_dialog.call_args.kwargs["body"])
+        response = dialog.connect.call_args.args[1]
+        response(dialog, "cancel")
+        app.copy_system_details.assert_not_called()
+        response(dialog, "copy")
+        app.copy_system_details.assert_called_once_with(status, "Ubuntu: 24.04\nMemory: 16 GiB")
+
     def test_desktop_connection_label_preserves_unknown_state(self):
         self.assertEqual(desktop_connection_label(True), "Remote desktop")
         self.assertEqual(desktop_connection_label(False), "Local desktop")

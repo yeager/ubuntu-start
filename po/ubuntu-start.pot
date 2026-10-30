@@ -4926,6 +4926,16 @@ msgstr ""
 msgid "Copy system details"
 msgstr ""
 
+msgid "Review system details before copying"
+msgstr ""
+
+#, python-brace-format
+msgid "Review this information before copying it. It may reveal details about your computer. Share it only with a support person you trust.\n\n{details}"
+msgstr ""
+
+msgid "Copy"
+msgstr ""
+
 #: src/ubuntu_start.py:3114
 msgid "Review and save support report"
 msgstr ""

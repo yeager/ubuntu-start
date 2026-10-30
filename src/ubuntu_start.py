@@ -3119,7 +3119,7 @@ class UbuntuStart(Adw.Application):
             self.row(details_rows, label, value)
         copy_status = Gtk.Label(label="", xalign=0, wrap=True)
         copy_button = Gtk.Button(label=_("Copy system details"), halign=Gtk.Align.START)
-        copy_button.connect("clicked", lambda *_: self.copy_system_details(copy_status))
+        copy_button.connect("clicked", lambda *_: self.review_system_details(copy_status))
         details_box.append(copy_button)
         details_box.append(copy_status)
         export_status = Gtk.Label(label="", xalign=0, wrap=True)
@@ -3167,12 +3167,29 @@ class UbuntuStart(Adw.Application):
         )
         return box
 
-    def copy_system_details(self, status_label):
+    def review_system_details(self, status_label):
+        report = "\n".join(f"{label}: {value}" for label, value in self.system_details())
+        dialog = Adw.AlertDialog(
+            heading=_("Review system details before copying"),
+            body=_("Review this information before copying it. It may reveal details about your computer. Share it only with a support person you trust.\n\n{details}").format(details=report),
+        )
+        dialog.add_response("cancel", _("Cancel"))
+        dialog.add_response("copy", _("Copy"))
+        dialog.set_default_response("cancel")
+        dialog.connect(
+            "response",
+            lambda _dialog, response: self.copy_system_details(status_label, report)
+            if response == "copy" else None,
+        )
+        dialog.present(self.get_active_window())
+
+    def copy_system_details(self, status_label, report=None):
         display = Gdk.Display.get_default()
         if display is None:
             status_label.set_text(_("Clipboard is unavailable."))
             return
-        report = "\n".join(f"{label}: {value}" for label, value in self.system_details())
+        if report is None:
+            report = "\n".join(f"{label}: {value}" for label, value in self.system_details())
         display.get_clipboard().set(report)
         status_label.set_text(_("System details copied."))
         self.announce_to_screen_reader(status_label, status_label.get_text())

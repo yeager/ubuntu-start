@@ -5692,6 +5692,16 @@ msgstr ""
 msgid "Copy system details"
 msgstr "Kopiera systemuppgifter"
 
+msgid "Review system details before copying"
+msgstr "Granska systemuppgifterna innan du kopierar dem"
+
+#, python-brace-format
+msgid "Review this information before copying it. It may reveal details about your computer. Share it only with a support person you trust.\n\n{details}"
+msgstr "Granska uppgifterna innan du kopierar dem. De kan avslöja information om datorn. Dela dem bara med en supportperson du litar på.\n\n{details}"
+
+msgid "Copy"
+msgstr "Kopiera"
+
 #: src/ubuntu_start.py:3087
 msgid "Review and save support report"
 msgstr "Granska och spara supportrapport"
