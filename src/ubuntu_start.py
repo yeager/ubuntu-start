@@ -867,6 +867,14 @@ class UbuntuStart(Adw.Application):
             open_button.connect("clicked", lambda *_args, t=target: self.open_target(t))
             guide_box.append(open_button)
             if title == _("Improve everyday security"):
+                privacy_button = Gtk.Button(
+                    label=_("Review privacy and sharing settings"),
+                    halign=Gtk.Align.START,
+                )
+                privacy_button.connect(
+                    "clicked", lambda *_: self.open_target(("settings", "privacy")),
+                )
+                guide_box.append(privacy_button)
                 updates_button = Gtk.Button(
                     label=_("Check automatic update setup"), halign=Gtk.Align.START,
                 )
