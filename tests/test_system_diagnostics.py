@@ -56,8 +56,10 @@ from system_diagnostics import (
     find_graphics_benchmark_tool,
     parse_glmark2_score,
     parse_secure_boot_status,
+    parse_root_encryption_status,
     read_remote_session,
     read_secure_boot_status,
+    read_root_encryption_status,
     read_memory_status,
     parse_pressure_status,
     pressure_threshold_exceeded,
@@ -1810,6 +1812,33 @@ Inst package-two [2.0] (2.1 repo [amd64])
     @patch("system_diagnostics.shutil.which", return_value="/usr/bin/mokutil")
     def test_reports_secure_boot_timeout(self, _which, _run_local):
         self.assertEqual(read_secure_boot_status(), (None, "timeout-or-unavailable"))
+
+    def test_detects_root_encryption_only_on_its_device_path(self):
+        encrypted = '''{"blockdevices":[{"type":"disk","children":[{"type":"part","fstype":"crypto_LUKS","children":[{"type":"crypt","children":[{"type":"lvm","fstype":"ext4","mountpoints":["/"]}]}]}]}]}'''
+        plain = '''{"blockdevices":[{"type":"disk","children":[{"type":"part","fstype":"ext4","mountpoints":["/"]}]}]}'''
+        partial = '''{"blockdevices":[{"type":"disk","children":[{"type":"crypt","mountpoints":["/"]},{"type":"part","mountpoints":["/"]}]}]}'''
+
+        self.assertEqual(parse_root_encryption_status(encrypted), "encrypted")
+        self.assertEqual(parse_root_encryption_status(plain), "unencrypted")
+        self.assertEqual(parse_root_encryption_status(partial), "partial")
+        self.assertIsNone(parse_root_encryption_status('{"blockdevices":[]}'))
+        self.assertIsNone(parse_root_encryption_status("not json"))
+
+    @patch("system_diagnostics._run_local")
+    @patch("system_diagnostics.shutil.which", return_value="/usr/bin/lsblk")
+    def test_reads_root_encryption_from_local_lsblk_tree(self, _which, run_local):
+        run_local.return_value = SimpleNamespace(
+            returncode=0,
+            stdout='{"blockdevices":[{"type":"crypt","children":[{"type":"lvm","fstype":"ext4","mountpoints":["/"]}]}]}',
+        )
+        self.assertEqual(read_root_encryption_status(), ("encrypted", None))
+        run_local.assert_called_once_with(
+            ["/usr/bin/lsblk", "--json", "--tree", "--output", "NAME,TYPE,FSTYPE,MOUNTPOINTS"], 3.0,
+        )
+
+    @patch("system_diagnostics.shutil.which", return_value=None)
+    def test_reports_missing_lsblk(self, _which):
+        self.assertEqual(read_root_encryption_status(), (None, "not-installed"))
 
     @patch("system_diagnostics.shutil.which", return_value=None)
     def test_handles_missing_power_profile_tool(self, _which):

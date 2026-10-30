@@ -13,7 +13,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import battery_is_discharging, battery_power_status_unknown, benchmark_score_change_percent, build_support_report, check_internet_connection, clear_benchmark_baselines, find_benchmark_tool, find_graphics_benchmark_tool, get_application_version, is_valid_support_report, load_benchmark_baselines, normalize_desktop_name, normalize_session_type, parse_glmark2_score, pressure_threshold_exceeded, read_accessibility_settings, read_apt_update_status, read_automatic_upgrade_status, read_audio_status, read_backup_tool_status, read_battery_status, read_bluetooth_status, read_boot_critical_chain, read_boot_timing, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_remote_session, read_reboot_required, read_resource_pressure, read_rfkill_status, read_secure_boot_status, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_cpu_benchmark, run_network_diagnostics, save_benchmark_baseline, sensor_near_critical_limit
+from system_diagnostics import battery_is_discharging, battery_power_status_unknown, benchmark_score_change_percent, build_support_report, check_internet_connection, clear_benchmark_baselines, find_benchmark_tool, find_graphics_benchmark_tool, get_application_version, is_valid_support_report, load_benchmark_baselines, normalize_desktop_name, normalize_session_type, parse_glmark2_score, pressure_threshold_exceeded, read_accessibility_settings, read_apt_update_status, read_automatic_upgrade_status, read_audio_status, read_backup_tool_status, read_battery_status, read_bluetooth_status, read_boot_critical_chain, read_boot_timing, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_remote_session, read_reboot_required, read_resource_pressure, read_rfkill_status, read_root_encryption_status, read_secure_boot_status, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_cpu_benchmark, run_network_diagnostics, save_benchmark_baseline, sensor_near_critical_limit
 from guide_search import find_guide_matches
 from first_run_state import TASK_IDS as FIRST_RUN_TASK_IDS, load_completed_tasks, save_completed_tasks
 
@@ -963,6 +963,34 @@ class UbuntuStart(Adw.Application):
         radio_box.append(radio_rows)
         box.append(radio_box)
         self.refresh_rfkill_status(radio_refresh, radio_status, radio_rows)
+
+        security_box, _security_rows = self.page(
+            _("Storage encryption status"),
+            _("Read the block-device paths used by the root filesystem. This check does not inspect every file or other mounted disk, and it does not change storage settings."),
+            include_rows=False,
+        )
+        self.root_encryption_row = Adw.ActionRow(
+            title=_("Root filesystem encryption"), subtitle=_("Not checked yet."),
+        )
+        security_box.append(self.root_encryption_row)
+        self.root_encryption_refresh_button = Gtk.Button(
+            label=_("Check root filesystem encryption"), halign=Gtk.Align.START,
+        )
+        self.root_encryption_refresh_button.connect(
+            "clicked",
+            lambda *_: self.refresh_root_encryption_status(
+                self.root_encryption_refresh_button, self.root_encryption_row, announce=True,
+            ),
+        )
+        security_box.append(self.root_encryption_refresh_button)
+        security_box.append(Gtk.Label(
+            label=_("This read-only check uses lsblk when available. It cannot confirm that all personal files or other disks are encrypted."),
+            xalign=0, wrap=True, css_classes=["body"],
+        ))
+        box.append(security_box)
+        self.refresh_root_encryption_status(
+            self.root_encryption_refresh_button, self.root_encryption_row,
+        )
 
         bluetooth_box, bluetooth_rows = self.page(
             _("Bluetooth status"),
@@ -3103,6 +3131,38 @@ class UbuntuStart(Adw.Application):
         status_row.set_subtitle(message)
         if announce:
             self.announce_to_screen_reader(status_row, _("Secure Boot status: {status}").format(status=message))
+        return GLib.SOURCE_REMOVE
+
+    def refresh_root_encryption_status(self, button, status_row, announce=False):
+        button.set_sensitive(False)
+        status_row.set_subtitle(_("Checking root filesystem encryption…"))
+
+        def read_status():
+            state, error = read_root_encryption_status()
+            GLib.idle_add(
+                self.show_root_encryption_status, button, status_row, state, error, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_root_encryption_status(self, button, status_row, state, error, announce=False):
+        button.set_sensitive(True)
+        messages = {
+            "encrypted": _("An encryption layer was detected on every reported path to the root filesystem. This does not verify other disks or every personal file."),
+            "partial": _("Encryption was detected on some, but not all, reported paths to the root filesystem. Review the storage layout."),
+            "unencrypted": _("No encryption layer was detected on the reported paths to the root filesystem. This check may not detect every encryption method."),
+        }
+        errors = {
+            "not-installed": _("lsblk is not installed, so root filesystem encryption cannot be checked."),
+            "timeout-or-unavailable": _("The storage layout could not be read. Try again later."),
+            "unavailable": _("The storage layout did not provide enough information to check root filesystem encryption."),
+        }
+        message = messages.get(state, errors.get(error, errors["unavailable"]))
+        status_row.set_subtitle(message)
+        if announce:
+            self.announce_to_screen_reader(
+                status_row, _("Root filesystem encryption status: {status}").format(status=message),
+            )
         return GLib.SOURCE_REMOVE
 
     def system_details(self):

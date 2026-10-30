@@ -1649,6 +1649,67 @@ def read_secure_boot_status(timeout: float = 3.0) -> tuple[str | None, str | Non
     return None, "unavailable"
 
 
+def parse_root_encryption_status(output: str) -> str | None:
+    """Report encryption layers on paths backing the root filesystem only."""
+    if not isinstance(output, str) or len(output) > 1_000_000:
+        return None
+    try:
+        devices = json.loads(output).get("blockdevices")
+    except (AttributeError, TypeError, json.JSONDecodeError):
+        return None
+    if not isinstance(devices, list):
+        return None
+    root_paths: list[bool] = []
+
+    def visit(node: object, encrypted_ancestor: bool = False, depth: int = 0) -> None:
+        if depth > 64 or not isinstance(node, dict):
+            return
+        kind = node.get("type")
+        filesystem = node.get("fstype")
+        encrypted = encrypted_ancestor or kind == "crypt" or (
+            isinstance(filesystem, str) and filesystem.casefold().startswith("crypto_luks")
+        )
+        mountpoints = node.get("mountpoints")
+        if isinstance(mountpoints, str):
+            mounted_at_root = mountpoints == "/"
+        elif isinstance(mountpoints, list):
+            mounted_at_root = "/" in mountpoints
+        else:
+            mounted_at_root = False
+        if mounted_at_root:
+            root_paths.append(encrypted)
+        children = node.get("children", [])
+        if isinstance(children, list):
+            for child in children:
+                visit(child, encrypted, depth + 1)
+
+    for device in devices:
+        visit(device)
+    if not root_paths:
+        return None
+    if all(root_paths):
+        return "encrypted"
+    if any(root_paths):
+        return "partial"
+    return "unencrypted"
+
+
+def read_root_encryption_status(timeout: float = 3.0) -> tuple[str | None, str | None]:
+    """Inspect lsblk's local device tree; do not change storage or mount state."""
+    lsblk = shutil.which("lsblk")
+    if not lsblk:
+        return None, "not-installed"
+    result = _run_local([
+        lsblk, "--json", "--tree", "--output", "NAME,TYPE,FSTYPE,MOUNTPOINTS",
+    ], timeout)
+    if result is None:
+        return None, "timeout-or-unavailable"
+    if result.returncode != 0:
+        return None, "unavailable"
+    status = parse_root_encryption_status(result.stdout)
+    return (status, None) if status else (None, "unavailable")
+
+
 def parse_apt_upgrade_simulation(output: str) -> tuple[int, int] | None:
     """Return upgradeable and held-back package counts from `apt-get -s upgrade`."""
     if not isinstance(output, str) or not output.strip():

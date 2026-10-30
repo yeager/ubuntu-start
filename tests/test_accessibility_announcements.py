@@ -1676,6 +1676,37 @@ class BenchmarkResultInterpretationTests(unittest.TestCase):
 
 
 class DriverGuideTests(unittest.TestCase):
+    def test_root_encryption_status_is_cautious_and_announced(self):
+        app = Mock()
+        button = Mock()
+        row = Mock()
+
+        UbuntuStart.show_root_encryption_status(
+            app, button, row, "encrypted", None, announce=True,
+        )
+
+        subtitle = (
+            "An encryption layer was detected on every reported path to the root filesystem. "
+            "This does not verify other disks or every personal file."
+        )
+        row.set_subtitle.assert_called_once_with(subtitle)
+        button.set_sensitive.assert_called_once_with(True)
+        app.announce_to_screen_reader.assert_called_once_with(
+            row, f"Root filesystem encryption status: {subtitle}",
+        )
+
+    def test_root_encryption_unavailable_does_not_guess(self):
+        app = Mock()
+        row = Mock()
+
+        UbuntuStart.show_root_encryption_status(
+            app, Mock(), row, None, "unavailable",
+        )
+
+        row.set_subtitle.assert_called_once_with(
+            "The storage layout did not provide enough information to check root filesystem encryption.",
+        )
+
     def test_secure_boot_status_explains_enabled_state_and_announces(self):
         app = Mock()
         button = Mock()

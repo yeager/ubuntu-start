@@ -6940,3 +6940,42 @@ msgid ""
 "This check cannot confirm a successful recent run or which repositories are "
 "included."
 msgstr "På sidan Nätverk och maskinvara väljer du Kontrollera konfigurationen för automatiska uppdateringar för att läsa av APT-inställningen, paketet unattended-upgrades och den dagliga systemd-timern. Om något saknas eller är avstängt granskar du Programvara och uppdateringar eller frågar administratören. Kontrollen visar inte om uppdateringar nyligen har installerats eller vilka paketkällor som omfattas."
+
+msgid "Storage encryption status"
+msgstr "Status för diskkryptering"
+
+msgid "Read the block-device paths used by the root filesystem. This check does not inspect every file or other mounted disk, and it does not change storage settings."
+msgstr "Läs av blockenheterna som används av rotfilsystemet. Kontrollen granskar inte alla filer eller andra monterade diskar och ändrar inga lagringsinställningar."
+
+msgid "Root filesystem encryption"
+msgstr "Kryptering av rotfilsystemet"
+
+msgid "Check root filesystem encryption"
+msgstr "Kontrollera kryptering av rotfilsystemet"
+
+msgid "This read-only check uses lsblk when available. It cannot confirm that all personal files or other disks are encrypted."
+msgstr "Den här skrivskyddade kontrollen använder lsblk när verktyget finns. Den kan inte bekräfta att alla personliga filer eller andra diskar är krypterade."
+
+msgid "Checking root filesystem encryption…"
+msgstr "Kontrollerar kryptering av rotfilsystemet …"
+
+msgid "An encryption layer was detected on every reported path to the root filesystem. This does not verify other disks or every personal file."
+msgstr "Ett krypteringslager hittades på alla rapporterade sökvägar till rotfilsystemet. Det bekräftar inte kryptering av andra diskar eller alla personliga filer."
+
+msgid "Encryption was detected on some, but not all, reported paths to the root filesystem. Review the storage layout."
+msgstr "Kryptering hittades på vissa, men inte alla, rapporterade sökvägar till rotfilsystemet. Granska disklayouten."
+
+msgid "No encryption layer was detected on the reported paths to the root filesystem. This check may not detect every encryption method."
+msgstr "Inget krypteringslager hittades på de rapporterade sökvägarna till rotfilsystemet. Kontrollen kan missa vissa krypteringsmetoder."
+
+msgid "lsblk is not installed, so root filesystem encryption cannot be checked."
+msgstr "lsblk är inte installerat, så det går inte att kontrollera kryptering av rotfilsystemet."
+
+msgid "The storage layout could not be read. Try again later."
+msgstr "Det gick inte att läsa disklayouten. Försök igen senare."
+
+msgid "The storage layout did not provide enough information to check root filesystem encryption."
+msgstr "Disklayouten innehöll inte tillräcklig information för att kontrollera kryptering av rotfilsystemet."
+
+msgid "Root filesystem encryption status: {status}"
+msgstr "Status för kryptering av rotfilsystemet: {status}"

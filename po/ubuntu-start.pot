@@ -5601,6 +5601,58 @@ msgid ""
 "or ask your administrator."
 msgstr ""
 
+#: src/ubuntu_start.py:968
+msgid "Storage encryption status"
+msgstr ""
+
+#: src/ubuntu_start.py:969
+msgid "Read the block-device paths used by the root filesystem. This check does not inspect every file or other mounted disk, and it does not change storage settings."
+msgstr ""
+
+#: src/ubuntu_start.py:973
+msgid "Root filesystem encryption"
+msgstr ""
+
+#: src/ubuntu_start.py:977
+msgid "Check root filesystem encryption"
+msgstr ""
+
+#: src/ubuntu_start.py:987
+msgid "This read-only check uses lsblk when available. It cannot confirm that all personal files or other disks are encrypted."
+msgstr ""
+
+#: src/ubuntu_start.py:3138
+msgid "Checking root filesystem encryption…"
+msgstr ""
+
+#: src/ubuntu_start.py:3151
+msgid "An encryption layer was detected on every reported path to the root filesystem. This does not verify other disks or every personal file."
+msgstr ""
+
+#: src/ubuntu_start.py:3152
+msgid "Encryption was detected on some, but not all, reported paths to the root filesystem. Review the storage layout."
+msgstr ""
+
+#: src/ubuntu_start.py:3153
+msgid "No encryption layer was detected on the reported paths to the root filesystem. This check may not detect every encryption method."
+msgstr ""
+
+#: src/ubuntu_start.py:3156
+msgid "lsblk is not installed, so root filesystem encryption cannot be checked."
+msgstr ""
+
+#: src/ubuntu_start.py:3157
+msgid "The storage layout could not be read. Try again later."
+msgstr ""
+
+#: src/ubuntu_start.py:3158
+msgid "The storage layout did not provide enough information to check root filesystem encryption."
+msgstr ""
+
+#: src/ubuntu_start.py:3164
+msgid "Root filesystem encryption status: {status}"
+msgstr ""
+
 #: src/ubuntu_start.py:233
 msgid "Check the automatic security update setup"
 msgstr ""
