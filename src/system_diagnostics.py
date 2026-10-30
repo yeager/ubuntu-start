@@ -1922,7 +1922,9 @@ def run_network_diagnostics(timeout: float = 3.0) -> dict[str, str | float | Non
                 result["gateway_test_duration_ms"] = round((time.monotonic() - start) * 1000, 1)
             elif ping.returncode == 0:
                 timing = re.search(r"time[=<]([0-9.]+)\s*ms", ping.stdout)
-                result["gateway_latency_ms"] = float(timing.group(1)) if timing else round((time.monotonic() - start) * 1000, 1)
+                elapsed_ms = round((time.monotonic() - start) * 1000, 1)
+                result["gateway_latency_ms"] = float(timing.group(1)) if timing else elapsed_ms
+                result["gateway_test_duration_ms"] = elapsed_ms
             else:
                 result["gateway_error"] = "no-response"
                 result["gateway_test_duration_ms"] = round((time.monotonic() - start) * 1000, 1)

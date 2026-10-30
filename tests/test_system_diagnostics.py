@@ -1888,7 +1888,7 @@ Inst package-two [2.0] (2.1 repo [amd64])
     @patch("system_diagnostics.shutil.which", side_effect=lambda command: f"/usr/bin/{command}")
     @patch("system_diagnostics.lookup_oui_vendor", return_value="Example Router Co.")
     @patch("system_diagnostics._run_local")
-    @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 2.0, 2.03])
+    @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 1.05, 2.0, 2.03])
     def test_network_diagnostics_use_default_gateway_and_report_latency(self, _clock, run, _vendor, _which):
         run.side_effect = [
             subprocess.CompletedProcess([], 0, "default via 192.168.1.1 dev wlp2s0\n", ""),
@@ -1899,6 +1899,7 @@ Inst package-two [2.0] (2.1 repo [amd64])
         result = run_network_diagnostics()
         self.assertEqual(result["gateway"], "192.168.1.1")
         self.assertEqual(result["gateway_latency_ms"], 0.42)
+        self.assertEqual(result["gateway_test_duration_ms"], 50.0)
         self.assertEqual(result["gateway_mac"], "00:11:22:33:44:55")
         self.assertEqual(result["gateway_vendor"], "Example Router Co.")
         self.assertEqual(result["dns_latency_ms"], 30.0)
@@ -1933,7 +1934,7 @@ Inst package-two [2.0] (2.1 repo [amd64])
     @patch("system_diagnostics.shutil.which", side_effect=lambda command: f"/usr/bin/{command}")
     @patch("system_diagnostics.lookup_oui_vendor", return_value=None)
     @patch("system_diagnostics._run_local")
-    @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 2.0, 2.08])
+    @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 2.0, 2.02, 2.1])
     def test_reports_dns_timeout_separately_from_lookup_failure(self, _clock, run, _vendor, _which):
         run.side_effect = [
             subprocess.CompletedProcess([], 0, "default via 192.168.1.1 dev eth0\n", ""),
@@ -1951,7 +1952,7 @@ Inst package-two [2.0] (2.1 repo [amd64])
     @patch("system_diagnostics.shutil.which", side_effect=lambda command: "/usr/bin/ping" if command == "ping" else None)
     @patch("system_diagnostics.lookup_oui_vendor", return_value=None)
     @patch("system_diagnostics._run_local")
-    @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 2.0, 2.02])
+    @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 2.0, 2.02, 2.02])
     def test_reports_missing_resolvectl_without_claiming_dns_failure(self, _clock, run, _vendor, _which):
         run.side_effect = [
             subprocess.CompletedProcess([], 0, "default via 192.168.1.1 dev eth0\n", ""),
@@ -1969,7 +1970,7 @@ Inst package-two [2.0] (2.1 repo [amd64])
     @patch("system_diagnostics.shutil.which", side_effect=lambda command: f"/usr/bin/{command}")
     @patch("system_diagnostics.lookup_oui_vendor", return_value=None)
     @patch("system_diagnostics._run_local")
-    @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 2.0, 2.03])
+    @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 2.0, 3.0, 3.01, 4.0, 4.03])
     def test_uses_ipv6_gateway_when_ipv4_default_is_missing(self, _clock, run, _vendor, _which):
         run.side_effect = [
             subprocess.CompletedProcess([], 0, "", ""),
@@ -2009,7 +2010,7 @@ Inst package-two [2.0] (2.1 repo [amd64])
     @patch("system_diagnostics.shutil.which", side_effect=lambda command: f"/usr/bin/{command}")
     @patch("system_diagnostics.lookup_oui_vendor", return_value=None)
     @patch("system_diagnostics._run_local")
-    @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 2.5, 4.0, 4.03])
+    @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 2.5, 2.5, 4.0, 4.03])
     def test_reports_ping_timeout_separately(self, _clock, run, _vendor, _which):
         run.side_effect = [
             subprocess.CompletedProcess([], 0, "default via 192.168.1.1 dev eth0\n", ""),
@@ -2027,7 +2028,7 @@ Inst package-two [2.0] (2.1 repo [amd64])
     @patch("system_diagnostics.shutil.which", return_value="/usr/bin/ping")
     @patch("system_diagnostics.lookup_oui_vendor", return_value=None)
     @patch("system_diagnostics._run_local")
-    @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 2.5, 4.0, 4.03])
+    @patch("system_diagnostics.time.monotonic", side_effect=[1.0, 2.5, 2.5, 4.0, 4.03])
     def test_reports_nonzero_ping_result_as_no_response(self, _clock, run, _vendor, _which):
         run.side_effect = [
             subprocess.CompletedProcess([], 0, "default via 192.168.1.1 dev eth0\n", ""),
