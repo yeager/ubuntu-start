@@ -1568,6 +1568,22 @@ msgid ""
 "sign-in codes."
 msgstr ""
 
+#: src/ubuntu_start.py:233
+msgid "Use a standard account for everyday work"
+msgstr ""
+
+#: src/ubuntu_start.py:233
+msgid "Use a standard, non-administrator account for everyday tasks when your computer setup allows it. Approve administrator prompts only when you started the action and understand what it will change. Do not enter your password into an unexpected prompt."
+msgstr ""
+
+#: src/ubuntu_start.py:233
+msgid "Check sign-in requests before approving"
+msgstr ""
+
+#: src/ubuntu_start.py:233
+msgid "Before entering a password or approving a passkey prompt, check that you opened the expected website or app and that the request matches the action you started. Cancel unexpected prompts and open the service from a bookmark or its known address."
+msgstr ""
+
 #: src/ubuntu_start.py:232
 msgid "Prepare account recovery"
 msgstr ""

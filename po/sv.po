@@ -1881,6 +1881,22 @@ msgid ""
 "sign-in codes."
 msgstr "Använd ett långt och unikt lösenord för datorn och en lösenordshanterare för konton. Aktivera flerfaktorsinloggning för onlinekonton när det går. För viktiga konton väljer du helst en inloggningsmetod som står emot nätfiske, till exempel passnyckel eller säkerhetsnyckel, om tjänsten stöder den. Dela aldrig lösenord eller inloggningskoder."
 
+#: src/ubuntu_start.py:233
+msgid "Use a standard account for everyday work"
+msgstr "Använd ett standardkonto i vardagen"
+
+#: src/ubuntu_start.py:233
+msgid "Use a standard, non-administrator account for everyday tasks when your computer setup allows it. Approve administrator prompts only when you started the action and understand what it will change. Do not enter your password into an unexpected prompt."
+msgstr "Använd ett vanligt konto utan administratörsbehörighet för vardagliga uppgifter, om datorns konfiguration tillåter det. Godkänn administratörsfrågor bara när du själv har startat åtgärden och förstår vad den ändrar. Skriv inte in lösenordet i en oväntad fråga."
+
+#: src/ubuntu_start.py:233
+msgid "Check sign-in requests before approving"
+msgstr "Kontrollera inloggningsbegäranden innan du godkänner dem"
+
+#: src/ubuntu_start.py:233
+msgid "Before entering a password or approving a passkey prompt, check that you opened the expected website or app and that the request matches the action you started. Cancel unexpected prompts and open the service from a bookmark or its known address."
+msgstr "Innan du skriver in ett lösenord eller godkänner en passnyckelbegäran bör du kontrollera att du har öppnat rätt webbplats eller app och att begäran stämmer med åtgärden du startade. Avbryt oväntade frågor och öppna tjänsten via ett bokmärke eller dess kända adress."
+
 #: src/ubuntu_start.py:232
 msgid "Prepare account recovery"
 msgstr "Förbered kontoåterställning"

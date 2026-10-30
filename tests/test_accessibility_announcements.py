@@ -88,7 +88,7 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
             for step_title, description in steps
         ]
 
-        for query in ("security updates", "automatic unattended", "waiting updates", "password account", "firewall", "backup", "privacy sharing", "Secure Boot", "compromised account", "suspicious messages", "computer stolen", "malware ransomware"):
+        for query in ("security updates", "automatic unattended", "waiting updates", "password account", "administrator prompts", "passkey requests", "firewall", "backup", "privacy sharing", "Secure Boot", "compromised account", "suspicious messages", "computer stolen", "malware ransomware"):
             with self.subTest(query=query):
                 self.assertTrue(find_guide_matches(query, entries))
 
@@ -97,6 +97,8 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.assertIn("This app checks UFW only; it cannot tell whether another firewall is active", step_text)
         self.assertIn("Do not install or enable a firewall blindly", step_text)
         self.assertIn("Never share passwords or sign-in codes", step_text)
+        self.assertIn("Use a standard, non-administrator account for everyday tasks", step_text)
+        self.assertIn("Cancel unexpected prompts", step_text)
         self.assertIn("do not try to enable it on an existing system", step_text)
         self.assertIn("Disconnect a backup drive when it is not in use", step_text)
         self.assertIn("If it is off, consult your computer manufacturer or administrator", step_text)
