@@ -1932,6 +1932,15 @@ msgstr "Ubuntus brandväggsverktyg ufw kan vara inaktiverat från början. Aktiv
 msgid "Treat links and terminal commands with care"
 msgstr "Var försiktig med länkar och terminalkommandon"
 
+msgid "Secure Boot can help prevent untrusted boot software from loading. Check its status in the Security section of Network and hardware. If it is off, consult your computer manufacturer or administrator before changing firmware settings; some drivers or managed setups may need extra steps."
+msgstr "Secure Boot kan bidra till att hindra opålitliga startprogram från att köras. Kontrollera statusen under Säkerhet på sidan Nätverk och maskinvara. Om funktionen är avstängd bör du rådfråga datortillverkaren eller administratören innan du ändrar inställningar i den fasta programvaran. Vissa drivrutiner och hanterade system kan kräva extra åtgärder."
+
+msgid "If you suspect an account was compromised"
+msgstr "Om du misstänker att ett konto har kapats"
+
+msgid "From a trusted device, change the affected account password, sign out other sessions and review recovery details and recent sign-ins. Contact your organization's administrator for a work account. If you suspect the Ubuntu computer itself is compromised, disconnect it from networks and seek trusted technical help before entering more passwords."
+msgstr "Byt lösenord för det berörda kontot från en betrodd enhet, logga ut övriga sessioner och kontrollera återställningsuppgifter och senaste inloggningar. Kontakta organisationens administratör om det gäller ett arbetskonto. Om du misstänker att själva Ubuntu-datorn har utsatts för intrång bör du koppla bort nätverket och söka hjälp från en betrodd tekniker innan du skriver in fler lösenord."
+
 #: src/ubuntu_start.py:238
 msgid ""
 "Check unexpected messages and download links through a separate trusted "
@@ -6122,6 +6131,18 @@ msgstr ""
 "visas är de starkare ju närmare 0 dBm de ligger. Mottagnings- och "
 "sändningshastigheten gäller Wi-Fi-länken, inte den uppmätta "
 "internethastigheten."
+
+#: src/ubuntu_start.py:3430
+msgid "Compare the Wi-Fi link with internet reachability"
+msgstr "Jämför Wi-Fi-länken med internetåtkomsten"
+
+#: src/ubuntu_start.py:3430
+msgid "On Network and hardware, run Test DNS and gateway, then Test internet "
+"connection. These checks ask first and show elapsed times. DNS and gateway "
+"results help compare the configured resolver with the local router; the "
+"HTTPS check confirms whether ubuntu.com responds. None measures download "
+"speed or proves the cause of a slowdown."
+msgstr "Gå till Nätverk och maskinvara och kör Testa DNS och gateway och sedan Testa internetanslutningen. Kontrollerna frågar först och visar svarstider. DNS- och gatewayresultaten visar svarstiden från den konfigurerade DNS-tjänsten och den lokala routern. HTTPS-kontrollen visar om ubuntu.com svarar. Ingen av kontrollerna mäter nedladdningshastighet eller visar säkert vad som orsakar problemet."
 
 #: src/ubuntu_start.py:3403
 msgid "Compare another device or service"

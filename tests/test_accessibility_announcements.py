@@ -80,7 +80,7 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
             for step_title, description in steps
         ]
 
-        for query in ("security updates", "password account", "firewall", "backup", "privacy sharing"):
+        for query in ("security updates", "password account", "firewall", "backup", "privacy sharing", "Secure Boot", "compromised account"):
             with self.subTest(query=query):
                 self.assertTrue(find_guide_matches(query, entries))
 
@@ -88,6 +88,8 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.assertIn("Do not enable firewall rules blindly", step_text)
         self.assertIn("Never share passwords or sign-in codes", step_text)
         self.assertIn("do not try to enable it on an existing system", step_text)
+        self.assertIn("If it is off, consult your computer manufacturer or administrator", step_text)
+        self.assertIn("From a trusted device, change the affected account password", step_text)
         self.assertEqual(title, "Improve everyday security")
 
     def test_open_security_guide_selects_the_security_steps(self):
@@ -343,7 +345,9 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
             for step_title, description in steps
         ]
 
-        matches = find_guide_matches("slow Wi-Fi disconnecting signal channel", entries)
+        matches = find_guide_matches(
+            "slow Wi-Fi disconnecting signal channel gateway internet speed", entries,
+        )
         text = " ".join(
             f"{step_title} {description}"
             for _kind, _index, _guide_title, step_title, description in entries
@@ -354,6 +358,7 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.assertIn("The Wi-Fi guide links to WiFi Analyzer", text)
         self.assertIn("Select View on GitHub to read about it", text)
         self.assertIn("Ask the network owner before changing router settings", text)
+        self.assertIn("None measures download speed", text)
 
     def test_connected_wifi_without_internet_help_is_searchable(self):
         entries = [

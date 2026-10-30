@@ -1619,6 +1619,15 @@ msgstr ""
 msgid "Treat links and terminal commands with care"
 msgstr ""
 
+msgid "Secure Boot can help prevent untrusted boot software from loading. Check its status in the Security section of Network and hardware. If it is off, consult your computer manufacturer or administrator before changing firmware settings; some drivers or managed setups may need extra steps."
+msgstr ""
+
+msgid "If you suspect an account was compromised"
+msgstr ""
+
+msgid "From a trusted device, change the affected account password, sign out other sessions and review recovery details and recent sign-ins. Contact your organization's administrator for a work account. If you suspect the Ubuntu computer itself is compromised, disconnect it from networks and seek trusted technical help before entering more passwords."
+msgstr ""
+
 #: src/ubuntu_start.py:238
 msgid ""
 "Check unexpected messages and download links through a separate trusted "
@@ -5298,6 +5307,18 @@ msgid ""
 "Refresh Network status on the Network and hardware page. When available, "
 "signal values closer to 0 dBm are stronger. Receive and transmit rates "
 "describe the Wi-Fi link, not your measured internet speed."
+msgstr ""
+
+#: src/ubuntu_start.py:3430
+msgid "Compare the Wi-Fi link with internet reachability"
+msgstr ""
+
+#: src/ubuntu_start.py:3430
+msgid "On Network and hardware, run Test DNS and gateway, then Test internet "
+"connection. These checks ask first and show elapsed times. DNS and gateway "
+"results help compare the configured resolver with the local router; the "
+"HTTPS check confirms whether ubuntu.com responds. None measures download "
+"speed or proves the cause of a slowdown."
 msgstr ""
 
 #: src/ubuntu_start.py:3430
