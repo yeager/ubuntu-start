@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.42" date="2026-10-30">
+      <description>
+        <p>Add an everyday security and privacy guide covering updates, trusted software, account protection, screen locking, backups and firewall basics.</p>
+        <p xml:lang="sv">Lägg till en guide om säkerhet och integritet med råd om uppdateringar, betrodda appar, kontoskydd, skärmlås, säkerhetskopior och brandväggens grunder.</p>
+      </description>
+    </release>
     <release version="0.3.41" date="2026-10-30">
       <description>
         <p>Clarify why performance scores vary between runs and strengthen release checks for supported Ubuntu versions.</p>
