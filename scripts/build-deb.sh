@@ -18,6 +18,11 @@ meson setup "$build_dir" "$root" --prefix=/usr
 meson compile -C "$build_dir"
 DESTDIR="$package_root" meson install -C "$build_dir"
 sh "$root/scripts/check-staged-install.sh" "$package_root"
+if ! command -v desktop-file-validate >/dev/null 2>&1; then
+    printf 'desktop-file-validate is required; install desktop-file-utils.\n' >&2
+    exit 1
+fi
+desktop-file-validate "$package_root/usr/share/applications/se.danielnylander.UbuntuStart.desktop"
 
 install -d "$package_root/DEBIAN" "$package_root/usr/share/doc/ubuntu-start"
 sed "s/@VERSION@/${version}-1/" "$root/packaging/deb/control.in" \

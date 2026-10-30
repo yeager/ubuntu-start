@@ -90,7 +90,7 @@ sudo apt install ./ubuntu-start_*_all.deb
 Install the platform dependencies, then build with Meson:
 
 ```sh
-sudo apt install python3-gi gir1.2-gtk-4.0 gir1.2-adw-1 gettext meson ninja-build
+sudo apt install python3-gi gir1.2-gtk-4.0 gir1.2-adw-1 gettext meson ninja-build desktop-file-utils
 meson setup build --prefix=/usr
 meson compile -C build
 sudo meson install -C build
