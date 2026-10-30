@@ -642,9 +642,24 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         self.app.row.assert_any_call(rows, "APT automatic upgrade setting", "Enabled")
         self.app.row.assert_any_call(rows, "unattended-upgrades package", "Not installed")
         self.app.row.assert_any_call(rows, "Daily upgrade timer", "Enabled")
+        self.app.row.assert_any_call(rows, "Last scheduled timer trigger", "Not available")
         message = "APT is configured for automatic upgrades, but the unattended-upgrades package is not installed. Review Software & Updates or ask your administrator."
         status_label.set_text.assert_called_once_with(message)
         self.app.announce_to_screen_reader.assert_called_once_with(status_label, message)
+
+    def test_automatic_update_status_shows_last_scheduled_timer_trigger(self):
+        status_label = Mock()
+        rows = Mock()
+        rows.get_first_child.return_value = None
+        timestamp = 1793254320
+        expected_time = GLib.DateTime.new_from_unix_local(timestamp).format("%x %H:%M")
+        UbuntuStart.show_automatic_update_status(
+            self.app, Mock(), status_label, rows,
+            {"configured": True, "package_installed": True, "timer_enabled": True, "last_trigger": timestamp},
+            None,
+        )
+        self.app.row.assert_any_call(rows, "Last scheduled timer trigger", expected_time)
+        self.assertIn("does not confirm a successful recent run", status_label.set_text.call_args.args[0])
 
     def test_automatic_update_status_does_not_claim_a_recent_success(self):
         status_label = Mock()

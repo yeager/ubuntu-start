@@ -5783,3 +5783,7 @@ msgstr ""
 #: src/ubuntu_start.py:3337
 msgid "Open Ubuntu firewall guidance?"
 msgstr ""
+
+#: src/ubuntu_start.py:2927
+msgid "Last scheduled timer trigger"
+msgstr ""

@@ -1798,9 +1798,21 @@ def parse_automatic_upgrade_setting(output: str) -> bool | None:
     return None
 
 
+def parse_systemd_timestamp(value: str) -> int | None:
+    """Parse the UTC timestamp printed for systemd's *USec properties."""
+    value = value.strip()
+    if not value or value in {"-", "n/a"}:
+        return None
+    try:
+        parsed = datetime.strptime(value, "%a %Y-%m-%d %H:%M:%S %Z")
+    except ValueError:
+        return None
+    return int(parsed.replace(tzinfo=timezone.utc).timestamp())
+
+
 def read_automatic_upgrade_status(
     timeout: float = 3.0,
-) -> tuple[dict[str, bool | None] | None, str | None]:
+) -> tuple[dict[str, bool | int | None] | None, str | None]:
     """Read APT's unattended-upgrade setting, package and daily timer; make no changes."""
     apt_config = shutil.which("apt-config")
     if not apt_config:
@@ -1826,6 +1838,7 @@ def read_automatic_upgrade_status(
             package_installed = False
 
     timer_enabled = None
+    last_trigger = None
     systemctl = shutil.which("systemctl")
     if systemctl:
         timer_result = _run_local(
@@ -1839,10 +1852,19 @@ def read_automatic_upgrade_status(
             elif timer_state in {"disabled", "masked"}:
                 timer_enabled = False
 
+        trigger_result = _run_local(
+            [systemctl, "show", "--property=LastTriggerUSec", "--value", "apt-daily-upgrade.timer"],
+            timeout,
+            env={**os.environ, "LC_ALL": "C", "TZ": "UTC"},
+        )
+        if trigger_result and trigger_result.returncode == 0:
+            last_trigger = parse_systemd_timestamp(trigger_result.stdout)
+
     return {
         "configured": unattended_enabled,
         "package_installed": package_installed,
         "timer_enabled": timer_enabled,
+        "last_trigger": last_trigger,
     }, None
 
 

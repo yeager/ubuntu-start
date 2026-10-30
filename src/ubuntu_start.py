@@ -2919,6 +2919,12 @@ class UbuntuStart(Adw.Application):
             }
             self.row(update_rows, _("unattended-upgrades package"), package_labels[status["package_installed"]])
             self.row(update_rows, _("Daily upgrade timer"), labels[status["timer_enabled"]])
+            last_trigger = status.get("last_trigger")
+            if last_trigger is None:
+                last_trigger_text = _("Not available")
+            else:
+                last_trigger_text = GLib.DateTime.new_from_unix_local(last_trigger).format("%x %H:%M")
+            self.row(update_rows, _("Last scheduled timer trigger"), last_trigger_text)
 
             if status["configured"] is False:
                 message = _("Automatic APT upgrades are disabled in the merged configuration. Review Software & Updates or ask your administrator.")
