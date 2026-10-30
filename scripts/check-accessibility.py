@@ -113,6 +113,27 @@ def version_detail_is_exposed(app, page_name: str, label: str) -> bool:
     return False
 
 
+def select_sidebar_page(app, page_name: str) -> bool:
+    """Select a named page through the exposed sidebar selection interface."""
+    entries = accessible_tree(app)
+    sidebar = next(
+        (node for role, name, node in entries if (role, name) == ("list", "Sidebar")),
+        None,
+    )
+    if sidebar is None:
+        return False
+    selection = sidebar.get_selection_iface()
+    page_index = next(
+        (
+            index for index in range(sidebar.get_child_count())
+            if (item := sidebar.get_child_at_index(index))
+            and item.get_name() == page_name
+        ),
+        None,
+    )
+    return bool(selection and page_index is not None and selection.select_child(page_index))
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -217,6 +238,26 @@ def main() -> int:
                 app, "Hjälp och support", "Ubuntu Starts version",
             ):
                 missing.append("Ubuntu Starts version and value in Swedish system details")
+            if not select_sidebar_page(app, "Nätverk och maskinvara"):
+                missing.append("selectable Swedish Network and hardware page")
+            else:
+                encryption_button = False
+                encryption_title = False
+                encryption_deadline = time.monotonic() + 5
+                while time.monotonic() < encryption_deadline:
+                    entries = accessible_tree(app)
+                    encryption_button = any(
+                        role in BUTTON_ROLES and name == "Kontrollera kryptering av rotfilsystemet"
+                        for role, name, _node in entries
+                    )
+                    encryption_title = any(name == "Kryptering av rotfilsystemet" for _role, name, _node in entries)
+                    if encryption_button and encryption_title:
+                        break
+                    time.sleep(0.25)
+                if not encryption_button:
+                    missing.append("Swedish root filesystem encryption check button")
+                if not encryption_title:
+                    missing.append("Swedish root filesystem encryption status row")
             if missing:
                 print(f"Missing Swedish AT-SPI entries: {missing}", file=sys.stderr)
                 return 1
@@ -358,6 +399,23 @@ def main() -> int:
                 if not select_page("Network and hardware"):
                     missing.append("selectable Network and hardware guide")
                 else:
+                    encryption_button = False
+                    encryption_title = False
+                    encryption_deadline = time.monotonic() + 5
+                    while time.monotonic() < encryption_deadline:
+                        entries = accessible_tree(app)
+                        encryption_button = any(
+                            role in BUTTON_ROLES and name == "Check root filesystem encryption"
+                            for role, name, _node in entries
+                        )
+                        encryption_title = any(name == "Root filesystem encryption" for _role, name, _node in entries)
+                        if encryption_button and encryption_title:
+                            break
+                        time.sleep(0.25)
+                    if not encryption_button:
+                        missing.append("button: Check root filesystem encryption on Network and hardware")
+                    if not encryption_title:
+                        missing.append("Root filesystem encryption status row on Network and hardware")
                     benchmark_deadline = time.monotonic() + 5
                     benchmark_names = {
                         "Check benchmark readiness",
