@@ -56,6 +56,12 @@ def parse_interface_ip_status(output: str) -> dict[str, bool] | None:
         for info in address_info:
             if not isinstance(info, dict):
                 continue
+            flags = info.get("flags", [])
+            if isinstance(flags, list) and any(
+                isinstance(flag, str) and flag.casefold() in {"tentative", "dadfailed"}
+                for flag in flags
+            ):
+                continue
             local = info.get("local")
             if not isinstance(local, str):
                 continue

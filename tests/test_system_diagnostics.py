@@ -693,6 +693,17 @@ class ParseNetworkStatusTests(unittest.TestCase):
         )
         self.assertIsNone(parse_interface_ip_status("not json"))
 
+    def test_ignores_tentative_and_duplicate_address_detection_failed_addresses(self):
+        output = '''[{"addr_info":[
+{"family":"inet","local":"192.0.2.10","flags":["tentative"]},
+{"family":"inet6","local":"2001:db8::10","flags":["dadfailed"]},
+{"family":"inet6","local":"fe80::10","flags":["tentative"]}
+]}]'''
+        self.assertEqual(
+            parse_interface_ip_status(output),
+            {"ipv4": False, "ipv6": False, "link_local": False},
+        )
+
     @patch("system_diagnostics.shutil.which", return_value="/usr/sbin/ip")
     @patch("system_diagnostics._run_local")
     def test_reads_only_local_interface_address_family_status(self, run, _which):
