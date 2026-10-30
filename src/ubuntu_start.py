@@ -13,7 +13,7 @@ import gi
 gi.require_version("Adw", "1")
 gi.require_version("Gtk", "4.0")
 from gi.repository import Adw, Gdk, Gio, GLib, Gtk
-from system_diagnostics import battery_is_discharging, battery_power_status_unknown, benchmark_score_change_percent, build_support_report, check_internet_connection, clear_benchmark_baselines, find_benchmark_tool, find_graphics_benchmark_tool, get_application_version, is_valid_support_report, load_benchmark_baselines, normalize_desktop_name, normalize_session_type, parse_glmark2_score, pressure_threshold_exceeded, read_accessibility_settings, read_apt_update_status, read_automatic_upgrade_status, read_audio_status, read_backup_tool_status, read_battery_status, read_bluetooth_status, read_boot_critical_chain, read_boot_timing, read_display_connectors, read_failed_services, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_remote_session, read_reboot_required, read_resource_pressure, read_rfkill_status, read_root_encryption_status, read_secure_boot_status, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_cpu_benchmark, run_network_diagnostics, save_benchmark_baseline, sensor_near_critical_limit
+from system_diagnostics import battery_is_discharging, battery_power_status_unknown, benchmark_score_change_percent, build_support_report, check_internet_connection, clear_benchmark_baselines, find_benchmark_tool, find_graphics_benchmark_tool, get_application_version, is_valid_support_report, load_benchmark_baselines, normalize_desktop_name, normalize_session_type, parse_glmark2_score, pressure_threshold_exceeded, read_accessibility_settings, read_apt_update_status, read_automatic_upgrade_status, read_audio_status, read_backup_tool_status, read_battery_status, read_bluetooth_status, read_boot_critical_chain, read_boot_timing, read_display_connectors, read_failed_services, read_firewall_status, read_hardware_details, read_interface_ip_status, read_memory_status, read_network_adapter_details, read_network_devices, read_package_health, read_pci_devices, read_power_profile, read_printer_status, read_remote_session, read_reboot_required, read_resource_pressure, read_rfkill_status, read_root_encryption_status, read_secure_boot_status, read_storage_locations, read_temperature_sensors, read_time_status, read_usb_devices, read_video_devices, read_wifi_link_status, run_cpu_benchmark, run_network_diagnostics, save_benchmark_baseline, sensor_near_critical_limit
 from guide_search import find_guide_matches
 from first_run_state import TASK_IDS as FIRST_RUN_TASK_IDS, load_completed_tasks, save_completed_tasks
 
@@ -917,6 +917,32 @@ class UbuntuStart(Adw.Application):
         network_box.append(network_rows)
         box.append(network_box)
         self.refresh_network_status(network_status, network_rows)
+
+        firewall_box, _firewall_rows = self.page(
+            _("Firewall status"),
+            _("Read the overall local UFW status only. This check does not show firewall rules, contact the network or change settings."),
+            include_rows=False,
+        )
+        self.firewall_status_row = Adw.ActionRow(
+            title=_("UFW firewall"), subtitle=_("Not checked yet."),
+        )
+        firewall_box.append(self.firewall_status_row)
+        self.firewall_refresh_button = Gtk.Button(
+            label=_("Check firewall status"), halign=Gtk.Align.START,
+        )
+        self.firewall_refresh_button.connect(
+            "clicked",
+            lambda *_: self.refresh_firewall_status(
+                self.firewall_refresh_button, self.firewall_status_row, announce=True,
+            ),
+        )
+        firewall_box.append(self.firewall_refresh_button)
+        firewall_box.append(Gtk.Label(
+            label=_("An inactive firewall is not automatically a problem. Before changing firewall settings, check whether you use remote desktop, SSH, file sharing, printers or a managed network."),
+            xalign=0, wrap=True, css_classes=["body"],
+        ))
+        box.append(firewall_box)
+        self.refresh_firewall_status(self.firewall_refresh_button, self.firewall_status_row)
 
         wifi_check_box, _wifi_check_rows = self.page(
             _("Wi-Fi quick check"),
@@ -2155,6 +2181,35 @@ class UbuntuStart(Adw.Application):
             )
 
         threading.Thread(target=read_status, daemon=True).start()
+
+    def refresh_firewall_status(self, button, status_row, announce=False):
+        button.set_sensitive(False)
+        status_row.set_subtitle(_("Checking firewall status…"))
+
+        def read_status():
+            state, error = read_firewall_status()
+            GLib.idle_add(
+                self.show_firewall_status, button, status_row, state, error, announce,
+            )
+
+        threading.Thread(target=read_status, daemon=True).start()
+
+    def show_firewall_status(self, button, status_row, state, error, announce=False):
+        button.set_sensitive(True)
+        messages = {
+            "active": _("UFW is active. This confirms only that UFW reports active; review its rules in Ubuntu settings or with an administrator."),
+            "inactive": _("UFW is inactive. Do not enable it blindly, especially if you use remote access, file sharing or a managed network."),
+        }
+        errors = {
+            "not-installed": _("UFW is not installed, so its firewall status cannot be checked."),
+            "timeout-or-unavailable": _("The firewall status check could not finish. Try again later."),
+            "unavailable": _("Could not read UFW status."),
+        }
+        message = messages.get(state, errors.get(error, errors["unavailable"]))
+        status_row.set_subtitle(message)
+        if announce:
+            self.announce_to_screen_reader(status_row, _("Firewall status: {status}").format(status=message))
+        return GLib.SOURCE_REMOVE
 
     def show_rfkill_status(self, button, status_label, radio_rows, radios, announce=False):
         button.set_sensitive(True)

@@ -5665,3 +5665,60 @@ msgid ""
 "This check cannot confirm a successful recent run or which repositories are "
 "included."
 msgstr ""
+
+#: src/ubuntu_start.py:921
+msgid "Firewall status"
+msgstr ""
+
+#: src/ubuntu_start.py:921
+msgid ""
+"Read the overall local UFW status only. This check does not show "
+"firewall rules, contact the network or change settings."
+msgstr ""
+
+#: src/ubuntu_start.py:921
+msgid "UFW firewall"
+msgstr ""
+
+#: src/ubuntu_start.py:921
+msgid "Check firewall status"
+msgstr ""
+
+#: src/ubuntu_start.py:921
+msgid ""
+"An inactive firewall is not automatically a problem. Before changing "
+"firewall settings, check whether you use remote desktop, SSH, file "
+"sharing, printers or a managed network."
+msgstr ""
+
+#: src/ubuntu_start.py:921
+msgid "Checking firewall status…"
+msgstr ""
+
+#: src/ubuntu_start.py:921
+msgid ""
+"UFW is active. This confirms only that UFW reports active; review "
+"its rules in Ubuntu settings or with an administrator."
+msgstr ""
+
+#: src/ubuntu_start.py:921
+msgid ""
+"UFW is inactive. Do not enable it blindly, especially if you use "
+"remote access, file sharing or a managed network."
+msgstr ""
+
+#: src/ubuntu_start.py:921
+msgid "UFW is not installed, so its firewall status cannot be checked."
+msgstr ""
+
+#: src/ubuntu_start.py:921
+msgid "The firewall status check could not finish. Try again later."
+msgstr ""
+
+#: src/ubuntu_start.py:921
+msgid "Could not read UFW status."
+msgstr ""
+
+#: src/ubuntu_start.py:921
+msgid "Firewall status: {status}"
+msgstr ""

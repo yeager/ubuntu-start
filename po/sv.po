@@ -6979,3 +6979,64 @@ msgstr "Disklayouten innehöll inte tillräcklig information för att kontroller
 
 msgid "Root filesystem encryption status: {status}"
 msgstr "Status för kryptering av rotfilsystemet: {status}"
+
+msgid "Firewall status"
+msgstr "Brandväggsstatus"
+
+msgid ""
+"Read the overall local UFW status only. This check does not show "
+"firewall rules, contact the network or change settings."
+msgstr ""
+"Läs endast den övergripande lokala UFW-statusen. Kontrollen visar "
+"inte brandväggsregler, ansluter inte till nätverket och ändrar inga "
+"inställningar."
+
+msgid "UFW firewall"
+msgstr "UFW-brandvägg"
+
+msgid "Check firewall status"
+msgstr "Kontrollera brandväggsstatus"
+
+msgid ""
+"An inactive firewall is not automatically a problem. Before changing "
+"firewall settings, check whether you use remote desktop, SSH, file "
+"sharing, printers or a managed network."
+msgstr ""
+"En inaktiv brandvägg är inte automatiskt ett problem. Innan du "
+"ändrar brandväggsinställningar bör du kontrollera om du använder "
+"fjärrskrivbord, SSH, fildelning, skrivare eller ett administrerat "
+"nätverk."
+
+msgid "Checking firewall status…"
+msgstr "Kontrollerar brandväggsstatus…"
+
+msgid ""
+"UFW is active. This confirms only that UFW reports active; review "
+"its rules in Ubuntu settings or with an administrator."
+msgstr ""
+"UFW är aktiv. Det bekräftar endast att UFW rapporterar aktiv status. "
+"Granska reglerna i Ubuntu-inställningarna eller tillsammans med en "
+"administratör."
+
+msgid ""
+"UFW is inactive. Do not enable it blindly, especially if you use "
+"remote access, file sharing or a managed network."
+msgstr ""
+"UFW är inaktiv. Aktivera den inte utan eftertanke, särskilt om du "
+"använder fjärråtkomst, fildelning eller ett administrerat nätverk."
+
+msgid "UFW is not installed, so its firewall status cannot be checked."
+msgstr ""
+"UFW är inte installerat, så det går inte att kontrollera "
+"brandväggsstatusen."
+
+msgid "The firewall status check could not finish. Try again later."
+msgstr ""
+"Det gick inte att slutföra kontrollen av brandväggsstatusen. Försök "
+"igen senare."
+
+msgid "Could not read UFW status."
+msgstr "Det gick inte att läsa UFW-statusen."
+
+msgid "Firewall status: {status}"
+msgstr "Brandväggsstatus: {status}"

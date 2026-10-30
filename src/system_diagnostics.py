@@ -1649,6 +1649,29 @@ def read_secure_boot_status(timeout: float = 3.0) -> tuple[str | None, str | Non
     return None, "unavailable"
 
 
+def parse_firewall_status(output: str) -> str | None:
+    """Parse only UFW's overall status, ignoring potentially sensitive rules."""
+    if not isinstance(output, str):
+        return None
+    for line in output.splitlines():
+        match = re.fullmatch(r"\s*Status:\s*(active|inactive)\s*", line, re.IGNORECASE)
+        if match:
+            return match.group(1).casefold()
+    return None
+
+
+def read_firewall_status(timeout: float = 3.0) -> tuple[str | None, str | None]:
+    """Read UFW's overall status without exposing rules or making changes."""
+    ufw = shutil.which("ufw")
+    if not ufw:
+        return None, "not-installed"
+    result = _run_local([ufw, "status"], timeout, env={**os.environ, "LC_ALL": "C"})
+    if result is None:
+        return None, "timeout-or-unavailable"
+    state = parse_firewall_status(result.stdout)
+    return (state, None) if state else (None, "unavailable")
+
+
 def parse_root_encryption_status(output: str) -> str | None:
     """Report encryption layers on paths backing the root filesystem only."""
     if not isinstance(output, str) or len(output) > 1_000_000:

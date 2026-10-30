@@ -55,9 +55,11 @@ from system_diagnostics import (
     benchmark_score_change_percent,
     find_graphics_benchmark_tool,
     parse_glmark2_score,
+    parse_firewall_status,
     parse_secure_boot_status,
     parse_root_encryption_status,
     read_remote_session,
+    read_firewall_status,
     read_secure_boot_status,
     read_root_encryption_status,
     read_memory_status,
@@ -1488,6 +1490,32 @@ class DisplayConnectorTests(unittest.TestCase):
 
 
 class LocalDiagnosticsTests(unittest.TestCase):
+    def test_parses_only_ufw_overall_status_and_ignores_rules(self):
+        self.assertEqual(parse_firewall_status("Status: active\n"), "active")
+        self.assertEqual(parse_firewall_status("Status: inactive\n"), "inactive")
+        self.assertEqual(parse_firewall_status("Status: active\n1234/tcp ALLOW IN Anywhere\n"), "active")
+        self.assertIsNone(parse_firewall_status("Status: unknown\n"))
+        self.assertIsNone(parse_firewall_status("random output"))
+
+    @patch("system_diagnostics._run_local")
+    @patch("system_diagnostics.shutil.which", return_value="/usr/sbin/ufw")
+    def test_reads_ufw_status_without_returning_rules(self, _which, run_local):
+        run_local.return_value = SimpleNamespace(
+            returncode=0, stdout="Status: active\nLogging: on\n1234/tcp ALLOW IN Anywhere\n",
+        )
+        self.assertEqual(read_firewall_status(), ("active", None))
+        run_local.assert_called_once()
+        self.assertEqual(run_local.call_args.args[0], ["/usr/sbin/ufw", "status"])
+
+    @patch("system_diagnostics.shutil.which", return_value=None)
+    def test_reports_missing_ufw(self, _which):
+        self.assertEqual(read_firewall_status(), (None, "not-installed"))
+
+    @patch("system_diagnostics._run_local", return_value=None)
+    @patch("system_diagnostics.shutil.which", return_value="/usr/sbin/ufw")
+    def test_reports_unavailable_ufw_status(self, _which, _run_local):
+        self.assertEqual(read_firewall_status(), (None, "timeout-or-unavailable"))
+
     def test_parses_ping_time_as_an_upper_bound_when_less_than_is_reported(self):
         self.assertEqual(parse_ping_latency("64 bytes from router: time=0.42 ms"), (0.42, False))
         self.assertEqual(parse_ping_latency("64 bytes from router: time<1 ms"), (1.0, True))
