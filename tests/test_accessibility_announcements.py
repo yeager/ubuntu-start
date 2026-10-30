@@ -344,7 +344,10 @@ class AccessibilityAnnouncementTests(unittest.TestCase):
         ]
 
         matches = find_guide_matches("slow Wi-Fi disconnecting signal channel", entries)
-        text = " ".join(" ".join(entry) for entry in entries)
+        text = " ".join(
+            f"{step_title} {description}"
+            for _kind, _index, _guide_title, step_title, description in entries
+        )
 
         self.assertTrue(matches)
         self.assertTrue(all(match[2] == "Wi-Fi is slow or keeps disconnecting" for match in matches))
