@@ -769,8 +769,12 @@ class UbuntuStart(Adw.Application):
                 for step_title, description in steps
             )
         for guide_index, (guide_title, _target, _action, steps) in enumerate(SYSTEM_GUIDES):
+            search_title = (
+                _("Security and privacy guide")
+                if guide_title == _("Improve everyday security") else guide_title
+            )
             search_entries.extend(
-                ("system", guide_index, guide_title, step_title, description)
+                ("system", guide_index, search_title, step_title, description)
                 for step_title, description in steps
             )
 

@@ -69,6 +69,40 @@ class BackupAppAnnouncementTests(unittest.TestCase):
 
 
 class AccessibilityAnnouncementTests(unittest.TestCase):
+    def test_security_guide_is_searchable_and_covers_core_actions(self):
+        guide_index, guide = next(
+            (index, guide) for index, guide in enumerate(SYSTEM_GUIDES)
+            if guide[0] == "Improve everyday security"
+        )
+        title, _target, _action, steps = guide
+        entries = [
+            ("system", guide_index, "Security and privacy guide", step_title, description)
+            for step_title, description in steps
+        ]
+
+        for query in ("security updates", "password account", "firewall", "backup", "privacy sharing"):
+            with self.subTest(query=query):
+                self.assertTrue(find_guide_matches(query, entries))
+
+        step_text = " ".join(f"{step_title} {description}" for step_title, description in steps)
+        self.assertIn("Do not enable firewall rules blindly", step_text)
+        self.assertIn("Never share passwords or sign-in codes", step_text)
+        self.assertIn("do not try to enable it on an existing system", step_text)
+        self.assertEqual(title, "Improve everyday security")
+
+    def test_open_security_guide_selects_the_security_steps(self):
+        self.app.system_guide_chooser = Mock()
+        self.app.main_stack = Mock()
+
+        UbuntuStart.open_security_guide(self.app)
+
+        expected_index = next(
+            index for index, (title, _target, _action, _steps) in enumerate(SYSTEM_GUIDES)
+            if title == "Improve everyday security"
+        )
+        self.app.system_guide_chooser.set_selected.assert_called_once_with(expected_index)
+        self.app.main_stack.set_visible_child_name.assert_called_once_with("System guides")
+
     def test_failed_service_guide_explains_read_only_status_and_log_commands(self):
         guide = next(guide for guide in GUIDES if guide[0] == "A system service is marked failed")
         entries = [
