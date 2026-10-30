@@ -518,7 +518,11 @@ class UbuntuStart(Adw.Application):
             task_description.append(subtitle_label)
             task_description.set_hexpand(True)
             task_content.append(task_description)
-            button = Gtk.Button(label=_("Open Settings"), valign=Gtk.Align.CENTER)
+            button_label = (
+                _("Open Software Updater")
+                if target == ("app", "update-manager") else _("Open Settings")
+            )
+            button = Gtk.Button(label=button_label, valign=Gtk.Align.CENTER)
             button.connect("clicked", lambda *_args, selected=target: self.open_target(selected))
             task_content.append(button)
             task_content.set_margin_start(12)
