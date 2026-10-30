@@ -308,6 +308,8 @@ def main() -> int:
                         "Language and keyboard",
                         "Internet connection",
                         "Updates",
+                        "Improve everyday security",
+                        "Set up backups",
                         "Sound and display",
                         "Privacy and screen lock",
                         "Accessibility",
@@ -334,6 +336,17 @@ def main() -> int:
                         )
                     for task in sorted(checklist_tasks - checklist_controls):
                         missing.append(f"accessible checklist checkbox: {task}")
+
+                    checklist_guide_buttons = {
+                        "Open the everyday security guide",
+                        "Open the backup setup guide",
+                    }
+                    checklist_guide_controls = {
+                        name for role, name, _node in entries
+                        if role in BUTTON_ROLES and name in checklist_guide_buttons
+                    }
+                    for button_name in sorted(checklist_guide_buttons - checklist_guide_controls):
+                        missing.append(f"button: {button_name} on Get started")
 
                     reset_checklist = next(
                         (
