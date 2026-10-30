@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import os
 import ipaddress
+import hashlib
 import json
 import math
 import platform
@@ -1447,6 +1448,25 @@ def _benchmark_state_path(path: str | Path | None = None) -> Path:
     return state_home / "ubuntu-start" / "benchmarks.json"
 
 
+def _cpu_benchmark_fingerprint(
+    cpuinfo_path: str | Path = "/proc/cpuinfo",
+    architecture: str | None = None,
+) -> str | None:
+    """Hash CPU model and architecture without storing hardware details."""
+    try:
+        cpuinfo = Path(cpuinfo_path).read_text(encoding="utf-8")
+    except (OSError, UnicodeError):
+        return None
+    model = parse_cpu_model(cpuinfo)
+    if not model:
+        return None
+    identity = " ".join(model.casefold().split())
+    machine = (architecture or platform.machine()).casefold().strip()
+    if not machine:
+        return None
+    return hashlib.sha256(f"{machine}\0{identity}".encode("utf-8")).hexdigest()
+
+
 def load_benchmark_baselines(
     path: str | Path | None = None,
     session_type: str | None = None,
@@ -1465,6 +1485,7 @@ def load_benchmark_baselines(
         return {}
     current_session = (session_type or os.environ.get("XDG_SESSION_TYPE", "unknown")).casefold()
     current_version = app_version or get_application_version()
+    current_cpu_fingerprint = _cpu_benchmark_fingerprint()
 
     baselines: dict[str, dict[str, float | str]] = {}
     for kind, method in _BENCHMARK_METHODS.items():
@@ -1485,6 +1506,11 @@ def load_benchmark_baselines(
         if kind == "graphics" and (
             not isinstance(recorded_session, str)
             or current_session != "*" and recorded_session.casefold() != current_session
+        ):
+            continue
+        if kind == "cpu" and (
+            current_cpu_fingerprint is None
+            or entry.get("cpu_fingerprint") != current_cpu_fingerprint
         ):
             continue
         baseline: dict[str, float | str] = {
@@ -1532,6 +1558,11 @@ def save_benchmark_baseline(
         "app_version": app_version or get_application_version(),
         "recorded_at": recorded_at or datetime.now(timezone.utc).isoformat(timespec="seconds"),
     }
+    if kind == "cpu":
+        cpu_fingerprint = _cpu_benchmark_fingerprint()
+        if cpu_fingerprint is None:
+            return False
+        baseline["cpu_fingerprint"] = cpu_fingerprint
     if kind == "graphics":
         baseline["session_type"] = (
             session_type or os.environ.get("XDG_SESSION_TYPE", "unknown")

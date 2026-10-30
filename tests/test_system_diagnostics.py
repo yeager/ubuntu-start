@@ -15,6 +15,7 @@ from system_diagnostics import (
     build_support_report,
     is_valid_support_report,
     parse_cpu_model,
+    _cpu_benchmark_fingerprint,
     parse_bluetooth_controller_status,
     parse_default_route,
     parse_ping_latency,
@@ -166,6 +167,36 @@ class BackupToolTests(unittest.TestCase):
             self.assertNotIn("hostname", path.read_text(encoding="utf-8"))
             self.assertNotIn("graphics", load_benchmark_baselines(path, session_type="x11"))
             self.assertEqual(load_benchmark_baselines(path, app_version="99.99"), {})
+
+    def test_cpu_baseline_is_only_loaded_for_matching_cpu_fingerprint(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "benchmarks.json"
+            with patch("system_diagnostics._cpu_benchmark_fingerprint", return_value="a" * 64):
+                self.assertTrue(save_benchmark_baseline("cpu", 1234, 1.0, path))
+                self.assertEqual(load_benchmark_baselines(path)["cpu"]["score"], 1234.0)
+            with patch("system_diagnostics._cpu_benchmark_fingerprint", return_value="b" * 64):
+                self.assertNotIn("cpu", load_benchmark_baselines(path))
+            saved = path.read_text(encoding="utf-8")
+            self.assertIn("cpu_fingerprint", saved)
+            self.assertIn("a" * 64, saved)
+            self.assertNotIn("Example CPU", saved)
+
+    def test_cpu_baseline_is_not_saved_without_a_hardware_identity(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "benchmarks.json"
+            with patch("system_diagnostics._cpu_benchmark_fingerprint", return_value=None):
+                self.assertFalse(save_benchmark_baseline("cpu", 1234, 1.0, path))
+            self.assertFalse(path.exists())
+
+    def test_cpu_fingerprint_hashes_model_and_architecture(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "cpuinfo"
+            path.write_text("model name : Example CPU 1\n", encoding="utf-8")
+            first = _cpu_benchmark_fingerprint(path, architecture="x86_64")
+            path.write_text("model name :   example   cpu 1  \n", encoding="utf-8")
+            self.assertEqual(first, _cpu_benchmark_fingerprint(path, architecture="X86_64"))
+            self.assertNotEqual(first, _cpu_benchmark_fingerprint(path, architecture="aarch64"))
+            self.assertNotIn("Example CPU", first)
 
     def test_benchmark_baselines_ignore_invalid_scores_and_unknown_methods(self):
         with tempfile.TemporaryDirectory() as directory:
