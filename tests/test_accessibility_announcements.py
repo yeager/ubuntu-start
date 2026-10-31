@@ -10,7 +10,7 @@ from ubuntu_start import (
     Adw, Gdk, GLib, Gtk, FIRST_RUN_TASKS, FIRST_RUN_TASK_IDS, GUIDES,
     SYSTEM_GUIDES, UbuntuStart,
     add_benchmark_comparison_note, desktop_connection_label, format_milliseconds,
-    cpu_sample_range_note,
+    cpu_sample_range_note, is_ubuntu_desktop,
 )
 from guide_search import find_guide_matches
 
@@ -1520,14 +1520,48 @@ class USBStatusTests(unittest.TestCase):
 
         UbuntuStart.open_device_target(app, "wifi")
 
-        app.open_app.assert_called_once_with("gnome-control-center", "wifi")
+        app.open_settings.assert_called_once_with("wifi")
 
     def test_sound_settings_action_opens_the_sound_panel(self):
         app = Mock()
 
         UbuntuStart.open_sound_settings(app)
 
-        app.open_app.assert_called_once_with("gnome-control-center", "sound")
+        app.open_settings.assert_called_once_with("sound")
+
+    @patch("ubuntu_start.is_ubuntu_desktop", return_value=True)
+    def test_ubuntu_settings_shortcut_uses_gnome_control_center(self, _is_ubuntu):
+        app = Mock()
+
+        UbuntuStart.open_settings(app, "wifi")
+
+        app.open_app.assert_called_once_with("gnome-control-center", "wifi")
+
+    @patch.dict("ubuntu_start.os.environ", {
+        "XDG_CURRENT_DESKTOP": "ubuntu:GNOME",
+    }, clear=True)
+    @patch("ubuntu_start.platform.freedesktop_os_release", return_value={"ID": "ubuntu"})
+    def test_ubuntu_gnome_is_accepted_for_settings_shortcuts(self, _os_release):
+        self.assertTrue(is_ubuntu_desktop())
+
+    @patch.dict("ubuntu_start.os.environ", {
+        "XDG_CURRENT_DESKTOP": "X-Cinnamon",
+    }, clear=True)
+    @patch("ubuntu_start.platform.freedesktop_os_release", return_value={"ID": "linuxmint"})
+    def test_mint_is_not_accepted_for_ubuntu_settings_shortcuts(self, _os_release):
+        self.assertFalse(is_ubuntu_desktop())
+
+    @patch("ubuntu_start.is_ubuntu_desktop", return_value=False)
+    def test_non_ubuntu_settings_shortcut_explains_the_limit(self, _is_ubuntu):
+        app = Mock()
+
+        UbuntuStart.open_settings(app, "wifi")
+
+        app.open_app.assert_not_called()
+        app.show_error.assert_called_once_with(
+            "Settings shortcuts are available on Ubuntu GNOME only. On this desktop, "
+            "open the system Settings application and follow the written steps in this guide.",
+        )
 
 
 class InternetTestResultTests(unittest.TestCase):
@@ -2043,12 +2077,12 @@ class SystemGuideTests(unittest.TestCase):
         self.assertIn("does not encrypt files", step_text)
         self.assertIn("disk encryption", step_text)
 
-    def test_accessibility_settings_target_opens_gnome_control_center(self):
+    def test_accessibility_settings_target_opens_ubuntu_settings(self):
         app = Mock()
 
         UbuntuStart.open_target(app, ("settings", "universal-access"))
 
-        app.open_app.assert_called_once_with("gnome-control-center", "universal-access")
+        app.open_settings.assert_called_once_with("universal-access")
 
     def test_date_time_guide_uses_ubuntu_panel_arguments(self):
         app = Mock()
@@ -2056,7 +2090,7 @@ class SystemGuideTests(unittest.TestCase):
 
         UbuntuStart.open_target(app, guide[1])
 
-        app.open_app.assert_called_once_with("gnome-control-center", "system", "datetime")
+        app.open_settings.assert_called_once_with("system", "datetime")
 
     def test_backup_guide_covers_destination_encryption_and_restore_verification(self):
         guide = next(
@@ -2140,7 +2174,7 @@ class SystemGuideTests(unittest.TestCase):
         app = Mock()
         UbuntuStart.open_target(app, target)
 
-        app.open_app.assert_called_once_with("gnome-control-center", "network")
+        app.open_settings.assert_called_once_with("network")
 
     @patch("ubuntu_start.GLib.timeout_add")
     def test_connection_results_guide_explains_measurements_and_opens_diagnostics(self, timeout_add):
@@ -2457,7 +2491,7 @@ class VideoStatusAnnouncementTests(unittest.TestCase):
 
         UbuntuStart.open_device_target(app, "system")
 
-        app.open_app.assert_called_once_with("gnome-control-center", "system")
+        app.open_settings.assert_called_once_with("system")
 
     def test_open_storage_drive_guide_launches_gnome_disks(self):
         app = Mock()

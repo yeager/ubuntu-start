@@ -508,7 +508,7 @@ class UbuntuStart(Adw.Application):
 
     def make_welcome(self):
         box, rows = self.page(_("A calmer start with Ubuntu"), _("Set up the essentials, then find clear steps when a device does not work."))
-        self.row(rows, _("Your computer, at a glance"), _("Use Settings to check your Ubuntu version, storage and connected devices."), _("Open Settings"), lambda: self.open_app("gnome-control-center"))
+        self.row(rows, _("Your computer, at a glance"), _("Use Settings to check your Ubuntu version, storage and connected devices."), _("Open Settings"), lambda: self.open_settings())
         self.row(rows, _("Take it one step at a time"), _("You can come back to any guide whenever you need it."))
         return box
 
@@ -673,7 +673,7 @@ class UbuntuStart(Adw.Application):
         kind, value = target
         if kind == "settings":
             arguments = value if isinstance(value, (tuple, list)) else (value,)
-            self.open_app("gnome-control-center", *arguments)
+            self.open_settings(*arguments)
         elif kind == "terminal":
             self.open_terminal()
         elif kind == "app-center":
@@ -786,9 +786,14 @@ class UbuntuStart(Adw.Application):
         browse.append(chooser_label)
         browse.append(chooser)
         steps_stack = Gtk.Stack(transition_type=Gtk.StackTransitionType.CROSSFADE)
+        steps_stack.set_vhomogeneous(False)
         for index, (_title, _panel, steps) in enumerate(GUIDES):
             group = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-            group.append(Gtk.Label(label=_("Suggested checks"), xalign=0, css_classes=["title-3"]))
+            group.append(Gtk.Label(label=_("Start with these checks"), xalign=0, css_classes=["title-3"]))
+            group.append(Gtk.Label(
+                label=_("Try the steps in order. Stop when the device works; later steps are only needed if the problem remains."),
+                xalign=0, wrap=True, css_classes=["body"],
+            ))
             rows = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE, css_classes=["boxed-list"])
             for step_title, description in steps:
                 rows.append(Adw.ActionRow(title=step_title, subtitle=description))
@@ -887,12 +892,12 @@ class UbuntuStart(Adw.Application):
         elif target == "disks":
             self.open_app("gnome-disks")
         else:
-            self.open_app("gnome-control-center", target)
+            self.open_settings(target)
 
     def make_system_guides(self):
         box, _rows = self.page(
             _("System guides"),
-            _("Follow clear steps for common Ubuntu tasks. Open the related system tool when you are ready to make a change."),
+            _("Start with the first step and stop when the task is complete. More detailed steps are available if you need them."),
             include_rows=False,
         )
         chooser = Gtk.DropDown.new_from_strings([title for title, _target, _action, _steps in SYSTEM_GUIDES])
@@ -902,6 +907,7 @@ class UbuntuStart(Adw.Application):
         box.append(guide_label)
         box.append(chooser)
         guide_stack = Gtk.Stack(transition_type=Gtk.StackTransitionType.CROSSFADE)
+        guide_stack.set_vhomogeneous(False)
         for index, (title, target, action, steps) in enumerate(SYSTEM_GUIDES):
             guide_box, rows = self.page(title)
             for step_title, description in steps:
@@ -1949,7 +1955,7 @@ class UbuntuStart(Adw.Application):
         self.open_device_guide(_("Sound and microphones"))
 
     def open_sound_settings(self):
-        self.open_app("gnome-control-center", "sound")
+        self.open_settings("sound")
 
     def open_time_guide(self):
         guide_index = next(
@@ -2281,7 +2287,7 @@ class UbuntuStart(Adw.Application):
         return GLib.SOURCE_REMOVE
 
     def open_wifi_settings(self):
-        self.open_app("gnome-control-center", "wifi")
+        self.open_settings("wifi")
 
     def refresh_rfkill_status(self, button, status_label, radio_rows, announce=False):
         button.set_sensitive(False)
@@ -3501,7 +3507,7 @@ class UbuntuStart(Adw.Application):
             (_("Switch between apps"), _("Press Alt+Tab to move between open apps.")),
             (_("Arrange windows side by side"), _("Press Super+Left or Super+Right to place the current window on one side of the screen.")),
             (_("Open Quick Settings"), _("Select the system menu at the top-right to reach Wi-Fi, Bluetooth, sound, brightness and power controls.")),
-            (_("Take a screenshot"), _("On Ubuntu GNOME, press Print to open the screenshot controls and choose a screen, window or area.")),
+            (_("Take a screenshot"), _("On Ubuntu GNOME, press Print Screen (PrtSc) to open the screenshot controls and choose a screen, window or area. On some laptops, hold Fn as well.")),
             (_("Show hidden files"), _("In Files, press Ctrl+H to show or hide hidden files. Be careful when changing hidden configuration files.")),
             (_("Create a folder in Files"), _("Press Ctrl+Shift+N to create a folder in the current location.")),
             (_("Open a location in Files"), _("Press Ctrl+L in Files to type a folder path or enter a network address. Press Enter to open it.")),
@@ -3520,7 +3526,7 @@ class UbuntuStart(Adw.Application):
             _("Keyboard shortcuts"),
             _("Review or change the shortcuts used by your desktop."),
             _("Open Keyboard Settings"),
-            lambda: self.open_app("gnome-control-center", "keyboard"),
+            lambda: self.open_settings("keyboard"),
         )
         return box
 
@@ -3647,6 +3653,14 @@ class UbuntuStart(Adw.Application):
             Gio.Subprocess.new([executable, *args], Gio.SubprocessFlags.NONE)
         except GLib.Error as error:
             self.show_error(str(error))
+
+    def open_settings(self, *arguments):
+        if not is_ubuntu_desktop():
+            self.show_error(_(
+                "Settings shortcuts are available on Ubuntu GNOME only. On this desktop, open the system Settings application and follow the written steps in this guide.",
+            ))
+            return
+        self.open_app("gnome-control-center", *arguments)
 
     def open_uri(self, uri):
         try:
@@ -3876,6 +3890,20 @@ def desktop_connection_label(remote_session: bool | None) -> str:
     if remote_session is False:
         return _("Local desktop")
     return _("Not available")
+
+
+def is_ubuntu_desktop():
+    """Return whether Ubuntu's GNOME settings panel identifiers are available."""
+    try:
+        if platform.freedesktop_os_release().get("ID") != "ubuntu":
+            return False
+    except (AttributeError, OSError):
+        return False
+    desktop = ":".join(filter(None, (
+        os.environ.get("XDG_CURRENT_DESKTOP"),
+        os.environ.get("XDG_SESSION_DESKTOP"),
+    ))).casefold()
+    return "gnome" in desktop
 
 
 def main():
