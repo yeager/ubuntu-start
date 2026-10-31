@@ -193,6 +193,10 @@ def capture_application_screenshot(path: Path, scroll_steps: int = 0) -> None:
         ["xdotool", "windowsize", "--sync", window_id, "1000", "1050"],
         check=True,
     )
+    # Let GTK finish relayout after the resize before taking a localized
+    # screenshot.  Without this, the first capture can show stale sidebar
+    # allocations even though the running application has already settled.
+    time.sleep(1)
     if scroll_steps:
         subprocess.run(
             ["xdotool", "mousemove", "--window", window_id, "700", "700"],
