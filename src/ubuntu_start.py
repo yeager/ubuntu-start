@@ -993,7 +993,7 @@ class UbuntuStart(Adw.Application):
         box.append(network_box)
         self.refresh_network_status(network_status, network_rows)
 
-        firewall_box, _firewall_rows = self.page(
+        firewall_box, firewall_rows = self.page(
             _("Firewall status"),
             _("Read the overall local UFW status only. This check does not show firewall rules, contact the network or change settings."),
             include_rows=False,
@@ -1001,7 +1001,8 @@ class UbuntuStart(Adw.Application):
         self.firewall_status_row = Adw.ActionRow(
             title=_("UFW firewall"), subtitle=_("Not checked yet."),
         )
-        firewall_box.append(self.firewall_status_row)
+        firewall_rows.append(self.firewall_status_row)
+        firewall_box.append(firewall_rows)
         self.firewall_refresh_button = Gtk.Button(
             label=_("Check firewall status"), halign=Gtk.Align.START,
         )
@@ -1065,7 +1066,7 @@ class UbuntuStart(Adw.Application):
         box.append(radio_box)
         self.refresh_rfkill_status(radio_refresh, radio_status, radio_rows)
 
-        security_box, _security_rows = self.page(
+        security_box, security_rows = self.page(
             _("Storage encryption status"),
             _("Read the block-device paths used by the root filesystem. This check does not inspect every file or other mounted disk, and it does not change storage settings."),
             include_rows=False,
@@ -1073,7 +1074,8 @@ class UbuntuStart(Adw.Application):
         self.root_encryption_row = Adw.ActionRow(
             title=_("Root filesystem encryption"), subtitle=_("Not checked yet."),
         )
-        security_box.append(self.root_encryption_row)
+        security_rows.append(self.root_encryption_row)
+        security_box.append(security_rows)
         self.root_encryption_refresh_button = Gtk.Button(
             label=_("Check root filesystem encryption"), halign=Gtk.Align.START,
         )
