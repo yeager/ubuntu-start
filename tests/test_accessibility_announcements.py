@@ -1,6 +1,11 @@
 import unittest
 from unittest.mock import Mock, call, patch
 
+try:
+    import gi
+except ModuleNotFoundError:
+    raise unittest.SkipTest("PyGObject is required for GTK accessibility tests")
+
 from ubuntu_start import (
     Adw, Gdk, GLib, Gtk, FIRST_RUN_TASKS, FIRST_RUN_TASK_IDS, GUIDES,
     SYSTEM_GUIDES, UbuntuStart,

@@ -148,16 +148,18 @@ class BackupToolTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "benchmarks.json"
             app_version = get_application_version()
-            self.assertTrue(save_benchmark_baseline(
-                "graphics", 5678, path=path, recorded_at="2026-10-29T10:01:00+00:00",
-                session_type="wayland", app_version=app_version,
-            ))
-            self.assertTrue(save_benchmark_baseline(
-                "cpu", 1234, 1.0, path, recorded_at="2026-10-29T10:00:00+00:00",
-                app_version=app_version,
-            ))
+            with patch("system_diagnostics._cpu_benchmark_fingerprint", return_value="a" * 64):
+                self.assertTrue(save_benchmark_baseline(
+                    "graphics", 5678, path=path, recorded_at="2026-10-29T10:01:00+00:00",
+                    session_type="wayland", app_version=app_version,
+                ))
+                self.assertTrue(save_benchmark_baseline(
+                    "cpu", 1234, 1.0, path, recorded_at="2026-10-29T10:00:00+00:00",
+                    app_version=app_version,
+                ))
 
-            baselines = load_benchmark_baselines(path, session_type="wayland")
+            with patch("system_diagnostics._cpu_benchmark_fingerprint", return_value="a" * 64):
+                baselines = load_benchmark_baselines(path, session_type="wayland")
             self.assertEqual(baselines["cpu"]["score"], 1234.0)
             self.assertEqual(baselines["cpu"]["duration_seconds"], 1.0)
             self.assertEqual(baselines["graphics"]["score"], 5678.0)
@@ -235,7 +237,8 @@ class BackupToolTests(unittest.TestCase):
     def test_benchmark_baselines_can_be_cleared(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "benchmarks.json"
-            self.assertTrue(save_benchmark_baseline("cpu", 1234, 1.0, path))
+            with patch("system_diagnostics._cpu_benchmark_fingerprint", return_value="a" * 64):
+                self.assertTrue(save_benchmark_baseline("cpu", 1234, 1.0, path))
             self.assertTrue(clear_benchmark_baselines(path))
             self.assertFalse(path.exists())
             self.assertEqual(load_benchmark_baselines(path), {})
