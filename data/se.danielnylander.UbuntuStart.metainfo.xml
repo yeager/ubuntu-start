@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.58" date="2026-10-31">
+      <description>
+        <p>Explains that settings shortcuts are available on Ubuntu GNOME, uses the familiar Print Screen key name, lets guide panels follow their content height and presents troubleshooting steps in a more gradual order.</p>
+        <p xml:lang="sv">Förklarar att genvägar till inställningar är tillgängliga i Ubuntu GNOME, använder det välkända namnet Print Screen på skärmbildstangenten, låter guidepaneler följa innehållets höjd och visar felsökningssteg i en lugnare ordning.</p>
+      </description>
+    </release>
     <release version="0.3.57" date="2026-10-31">
       <description>
         <p>Fixes the firewall and storage-encryption status rows so they use the correct GNOME list layout.</p>
