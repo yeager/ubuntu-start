@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.57" date="2026-10-31">
+      <description>
+        <p>Fixes the firewall and storage-encryption status rows so they use the correct GNOME list layout.</p>
+        <p xml:lang="sv">Rättar statusraderna för brandvägg och lagringskryptering så att de använder rätt GNOME-listlayout.</p>
+      </description>
+    </release>
     <release version="0.3.56" date="2026-10-30">
       <description>
         <p>Matches saved CPU benchmark results to the processor and architecture so scores are compared only with the same hardware.</p>
