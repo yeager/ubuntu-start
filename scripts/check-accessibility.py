@@ -190,7 +190,7 @@ def capture_application_screenshot(path: Path, scroll_steps: int = 0) -> None:
     )
     window_id = window_search.stdout.splitlines()[0]
     subprocess.run(
-        ["xdotool", "windowsize", "--sync", window_id, "1000", "1050"],
+        ["xdotool", "windowsize", "--sync", window_id, "1000", "900"],
         check=True,
     )
     # Let GTK finish relayout after the resize before taking a localized
