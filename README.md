@@ -27,8 +27,6 @@ New in 0.3.55: firmware update guide screenshots in [English](screenshots/firmwa
 
 Ubuntu Start combines a first-run guide with practical device troubleshooting for Ubuntu Desktop. It is a GTK 4/libadwaita application intended for Ubuntu GNOME.
 
-Read the Swedish introduction, with screenshots, in [Ubuntu Start: en lugnare väg in i Ubuntu](docs/blogg/2026-11-02-ubuntu-start-en-lugnare-vag-in-i-ubuntu.md).
-
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for contributor guidance and the maintainer pull request review process.
