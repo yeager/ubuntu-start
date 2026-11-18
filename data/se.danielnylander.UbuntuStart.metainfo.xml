@@ -19,6 +19,12 @@
     <p xml:lang="sv">Kom igång med Ubuntu med tydliga systemguider, praktisk felsökning, hjälpmedelsstöd och lokal information om nätverk och maskinvara. Sök i guiderna och kopiera en integritetsvänlig systemöversikt när du ber om hjälp.</p>
   </description>
   <releases>
+    <release version="0.3.59" date="2026-11-18">
+      <description>
+        <p>Opens the relevant GNOME Settings pages for system information, fingerprint login, cameras and screen locking. Opens the Updates tab for automatic security updates and explains how to get Software &amp; Updates when it is missing.</p>
+        <p xml:lang="sv">Öppnar rätt sidor i GNOME-inställningarna för systeminformation, fingeravtrycksinloggning, kameror och skärmlås. Öppnar fliken Uppdateringar för automatiska säkerhetsuppdateringar och förklarar hur du får tag på Programvara och uppdateringar om det saknas.</p>
+      </description>
+    </release>
     <release version="0.3.58" date="2026-10-31">
       <description>
         <p>Explains that settings shortcuts are available on Ubuntu GNOME, uses the familiar Print Screen key name, lets guide panels follow their content height and presents troubleshooting steps in a more gradual order.</p>
