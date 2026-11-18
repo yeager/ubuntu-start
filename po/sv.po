@@ -6699,6 +6699,10 @@ msgstr ""
 msgid "Could not open the requested tool"
 msgstr "Det gick inte att öppna verktyget"
 
+#: src/ubuntu_start.py:3664
+msgid "Software & Updates is unavailable. Install the software-properties-gtk package from Ubuntu’s repositories or ask your administrator."
+msgstr "Programvara och uppdateringar är inte tillgängligt. Installera paketet software-properties-gtk från Ubuntus paketförråd eller be din administratör om hjälp."
+
 #: src/ubuntu_start.py:3678
 msgid "Display connection status"
 msgstr "Anslutningsstatus för bildskärm"

@@ -5690,6 +5690,10 @@ msgstr ""
 msgid "Could not open the requested tool"
 msgstr ""
 
+#: src/ubuntu_start.py:3664
+msgid "Software & Updates is unavailable. Install the software-properties-gtk package from Ubuntu’s repositories or ask your administrator."
+msgstr ""
+
 #: src/ubuntu_start.py:3678
 msgid "Display connection status"
 msgstr ""

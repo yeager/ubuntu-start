@@ -87,7 +87,7 @@ GUIDES = [
         (_("Turn on pairing mode"), _("Keep the device nearby and follow its instructions for pairing mode.")),
         (_("Try pairing again"), _("If an old pairing is listed, remove it in Settings, then pair the device again.")),
     ]),
-    (_("Fingerprint reader"), "system", [
+    (_("Fingerprint reader"), ("system", "users"), [
         (_("Keep your account password available"), _("Fingerprint sign-in is an alternative to your account password, not a replacement. Keep password sign-in available in case the reader does not work or Ubuntu asks for your password.")),
         (_("Open fingerprint settings"), _("Open Settings, choose System, then Users. Look for Fingerprint Login and select Disabled to add a fingerprint. Unlock the panel if you are setting up another user.")),
         (_("Enroll a finger"), _("Choose a finger and follow the on-screen prompts. Lift and reposition your finger each time the reader asks. A clean, dry finger can make enrollment easier.")),
@@ -129,7 +129,7 @@ GUIDES = [
         (_("Reconnect to the network"), _("Forget the network in Wi-Fi Settings, then connect again and carefully enter the password.")),
         (_("If only this computer has trouble"), _("Install available Ubuntu updates. Check the computer or Wi-Fi adapter support information before installing a driver.")),
     ]),
-    (_("Camera"), "privacy", [
+    (_("Camera"), ("privacy", "camera"), [
         (_("Check the camera"), _("Open its privacy shutter or switch, reconnect it if external and make sure its indicator light turns on.")),
         (_("Check app permissions"), _("Review camera access in Privacy Settings. A managed work or school computer may restrict access.")),
         (_("Close other camera apps"), _("Quit video calls and other apps that may already be using the camera, then try again.")),
@@ -269,7 +269,7 @@ SYSTEM_GUIDES = [
         (_("Turn on Large Text"), _("Switch on Large Text. You can also try the accessibility menu in the top bar for a quick toggle.")),
         (_("Adjust other display options"), _("Try High Contrast or a different cursor size if those make the screen easier for you to use.")),
     ]),
-    (_("Set up automatic screen locking"), ("settings", "privacy"), _("Open Settings"), [
+    (_("Set up automatic screen locking"), ("settings", ("privacy", "screenlock")), _("Open Settings"), [
         (_("Open Privacy settings"), _("Open Settings and look for Privacy & Security or Privacy. Panel names can vary between Ubuntu releases.")),
         (_("Turn on automatic screen locking"), _("Find Screen Lock and enable automatic screen locking. On managed computers, your organization may control this setting.")),
         (_("Choose a practical lock delay"), _("Choose how long the computer can be idle before locking. A shorter delay protects an unattended session sooner, while a longer delay can be more convenient.")),
@@ -508,7 +508,7 @@ class UbuntuStart(Adw.Application):
 
     def make_welcome(self):
         box, rows = self.page(_("A calmer start with Ubuntu"), _("Set up the essentials, then find clear steps when a device does not work."))
-        self.row(rows, _("Your computer, at a glance"), _("Use Settings to check your Ubuntu version, storage and connected devices."), _("Open Settings"), lambda: self.open_settings())
+        self.row(rows, _("Your computer, at a glance"), _("Use Settings to check your Ubuntu version, storage and connected devices."), _("Open Settings"), lambda: self.open_settings("system", "about"))
         self.row(rows, _("Take it one step at a time"), _("You can come back to any guide whenever you need it."))
         return box
 
@@ -851,7 +851,7 @@ class UbuntuStart(Adw.Application):
                     label = _("Open hardware overview")
                 elif target == "disks":
                     label = _("Open Disks")
-                elif target == "system":
+                elif target == ("system", "users"):
                     label = _("Open System Settings")
                 else:
                     label = _("Open related Settings")
@@ -892,7 +892,8 @@ class UbuntuStart(Adw.Application):
         elif target == "disks":
             self.open_app("gnome-disks")
         else:
-            self.open_settings(target)
+            arguments = target if isinstance(target, tuple) else (target,)
+            self.open_settings(*arguments)
 
     def make_system_guides(self):
         box, _rows = self.page(
@@ -1247,7 +1248,7 @@ class UbuntuStart(Adw.Application):
             label=_("Open Software & Updates"), halign=Gtk.Align.START,
         )
         automatic_updates_open_settings.connect(
-            "clicked", lambda *_: self.open_app("software-properties-gtk"),
+            "clicked", lambda *_: self.open_software_properties("--open-tab=2"),
         )
         automatic_updates_box.append(automatic_updates_refresh)
         automatic_updates_box.append(automatic_updates_open_settings)
@@ -3278,7 +3279,7 @@ class UbuntuStart(Adw.Application):
 
     def make_drivers(self):
         box, rows = self.page(_("Graphics drivers"), _("Ubuntu can offer compatible drivers for some graphics hardware. Review the available choices in Ubuntu’s Additional Drivers tool before installing anything."))
-        self.row(rows, _("Review available drivers"), _("This opens Ubuntu’s driver tool. Read the recommendation and confirm any changes there."), _("Open Drivers"), lambda: self.open_app("software-properties-gtk", "--open-tab=4"))
+        self.row(rows, _("Review available drivers"), _("This opens Ubuntu’s driver tool. Read the recommendation and confirm any changes there."), _("Open Drivers"), lambda: self.open_software_properties("--open-tab=4"))
         self.row(rows, _("Secure Boot"), _("Some drivers need a one-time confirmation during restart when Secure Boot is enabled. Follow Ubuntu’s on-screen instructions."))
         self.secure_boot_status_row = Adw.ActionRow(
             title=_("Secure Boot status"), subtitle=_("Not checked yet."),
@@ -3653,6 +3654,15 @@ class UbuntuStart(Adw.Application):
             Gio.Subprocess.new([executable, *args], Gio.SubprocessFlags.NONE)
         except GLib.Error as error:
             self.show_error(str(error))
+
+    def open_software_properties(self, *arguments):
+        executable = shutil.which("software-properties-gtk")
+        if executable:
+            self.open_app(executable, *arguments)
+        else:
+            self.show_error(_(
+                "Software & Updates is unavailable. Install the software-properties-gtk package from Ubuntu’s repositories or ask your administrator.",
+            ))
 
     def open_settings(self, *arguments):
         if not is_ubuntu_desktop():

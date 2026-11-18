@@ -2070,7 +2070,7 @@ class SystemGuideTests(unittest.TestCase):
         matches = find_guide_matches("automatic screen lock", entries)
         step_text = " ".join(f"{step} {description}" for step, description in steps)
 
-        self.assertEqual(target, ("settings", "privacy"))
+        self.assertEqual(target, ("settings", ("privacy", "screenlock")))
         self.assertEqual(action, "Open Settings")
         self.assertTrue(matches)
         self.assertIn("does not sign you out", step_text)
@@ -2486,12 +2486,13 @@ class VideoStatusAnnouncementTests(unittest.TestCase):
         )
         app.main_stack.set_visible_child_name.assert_called_once_with("Fix a device")
 
-    def test_open_fingerprint_reader_guide_launches_system_settings(self):
+    def test_open_fingerprint_reader_guide_launches_users_settings(self):
         app = Mock()
 
-        UbuntuStart.open_device_target(app, "system")
+        target = next(target for title, target, _steps in GUIDES if title == "Fingerprint reader")
+        UbuntuStart.open_device_target(app, target)
 
-        app.open_settings.assert_called_once_with("system")
+        app.open_settings.assert_called_once_with("system", "users")
 
     def test_open_storage_drive_guide_launches_gnome_disks(self):
         app = Mock()
